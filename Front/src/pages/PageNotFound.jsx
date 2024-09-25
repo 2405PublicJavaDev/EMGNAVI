@@ -1,12 +1,7 @@
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const PageNotFound = () => {
     const navigate = useNavigate();
-
-    useEffect(() => {
-        navigate('/404', { replace: true });
-    }, [navigate]);
 
     return (
         <div className="flex items-center justify-center h-screen bg-gray-100">

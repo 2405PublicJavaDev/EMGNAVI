@@ -1,14 +1,16 @@
 import { useEffect, useState, EventHandler, ReactNode } from 'react'
 import axios from "axios"
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const Index = () => {
+
+    const { id } = useParams();
 
     const [test, setTest] = useState('');
 
     useEffect(() => {
         async function fetchData() {
-            const response = await axios.get('/api/test/' + 1);
+            const response = await axios.get(`/api/test/${id}`);
             setTest(response.data.data);
         }
 
