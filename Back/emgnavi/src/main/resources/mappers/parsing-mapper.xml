@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.emginfo.emgnavi.common.parsing.mapper.ParsingMapper">
+
+    <insert id="insertHospital">
+        INSERT INTO HOSPITAL_TBL VALUES (#{hpid}, #{dutyName}, #{dutyAddr}, #{dutyTel1}, #{erTel}, #{hvec}, #{hvoc}, #{hvcc}, #{hvncc}, #{hvccc}, #{hvicc}, #{hvgc}, #{dutyHayn}, #{dutyHano}, #{dutyinf}, #{dutyMaping}, #{dutyEryn}, #{dutyTime1C}, #{dutyTime2C}, #{dutyTime3C}, #{dutyTime4C}, #{dutyTime5C}, #{dutyTime6C}, #{dutyTime7C}, #{dutyTime8C}, #{dutyTime1S}, #{dutyTime2S}, #{dutyTime3S}, #{dutyTime4S}, #{dutyTime5S}, #{dutyTime6S}, #{dutyTime7S}, #{dutyTime8S}, #{mKioskTy25}, #{mKioskTy1}, #{mKioskTy2}, #{mKioskTy3}, #{mKioskTy4}, #{mKioskTy5}, #{mKioskTy6}, #{mKioskTy7}, #{mKioskTy8}, #{mKioskTy9}, #{mKioskTy10}, #{mKioskTy11}, #{wgs84Lon}, #{wgs84Lat}, #{dgidIdName}, #{hpbdn}, #{hpccuyn}, #{hpcuyn}, #{hperyn}, #{hpgryn}, #{hpicuyn}, #{hpnicfuyn}, #{hpopyn})
+    </insert>
+
+    <insert id="insertMedicine">
+        INSERT INTO MEDICINE_TBL VALUES (#{itemSeq}, #{entpName}, #{itemName}, #{efcyQesitm}, #{useMethodQesitm}, #{atpnWarnQesitm}, #{atpnQesitm}, #{intrcQesitm}, #{seQesitm}, #{depositMethodQesitm})
+    </insert>
+
+</mapper>
