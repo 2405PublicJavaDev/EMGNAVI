@@ -2,12 +2,13 @@ package com.emginfo.emgnavi.medicine.vo;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.springframework.stereotype.Service;
 
 @NoArgsConstructor
 @Getter
-@Service
+@Setter
 @ToString
 public class Medicine {
 
