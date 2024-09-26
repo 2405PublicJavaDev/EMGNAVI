@@ -1,6 +1,6 @@
-package com.emginfo.emgnavi.Test.service;
+package com.emginfo.emgnavi.test.service;
 
-import com.emginfo.emgnavi.Test.vo.Test;
+import com.emginfo.emgnavi.test.vo.Test;
 
 public interface TestService {
 

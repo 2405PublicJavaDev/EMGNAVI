@@ -1,8 +1,8 @@
-package com.emginfo.emgnavi.Test.service.impl;
+package com.emginfo.emgnavi.test.service.impl;
 
-import com.emginfo.emgnavi.Test.mapper.TestMapper;
-import com.emginfo.emgnavi.Test.service.TestService;
-import com.emginfo.emgnavi.Test.vo.Test;
+import com.emginfo.emgnavi.test.mapper.TestMapper;
+import com.emginfo.emgnavi.test.service.TestService;
+import com.emginfo.emgnavi.test.vo.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

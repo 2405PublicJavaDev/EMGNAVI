@@ -1,4 +1,4 @@
-package com.emginfo.emgnavi.Test.vo;
+package com.emginfo.emgnavi.test.vo;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

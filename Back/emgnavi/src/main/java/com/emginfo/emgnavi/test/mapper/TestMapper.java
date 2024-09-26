@@ -1,6 +1,6 @@
-package com.emginfo.emgnavi.Test.mapper;
+package com.emginfo.emgnavi.test.mapper;
 
-import com.emginfo.emgnavi.Test.vo.Test;
+import com.emginfo.emgnavi.test.vo.Test;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

@@ -1,8 +1,8 @@
-package com.emginfo.emgnavi.Test.controller;
+package com.emginfo.emgnavi.test.controller;
 
-import com.emginfo.emgnavi.Test.dto.GetTestDataByIdResponse;
-import com.emginfo.emgnavi.Test.service.TestService;
-import com.emginfo.emgnavi.Test.vo.Test;
+import com.emginfo.emgnavi.test.dto.GetTestDataByIdResponse;
+import com.emginfo.emgnavi.test.service.TestService;
+import com.emginfo.emgnavi.test.vo.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

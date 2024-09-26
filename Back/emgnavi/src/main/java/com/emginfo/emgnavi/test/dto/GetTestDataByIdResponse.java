@@ -1,4 +1,4 @@
-package com.emginfo.emgnavi.Test.dto;
+package com.emginfo.emgnavi.test.dto;
 
 import lombok.Data;
 
