@@ -6,7 +6,7 @@ import { Session } from './Session';
 import PageNotFound from './Pages/PageNotFound';
 
 import Test from './pages/Test';
-// import RegisterMain from './pages/user/RegisterMain';
+import RegisterMain from './pages/user/RegisterMain';
 import Element from './pages/user/Element';
 
 import Index from './pages/Index';
