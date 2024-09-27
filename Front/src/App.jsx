@@ -31,7 +31,7 @@ function App() {
   return (
     <Routes>
 
-      <Route path='/test/:id' element={<Test />} />
+      <Route path='/test/:no' element={<Test />} />
 
       <Route path='/' element={<Index />} />
 

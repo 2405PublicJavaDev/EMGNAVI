@@ -4,13 +4,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 const Index = () => {
 
-    const { id } = useParams();
+    const { no } = useParams();
 
     const [test, setTest] = useState('');
 
     useEffect(() => {
         async function fetchData() {
-            const response = await axios.get(`/api/test/${id}`);
+            const response = await axios.get(`/api/test/${no}`);
             setTest(response.data.data);
         }
 
