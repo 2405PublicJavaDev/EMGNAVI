@@ -22,4 +22,6 @@ public class Medicine {
   private String intrcQesitm;
   private String seQesitm;
   private String depositMethodQesitm;
+  private String openDe;
+  private String updateDe;
 }

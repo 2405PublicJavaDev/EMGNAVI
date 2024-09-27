@@ -174,6 +174,8 @@ public class ParsingController {
                     medicine.setIntrcQesitm(getTagValue("intrcQesitm", element));
                     medicine.setSeQesitm(getTagValue("seQesitm", element));
                     medicine.setDepositMethodQesitm(getTagValue("depositMethodQesitm", element));
+                    medicine.setOpenDe(getTagValue("openDe", element));
+                    medicine.setUpdateDe(getTagValue("updateDe", element));
 
                     parsingMapper.insertMedicine(medicine);
                 }
