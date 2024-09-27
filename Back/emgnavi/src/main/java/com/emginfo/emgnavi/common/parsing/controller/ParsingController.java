@@ -177,6 +177,8 @@ public class ParsingController {
                     medicine.setOpenDe(getTagValue("openDe", element));
                     medicine.setUpdateDe(getTagValue("updateDe", element));
 
+                    System.out.println(medicine);
+
                     parsingMapper.insertMedicine(medicine);
                 }
             }
