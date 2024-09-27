@@ -1,6 +1,6 @@
 import { useState, EventHandler, ReactNode } from 'react'
 
-const 회원가입페이지 = () => {
+const RegisterMain = () => {
     return (<div className="relative w-[1920px] h-[1301px] bg-[#fff] overflow-hidden">
         <div className="absolute left-0 top-[161px] w-[1920px] h-[908px]">
             <div className="absolute left-0 top-0 w-[1920px] h-[938px] bg-[#fff]"></div>
@@ -64,4 +64,4 @@ const 회원가입페이지 = () => {
     </div>)
 }
 
-export default 회원가입페이지
+export default RegisterMain

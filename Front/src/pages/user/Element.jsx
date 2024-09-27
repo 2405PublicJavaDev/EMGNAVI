@@ -10,7 +10,7 @@ export const Element = () => {
         <div className="text-wrapper-3">약관 동의</div>
         <p className="p">회원가입 시 즐겨찾기, 리뷰작성 등 개인화 서비스를 제공받으실 수 있습니다.</p>
         <div className="overlap">
-          <img className="line" alt="Line" src="/img/line-3.svg" />
+          <img className="line" alt="Line" src="/img/user/line-3.svg" />
           <div className="ellipse" />
           <div className="ellipse-2" />
           <div className="ellipse-3" />
@@ -50,7 +50,7 @@ export const Element = () => {
             변경된 약관은 제1항과 같은 방법으로 공지 또는 통지함으로써 효력이 발생됩니다.
           </p>
           <div className="check-mark-wrapper">
-            <img className="check-mark" alt="Check mark" src="/img/check-mark-1-1-2.png" />
+            <img className="check-mark" alt="Check mark" src="/img/user/check-mark-1-1-2.png" />
           </div>
         </div>
         <div className="overlap-3">
@@ -80,15 +80,15 @@ export const Element = () => {
             4. 이용자 및 법정대리인의 권리와 그 행사방법
           </p>
           <div className="text-wrapper-15">동의합니다.</div>
-          <img className="img" alt="Check mark" src="/img/check-mark-1-1-2.png" />
+          <img className="img" alt="Check mark" src="/img/user/check-mark-1-1-2.png" />
         </div>
         <div className="text-wrapper-16">위 내용에 모두 동의함</div>
-        <img className="square" alt="Square" src="/img/square-1.png" />
+        <img className="square" alt="Square" src="/img/user/square-1.png" />
         <footer className="footer">
           <div className="group">
             <div className="overlap-group-2">
               <div className="text-wrapper-17">응급NAVI</div>
-              <img className="img-2" alt="Element" src="/img/1.png" />
+              <img className="img-2" alt="Element" src="/img/user/1.png" />
             </div>
           </div>
           <div className="group-2">
@@ -104,7 +104,7 @@ export const Element = () => {
                     <br />
                   </span>
                 </p>
-                <img className="copyright" alt="Copyright" src="/img/copyright-1-1.png" />
+                <img className="copyright" alt="Copyright" src="/img/user/copyright-1-1.png" />
               </div>
             </div>
             <div className="text-wrapper-19">
@@ -112,16 +112,16 @@ export const Element = () => {
             </div>
           </div>
           <div className="group-3">
-            <img className="instagram" alt="Instagram" src="/img/instagram-1-1.png" />
-            <img className="youtube" alt="Youtube" src="/img/youtube-1-1.png" />
-            <img className="kakaotalk" alt="Kakaotalk" src="/img/kakaotalk-1.png" />
+            <img className="instagram" alt="Instagram" src="/img/user/instagram-1-1.png" />
+            <img className="youtube" alt="Youtube" src="/img/user/youtube-1-1.png" />
+            <img className="kakaotalk" alt="Kakaotalk" src="/img/user/kakaotalk-1.png" />
           </div>
         </footer>
         <div className="header-non-login">
           <div className="overlap-4">
             <div className="overlap-wrapper">
               <div className="overlap-4">
-                <img className="group-4" alt="Group" src="/img/group-13.png" />
+                <img className="group-4" alt="Group" src="/img/user/group-13.png" />
                 <div className="group-wrapper">
                   <div className="div-wrapper">
                     <div className="group-5">
@@ -144,7 +144,9 @@ export const Element = () => {
                     <div className="group-7">
                       <div className="overlap-group-4">
                         <div className="text-wrapper-25">응급NAVI</div>
-                        <img className="file" alt="File" src="/img/file-1.png" />
+                        <img className="bg" alt="bg" src="/img/user/bg.svg" />
+                        <img className="logo-line" alt="logo-line" src="/img/user/line.svg" />
+                        <img className="file" alt="File" src="/img/user/file-1.png" />
                       </div>
                     </div>
                   </div>

@@ -37,8 +37,8 @@ function App() {
 
       <Route path='/' element={<Index />} />
 
-      {/* <Route path='/user/main' element={<RegisterMain />} /> */}
-      <Route path='/user/main' element={<Element />} />
+      <Route path='/user/main' element={<RegisterMain />} />
+      <Route path='/user/agree' element={<Element />} />
       {/* 404 페이지 처리 */}
       <Route path='*' element={<PageNotFound />} />
 

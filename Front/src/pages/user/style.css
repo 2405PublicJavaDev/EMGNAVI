@@ -75,6 +75,7 @@
   position: absolute;
   top: 664px;
   width: 1421px;
+  z-index: 1;
 }
 
 .element .line {
@@ -725,11 +726,23 @@
 
 .element .file {
   height: 97px;
-  left: 24px;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
   width: 111px;
+  object-fit: cover;
+  position: absolute; /* 부모 요소를 기준으로 절대 위치 설정 */
+  top: 0; /* 필요에 따라 조정 가능 */
+  left: 24px; /* 필요에 따라 조정 가능 */
+  z-index: 3; /* 다른 요소들보다 위에 위치하게 설정 */
+}
+
+.element .bg {
+  float: left;
+  z-index: 1; /* 가장 아래에 위치 */
+}
+
+.element .logo-line {
+  float: left;
+  z-index: 2; /* bg 위에 위치 */
+  position: relative; /* z-index가 적용될 수 있도록 함 */
 }
 
 .element .navbar {
