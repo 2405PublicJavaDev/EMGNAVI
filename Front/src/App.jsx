@@ -5,6 +5,9 @@ import { Session } from './Session';
 
 import PageNotFound from './Pages/PageNotFound';
 
+import Header from './pages/Header';
+import Footer from './pages/Footer';
+
 import Test from './pages/Test';
 import RegisterAgree from './pages/user/RegisterAgree';
 
@@ -38,6 +41,9 @@ function App() {
 
   return (
     <>
+      <Header />
+      <Footer />
+
       <Routes>
 
         <Route path='/test/:no' element={<Test />} />
@@ -56,7 +62,7 @@ function App() {
         <Route path='*' element={<PageNotFound />} />
 
       </Routes>
-      
+
     </>
   )
 }
