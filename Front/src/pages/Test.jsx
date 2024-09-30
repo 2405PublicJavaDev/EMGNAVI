@@ -7,20 +7,20 @@ const Test = () => {
 
     const { no } = useParams();
 
-    const { response, error, loading, fetchData } = useAxios();
+    const { response, error, loading, setConfig } = useAxios();
 
     useEffect(() => {
-        fetchData({
-            url: `/api/test/${no}`,
+        setConfig({
             method: 'GET',
+            url: `/api/test/${no}`,
         });
-    }, [no, fetchData]);
+    }, []);
 
 
-    const test = () => {
-        fetchData({
-            url: `/api/test`,
+    const button = () => {
+        setConfig({
             method: 'POST',
+            url: `/api/test`,
             data: {
                 data: 'a'
             },
@@ -42,7 +42,7 @@ const Test = () => {
                     </div>
 
                 )}
-                <button onClick={test}>Test</button>
+                {/* <button onClick={button}>Test</button> */}
             </div >
         </>
     )
