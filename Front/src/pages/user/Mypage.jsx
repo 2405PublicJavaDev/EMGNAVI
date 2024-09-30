@@ -1,12 +1,13 @@
 import { useState, EventHandler, ReactNode } from 'react'
 
-const FIndEmailComplete = () => {
-    return (<div className="relative w-[1920px] h-[1587px] bg-[#fff] overflow-hidden">
-        <div className="absolute left-[210px] top-[426px] w-[1500px] h-[466px] bg-[#7d85971a]"></div>
-        <div className="absolute left-[420px] top-[633px] w-[1080px] h-0 border-[1px] border-solid border-[#000]"></div>
-        <div className="absolute left-[569px] top-[679px] w-[104px] h-[34px] text-[22px] font-['Inter'] font-medium text-[#000]">아이디</div>
-        <div className="absolute left-[1px] top-[679px] w-[1919px] h-[41px] text-[22px] font-['Inter'] font-light text-[#000] text-center">example@naver.com</div>
-        <div className="absolute left-[420px] top-[754px] w-[1080px] h-0 border-[1px] border-solid border-[#7d8597]"></div>
+const MypageMain = () => {
+    return (<div className="relative w-[1920px] h-[1301px] bg-[#fff] overflow-hidden">
+        <div className="absolute left-0 top-[161px] w-[1920px] h-[908px]">
+            <div className="absolute left-0 top-0 w-[1920px] h-[908px] bg-[#fff]"></div>
+            <div className="absolute left-[733px] top-[264px] w-[455px] h-[410px] bg-[#7d85971a] rounded-[20px]"></div>
+            <div className="absolute left-0 top-[84px] w-[1920px] h-[47px] text-[40px] font-['Inter'] font-bold text-[#000] text-center">마이페이지</div>
+            <div className="absolute left-0 top-[163px] w-[1920px] text-[15px] font-['Inter'] text-[#7d8597] text-center">당신의 건강을 위한 최적의 길을 안내하는 응급NAVI입니다.</div>
+        </div>
         <div className="absolute left-0 top-0 w-[1920px] h-[161px] overflow-hidden">
             <div className="absolute left-0 top-0 w-[1920px] h-[155px] flex">
                 <div className="absolute left-0 top-[31px] w-[1920px] h-[93px] flex">
@@ -42,20 +43,19 @@ const FIndEmailComplete = () => {
                 <div className="absolute left-0 top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap">주변응급실</div>
             </div>
         </div>
-        <div className="absolute left-0 top-[245px] w-[1920px] h-[47px] text-[40px] font-['Inter'] font-bold text-[#000] text-center">아이디 찾기</div>
-        <div className="absolute left-[1px] top-[533px] w-[1920px] h-[51px] text-[24px] font-['Inter'] font-semibold text-[#000] text-center">회원가입 시 입력하신 아이디 정보입니다.</div>
-        <div className="absolute left-0 top-[324px] w-[1920px] text-[15px] font-['Inter'] text-[#7d8597] text-center">휴대폰 본인인증으로 아이디를 찾으실 수 있습니다.</div>
-        <div className="absolute left-[765px] top-[979px] w-[390px] h-[60px] flex">
-            <div className="absolute left-0 top-0 w-[184px] h-[60px] flex">
-                <div className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[50px]"></div>
-                <div className="absolute left-0 top-[19px] w-[184px] text-[16px] font-['Inter'] text-[#0b2d85] text-center">메인으로 가기</div>
-            </div>
-            <div className="absolute left-[206px] top-0 w-[184px] h-[60px] flex">
-                <div className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#0b2d85] border-[1px] border-solid border-[#0b2d85] rounded-[50px]"></div>
-                <div className="absolute left-0 top-[19px] w-[184px] text-[16px] font-['Inter'] font-bold text-[#fff] text-center">로그인하러 가기</div>
-            </div>
-        </div>
-        <div className="absolute left-0 top-[1355px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">
+        <div className="absolute left-[1255px] top-[425px] w-[455px] h-[410px] bg-[#7d85971a] rounded-[20px]"></div>
+        <div className="absolute left-[210px] top-[425px] w-[455px] h-[410px] bg-[#7d85971a] rounded-[20px]"></div>
+        <div className="absolute left-[733px] top-[656px] w-[455px] h-[30px] text-[26px] font-['Inter'] font-semibold text-[#000] text-center">즐겨찾는 병원</div>
+        <div className="absolute left-[733px] top-[709px] w-[455px] h-[19px] text-[16px] font-['Inter'] text-[#7d8597] text-center">즐겨찾는 병원</div>
+        <div className="absolute left-[1255px] top-[656px] w-[455px] h-[30px] text-[26px] font-['Inter'] font-semibold text-[#000] text-center">즐겨찾는 약국</div>
+        <div className="absolute left-[1255px] top-[709px] w-[455px] h-[19px] text-[16px] font-['Inter'] text-[#7d8597] text-center">즐겨찾는 약국</div>
+        <div className="absolute left-[210px] top-[656px] w-[455px] h-[30px] text-[26px] font-['Inter'] font-semibold text-[#000] text-center">내정보 관리</div>
+        <div className="absolute left-[210px] top-[709px] w-[455px] h-[19px] text-[16px] font-['Inter'] text-[#7d8597] text-center">회원정보 수정</div>
+        <img className="absolute left-[926px] top-[531px]" width="73" height="75" src="/img/user/hospital 1335_1501.png"></img>
+        <img className="absolute left-[982px] top-[581px]" width="37" height="38" src="/img/user/star (1) 1335_1503.png"></img>
+        <img className="absolute left-[1447px] top-[542px]" width="90" height="82" src="/img/user/Group 200335_1518.png"></img>
+        <img className="absolute left-[408px] top-[553px]" width="74" height="65" src="/img/user/Group 199335_1517.png"></img>
+        <div className="absolute left-0 top-[1069px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">
             <div className="absolute left-[136px] top-[41px] w-[117px] h-[126px] flex">
                 <div className="absolute left-[13px] top-[97px] text-[24px] font-['Advent_Pro'] font-black text-[#333] whitespace-nowrap">응급NAVI</div>
                 <img className="absolute left-0 top-0" width="117" height="100" src="/img/user/logo.png"></img>
@@ -73,4 +73,4 @@ const FIndEmailComplete = () => {
     </div>)
 }
 
-export default FIndEmailComplete
+export default MypageMain

@@ -1,12 +1,11 @@
 import { useState, EventHandler, ReactNode } from 'react'
 
-const FIndEmailComplete = () => {
-    return (<div className="relative w-[1920px] h-[1587px] bg-[#fff] overflow-hidden">
-        <div className="absolute left-[210px] top-[426px] w-[1500px] h-[466px] bg-[#7d85971a]"></div>
-        <div className="absolute left-[420px] top-[633px] w-[1080px] h-0 border-[1px] border-solid border-[#000]"></div>
-        <div className="absolute left-[569px] top-[679px] w-[104px] h-[34px] text-[22px] font-['Inter'] font-medium text-[#000]">아이디</div>
-        <div className="absolute left-[1px] top-[679px] w-[1919px] h-[41px] text-[22px] font-['Inter'] font-light text-[#000] text-center">example@naver.com</div>
-        <div className="absolute left-[420px] top-[754px] w-[1080px] h-0 border-[1px] border-solid border-[#7d8597]"></div>
+const MypageCheckPw = () => {
+    return (<div className="relative w-[1920px] h-[1178px] bg-[#fff] overflow-hidden">
+        <div className="absolute left-0 top-[124px] w-[1920px] h-[209px] bg-[#0b2d85]"></div>
+        <div className="absolute left-[230px] top-[261px] w-[1460px] h-[525px] bg-[#fff] rounded-[5px]"></div>
+        <div className="absolute left-[937px] top-[964px] text-[24px] font-['Inter'] font-semibold text-[#fff] whitespace-nowrap">확인</div>
+        <div className="absolute left-[235px] top-[190px] w-[149px] h-[57px] text-[24px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">내정보 관리</div>
         <div className="absolute left-0 top-0 w-[1920px] h-[161px] overflow-hidden">
             <div className="absolute left-0 top-0 w-[1920px] h-[155px] flex">
                 <div className="absolute left-0 top-[31px] w-[1920px] h-[93px] flex">
@@ -17,10 +16,10 @@ const FIndEmailComplete = () => {
                         <div className="absolute left-0 top-0 w-[1920px] h-[31px] bg-[#0b2d85]"></div>
                         <div className="absolute left-0 top-[4px] w-[1920px] h-[27px] flex">
                             <div className="absolute left-[1865px] top-0 w-[55px] h-[27px] text-[16px]"><span className="font-['Inter'] font-extralight text-[#7d8597]">|</span><span className="font-['Inter'] font-semibold text-[#fff]"> </span></div>
-                            <div className="absolute left-[1778px] top-0 w-[87px] h-[27px] text-[16px] font-['Inter'] font-medium text-[#fff] text-center">회원가입</div>
+                            <div className="absolute left-[1778px] top-0 w-[87px] h-[27px] text-[16px] font-['Inter'] font-medium text-[#fff] text-center">로그아웃</div>
                             <div className="absolute left-[1773px] top-0 w-[5px] h-[27px] text-[16px]"><span className="font-['Inter'] font-extralight text-[#7d8597]">|</span><span className="font-['Inter'] font-semibold text-[#fff]"> </span></div>
-                            <div className="absolute left-[1697px] top-0 w-[76px] h-[27px] text-[16px] font-['Inter'] font-medium text-[#fff] text-center">로그인</div>
-                            <div className="absolute left-0 top-0 w-[1697px] h-[27px] text-[16px] font-['Inter'] font-extralight text-[#7d8597] text-right">|</div>
+                            <div className="absolute left-[1662px] top-0 w-[111px] h-[27px] text-[16px] font-['Inter'] font-medium text-[#fff] text-center">마이페이지</div>
+                            <div className="absolute left-0 top-0 w-[1662px] h-[27px] text-[16px] font-['Inter'] font-extralight text-[#7d8597] text-right">|</div>
                         </div>
                     </div>
                 </div>
@@ -42,20 +41,11 @@ const FIndEmailComplete = () => {
                 <div className="absolute left-0 top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap">주변응급실</div>
             </div>
         </div>
-        <div className="absolute left-0 top-[245px] w-[1920px] h-[47px] text-[40px] font-['Inter'] font-bold text-[#000] text-center">아이디 찾기</div>
-        <div className="absolute left-[1px] top-[533px] w-[1920px] h-[51px] text-[24px] font-['Inter'] font-semibold text-[#000] text-center">회원가입 시 입력하신 아이디 정보입니다.</div>
-        <div className="absolute left-0 top-[324px] w-[1920px] text-[15px] font-['Inter'] text-[#7d8597] text-center">휴대폰 본인인증으로 아이디를 찾으실 수 있습니다.</div>
-        <div className="absolute left-[765px] top-[979px] w-[390px] h-[60px] flex">
-            <div className="absolute left-0 top-0 w-[184px] h-[60px] flex">
-                <div className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[50px]"></div>
-                <div className="absolute left-0 top-[19px] w-[184px] text-[16px] font-['Inter'] text-[#0b2d85] text-center">메인으로 가기</div>
-            </div>
-            <div className="absolute left-[206px] top-0 w-[184px] h-[60px] flex">
-                <div className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#0b2d85] border-[1px] border-solid border-[#0b2d85] rounded-[50px]"></div>
-                <div className="absolute left-0 top-[19px] w-[184px] text-[16px] font-['Inter'] font-bold text-[#fff] text-center">로그인하러 가기</div>
-            </div>
+        <div className="absolute left-[868px] top-[814px] w-[184px] h-[60px] flex">
+            <div className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#0b2d85] border-[1px] border-solid border-[#0b2d85] rounded-[50px]"></div>
+            <div className="absolute left-0 top-[19px] w-[184px] text-[16px] font-['Inter'] font-bold text-[#fff] text-center">확인</div>
         </div>
-        <div className="absolute left-0 top-[1355px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">
+        <div className="absolute left-0 top-[946px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">
             <div className="absolute left-[136px] top-[41px] w-[117px] h-[126px] flex">
                 <div className="absolute left-[13px] top-[97px] text-[24px] font-['Advent_Pro'] font-black text-[#333] whitespace-nowrap">응급NAVI</div>
                 <img className="absolute left-0 top-0" width="117" height="100" src="/img/user/logo.png"></img>
@@ -70,7 +60,15 @@ const FIndEmailComplete = () => {
                 <div className="absolute left-0 top-0 w-[221px] h-[21px] text-[15px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">이용약관              개인정보처리방침</div>
             </div>
         </div>
+        <div className="absolute left-[420px] top-[413px] w-[1080px] h-0 border-[1px] border-solid border-[#000]"></div>
+        <div className="absolute left-[420px] top-[723px] w-[1080px] h-0 border-[1px] border-solid border-[#7d8597]"></div>
+        <div className="absolute left-[569px] top-[500px] w-[182px] h-[29px] text-[22px] font-['Inter'] font-medium text-[#000]">아이디</div>
+        <div className="absolute left-[569px] top-[608px] w-[201px] h-[29px] text-[22px] font-['Inter'] font-medium text-[#000]">비밀번호</div>
+        <div className="absolute left-0 top-[339px] w-[1920px] h-[51px] text-[24px] font-['Inter'] font-semibold text-[#000] text-center">개인정보 보호를 위해 비밀번호를 다시 한번 입력해주세요.</div>
+        <div className="absolute left-[829px] top-[593px] w-[450px] h-[58px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
+        <div className="absolute left-[829px] top-[485px] w-[450px] h-[58px] text-[17px] font-['Inter'] font-light text-[#000] flex flex-col justify-center">example@naver.com</div>
+        <div className="absolute left-[862px] top-[593px] w-[385px] h-[58px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center">비밀번호를 입력해주세요.</div>
     </div>)
 }
 
-export default FIndEmailComplete
+export default MypageCheckPw

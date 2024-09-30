@@ -1,12 +1,13 @@
 import { useState, EventHandler, ReactNode } from 'react'
 
-const FIndEmailComplete = () => {
+const ResetPw = () => {
     return (<div className="relative w-[1920px] h-[1587px] bg-[#fff] overflow-hidden">
-        <div className="absolute left-[210px] top-[426px] w-[1500px] h-[466px] bg-[#7d85971a]"></div>
-        <div className="absolute left-[420px] top-[633px] w-[1080px] h-0 border-[1px] border-solid border-[#000]"></div>
-        <div className="absolute left-[569px] top-[679px] w-[104px] h-[34px] text-[22px] font-['Inter'] font-medium text-[#000]">아이디</div>
-        <div className="absolute left-[1px] top-[679px] w-[1919px] h-[41px] text-[22px] font-['Inter'] font-light text-[#000] text-center">example@naver.com</div>
-        <div className="absolute left-[420px] top-[754px] w-[1080px] h-0 border-[1px] border-solid border-[#7d8597]"></div>
+        <div className="absolute left-[210px] top-[425px] w-[1500px] h-[616px] bg-[#7d85971a] rounded-[20px]"></div>
+        <div className="absolute left-[420px] top-[596px] w-[1080px] h-0 border-[1px] border-solid border-[#000]"></div>
+        <div className="absolute left-[420px] top-[940px] w-[1080px] h-0 border-[1px] border-solid border-[#7d8597]"></div>
+        <div className="absolute left-[829px] top-[742px] text-[17px] font-['Inter'] text-[#7d8597] whitespace-nowrap">영문, 숫자포함 8자 이상 16자 이하로 입력해주세요.</div>
+        <div className="absolute left-[569px] top-[683px] w-[182px] h-[29px] text-[22px] font-['Inter'] font-medium"><span className="text-[#000]">비밀번호 </span><span className="text-[#c2a55d]">*</span></div>
+        <div className="absolute left-[569px] top-[825px] w-[201px] h-[29px] text-[22px] font-['Inter'] font-medium"><span className="text-[#000]">비밀번호 확인 </span><span className="text-[#c2a55d]">*</span></div>
         <div className="absolute left-0 top-0 w-[1920px] h-[161px] overflow-hidden">
             <div className="absolute left-0 top-0 w-[1920px] h-[155px] flex">
                 <div className="absolute left-0 top-[31px] w-[1920px] h-[93px] flex">
@@ -42,10 +43,14 @@ const FIndEmailComplete = () => {
                 <div className="absolute left-0 top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap">주변응급실</div>
             </div>
         </div>
-        <div className="absolute left-0 top-[245px] w-[1920px] h-[47px] text-[40px] font-['Inter'] font-bold text-[#000] text-center">아이디 찾기</div>
-        <div className="absolute left-[1px] top-[533px] w-[1920px] h-[51px] text-[24px] font-['Inter'] font-semibold text-[#000] text-center">회원가입 시 입력하신 아이디 정보입니다.</div>
-        <div className="absolute left-0 top-[324px] w-[1920px] text-[15px] font-['Inter'] text-[#7d8597] text-center">휴대폰 본인인증으로 아이디를 찾으실 수 있습니다.</div>
-        <div className="absolute left-[765px] top-[979px] w-[390px] h-[60px] flex">
+        <div className="absolute left-0 top-[245px] w-[1920px] h-[47px] text-[40px] font-['Inter'] font-bold text-[#000] text-center">비밀번호 찾기</div>
+        <div className="absolute left-0 top-[324px] w-[1920px] text-[15px] font-['Inter'] text-[#7d8597] text-center">가입된 아이디(이메일)로 비밀번호를 재설정 하실 수 있습니다.</div>
+        <div className="absolute left-[417px] top-[522px] w-[390px] h-[51px] text-[24px] font-['Inter'] font-semibold text-[#000]">새로운 비밀번호를 입력해주세요.</div>
+        <div className="absolute left-[829px] top-[668px] w-[450px] h-[58px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
+        <div className="absolute left-[829px] top-[810px] w-[450px] h-[58px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
+        <div className="absolute left-[862px] top-[668px] w-[489px] h-[58px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center">비밀번호를 입력해주세요.</div>
+        <div className="absolute left-[862px] top-[810px] w-[489px] h-[58px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center">비밀번호를 한번 더 입력해주세요.</div>
+        <div className="absolute left-[765px] top-[1151px] w-[390px] h-[60px] flex">
             <div className="absolute left-0 top-0 w-[184px] h-[60px] flex">
                 <div className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[50px]"></div>
                 <div className="absolute left-0 top-[19px] w-[184px] text-[16px] font-['Inter'] text-[#0b2d85] text-center">메인으로 가기</div>
@@ -73,4 +78,4 @@ const FIndEmailComplete = () => {
     </div>)
 }
 
-export default FIndEmailComplete
+export default ResetPw

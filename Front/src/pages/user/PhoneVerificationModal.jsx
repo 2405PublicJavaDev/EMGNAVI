@@ -21,13 +21,13 @@ const PhoneVerificationModal = ({ onClose }) => {
                         <img className="absolute left-[243px] top-[314px]" width="14" height="15" src="show-more-button (1)335_1812.png"></img>
                         <div className="absolute left-[195px] top-[304px] w-[57px] h-[36px] text-[15px] font-['Inter'] text-[#000] text-center flex flex-col justify-center">010</div>
                         <div className="absolute left-[1px] top-[87px] w-[599px] h-[30px] text-[32px] font-['Inter'] font-semibold text-[#000] text-center">휴대폰 본인인증</div>
-                        <div className="absolute left-[59px] top-[210px] w-[147px] h-[30px] text-[16px] font-['Inter'] font-semibold text-[#000]">본인인증 정보 입력</div>
-                        <div className="absolute left-[59px] top-[310px] w-[96px] h-[30px] text-[16px] font-['Inter'] font-medium text-[#000]">휴대폰 번호</div>
-                        <div className="absolute left-[59px] top-[370px] w-[110px] h-[30px] text-[16px] font-['Inter'] font-medium text-[#000]">인증번호 입력</div>
+                        <div className="absolute left-[59px] top-[205px] w-[147px] h-[30px] text-[17px] font-['Inter'] font-bold text-[#000]">본인인증 정보 입력</div>
+                        <div className="absolute left-[59px] top-[310px] w-[96px] h-[30px] text-[16px] font-['Inter'] font-semibold text-[#000]">휴대폰 번호</div>
+                        <div className="absolute left-[59px] top-[370px] w-[110px] h-[30px] text-[16px] font-['Inter'] font-semibold text-[#000]">인증번호 입력</div>
                         <div className="absolute left-[59px] top-[240px] w-[483px] h-0 border-[1px] border-solid border-[#000]"></div>
-                        <div className="absolute left-[466px] top-[304px] w-[71px] h-[36px] text-[16px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">전송</div>
+                        <div className="absolute left-[466px] top-[304px] w-[71px] h-[36px] text-[15px] font-['Inter'] text-[#fff] text-center flex flex-col justify-center">전송</div>
                         <div className="absolute left-[466px] top-[363px] w-[71px] h-[36px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]"></div>
-                        <div className="absolute left-[466px] top-[363px] w-[71px] h-[36px] text-[16px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">확인</div>
+                        <div className="absolute left-[466px] top-[363px] w-[71px] h-[36px] text-[15px] font-['Inter'] text-[#fff] text-center flex flex-col justify-center">확인</div>
                     </div>
                     <div className="absolute left-[168px] top-[569px] w-[266px] h-[41px] flex">
                         <div className="absolute left-0 top-0 w-[126px] h-[41px] flex">
