@@ -4,11 +4,11 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
     const [values, setValues] = useState({
-        uEmail: '',
+        id: '',
     });
 
-    const handleUser = (email) => setValues({
-        uEmail: email,
+    const handleUser = (id) => setValues({
+        id: id,
     });
 
     return (

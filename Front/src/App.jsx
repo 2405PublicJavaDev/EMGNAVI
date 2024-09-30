@@ -32,7 +32,7 @@ function App() {
     const fetchSessionData = async () => {
       const response = await Session();
       if (response) {
-        handleUser(response.uEmail, response.uNickname);
+        handleUser(response.id);
       }
     };
 
