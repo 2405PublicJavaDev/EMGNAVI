@@ -19,6 +19,9 @@ import LoginMain from './pages/user/LoginMain';
 import FindEmail from './pages/user/FindEmail';
 import FIndEmailComplete from './pages/user/FindEmailComplete';
 import RegisterMain from './pages/user/registerMain';
+import PostNotice from './pages/notice/PostNotice';
+import GetNoticeList from './pages/notice/GetNoticeList';
+import GetNoticeDetail from './pages/notice/GetNoticeDetail';
 
 
 
@@ -58,6 +61,10 @@ function App() {
         <Route path='/user/login' element={<LoginMain />} />
         <Route path='/user/findEmail' element={<FindEmail />} />
         <Route path='/user/findEmail/complete' element={<FIndEmailComplete />} />
+
+        <Route path='/notice/postNotice' element={<PostNotice />} />
+        <Route path='/notice/getNoticeList' element={<GetNoticeList />} />
+        <Route path='/notice/getNoticeDetail' element={<GetNoticeDetail />} />
         {/* 404 페이지 처리 */}
         <Route path='*' element={<PageNotFound />} />
 
