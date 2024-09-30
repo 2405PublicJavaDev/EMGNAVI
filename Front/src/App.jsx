@@ -6,7 +6,6 @@ import { Session } from './Session';
 import PageNotFound from './Pages/PageNotFound';
 
 import Test from './pages/Test';
-import RegisterMain from './pages/user/RegisterMain';
 import RegisterAgree from './pages/user/RegisterAgree';
 
 import Index from './pages/Index';
@@ -16,6 +15,7 @@ import RegisterComplete from './pages/user/RegisterComplete';
 import LoginMain from './pages/user/LoginMain';
 import FindEmail from './pages/user/FindEmail';
 import FIndEmailComplete from './pages/user/FindEmailComplete';
+import RegisterMain from './pages/user/registerMain';
 
 
 
