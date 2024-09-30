@@ -9,23 +9,29 @@ import Header from './pages/Header';
 import Footer from './pages/Footer';
 
 import Test from './pages/Test';
-import RegisterAgree from './pages/user/RegisterAgree';
 
 import Index from './pages/Index';
+
+import RegisterMain from './pages/user/registerMain';
+import RegisterAgree from './pages/user/RegisterAgree';
 import RegisterVerify from './pages/user/RegisterVerify';
 import RegisterPage from './pages/user/RegisterPage';
 import RegisterComplete from './pages/user/RegisterComplete';
+
 import LoginMain from './pages/user/LoginMain';
+import SetNickname from './pages/user/SetNickname';
+
 import FindEmail from './pages/user/FindEmail';
 import FIndEmailComplete from './pages/user/FindEmailComplete';
-import RegisterMain from './pages/user/registerMain';
+
 import FindPw from './pages/user/FindPw';
 import FindPwSendMSG from './pages/user/FindPwSendMSG';
 import ResetPw from './pages/user/ResetPw';
-import SetNickname from './pages/user/SetNickname';
+
 import MypageMain from './pages/user/Mypage';
 import MypageCheckPw from './pages/user/MypageCheckPw';
 import MypageModifyInf from './pages/user/MypageModifyInf';
+
 import PostNotice from './pages/notice/PostNotice';
 import GetNoticeList from './pages/notice/GetNoticeList';
 import GetNoticeDetail from './pages/notice/GetNoticeDetail';
