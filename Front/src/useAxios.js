@@ -10,7 +10,11 @@ const useAxios = () => {
     const fetchData = async () => {
         try {
             const res = await axios(config);
-            setResponse(res.data);
+            if (res.data.status == 200) {
+                setResponse(res.data.data);
+            } else {
+                setError(res.data)
+            }
         } catch (err) {
             setError(err);
         } finally {

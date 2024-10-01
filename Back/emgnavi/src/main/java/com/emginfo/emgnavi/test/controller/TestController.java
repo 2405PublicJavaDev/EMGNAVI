@@ -1,5 +1,9 @@
 package com.emginfo.emgnavi.test.controller;
 
+import com.emginfo.emgnavi.common.exception.CustomException;
+import com.emginfo.emgnavi.common.exception.ErrorCode;
+import com.emginfo.emgnavi.common.success.SuccessCode;
+import com.emginfo.emgnavi.common.success.SuccessResponse;
 import com.emginfo.emgnavi.test.dto.GetTestDataByIdResponse;
 import com.emginfo.emgnavi.test.service.TestService;
 import com.emginfo.emgnavi.test.vo.Test;
@@ -15,15 +19,19 @@ public class TestController {
 
     private TestService testService;
 
-    public TestController() {};
+    public TestController() {}
     @Autowired
     public TestController(TestService testService) { this.testService = testService; }
 
     @GetMapping("/test/{no}")
-    public GetTestDataByIdResponse getTestDataById(@PathVariable String no) {
+    public SuccessResponse getTestDataById(@PathVariable String no) {
         Test test = testService.getTestDataById(no);
-        GetTestDataByIdResponse response = new GetTestDataByIdResponse();
-        response.setData(test.getData());
-        return response;
+        if (test != null) {
+            GetTestDataByIdResponse response = new GetTestDataByIdResponse();
+            response.setData(test.getData());
+            return new SuccessResponse(SuccessCode.GET_TEST_DATA, response);
+        } else {
+            throw new CustomException(ErrorCode.TEST_NOT_FOUND);
+        }
     }
 }
