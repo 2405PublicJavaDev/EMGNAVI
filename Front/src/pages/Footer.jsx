@@ -3,7 +3,7 @@ import { useState, EventHandler, ReactNode } from 'react'
 const Footer = () => {
     return (
         <>
-            <div className="fixed left-0 bottom-0 w-[1920px] h-[232px] bg-[#000] overflow-hidden">
+            <div className="absolute left-0 top-[1476px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">
                 <div className="absolute left-[136px] top-[41px] w-[117px] h-[126px] flex">
                     <div className="absolute left-[13px] top-[97px] text-[24px] font-['Advent_Pro'] font-black text-[#333] whitespace-nowrap">응급NAVI</div>
                     <img className="absolute left-0 top-0" width="117" height="100" src="/img/footer/logo.png"></img>

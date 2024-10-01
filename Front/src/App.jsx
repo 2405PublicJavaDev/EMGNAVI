@@ -58,7 +58,7 @@ function App() {
   return (
     <>
       <Header />
-      <Footer />
+      {/* <Footer /> */}
 
       <Routes>
 
