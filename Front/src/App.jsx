@@ -34,6 +34,7 @@ import MypageModifyInf from './pages/user/MypageModifyInf';
 import PostNotice from './pages/notice/PostNotice';
 import GetNoticeList from './pages/notice/GetNoticeList';
 import GetNoticeDetail from './pages/notice/GetNoticeDetail';
+import GetHospitalMap from './pages/map/GetHospitalMap';
 
 
 
@@ -87,6 +88,8 @@ function App() {
         <Route path='/notice/postNotice' element={<PostNotice />} />
         <Route path='/notice/getNoticeList' element={<GetNoticeList />} />
         <Route path='/notice/getNoticeDetail' element={<GetNoticeDetail />} />
+
+        <Route path='/map/getHospitalMap' element={<GetHospitalMap />} />
         {/* 404 페이지 처리 */}
         <Route path='*' element={<PageNotFound />} />
 
