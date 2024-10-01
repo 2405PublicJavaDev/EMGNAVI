@@ -17,5 +17,9 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+    https: {
+      key: "./localhost+1-key.pem", // 생성된 파일의 이름을 입력해주세요
+      cert: "./localhost+1.pem"
+    }
   },
 })
