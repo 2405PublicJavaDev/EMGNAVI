@@ -6,7 +6,6 @@ import { Session } from './Session';
 import PageNotFound from './Pages/PageNotFound';
 
 import Header from './pages/Header';
-import Footer from './pages/Footer';
 
 import Test from './pages/Test';
 
@@ -58,7 +57,6 @@ function App() {
   return (
     <>
       <Header />
-      {/* <Footer /> */}
 
       <Routes>
 
