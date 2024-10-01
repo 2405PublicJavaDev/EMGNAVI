@@ -31,8 +31,10 @@ const PhoneVerificationModal = ({ onClose }) => {
                     </div>
                     <div className="absolute left-[168px] top-[569px] w-[266px] h-[41px] flex">
                         <div className="absolute left-0 top-0 w-[126px] h-[41px] flex">
-                            <div className="absolute left-0 top-0 w-[126px] h-[41px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[50px]"></div>
-                            <div className="absolute left-0 top-[0px] w-[126px] h-[41px] text-[16px] font-['Inter'] text-[#0b2d85] text-center flex flex-col justify-center">닫기</div>
+                            <button onClick={onClose}
+                                className="absolute left-0 top-0 w-[126px] h-[41px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[50px]">
+                            <span className="text-[16px] font-['Inter'] text-[#0b2d85] text-center flex flex-col justify-center">닫기</span>
+                                </button>
                         </div>
                         <div className="absolute left-[140px] top-0 w-[126px] h-[41px] flex">
                             <div className="absolute left-0 top-0 w-[126px] h-[41px] bg-[#0b2d85] border-[1px] border-solid border-[#0b2d85] rounded-[50px]"></div>
