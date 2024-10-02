@@ -37,6 +37,12 @@ import GetNoticeDetail from './pages/notice/GetNoticeDetail';
 import GetHospitalMap from './pages/map/GetHospitalMap';
 
 
+import MedicineSearch from './pages/medicine/MedicineSearch';
+import MedicineDetail from './pages/medicine/MedicineDetail';
+import ReviewAdmin from './pages/Admin/ReviewAdmin';
+
+
+import ReportList from './pages/report/reportList';
 
 function App() {
 
@@ -89,7 +95,15 @@ function App() {
         <Route path='/notice/getNoticeList' element={<GetNoticeList />} />
         <Route path='/notice/getNoticeDetail' element={<GetNoticeDetail />} />
 
+        <Route path='/admin/reportList' element={<ReportList />} />
+
         <Route path='/map/getHospitalMap' element={<GetHospitalMap />} />
+
+        <Route path='/medicine/MedicineSearch' element={<MedicineSearch />} />
+        <Route path='/medicine/MedicineDetail' element={<MedicineDetail />} />
+        
+        <Route path='/admin/ReviewAdmin' element={<ReviewAdmin />} />
+
         {/* 404 페이지 처리 */}
         <Route path='*' element={<PageNotFound />} />
 

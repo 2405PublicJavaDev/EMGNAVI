@@ -3,15 +3,15 @@ import { useState, EventHandler, ReactNode } from 'react'
 const Header = () => {
     return (
         <>
-            <div className="absolute left-0 top-0 w-[1920px] h-[161px] overflow-hidden z-10">
-                <div className="absolute left-0 top-0 w-[1920px] h-[155px] flex">
-                    <div className="absolute left-0 top-[31px] w-[1920px] h-[93px] flex">
-                        <div className="absolute left-0 top-0 w-[1920px] h-[93px] bg-[#fff]"></div>
+            <div className="absolute left-0 top-0 w-[100%] h-[161px] overflow-hidden z-10">
+                <div className="absolute left-0 top-0 w-[100%] h-[155px] flex">
+                    <div className="absolute left-0 top-[31px] w-[100%] h-[93px] flex">
+                        <div className="absolute left-0 top-0 w-[100%] h-[93px] bg-[#fff]"></div>
                     </div>
-                    <div className="absolute left-0 top-0 w-[1920px] h-[31px] flex">
-                        <div className="absolute left-0 top-0 w-[1920px] h-[31px] flex">
-                            <div className="absolute left-0 top-0 w-[1920px] h-[31px] bg-[#0b2d85]"></div>
-                            <div className="absolute left-0 top-[4px] w-[1920px] h-[27px] flex">
+                    <div className="absolute left-0 top-0 w-[100%] h-[31px] flex">
+                        <div className="absolute left-0 top-0 w-[100%] h-[31px] flex">
+                            <div className="absolute left-0 top-0 w-[100%] h-[31px] bg-[#0b2d85]"></div>
+                            <div className="absolute left-0 top-[4px] w-[100%] h-[27px] flex">
                                 <div className="absolute left-[1865px] top-0 w-[55px] h-[27px] text-[16px]"><span className="font-['Inter'] font-extralight text-[#7d8597]">|</span><span className="font-['Inter'] font-semibold text-[#fff]"> </span></div>
                                 <div className="absolute left-[1778px] top-0 w-[87px] h-[27px] text-[16px] font-['Inter'] font-medium text-[#fff] text-center">회원가입</div>
                                 <div className="absolute left-[1773px] top-0 w-[5px] h-[27px] text-[16px]"><span className="font-['Inter'] font-extralight text-[#7d8597]">|</span><span className="font-['Inter'] font-semibold text-[#fff]"> </span></div>
