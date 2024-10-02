@@ -1,4 +1,4 @@
-package com.emginfo.emgnavi.user.vo;
+package com.emginfo.emgnavi.user.model.vo;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -28,7 +28,7 @@ import FindPw from './pages/user/FindPw';
 import FindPwSendMSG from './pages/user/FindPwSendMSG';
 import ResetPw from './pages/user/ResetPw';
 
-import MypageMain from './pages/user/Mypage';
+import Mypage from './pages/user/Mypage';
 import MypageCheckPw from './pages/user/MypageCheckPw';
 import MypageModifyInf from './pages/user/MypageModifyInf';
 
@@ -82,7 +82,7 @@ function App() {
         <Route path="/user/findPw/sent" element={<FindPwSendMSG />} />
         <Route path="/user/findPw/resetPw" element={<ResetPw />} />
 
-        <Route path="/user/mypage" element={<MypageMain />} />
+        <Route path="/user/mypage" element={<Mypage />} />
         <Route path="/user/mypage/check" element={<MypageCheckPw />} />
         <Route path="/user/mypage/modify" element={<MypageModifyInf />} />
 
