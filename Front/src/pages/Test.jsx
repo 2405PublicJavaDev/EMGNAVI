@@ -34,7 +34,12 @@ const Test = () => {
                     <p>Loading...</p>
                 )}
                 {error && (
-                    <p>{error.message}</p>
+                    <>
+                        <p>{error.status}</p>
+                        <p>{error.error}</p>
+                        <p>{error.message}</p>
+                        <p>에러 코드 : {error.code}</p>
+                    </>
                 )}
                 {!loading && !error && (
                     <div className="text-center">

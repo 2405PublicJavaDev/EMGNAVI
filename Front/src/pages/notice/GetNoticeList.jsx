@@ -1,7 +1,19 @@
-import { useState, EventHandler, ReactNode } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 
 const GetNoticeList = () => {
+
+    useEffect(() => {
+        function onGeoOkay(position) {
+            console.log(position);
+        }
+
+        function onGeoError() {
+            alert("I can't find you. No weather for you.");
+        }
+
+        navigator.geolocation.getCurrentPosition(onGeoOkay, onGeoError);
+    }, []);
+
     return (
         <div className="bg-white flex flex-row justify-center w-full">
         <div className="bg-white w-[100%] h-[2143px] relative">

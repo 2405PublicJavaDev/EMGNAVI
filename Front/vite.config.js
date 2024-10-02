@@ -17,5 +17,9 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+    https: {
+      key: "./localhost+1-key.pem",
+      cert: "./localhost+1.pem",
+    }
   },
 })
