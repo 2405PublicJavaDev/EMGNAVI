@@ -3,7 +3,7 @@ import { useState, EventHandler, ReactNode } from 'react'
 const Header = () => {
     return (
         <>
-            <div className="absolute left-0 top-0 w-[1920px] h-[161px] overflow-hidden">
+            <div className="absolute left-0 top-0 w-[1920px] h-[161px] overflow-hidden z-10">
                 <div className="absolute left-0 top-0 w-[1920px] h-[155px] flex">
                     <div className="absolute left-0 top-[31px] w-[1920px] h-[93px] flex">
                         <div className="absolute left-0 top-0 w-[1920px] h-[93px] bg-[#fff]"></div>
