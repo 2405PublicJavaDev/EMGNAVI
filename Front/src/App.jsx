@@ -1,7 +1,7 @@
 import { useEffect, useState, EventHandler, ReactNode, useContext } from 'react'
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from './UserContext';
-import { Session } from './Session';
+import { Session } from './axios/Session';
 
 import PageNotFound from './Pages/PageNotFound';
 
