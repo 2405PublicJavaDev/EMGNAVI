@@ -1,7 +1,7 @@
 import { useEffect, useState, EventHandler, ReactNode } from 'react'
 import axios from "axios"
 import { useNavigate, useParams } from 'react-router-dom';
-import useAxios from '../useAxios';
+import useAxios from '../axios/useAxios';
 
 const Test = () => {
 

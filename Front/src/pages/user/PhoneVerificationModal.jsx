@@ -1,6 +1,6 @@
 import { useState, EventHandler, ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
-import useAxios from '../../useAxios';
+import useAxios from '../../axios/useAxios';
 
 const PhoneVerificationModal = ({ onClose }) => {
     const { response, error, loading, setConfig } = useAxios();
@@ -35,7 +35,7 @@ const PhoneVerificationModal = ({ onClose }) => {
             method: 'POST',
             url: `/api/verify/phone`,
             data: {
-                phoneNumber : phoneNumber
+                phoneNumber: phoneNumber
             },
         });
     }
@@ -50,9 +50,9 @@ const PhoneVerificationModal = ({ onClose }) => {
                     <div className="absolute left-0 top-0 w-[600px] h-[670px] flex">
                         <div className="absolute left-0 top-0 w-[600px] h-[670px] bg-[#fff] rounded-[40px]"></div>
                         <div className="absolute left-[196px] top-[304px] w-[250px] h-[42px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
-                        <input 
-                        type='text'
-                        className="absolute left-[196px] top-[363px] w-[250px] h-[42px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px] pl-4"></input>
+                        <input
+                            type='text'
+                            className="absolute left-[196px] top-[363px] w-[250px] h-[42px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px] pl-4"></input>
                         {/* <button onClick={showBeforePhone}
                             className="absolute left-[185px] top-[304px] w-[71px] h-[42px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]">
                             <div className="text-[15px] font-['Inter'] text-[#000]">010</div>
