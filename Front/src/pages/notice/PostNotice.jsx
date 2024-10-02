@@ -28,17 +28,13 @@ const PostNotice = () => {
                 <div className="absolute left-[310px] top-[119px] w-[1300px] h-[946px] bg-[#fff] rounded-tl-[10px] rounded-tr-[10px] rounded-br-0 rounded-bl-0 overflow-hidden">
 
 
-                    <div className="absolute left-[19px] top-[201px] w-[1246px] h-[655px] overflow-hidden">
-                        <div id="editor" className="absolute left-0 top-0 w-[1246px] h-[655px]">
+                    <div className="absolute left-[19px] top-[20px] w-[1246px]">
+                        <div id="editor" className="absolute left-0 top-0 w-[1246px]">
                             <ToastUI />
                         </div>
                     </div>
 
 
-                    <div className="absolute left-[19px] top-[20px] w-[1246px] h-[181px] overflow-hidden">
-                        <div className="absolute left-[4px] top-[0px] w-[67px] h-[25px] text-[24px] font-['Inter'] font-bold flex justify-center"><span className="text-[#000]">제목 </span><span className="text-[#f00]">*</span></div>
-                        <input type="text" className="absolute left-0 top-[59px] w-[1246px] h-[68px] border-[1px] border-solid border-[#d9d9d9] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#7d899c] pl-[16px]" placeholder="제목 입력" />
-                    </div>
                 </div>
             </div>
 
