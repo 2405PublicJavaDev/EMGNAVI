@@ -67,12 +67,13 @@ const RegisterAgree = () => {
             </div>
             <div className="absolute left-[460px] top-[710px] w-[1000px] h-[519px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[20px]"></div>
             <div className="absolute left-[485px] top-[843px] w-[949px] text-[16px] leading-[35px] font-['Inter'] font-medium text-[#7d8597]">제 1장 총직<br />제 1조 (목적)<br />이 약관은 '응급NAVI' (이하 '병원')에서 제공하는 인터넷 관련 서비스를 이용함에 있어 병원과 회원의 권리, 의무 및 책임 사항을 규정함을 목적으로 합니다.<br />제 2조 (약관의 효력과 변경)<br />(1) 이 약관은 서비스를 통하여 이를 공지함으로써 효력이 발생합니다.<br />(2) 병원은 사정상 중요한 사유가 발생될 경우 이 약관을 변경할 수 있으며, 개정 최소 2일전부터 공지할 것이며 변경된 약관은 제1항과 같은 방법으로 공지 또는 통지함으로써 효력이 발생됩니다.<br />(3) 회원은 변경된 약관에 동의하지 않을 경우 회원 탈퇴를 요청할 수 있으며, 변경된 약관의 효력 발생일 이후에도 서비스를 계속 사용할 경우 약관의 변경 사항에 동의한 것으로 간주됩니다.</div>
-            <div className="absolute left-[1296px] top-[1899px] w-[205px] h-[27px] text-[18px] font-['Inter'] font-medium text-[#000]">위 내용에 모두 동의함</div>
-            <img className="absolute left-[1258px] top-[1902px]" width="20" height="20"
-                onClick={bothToggleCheck}
-                src={isBothChecked ? '/img/user/black-check-box-with-white-check.png' : '/img/user/square 199_14.png'}
-                style={{ cursor: 'pointer' }}>
-            </img>
+            <button onClick={bothToggleCheck}>
+                <div className="absolute left-[1296px] top-[1899px] w-[205px] h-[27px] text-[18px] font-['Inter'] font-medium text-[#000]">위 내용에 모두 동의함</div>
+                <img className="absolute left-[1258px] top-[1902px]" width="20" height="20"
+                    src={isBothChecked ? '/img/user/black-check-box-with-white-check.png' : '/img/user/square 199_14.png'}
+                    style={{ cursor: 'pointer' }}>
+                </img>
+            </button>
             <div className="absolute left-0 top-0 w-[1920px] h-[161px] overflow-hidden">
 
             </div>
@@ -93,18 +94,20 @@ const RegisterAgree = () => {
             <div className="absolute left-[460px] top-[1290px] w-[1000px] h-[519px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[20px]"></div>
             <div className="absolute left-[485px] top-[1423px] w-[949px] text-[16px] leading-[35px] font-['Inter'] font-medium text-[#7d8597]">응급NAVI (이하 병원 이라 함)은 귀하의 개인정보보호를 매우 중요시하며, 『개인정보보호법』 을 준수하고 있습니다 병원은 개인정보처리방침을 통하여 귀하께서 제공하시는 개인정보가 어떠한 용도와 방식으로 이용되고 있으며 개인정보보호를 위해 어떠한 조치가 취해지고 있는지 알려드립니다.<br />이 개인정보처리방침의 순서는 다음과 같습니다.<br />1. 수집하는 개인정보의 항목 및 수집방법<br />2. 개인정보의 수집 및 이용목적<br />3. 개인정보의 보유 및 이용기간 및 파기절차 및 파기방법<br />4. 이용자 및 법정대리인의 권리와 그 행사방법<br />5. 개인정보의 제공 및 공유<br />6. 개인정보의 위탁</div>
             <div className="absolute left-[461px] top-[1291px] w-[998px] h-[103px] bg-[#f5f7f9] rounded-tl-[19px] rounded-tr-[19px] rounded-br-0 rounded-bl-0"></div>
-            <div className="absolute left-[1315px] top-[1331px] w-[108px] h-[23px] text-[18px] font-['Inter'] font-medium text-[#000] text-center">동의합니다.</div>
-            <img className="absolute left-[1288px] top-[1333px]" width="20" height="20"
-                onClick={upToggleCheck}
-                src={isUpChecked ? '/img/user/checked (1) 2324_219.png' : '/img/user/check-mark (1) 1343_312.png'}
-                style={{ cursor: 'pointer' }}>
-            </img>
-            <div className="absolute left-[1315px] top-[751px] w-[108px] h-[23px] text-[18px] font-['Inter'] font-medium text-[#000] text-center">동의합니다.</div>
-            <img className="absolute left-[1288px] top-[753px]" width="20" height="20"
-                onClick={downToggleCheck}
-                src={isDownChecked ? '/img/user/checked (1) 2324_219.png' : '/img/user/check-mark (1) 1343_312.png'}
-                style={{ cursor: 'pointer' }}>
-            </img>
+            <button onClick={upToggleCheck}>
+                <div className="absolute left-[1315px] top-[1331px] w-[108px] h-[23px] text-[18px] font-['Inter'] font-medium text-[#000] text-center">동의합니다.</div>
+                <img className="absolute left-[1288px] top-[1333px]" width="20" height="20"
+                    src={isUpChecked ? '/img/user/checked (1) 2324_219.png' : '/img/user/check-mark (1) 1343_312.png'}
+                    style={{ cursor: 'pointer' }}>
+                </img>
+            </button>
+            <button onClick={downToggleCheck}>
+                <div className="absolute left-[1315px] top-[751px] w-[108px] h-[23px] text-[18px] font-['Inter'] font-medium text-[#000] text-center">동의합니다.</div>
+                <img className="absolute left-[1288px] top-[753px]" width="20" height="20"
+                    src={isDownChecked ? '/img/user/checked (1) 2324_219.png' : '/img/user/check-mark (1) 1343_312.png'}
+                    style={{ cursor: 'pointer' }}>
+                </img>
+            </button>
             <div className="absolute left-[496px] top-[1330px] w-[262px] h-[25px] text-[20px] font-['Inter'] font-semibold"><span className="text-[#000]">개인정보 수집 및 이용</span><span className="text-[#c2a55d]"> (필수)</span></div>
             <div className="absolute left-0 top-[2252px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">
                 <div className="absolute left-[136px] top-[41px] w-[117px] h-[126px] flex">

@@ -288,7 +288,7 @@ const RegisterPage = () => {
             <img
                 onClick={agreeCheck}
                 className="absolute left-[748px] top-[1738px]" width="24" height="24"
-                src={isAgreeChecked ? '/img/user/button 1117_127.png' : '/user/rec (1) 1117_135.png'}></img>
+                src={isAgreeChecked ? '/img/user/button 1117_127.png' : '/img/user/rec (1) 1117_135.png'}></img>
             <button
                 onClick={agreeCheck}
                 className="absolute left-[781px] top-[1734px] w-[48px] h-[33px] text-[17px] font-['Inter'] text-[#000]">수신</button>
@@ -296,7 +296,7 @@ const RegisterPage = () => {
             <img
                 onClick={disagreeCheck}
                 className="absolute left-[849px] top-[1738px]" width="24" height="24"
-                src={isDisagreeChecked ? '/img/user/button 1117_127.png' : '/user/rec (1) 1117_135.png'}></img>
+                src={isDisagreeChecked ? '/img/user/button 1117_127.png' : '/img/user/rec (1) 1117_135.png'}></img>
             <button
                 onClick={disagreeCheck}
                 className="absolute left-[886px] top-[1734px] w-[49px] h-[33px] text-[17px] font-['Inter'] text-[#000]">거부</button>
