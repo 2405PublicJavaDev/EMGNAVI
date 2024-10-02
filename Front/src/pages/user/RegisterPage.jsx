@@ -4,11 +4,19 @@ import { useNavigate } from 'react-router-dom';
 const RegisterPage = () => {
     const [isMaleChecked, setIsMaleChecked] = useState(true);
     const [isFemaleChecked, setIsFemaleChecked] = useState(false);
+
     const [isAgreeChecked, setIsAgreeChecked] = useState(true);
     const [isDisagreeChecked, setIsDisagreeChecked] = useState(false);
-    const [idImageSrc, setIdImageSrc] = useState(null);
-    const [pwImageSrc, setPwImageSrc] = useState(null);
 
+    const [idImageSrc, setIdImageSrc] = useState(null);
+
+    const [pwImageSrc, setPwImageSrc] = useState(null);
+    const [password, setPassword] = useState();
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+    const [cpwImageSrc, setCpwImageSrc] = useState(null);
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [isCPasswordVisible, setIsCPasswordVisible] = useState(false);
 
     const [randomNickname, setRandomNickname] = useState('');
     const nav = useNavigate();
@@ -77,39 +85,74 @@ const RegisterPage = () => {
         const regEx = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
         return regEx.test(value);
     };
-    
+
     const validationPw = (value) => {
-        const regEx =  /^[0-9a-zA-Z]{8,16}$/g;
+        const regEx = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,16}$/;
         return regEx.test(value);
     };
 
-    const handlerIdChange = (value) => {   
+    const handlerIdChange = (value) => {
         if (value.length > 0) {
             if (!validationEmail(value)) {
                 console.log("유효하지 않은 이메일");
-                setIdImageSrc(pink);
+                setIdImageSrc("/img/user/pink.png");
             } else {
                 console.log(value);
-                setIdImageSrc(green);
+                setIdImageSrc("/img/user/green.png");
             }
         } else {
             setIdImageSrc(null);
         }
     };
 
-    const handlerPwChange = (value) => {   
+    const handlerPwChange = (value) => {
+        setPassword(value);
+        // console.log(password);
+
         if (value.length > 0) {
             if (!validationPw(value)) {
                 console.log("유효하지 않은 비밀번호");
-                setPwImageSrc(pink);
+                setPwImageSrc("/img/user/pink.png");
             } else {
                 console.log(value);
-                setPwImageSrc(green);
+                setPwImageSrc("/img/user/green.png");
             }
         }
-        
+
         else {
             setPwImageSrc(null);
+        }
+    };
+
+    const handlerConfirmPwChange = (value) => {
+        setConfirmPassword(value);
+        console.log(confirmPassword);
+
+        if (value.length > 0) {
+            if (value === password) {
+                console.log(value);
+                setCpwImageSrc("/img/user/green.png");
+            }
+            else {
+                console.log("유효하지 않은 비밀번호");
+                setCpwImageSrc("/img/user/pink.png");
+            }
+        }
+    }
+
+    const handleMouseDown = (type) => {
+        if (type === 'password') {
+            setIsPasswordVisible(true);
+        } else if (type === 'confirmPassword') {
+            setIsCPasswordVisible(true);
+        }
+    };
+    
+    const handleMouseUp = (type) => {
+        if (type === 'password') {
+            setIsPasswordVisible(false);
+        } else if (type === 'confirmPassword') {
+            setIsCPasswordVisible(false);
         }
     };
 
@@ -169,34 +212,51 @@ const RegisterPage = () => {
             <div className="absolute left-[534px] top-[911px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">비밀번호 </span><span className="text-[#c2a55d]">*</span></div>
             <div className="absolute left-[748px] top-[894px] w-[638px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
             <input
-                type='password'
-                name='password'
+                type={isPasswordVisible ? 'text' : 'password'}
                 onChange={(e) => handlerPwChange(e.target.value)}
                 placeholder='비밀번호를 입력해주세요.'
                 className="absolute left-[775px] top-[895px] w-[479px] h-[53px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"
             ></input>
+            <img
+                onMouseDown={() => handleMouseDown('password')}
+                onMouseUp={() => handleMouseUp('password')}
+                onMouseLeave={() => handleMouseUp('password')}
+                style={{ cursor: 'pointer' }}
+                className="absolute left-[1290px] top-[913px]" width="20" height="20"
+                src="/img/user/eye.png">
+            </img>
             {pwImageSrc != null && (
                 <img
                     className="absolute left-[1335px] top-[913px]" width="20" height="20"
                     src={pwImageSrc}>
                 </img>
             )}
-            <div className="absolute left-[748px] top-[965px] w-[506px] text-[17px] font-['Inter'] text-[#7d8597]">영문, 숫자포함 8자 이상 16자 이하로 입력해주세요.</div>
+
+            <div className="absolute left-[748px] top-[965px] w-[556px] text-[17px] font-['Inter'] text-[#7d8597]">영어, 숫자, 특수문자 포함 8자 이상 16자 이하로 입력해주세요.</div>
 
             {/* 비밀번호 확인 */}
             <div className="absolute left-[534px] top-[1045px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">비밀번호 확인 </span><span className="text-[#c2a55d]">*</span></div>
             <div className="absolute left-[748px] top-[1029px] w-[638px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
             <input
-                type='password'
+                type={isCPasswordVisible ? 'text' : 'password'}
                 name='confirmpassword'
-                // value={confirmpassword}
-                // onChange={handlerInputChange}
+                onChange={(e) => handlerConfirmPwChange(e.target.value)}
                 placeholder='비밀번호를 한번 더 입력해주세요.'
                 className="absolute left-[775px] top-[1030px] w-[479px] h-[53px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"></input>
             <img
-                // onClick={makeRandomNickname}
-                // style={{ cursor: 'pointer' }}
-                className="absolute left-[1335px] top-[1047px]" width="20" height="20" src="/img/user/pink.png"></img>
+                onMouseDown={() => handleMouseDown('confirmPassword')}
+                onMouseUp={() => handleMouseUp('confirmPassword')}
+                onMouseLeave={() => handleMouseUp('confirmPassword')}
+                style={{ cursor: 'pointer' }}
+                className="absolute left-[1290px] top-[1047px]" width="20" height="20"
+                src="/img/user/eye.png">
+            </img>
+            {cpwImageSrc != null && (
+                <img
+                    className="absolute left-[1335px] top-[1047px]" width="20" height="20"
+                    src={cpwImageSrc}>
+                </img>
+            )}
 
             {/* 닉네임 */}
             <div className="absolute left-[534px] top-[1143px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">닉네임 </span><span className="text-[#c2a55d]">*</span></div>
@@ -280,6 +340,7 @@ const RegisterPage = () => {
             <input
                 id='detailAddress'
                 type='text'
+                placeholder='상세주소를 입력해주세요.'
                 className="absolute left-[748px] top-[1597px] w-[638px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px] pl-6 outline-0">
             </input>
 
