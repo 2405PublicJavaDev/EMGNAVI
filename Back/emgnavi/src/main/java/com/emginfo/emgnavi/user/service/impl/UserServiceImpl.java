@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
         Message message = new Message();
         message.setFrom("01053248588");
         message.setTo(userPhone);
-        message.setText("문자 테스트");
+        message.setText("채미낭 나 너무 힘들어 내일 뭐하니 내일 소맥 말아버릴까 아이고 힘이들다");
 
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
         System.out.println(response);
