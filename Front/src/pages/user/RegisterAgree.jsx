@@ -1,8 +1,4 @@
 import { useState, EventHandler, ReactNode, useEffect } from 'react'
-import uncheckImage from '../../../public/img/user/check-mark (1) 1343_312.png';
-import checkImage from '../../../public/img/user/checked (1) 2324_219.png';
-import uncheckBox from '../../../public/img/user/square 199_14.png';
-import checkBox from '../../../public/img/user/black-check-box-with-white-check.png';
 import { useNavigate } from 'react-router-dom';
 
 const RegisterAgree = () => {
@@ -74,7 +70,7 @@ const RegisterAgree = () => {
             <div className="absolute left-[1296px] top-[1899px] w-[205px] h-[27px] text-[18px] font-['Inter'] font-medium text-[#000]">위 내용에 모두 동의함</div>
             <img className="absolute left-[1258px] top-[1902px]" width="20" height="20"
                 onClick={bothToggleCheck}
-                src={isBothChecked ? checkBox : uncheckBox}
+                src={isBothChecked ? '/img/user/black-check-box-with-white-check.png' : '/img/user/square 199_14.png'}
                 style={{ cursor: 'pointer' }}>
             </img>
             <div className="absolute left-0 top-0 w-[1920px] h-[161px] overflow-hidden">
@@ -100,15 +96,15 @@ const RegisterAgree = () => {
             <div className="absolute left-[1315px] top-[1331px] w-[108px] h-[23px] text-[18px] font-['Inter'] font-medium text-[#000] text-center">동의합니다.</div>
             <img className="absolute left-[1288px] top-[1333px]" width="20" height="20"
                 onClick={upToggleCheck}
-                src={isUpChecked ? checkImage : uncheckImage}
+                src={isUpChecked ? '/img/user/checked (1) 2324_219.png' : '/img/user/check-mark (1) 1343_312.png'}
                 style={{ cursor: 'pointer' }}>
-                </img>
+            </img>
             <div className="absolute left-[1315px] top-[751px] w-[108px] h-[23px] text-[18px] font-['Inter'] font-medium text-[#000] text-center">동의합니다.</div>
             <img className="absolute left-[1288px] top-[753px]" width="20" height="20"
                 onClick={downToggleCheck}
-                src={isDownChecked ? checkImage : uncheckImage}
+                src={isDownChecked ? '/img/user/checked (1) 2324_219.png' : '/img/user/check-mark (1) 1343_312.png'}
                 style={{ cursor: 'pointer' }}>
-                </img>
+            </img>
             <div className="absolute left-[496px] top-[1330px] w-[262px] h-[25px] text-[20px] font-['Inter'] font-semibold"><span className="text-[#000]">개인정보 수집 및 이용</span><span className="text-[#c2a55d]"> (필수)</span></div>
             <div className="absolute left-0 top-[2252px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">
                 <div className="absolute left-[136px] top-[41px] w-[117px] h-[126px] flex">

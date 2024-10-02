@@ -1,8 +1,4 @@
 import { useState, EventHandler, ReactNode, useEffect } from 'react'
-import check from "../../../public/img/user/check (1)117_493.png";
-import unCheck from "../../../public/img/user/check 1117_496.png";
-import agree from "../../../public/img/user/button 1117_127.png";
-import disagree from "../../../public/img/user/rec (1) 1117_135.png";
 import { useNavigate } from 'react-router-dom';
 
 const RegisterPage = () => {
@@ -151,7 +147,7 @@ const RegisterPage = () => {
                     className="absolute top-[13px] left-[18px]"
                     width="21"
                     height="27"
-                    src={isMaleChecked ? check : unCheck}
+                    src={isMaleChecked ? '/img/user/check (1)117_493.png' : '/img/user/check 1117_496.png'}
                     alt="check"
                 />
             </button>
@@ -167,7 +163,7 @@ const RegisterPage = () => {
                     className="absolute top-[13px] left-[18px]"
                     width="21"
                     height="27"
-                    src={isFemaleChecked ? check : unCheck}
+                    src={isFemaleChecked ? '/img/user/check (1)117_493.png' : '/img/user/check 1117_496.png'}
                     alt="check"
                 />
             </button>
@@ -195,7 +191,7 @@ const RegisterPage = () => {
             <img
                 onClick={agreeCheck}
                 className="absolute left-[748px] top-[1738px]" width="24" height="24"
-                src={isAgreeChecked ? agree : disagree}></img>
+                src={isAgreeChecked ? '/img/user/button 1117_127.png' : '/user/rec (1) 1117_135.png'}></img>
             <button
                 onClick={agreeCheck}
                 className="absolute left-[781px] top-[1734px] w-[48px] h-[33px] text-[17px] font-['Inter'] text-[#000]">수신</button>
@@ -203,7 +199,7 @@ const RegisterPage = () => {
             <img
                 onClick={disagreeCheck}
                 className="absolute left-[849px] top-[1738px]" width="24" height="24"
-                src={isDisagreeChecked ? agree : disagree}></img>
+                src={isDisagreeChecked ? '/img/user/button 1117_127.png' : '/user/rec (1) 1117_135.png'}></img>
             <button
                 onClick={disagreeCheck}
                 className="absolute left-[886px] top-[1734px] w-[49px] h-[33px] text-[17px] font-['Inter'] text-[#000]">거부</button>
