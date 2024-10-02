@@ -42,7 +42,7 @@ import MedicineDetail from './pages/medicine/MedicineDetail';
 import ReviewAdmin from './pages/Admin/ReviewAdmin';
 
 
-
+import ReportList from './pages/report/reportList';
 
 function App() {
 
@@ -94,6 +94,8 @@ function App() {
         <Route path='/notice/postNotice' element={<PostNotice />} />
         <Route path='/notice/getNoticeList' element={<GetNoticeList />} />
         <Route path='/notice/getNoticeDetail' element={<GetNoticeDetail />} />
+
+        <Route path='/admin/reportList' element={<ReportList />} />
 
         <Route path='/map/getHospitalMap' element={<GetHospitalMap />} />
 
