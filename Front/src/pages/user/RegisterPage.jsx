@@ -106,8 +106,7 @@ const RegisterPage = () => {
     };
 
     const handlerPwChange = (value) => {
-        setPassword(value);
-        // console.log(password);
+        setPassword(value)
 
         if (value.length > 0) {
             if (!validationPw(value)) {
@@ -137,6 +136,9 @@ const RegisterPage = () => {
                 console.log("유효하지 않은 비밀번호");
                 setCpwImageSrc("/img/user/pink.png");
             }
+        }
+        else {
+            setCpwImageSrc(null);
         }
     }
 
@@ -222,12 +224,12 @@ const RegisterPage = () => {
                 onMouseUp={() => handleMouseUp('password')}
                 onMouseLeave={() => handleMouseUp('password')}
                 style={{ cursor: 'pointer' }}
-                className="absolute left-[1290px] top-[913px]" width="20" height="20"
+                className="absolute left-[1335px] top-[913px]" width="20" height="20"
                 src="/img/user/eye.png">
             </img>
             {pwImageSrc != null && (
                 <img
-                    className="absolute left-[1335px] top-[913px]" width="20" height="20"
+                    className="absolute left-[1290px] top-[913px]" width="20" height="20"
                     src={pwImageSrc}>
                 </img>
             )}
@@ -248,12 +250,12 @@ const RegisterPage = () => {
                 onMouseUp={() => handleMouseUp('confirmPassword')}
                 onMouseLeave={() => handleMouseUp('confirmPassword')}
                 style={{ cursor: 'pointer' }}
-                className="absolute left-[1290px] top-[1047px]" width="20" height="20"
+                className="absolute left-[1335px] top-[1047px]" width="20" height="20"
                 src="/img/user/eye.png">
             </img>
             {cpwImageSrc != null && (
                 <img
-                    className="absolute left-[1335px] top-[1047px]" width="20" height="20"
+                    className="absolute left-[1290px] top-[1047px]" width="20" height="20"
                     src={cpwImageSrc}>
                 </img>
             )}
