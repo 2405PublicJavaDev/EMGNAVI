@@ -1,6 +1,9 @@
 package com.emginfo.emgnavi.user.controller;
 
 import ch.qos.logback.core.CoreConstants;
+import com.emginfo.emgnavi.common.success.SuccessCode;
+import com.emginfo.emgnavi.common.success.SuccessResponse;
+import com.emginfo.emgnavi.user.model.dto.UserInfoRequest;
 import com.emginfo.emgnavi.user.model.dto.VerifyPhoneRequest;
 import com.emginfo.emgnavi.user.model.vo.User;
 import com.emginfo.emgnavi.user.service.UserService;
@@ -27,8 +30,16 @@ public class UserController {
 
     @PostMapping("/verify/phone")
     public void verifyPhone(@RequestBody VerifyPhoneRequest request) {
+        System.out.println(request);
         String userPhone = request.getPhoneNumber();
-        System.out.println(userPhone);
         SingleMessageSentResponse result = uService.sendVerificationCode(userPhone);
+    }
+
+    @PostMapping("/user")
+    public SuccessResponse insertUser(@RequestBody UserInfoRequest request) {
+        System.out.println(request);
+        String userId = request.getUserId();
+        System.out.println(userId);
+        return new SuccessResponse(SuccessCode.REGISTER_SUCCESS);
     }
 }

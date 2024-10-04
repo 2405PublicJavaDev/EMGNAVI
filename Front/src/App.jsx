@@ -103,7 +103,7 @@ function App() {
 
         <Route path='/medicine/MedicineSearch' element={<MedicineSearch />} />
         <Route path='/medicine/MedicineDetail' element={<MedicineDetail />} />
-        
+
         <Route path='/admin/ReviewAdmin' element={<ReviewAdmin />} />
 
         <Route path='/user/mypage/favorite/hospital' element={<FavoriteHospital />} />

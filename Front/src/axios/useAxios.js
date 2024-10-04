@@ -10,8 +10,9 @@ const useAxios = () => {
     const fetchData = async () => {
         try {
             const res = await axios(config);
-            if (res.data.status == 200) {
-                setResponse(res.data.data);
+            if (res.data.status == 200 || res.data.status == 201) {
+                console.log("성공!");
+                setResponse(res.data);
             } else {
                 setError(res.data)
             }

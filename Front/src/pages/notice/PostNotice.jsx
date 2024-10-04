@@ -22,7 +22,7 @@ const PostNotice = () => {
 
             <div className="absolute left-0 top-[124px] w-[100%] h-[194px] overflow-hidden">
                 <div className="absolute left-0 top-0 w-[100%] h-[194px] bg-[#0b2d85]"></div>
-                <div className="absolute left-[335px] top-[39px] w-[195px] h-[38px] text-[32px] font-['Inter'] font-bold text-[#fff] flex flex-col justify-center">공지사항 작성</div>
+                <div className="absolute left-[335px] top-[39px] h-[38px] text-[32px] font-['Inter'] font-bold text-[#fff] flex flex-col justify-center">공지사항 작성</div>
             </div>
             <div className="absolute left-0 top-[124px] w-[100%] h-[1065px] overflow-hidden">
                 <div className="absolute left-[310px] top-[119px] w-[1300px] h-[946px] bg-[#fff] rounded-tl-[10px] rounded-tr-[10px] rounded-br-0 rounded-bl-0 overflow-hidden">

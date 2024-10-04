@@ -47,7 +47,10 @@ const MypageModifyInf = () => {
                 <div className="absolute left-[748px] top-[905px] w-[214px] text-[17px] font-['Inter'] text-[#000]">01012345678</div>
                 <div className="absolute left-[534px] top-[905px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">휴대폰번호 </span><span className="text-[#c2a55d]">*</span></div>
                 <div className="absolute left-[748px] top-[986px] w-[638px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
-                <div className="absolute left-[775px] top-[986px] w-[479px] h-[55px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center">이름을 입력해주세요.</div>
+                <input 
+                    type='text'
+                    placeholder='이름을 입력해주세요.'
+                    className="absolute left-[775px] top-[987px] w-[479px] h-[53px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"></input>
                 <div className="absolute left-[534px] top-[1002px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">이름</div>
                 <div className="absolute left-[927px] top-[1192px] w-[459px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
                 <div className="absolute left-[748px] top-[1260px] w-[638px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597]"></div>

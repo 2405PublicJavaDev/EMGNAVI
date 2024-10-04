@@ -1,6 +1,16 @@
 import { useState, EventHandler, ReactNode } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 const FIndEmailComplete = () => {
+    const nav = useNavigate();
+
+    const handlerGoFindPw = () => {
+        nav("/user/findPw");
+    };
+
+    const handlerGoLogin = () => {
+        nav("/user/login");
+    };
     return (
         <>
             <div className="absolute left-[210px] top-[426px] w-[1500px] h-[466px] bg-[#7d85971a]"></div>
@@ -13,12 +23,18 @@ const FIndEmailComplete = () => {
             <div className="absolute left-0 top-[324px] w-[1920px] text-[15px] font-['Inter'] text-[#7d8597] text-center">휴대폰 본인인증으로 아이디를 찾으실 수 있습니다.</div>
             <div className="absolute left-[765px] top-[979px] w-[390px] h-[60px] flex">
                 <div className="absolute left-0 top-0 w-[184px] h-[60px] flex">
-                    <div className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[50px]"></div>
-                    <div className="absolute left-0 top-[19px] w-[184px] text-[16px] font-['Inter'] text-[#0b2d85] text-center">메인으로 가기</div>
+                    <button
+                        onClick={handlerGoLogin}
+                        className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[50px]">
+                        <span className="text-[16px] font-['Inter'] text-[#0b2d85] text-center">로그인하러 가기</span>
+                    </button>
                 </div>
                 <div className="absolute left-[206px] top-0 w-[184px] h-[60px] flex">
-                    <div className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#0b2d85] border-[1px] border-solid border-[#0b2d85] rounded-[50px]"></div>
-                    <div className="absolute left-0 top-[19px] w-[184px] text-[16px] font-['Inter'] font-bold text-[#fff] text-center">로그인하러 가기</div>
+                    <button
+                        onClick={handlerGoFindPw}
+                        className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#0b2d85] border-[1px] border-solid border-[#0b2d85] rounded-[50px]">
+                        <span className="text-[16px] font-['Inter'] font-bold text-[#fff] text-center">비밀번호 찾기</span>
+                    </button>
                 </div>
             </div>
             <div className="absolute left-0 top-[1169px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">

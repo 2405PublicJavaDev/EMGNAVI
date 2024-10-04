@@ -8,10 +8,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum SuccessCode {
 
-    SIGN_UP_USER(HttpStatus.CREATED, "회원 가입이 완료되었습니다."),
+    REGISTER_SUCCESS(HttpStatus.CREATED, "등록이 완료되었습니다."),
 
-    GET_TEST_DATA(HttpStatus.OK, "테스트 데이터를 성공적으로 조회했습니다."),
-    GET_USER_INFO(HttpStatus.OK, "회원 정보를 성공적으로 조회했습니다.");
+    RESOURCE_FOUND(HttpStatus.OK, "정보를 성공적으로 조회했습니다.");
 
     private final HttpStatus status;
     private final String message;

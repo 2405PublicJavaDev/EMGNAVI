@@ -1,14 +1,27 @@
 import { useState, EventHandler, ReactNode, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import useAxios from '../../axios/useAxios';
 
 const RegisterPage = () => {
+    const location = useLocation();
+    const { phoneNumber } = location.state || {};
+    const { response, error, loading, setConfig } = useAxios();
+
     const [isMaleChecked, setIsMaleChecked] = useState(true);
     const [isFemaleChecked, setIsFemaleChecked] = useState(false);
+
     const [isAgreeChecked, setIsAgreeChecked] = useState(true);
     const [isDisagreeChecked, setIsDisagreeChecked] = useState(false);
-    const [idImageSrc, setIdImageSrc] = useState(null);
-    const [pwImageSrc, setPwImageSrc] = useState(null);
 
+    const [idImageSrc, setIdImageSrc] = useState(null);
+
+    const [pwImageSrc, setPwImageSrc] = useState(null);
+    const [password, setPassword] = useState();
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+    const [cpwImageSrc, setCpwImageSrc] = useState(null);
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [isCPasswordVisible, setIsCPasswordVisible] = useState(false);
 
     const [randomNickname, setRandomNickname] = useState('');
     const nav = useNavigate();
@@ -31,8 +44,6 @@ const RegisterPage = () => {
         new daum.Postcode({
             oncomplete: function (data) {
                 document.getElementById("address").value = data.zonecode + " " + data.address;
-                console.log(data.address);
-                console.log(data.zonecode);
                 document.getElementById("detailAddress").focus();
             }
         }).open();
@@ -69,49 +80,101 @@ const RegisterPage = () => {
     const cancelRegister = () => {
         nav("/");
     };
-    const handlerGoNextPage = () => {
-        nav("/user/register/complete");
-    };
 
     const validationEmail = (value) => {
         const regEx = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
         return regEx.test(value);
     };
-    
+
     const validationPw = (value) => {
-        const regEx =  /^[0-9a-zA-Z]{8,16}$/g;
+        const regEx = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,16}$/;
         return regEx.test(value);
     };
 
-    const handlerIdChange = (value) => {   
+    const handlerIdChange = (value) => {
         if (value.length > 0) {
             if (!validationEmail(value)) {
-                console.log("유효하지 않은 이메일");
-                setIdImageSrc(pink);
+                setIdImageSrc("/img/user/pink.png");
             } else {
-                console.log(value);
-                setIdImageSrc(green);
+                setIdImageSrc("/img/user/green.png");
             }
         } else {
             setIdImageSrc(null);
         }
     };
 
-    const handlerPwChange = (value) => {   
+    const handlerPwChange = (value) => {
+        setPassword(value)
+
         if (value.length > 0) {
             if (!validationPw(value)) {
-                console.log("유효하지 않은 비밀번호");
-                setPwImageSrc(pink);
+                setPwImageSrc("/img/user/pink.png");
             } else {
-                console.log(value);
-                setPwImageSrc(green);
+                setPwImageSrc("/img/user/green.png");
             }
         }
-        
+
         else {
             setPwImageSrc(null);
         }
     };
+
+    const handlerConfirmPwChange = (value) => {
+        setConfirmPassword(value);
+
+        if (value.length > 0) {
+            if (value === password) {
+                setCpwImageSrc("/img/user/green.png");
+            }
+            else {
+                setCpwImageSrc("/img/user/pink.png");
+            }
+        }
+        else {
+            setCpwImageSrc(null);
+        }
+    }
+
+    const handleMouseDown = (type) => {
+        if (type === 'password') {
+            setIsPasswordVisible(true);
+        } else if (type === 'confirmPassword') {
+            setIsCPasswordVisible(true);
+        }
+    };
+
+    const handleMouseUp = (type) => {
+        if (type === 'password') {
+            setIsPasswordVisible(false);
+        } else if (type === 'confirmPassword') {
+            setIsCPasswordVisible(false);
+        }
+    };
+
+    const [values, setValues] = useState({
+        uEmail: '',
+    });
+
+    const handleSignIn = (e) => {
+        e.preventDefault();
+
+        setConfig({
+            method: 'POST',
+            url: `/api/user`,
+            data: {
+                userId: values.uEmail,
+            },
+        });
+
+        if (response != null) {
+            console.log("asdf");
+            if (response.status == 200 || response.status == 201) {
+                nav("/user/register/complete");
+            }
+        }
+    };
+
+
 
     return (
         <>
@@ -144,144 +207,169 @@ const RegisterPage = () => {
             <div className="absolute left-[1256px] top-[703px] w-[203px] text-[16px] font-['Inter']"><span className="text-[#c2a55d]">*</span><span className="text-[#7d8597]">은 필수 입력 항목입니다.</span></div>
             <div className="absolute left-[461px] top-[745px] w-[998px] h-0 border-[1px] border-solid border-[#000]"></div>
 
-            {/* 아이디 */}
-            <div className="absolute left-[534px] top-[814px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">아이디 </span><span className="text-[#c2a55d]">*</span></div>
-            <div className="absolute left-[748px] top-[798px] w-[506px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
-            <input
-                type='text'
-                name='id'
-                onChange={(e) => handlerIdChange(e.target.value)}
-                placeholder='아이디(이메일)를 입력해주세요.'
-                className="absolute left-[773px] top-[799px] w-[479px] h-[53px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"
-            ></input>
-            {idImageSrc != null && (
-                <img
-                    className="absolute left-[1208px] top-[817px] border-0" width="20" height="20"
-                    src={idImageSrc}>
-                </img>
-            )}
-            <button
-                className="absolute left-[1264px] top-[798px] w-[122px] h-[55px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]">
-                <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">중복확인</span>
-            </button>
+            <form id="form" onSubmit={handleSignIn} autoComplete='off'>
+                {/* 아이디 */}
+                <div className="absolute left-[534px] top-[814px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">아이디 </span><span className="text-[#c2a55d]">*</span></div>
+                <div className="absolute left-[748px] top-[798px] w-[506px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
+                <input
+                    type='text'
+                    name='id'
+                    value={values.uEmail}
+                    onChange={(e) => {
+                        const value = e.target.value; // 입력된 값 가져오기
+                        handlerIdChange(value); // 이메일 유효성 검사
+                        setValues({ ...values, uEmail: value }); // 값 업데이트
+                    }}
+                    placeholder='아이디(이메일)를 입력해주세요.'
+                    className="absolute left-[773px] top-[799px] w-[479px] h-[53px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"
+                ></input>
+                {idImageSrc != null && (
+                    <img
+                        className="absolute left-[1208px] top-[817px] border-0" width="20" height="20"
+                        src={idImageSrc}>
+                    </img>
+                )}
+                <button
+                    className="absolute left-[1264px] top-[798px] w-[122px] h-[55px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]">
+                    <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">중복확인</span>
+                </button>
 
-            {/* 비밀번호 */}
-            <div className="absolute left-[534px] top-[911px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">비밀번호 </span><span className="text-[#c2a55d]">*</span></div>
-            <div className="absolute left-[748px] top-[894px] w-[638px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
-            <input
-                type='password'
-                name='password'
-                onChange={(e) => handlerPwChange(e.target.value)}
-                placeholder='비밀번호를 입력해주세요.'
-                className="absolute left-[775px] top-[895px] w-[479px] h-[53px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"
-            ></input>
-            {pwImageSrc != null && (
+                {/* 비밀번호 */}
+                <div className="absolute left-[534px] top-[911px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">비밀번호 </span><span className="text-[#c2a55d]">*</span></div>
+                <div className="absolute left-[748px] top-[894px] w-[638px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
+                <input
+                    type={isPasswordVisible ? 'text' : 'password'}
+                    onChange={(e) => handlerPwChange(e.target.value)}
+                    placeholder='비밀번호를 입력해주세요.'
+                    className="absolute left-[775px] top-[895px] w-[479px] h-[53px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"
+                ></input>
                 <img
+                    onMouseDown={() => handleMouseDown('password')}
+                    onMouseUp={() => handleMouseUp('password')}
+                    onMouseLeave={() => handleMouseUp('password')}
+                    style={{ cursor: 'pointer' }}
                     className="absolute left-[1335px] top-[913px]" width="20" height="20"
-                    src={pwImageSrc}>
+                    src="/img/user/eye.png">
                 </img>
-            )}
-            <div className="absolute left-[748px] top-[965px] w-[506px] text-[17px] font-['Inter'] text-[#7d8597]">영문, 숫자포함 8자 이상 16자 이하로 입력해주세요.</div>
+                {pwImageSrc != null && (
+                    <img
+                        className="absolute left-[1290px] top-[913px]" width="20" height="20"
+                        src={pwImageSrc}>
+                    </img>
+                )}
 
-            {/* 비밀번호 확인 */}
-            <div className="absolute left-[534px] top-[1045px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">비밀번호 확인 </span><span className="text-[#c2a55d]">*</span></div>
-            <div className="absolute left-[748px] top-[1029px] w-[638px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
-            <input
-                type='password'
-                name='confirmpassword'
-                // value={confirmpassword}
-                // onChange={handlerInputChange}
-                placeholder='비밀번호를 한번 더 입력해주세요.'
-                className="absolute left-[775px] top-[1030px] w-[479px] h-[53px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"></input>
-            <img
-                // onClick={makeRandomNickname}
-                // style={{ cursor: 'pointer' }}
-                className="absolute left-[1335px] top-[1047px]" width="20" height="20" src="/img/user/pink.png"></img>
+                <div className="absolute left-[748px] top-[965px] w-[556px] text-[17px] font-['Inter'] text-[#7d8597]">영어, 숫자, 특수문자 포함 8자 이상 16자 이하로 입력해주세요.</div>
 
-            {/* 닉네임 */}
-            <div className="absolute left-[534px] top-[1143px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">닉네임 </span><span className="text-[#c2a55d]">*</span></div>
-            <div className="absolute left-[748px] top-[1127px] w-[506px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
-            <input
-                id='nickname'
-                type='text'
-                name='nickname'
-                value={randomNickname}
-                onChange={(e) => setRandomNickname(e.target.value)}
-                className="absolute left-[775px] top-[1128px] w-[399px] h-[53px] text-[17px] font-['Inter'] text-[#000] flex flex-col justify-center outline-0"></input>
-            <img
-                onClick={makeRandomNickname}
-                style={{ cursor: 'pointer' }}
-                className="absolute left-[1208px] top-[1143px]" width="24" height="23" src="/img/user/reload 1117_124.png"></img>
-            <button
+                {/* 비밀번호 확인 */}
+                <div className="absolute left-[534px] top-[1045px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">비밀번호 확인 </span><span className="text-[#c2a55d]">*</span></div>
+                <div className="absolute left-[748px] top-[1029px] w-[638px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
+                <input
+                    type={isCPasswordVisible ? 'text' : 'password'}
+                    name='confirmpassword'
+                    onChange={(e) => handlerConfirmPwChange(e.target.value)}
+                    placeholder='비밀번호를 한번 더 입력해주세요.'
+                    className="absolute left-[775px] top-[1030px] w-[479px] h-[53px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"></input>
+                <img
+                    onMouseDown={() => handleMouseDown('confirmPassword')}
+                    onMouseUp={() => handleMouseUp('confirmPassword')}
+                    onMouseLeave={() => handleMouseUp('confirmPassword')}
+                    style={{ cursor: 'pointer' }}
+                    className="absolute left-[1335px] top-[1047px]" width="20" height="20"
+                    src="/img/user/eye.png">
+                </img>
+                {cpwImageSrc != null && (
+                    <img
+                        className="absolute left-[1290px] top-[1047px]" width="20" height="20"
+                        src={cpwImageSrc}>
+                    </img>
+                )}
 
-                className="absolute left-[1264px] top-[1127px] w-[122px] h-[55px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]">
-                <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">중복확인</span>
-            </button>
+                {/* 닉네임 */}
+                <div className="absolute left-[534px] top-[1143px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">닉네임 </span><span className="text-[#c2a55d]">*</span></div>
+                <div className="absolute left-[748px] top-[1127px] w-[506px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
+                <input
+                    id='nickname'
+                    type='text'
+                    name='nickname'
+                    value={randomNickname}
+                    onChange={(e) => setRandomNickname(e.target.value)}
+                    className="absolute left-[775px] top-[1128px] w-[399px] h-[53px] text-[17px] font-['Inter'] text-[#000] flex flex-col justify-center outline-0"></input>
+                <img
+                    onClick={makeRandomNickname}
+                    style={{ cursor: 'pointer' }}
+                    className="absolute left-[1208px] top-[1143px]" width="24" height="23" src="/img/user/reload 1117_124.png"></img>
+                <button
 
-            {/* 휴대폰번호 */}
-            <div className="absolute left-[534px] top-[1242px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">휴대폰번호 </span><span className="text-[#c2a55d]">*</span></div>
-            <div className="absolute left-[748px] top-[1242px] w-[214px] text-[17px] font-['Inter'] text-[#000]">01012345678</div>
+                    className="absolute left-[1264px] top-[1127px] w-[122px] h-[55px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]">
+                    <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">중복확인</span>
+                </button>
 
-            {/* 이름 */}
-            <div className="absolute left-[534px] top-[1339px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">이름</div>
-            <div className="absolute left-[748px] top-[1323px] w-[638px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
-            <input
-                type='text'
-                placeholder='이름을 입력해주세요.'
-                className="absolute left-[775px] top-[1324px] w-[479px] h-[53px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"></input>
+                {/* 휴대폰번호 */}
+                <div className="absolute left-[534px] top-[1242px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">휴대폰번호 </span><span className="text-[#c2a55d]">*</span></div>
+                <div className="absolute left-[748px] top-[1242px] w-[214px] text-[17px]     font-['Inter'] text-[#000]">{phoneNumber}</div>
 
-            {/* 성별 */}
-            <div className="absolute left-[534px] top-[1442px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">성별</div>
-            <button
-                onClick={maleCheck}
-                className={`absolute left-[748px] top-[1428px] w-[96px] h-[51px] bg-[#fff] border-[1px] border-solid rounded-[45px] 
+                {/* 이름 */}
+                <div className="absolute left-[534px] top-[1339px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">이름</div>
+                <div className="absolute left-[748px] top-[1323px] w-[638px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
+                <input
+                    type='text'
+                    placeholder='이름을 입력해주세요.'
+                    className="absolute left-[775px] top-[1324px] w-[479px] h-[53px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"></input>
+
+                {/* 성별 */}
+                <div className="absolute left-[534px] top-[1442px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">성별</div>
+                <button
+                    onClick={maleCheck}
+                    className={`absolute left-[748px] top-[1428px] w-[96px] h-[51px] bg-[#fff] border-[1px] border-solid rounded-[45px] 
                     ${isMaleChecked ? 'border-[#0b2d85]' : 'border-[#7d8597]'}`}>
-                <div className={`text-[17px] font-['Inter'] flex flex-col justify-center pl-6 
+                    <div className={`text-[17px] font-['Inter'] flex flex-col justify-center pl-6 
                             ${isMaleChecked ? 'text-[#0b2d85] font-semibold' : 'text-[#7d8597]'}`}>
-                    남
-                </div>
-                <img
-                    className="absolute top-[13px] left-[18px]"
-                    width="21"
-                    height="27"
-                    src={isMaleChecked ? '/img/user/check (1)117_493.png' : '/img/user/check 1117_496.png'}
-                    alt="check"
-                />
-            </button>
-            <button
-                onClick={femaleCheck}
-                className={`absolute left-[860px] top-[1428px] w-[96px] h-[51px] bg-[#fff] border-[1px] border-solid rounded-[45px] 
+                        남
+                    </div>
+                    <img
+                        className="absolute top-[13px] left-[18px]"
+                        width="21"
+                        height="27"
+                        src={isMaleChecked ? '/img/user/check (1)117_493.png' : '/img/user/check 1117_496.png'}
+                        alt="check"
+                    />
+                </button>
+                <button
+                    onClick={femaleCheck}
+                    className={`absolute left-[860px] top-[1428px] w-[96px] h-[51px] bg-[#fff] border-[1px] border-solid rounded-[45px] 
                     ${isFemaleChecked ? 'border-[#0b2d85]' : 'border-[#7d8597]'}`}>
-                <div className={`text-[17px] font-['Inter'] flex flex-col justify-center pl-6 
+                    <div className={`text-[17px] font-['Inter'] flex flex-col justify-center pl-6 
                             ${isFemaleChecked ? 'text-[#0b2d85] font-semibold' : 'text-[#7d8597]'}`}>
-                    여
-                </div>
-                <img
-                    className="absolute top-[13px] left-[18px]"
-                    width="21"
-                    height="27"
-                    src={isFemaleChecked ? '/img/user/check (1)117_493.png' : '/img/user/check 1117_496.png'}
-                    alt="check"
-                />
-            </button>
+                        여
+                    </div>
+                    <img
+                        className="absolute top-[13px] left-[18px]"
+                        width="21"
+                        height="27"
+                        src={isFemaleChecked ? '/img/user/check (1)117_493.png' : '/img/user/check 1117_496.png'}
+                        alt="check"
+                    />
+                </button>
 
-            {/* 주소 */}
-            <div className="absolute left-[538px] top-[1547px] w-[210px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">주소</div>
-            <button
-                onClick={findPostCode}
-                className="absolute left-[748px] top-[1529px] w-[169px] h-[55px] bg-[#fff] border-[2px] border-solid border-[#0b2d85] rounded-[5px]">
-                <span className="text-[17px] font-['Inter'] text-[#000] text-center flex flex-col justify-center">우편번호 찾기</span>
-            </button>
-            <input
-                type='text'
-                id='address'
-                readOnly
-                className="absolute left-[927px] top-[1529px] w-[459px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px] outline-0 pl-6"></input>
-            <input
-                id='detailAddress'
-                type='text'
-                className="absolute left-[748px] top-[1597px] w-[638px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px] pl-6 outline-0">
-            </input>
+                {/* 주소 */}
+                <div className="absolute left-[538px] top-[1547px] w-[210px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">주소</div>
+                <button
+                    onClick={findPostCode}
+                    className="absolute left-[748px] top-[1529px] w-[169px] h-[55px] bg-[#fff] border-[2px] border-solid border-[#0b2d85] rounded-[5px]">
+                    <span className="text-[17px] font-['Inter'] text-[#000] text-center flex flex-col justify-center">우편번호 찾기</span>
+                </button>
+                <input
+                    type='text'
+                    id='address'
+                    readOnly
+                    className="absolute left-[927px] top-[1529px] w-[459px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px] outline-0 pl-6"></input>
+                <input
+                    id='detailAddress'
+                    type='text'
+                    placeholder='상세주소를 입력해주세요.'
+                    className="absolute left-[748px] top-[1597px] w-[638px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px] pl-6 outline-0">
+                </input>
+            </form>
 
             {/* 마케팅활용동의 */}
             <div className="absolute left-[534px] top-[1739px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">마케팅활용동의</div>
@@ -314,7 +402,8 @@ const RegisterPage = () => {
 
                 <div className="absolute left-[203px] top-0 w-[184px] h-[60px] flex">
                     <button
-                        onClick={handlerGoNextPage}
+                        type='submit'
+                        form='form'
                         className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#0b2d85] border-[1px] border-solid border-[#0b2d85] rounded-[50px]">
                         <span className="text-[16px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">회원가입 완료</span>
                     </button>

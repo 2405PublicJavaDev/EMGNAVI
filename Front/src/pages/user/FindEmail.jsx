@@ -1,5 +1,6 @@
 import { useState, EventHandler, ReactNode } from 'react'
 import PhoneVerificationModal from './PhoneVerificationModal';
+import { useNavigate } from 'react-router-dom';
 
 const FindEmail = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -9,25 +10,43 @@ const FindEmail = () => {
     const closeModal = () => {
         setIsModalOpen(false);
     };
+    
+    const nav = useNavigate();
+    const handlerGoMain = () => {
+        nav("/");
+    };
 
+    const handlerGoLogin = () => {
+        nav("/user/login");
+    };
+        
     return (
         <>
             <div className="absolute left-[210px] top-[425px] w-[1500px] h-[466px] bg-[#7d85971a] rounded-[20px]"></div>
             <img className="absolute left-[918px] top-[548px]" width="72" height="72" src="/img/user/smartphone 2177_1385.png"></img>
-            <img className="absolute left-[965px] top-[574px]" width="37" height="37" src="/img/user/checked (1) 2177_1386.png"></img>
+            <img className="absolute left-[965px] top-[574px]" width="37" height="37" src="/img/user/checked (1) 2324_219.png"></img>
             <div className="absolute left-0 top-[245px] w-[1920px] h-[47px] text-[40px] font-['Inter'] font-bold text-[#000] text-center">아이디 찾기</div>
             <div className="absolute left-0 top-[667px] w-[1920px] h-[51px] text-[26px] font-['Inter'] font-semibold text-[#000] text-center">휴대폰 본인인증</div>
             <div className="absolute left-0 top-[324px] w-[1920px] text-[15px] font-['Inter'] text-[#7d8597] text-center">휴대폰 본인인증으로 아이디를 찾으실 수 있습니다.</div>
-            <div className="absolute left-[862px] top-[748px] w-[184px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[50px]"></div>
-            <div className="absolute left-[862px] top-[748px] w-[184px] h-[60px] text-[16px] font-['Inter'] text-[#0b2d85] text-center flex flex-col justify-center">인증하기</div>
+            <button
+                onClick={openModal}
+                className="absolute left-[862px] top-[748px] w-[184px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[50px]">
+                <span className="text-[16px] font-['Inter'] text-[#0b2d85] text-center flex flex-col justify-center">인증하기</span>
+            </button>
             <div className="absolute left-[765px] top-[978px] w-[390px] h-[60px] flex">
                 <div className="absolute left-0 top-0 w-[184px] h-[60px] flex">
-                    <div className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[50px]"></div>
-                    <div className="absolute left-0 top-[19px] w-[184px] text-[16px] font-['Inter'] text-[#0b2d85] text-center">메인으로 가기</div>
+                    <button 
+                        onClick={handlerGoMain}
+                        className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[50px]">
+                        <span className="text-[16px] font-['Inter'] text-[#0b2d85] text-center">메인으로 가기</span>
+                    </button>
                 </div>
                 <div className="absolute left-[206px] top-0 w-[184px] h-[60px] flex">
-                    <div className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#0b2d85] border-[1px] border-solid border-[#0b2d85] rounded-[50px]"></div>
-                    <div className="absolute left-0 top-[19px] w-[184px] text-[16px] font-['Inter'] font-bold text-[#fff] text-center">로그인하러 가기</div>
+                    <button 
+                        onClick={handlerGoLogin}
+                        className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#0b2d85] border-[1px] border-solid border-[#0b2d85] rounded-[50px]">
+                    <span className="text-[16px] font-['Inter'] font-bold text-[#fff] text-center">로그인하러 가기</span>
+                    </button>
                 </div>
             </div>
             <div className="absolute left-0 top-[1355px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">

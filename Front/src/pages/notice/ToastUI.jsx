@@ -34,13 +34,13 @@ const ToastUI = ({ initialValue = "" }) => {
         <>
             <div className="mb-[16px]">
                 <div className="w-[67px] h-[25px] text-[24px] font-['Inter'] font-bold flex justify-center mb-[16px]"><span className="text-[#000]">제목 </span><span className="text-[#f00]">*</span></div>
-                <input type="text" className="w-[1246px] h-[68px] border-[1px] border-solid border-[#d9d9d9] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#7d899c] pl-[16px]" placeholder="제목 입력" />
+                <input type="text" className="w-[1246px] h-[50px] border-[1px] border-solid border-[#d9d9d9] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#7d899c] pl-[16px]" placeholder="제목 입력" />
             </div>
 
             <Editor
                 placeholder="내용을 입력해주세요."
                 previewStyle="vertical" // 미리보기 스타일 지정
-                height="500px" // 에디터 창 높이
+                height="350px" // 에디터 창 높이
                 initialEditType="wysiwyg" // 초기 입력모드 설정(디폴트 markdown)
                 initialValue={initialValueState}
                 toolbarItems={[
@@ -54,6 +54,14 @@ const ToastUI = ({ initialValue = "" }) => {
                 ref={editorRef}
                 useCommandShortcut={true} // 키보드 입력 컨트롤 방지
                 previewHighlight={false} //미리보기 강조 표시 제거
+                /* start of hooks */
+                hooks={{
+                    addImageBlobHook(blob, callback) {  // 이미지 업로드 로직 커스텀
+                        console.log(blob);
+                        console.log(callback);
+                    }}
+                }
+                /* end of hooks */
             />
             <br />
             <div className="flex space-x-4">
