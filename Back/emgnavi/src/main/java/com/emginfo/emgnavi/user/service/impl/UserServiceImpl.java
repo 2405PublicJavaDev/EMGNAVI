@@ -1,5 +1,8 @@
 package com.emginfo.emgnavi.user.service.impl;
 
+import com.emginfo.emgnavi.user.model.dto.UserIdRequest;
+import com.emginfo.emgnavi.user.model.dto.UserInfoRequest;
+import com.emginfo.emgnavi.user.model.mapper.UserMapper;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
@@ -12,9 +15,11 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final DefaultMessageService messageService;
+    private UserMapper mapper;
 
-    public UserServiceImpl() {
+    public UserServiceImpl(UserMapper mapper) {
         this.messageService = NurigoApp.INSTANCE.initialize("NCSY6JZLRXVWS3BX", "RDC9PGPKKGCSIQSWT4IFHK0NNO1IOVW1", "https://api.coolsms.co.kr");
+        this.mapper = mapper;
     }
 
     @Override
@@ -28,5 +33,17 @@ public class UserServiceImpl implements UserService {
         System.out.println(response);
 
         return response;
+    }
+
+    @Override
+    public int insertUser(UserInfoRequest request) {
+        int result = mapper.insertUser(request);
+        return result;
+    }
+
+    @Override
+    public int checkIdDuplicate(UserIdRequest request) {
+        int result = mapper.checkIdDuplicate(request);
+        return result;
     }
 }
