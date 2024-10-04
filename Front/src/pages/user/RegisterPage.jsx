@@ -44,8 +44,6 @@ const RegisterPage = () => {
         new daum.Postcode({
             oncomplete: function (data) {
                 document.getElementById("address").value = data.zonecode + " " + data.address;
-                console.log(data.address);
-                console.log(data.zonecode);
                 document.getElementById("detailAddress").focus();
             }
         }).open();
@@ -96,10 +94,8 @@ const RegisterPage = () => {
     const handlerIdChange = (value) => {
         if (value.length > 0) {
             if (!validationEmail(value)) {
-                console.log("유효하지 않은 이메일");
                 setIdImageSrc("/img/user/pink.png");
             } else {
-                console.log(value);
                 setIdImageSrc("/img/user/green.png");
             }
         } else {
@@ -112,10 +108,8 @@ const RegisterPage = () => {
 
         if (value.length > 0) {
             if (!validationPw(value)) {
-                console.log("유효하지 않은 비밀번호");
                 setPwImageSrc("/img/user/pink.png");
             } else {
-                console.log(value);
                 setPwImageSrc("/img/user/green.png");
             }
         }
@@ -127,15 +121,12 @@ const RegisterPage = () => {
 
     const handlerConfirmPwChange = (value) => {
         setConfirmPassword(value);
-        console.log(confirmPassword);
 
         if (value.length > 0) {
             if (value === password) {
-                console.log(value);
                 setCpwImageSrc("/img/user/green.png");
             }
             else {
-                console.log("유효하지 않은 비밀번호");
                 setCpwImageSrc("/img/user/pink.png");
             }
         }
@@ -166,16 +157,21 @@ const RegisterPage = () => {
 
     const handleSignIn = (e) => {
         e.preventDefault();
-        console.log(values.uEmail);
+
         setConfig({
             method: 'POST',
-            url: `/api/user/insert`,
+            url: `/api/user`,
             data: {
                 userId: values.uEmail,
             },
         });
-        alert("응답성공");
-        nav("/user/register/complete");
+
+        if (response != null) {
+            console.log("asdf");
+            if (response.status == 200 || response.status == 201) {
+                nav("/user/register/complete");
+            }
+        }
     };
 
 
@@ -310,7 +306,7 @@ const RegisterPage = () => {
 
                 {/* 휴대폰번호 */}
                 <div className="absolute left-[534px] top-[1242px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">휴대폰번호 </span><span className="text-[#c2a55d]">*</span></div>
-                {/* <div className="absolute left-[748px] top-[1242px] w-[214px] text-[17px] font-['Inter'] text-[#000]">{phoneNumber}</div> */}
+                <div className="absolute left-[748px] top-[1242px] w-[214px] text-[17px]     font-['Inter'] text-[#000]">{phoneNumber}</div>
 
                 {/* 이름 */}
                 <div className="absolute left-[534px] top-[1339px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">이름</div>

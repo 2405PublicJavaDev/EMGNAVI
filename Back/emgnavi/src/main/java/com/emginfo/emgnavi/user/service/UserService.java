@@ -5,5 +5,5 @@ import org.springframework.stereotype.Service;
 
 public interface UserService {
 
-    public SingleMessageSentResponse sendVerificationCode(String userPhone);
+    SingleMessageSentResponse sendVerificationCode(String userPhone);
 }
