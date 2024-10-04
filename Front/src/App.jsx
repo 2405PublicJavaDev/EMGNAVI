@@ -43,6 +43,8 @@ import ReviewAdmin from './pages/Admin/ReviewAdmin';
 
 
 import ReportList from './pages/report/reportList';
+import FavoriteHospital from './pages/user/Favorite/FavHospital';
+import FavPharmacy from './pages/user/Favorite/FavPharmacy'
 
 function App() {
 
@@ -103,6 +105,9 @@ function App() {
         <Route path='/medicine/MedicineDetail' element={<MedicineDetail />} />
         
         <Route path='/admin/ReviewAdmin' element={<ReviewAdmin />} />
+
+        <Route path='/user/mypage/favorite/hospital' element={<FavoriteHospital />} />
+        <Route path='/user/mypage/favorite/pharmacy' element={<FavPharmacy/>} />
 
         {/* 404 페이지 처리 */}
         <Route path='*' element={<PageNotFound />} />
