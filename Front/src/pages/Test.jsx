@@ -1,5 +1,4 @@
 import { useEffect, useState, EventHandler, ReactNode } from 'react'
-import axios from "axios"
 import { useNavigate, useParams } from 'react-router-dom';
 import useAxios from '../axios/useAxios';
 
@@ -7,30 +6,27 @@ const Test = () => {
 
     const { no } = useParams();
 
-    const { response, error, loading, setConfig } = useAxios();
+    const { response, error, loading } = useAxios({
+        method: 'GET',
+        url: `/api/test/${no}`,
+    });
 
-    useEffect(() => {
-        setConfig({
-            method: 'GET',
-            url: `/api/test/${no}`,
-        });
-    }, []);
-
+    console.log(response);
 
     const button = () => {
-        setConfig({
+        const { response, error, loading } = useAxios({
             method: 'POST',
             url: `/api/test`,
             data: {
                 data: 'a'
-            },
+            }
         });
     }
 
     return (
         <>
             <div className="flex items-center justify-center h-screen bg-gray-100">
-                {loading && (
+                {/* {loading && (
                     <p>Loading...</p>
                 )}
                 {error && (
@@ -46,7 +42,7 @@ const Test = () => {
                         <h1 className="text-6xl font-extrabold text-black mb-4">{response.data}</h1>
                     </div>
 
-                )}
+                )} */}
                 {/* <button onClick={button}>Test</button> */}
             </div >
         </>

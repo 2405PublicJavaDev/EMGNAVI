@@ -1,20 +1,19 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const useAxios = () => {
-    const [config, setConfig] = useState(null);
+const useAxios = (config) => {
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     
     const fetchData = async () => {
+        setLoading(true);
         try {
             const res = await axios(config);
             if (res.data.status == 200 || res.data.status == 201) {
-                console.log("성공!");
-                setResponse(res.data);
+                setResponse(res.data.data);
             } else {
-                setError(res.data)
+                setError(res.data);
             }
         } catch (err) {
             setError(err);
@@ -24,12 +23,10 @@ const useAxios = () => {
     };
 
     useEffect(() => {
-        if (config) {
-            fetchData();
-        }
-    }, [config]);
+        fetchData();
+    }), [];
 
-    return { response, error, loading, setConfig };
+    return { response, error, loading };
 }
 
 export default useAxios;
