@@ -21,5 +21,6 @@ public class SupportController {
     @PostMapping("/support")
     public SuccessResponse postSupport(@Valid @RequestBody PostSupportRequest request) {
         return new SuccessResponse(SuccessCode.SIGN_UP_USER);
+            return new SuccessResponse(SuccessCode.RESOURCE_FOUND);
     }
 }
