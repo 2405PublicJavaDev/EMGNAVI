@@ -101,7 +101,7 @@ function App() {
 
         <Route path='/medicine/MedicineSearch' element={<MedicineSearch />} />
         <Route path='/medicine/MedicineDetail' element={<MedicineDetail />} />
-        
+
         <Route path='/admin/ReviewAdmin' element={<ReviewAdmin />} />
 
         {/* 404 페이지 처리 */}
