@@ -3,7 +3,7 @@ import useAxios from "../../axios/useAxios";
 
 const { kakao } = window;
 
-function GetHospitalMap() {
+function GetEmergencyMap() {
 
     // 병원 데이터를 저장할 State 선언
     const [hospitals, setHospitals] = useState([]);
@@ -134,4 +134,4 @@ function GetHospitalMap() {
     )
 }
 
-export default GetHospitalMap
+export default GetEmergencyMap
