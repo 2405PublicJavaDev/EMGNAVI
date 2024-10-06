@@ -31,10 +31,12 @@ import Mypage from './pages/user/Mypage';
 import MypageCheckPw from './pages/user/MypageCheckPw';
 import MypageModifyInf from './pages/user/MypageModifyInf';
 
-import PostNotice from './pages/notice/PostNotice';
-import GetNoticeList from './pages/notice/GetNoticeList';
-import GetNoticeDetail from './pages/notice/GetNoticeDetail';
-import GetHospitalMap from './pages/map/GetHospitalMap';
+import PostNotice       from './pages/notice/PostNotice';
+import GetNoticeList    from './pages/notice/GetNoticeList';
+import GetNoticeDetail  from './pages/notice/GetNoticeDetail';
+
+import GetHospitalMap   from './pages/map/GetHospitalMap';
+import GetEmergencyMap  from './pages/map/GetEmergencyMap';
 
 
 import MedicineSearch from './pages/medicine/MedicineSearch';
@@ -101,6 +103,7 @@ function App() {
         <Route path='/admin/reportList' element={<ReportList />} />
 
         <Route path='/map/getHospitalMap' element={<GetHospitalMap />} />
+        <Route path='/map/getEmergencyMap' element={<GetEmergencyMap />} />
 
         <Route path='/medicine/MedicineSearch' element={<MedicineSearch />} />
         <Route path='/medicine/MedicineDetail' element={<MedicineDetail />} />
