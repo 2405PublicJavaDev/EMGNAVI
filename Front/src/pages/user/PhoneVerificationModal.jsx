@@ -1,26 +1,27 @@
 import { useState, EventHandler, ReactNode, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import useAxios from '../../axios/useAxios';
 
 const PhoneVerificationModal = ({ onClose }) => {
     const { response, error, loading, setConfig } = useAxios();
     const nav = useNavigate();
-    const [phoneNumber, setphoneNumber] = useState("");
+    const [userPhone, setuserPhone] = useState("");
     const [isNext, setIsNext] = useState(false);  // 다음 페이지로 갈지 여부 상태
+    const location = useLocation();
 
         const validatePhone = (e) => {
             e.preventDefault();
-            const phoneNumber = document.querySelector("#phone").value;
-            if (phoneNumber.length === 11 && /^\d*$/.test(phoneNumber)) {
-                console.log(phoneNumber);
+            const userPhone = document.querySelector("#phone").value;
+            if (userPhone.length === 11 && /^\d*$/.test(userPhone)) {
+                console.log(userPhone);
                 setConfig({
                     method: 'POST',
                     url: `/api/verify/phone`,
                     data: {
-                        phoneNumber: phoneNumber
+                        userPhone: userPhone
                     },
                 });
-                return phoneNumber;
+                return userPhone;
             } else {
                 alert("휴대폰 번호를 다시 한번 확인해주세요");
                 return null;
@@ -29,21 +30,31 @@ const PhoneVerificationModal = ({ onClose }) => {
 
         const handlerGoNextPage = (e) => {
             e.preventDefault();
-            // const phone = validatePhone(e); // 유효하지 않은 번호일 경우 다음 버튼 안눌리게
-            const phone = document.querySelector("#phone").value; // 이건 그냥 핸드폰 번호 바로 받아와짐
+            const phone = document.querySelector("#phone").value; // 핸드폰 번호 가져오기
             if (phone) {
-                setphoneNumber(phone);  // 휴대폰 번호 설정
+                setuserPhone(phone);  // 휴대폰 번호 설정
                 setIsNext(true);  // 페이지 이동을 위한 상태 변경
             } else {
                 alert("휴대폰 번호를 입력해주세요");
             }
         };
-
+    
         useEffect(() => {
-            if (isNext && phoneNumber) {
-                nav("/user/register/page", { state: { phoneNumber } });
+            if (isNext && userPhone) {
+                const currentPath = location.pathname;
+
+                if (currentPath.startsWith("/user/register")) {
+                    nav("/user/register/page", { state: { userPhone } });
+                } else if (currentPath.startsWith("/user/findEmail")) {
+                    // setConfig({
+                    //     method: 'POST',
+                    //     url: `/api/findEmail`,
+                    //     data: { userPhone: phone },
+                    // });
+                    nav("/user/findEmail/complete", { state: { userPhone } });
+                }
             }
-        }, [isNext, phoneNumber]);
+        }, [isNext, userPhone, nav, location.pathname]);
 
 
     

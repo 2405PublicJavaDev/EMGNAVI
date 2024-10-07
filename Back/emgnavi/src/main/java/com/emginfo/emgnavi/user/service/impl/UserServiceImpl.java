@@ -2,7 +2,9 @@ package com.emginfo.emgnavi.user.service.impl;
 
 import com.emginfo.emgnavi.user.model.dto.UserIdRequest;
 import com.emginfo.emgnavi.user.model.dto.UserInfoRequest;
+import com.emginfo.emgnavi.user.model.dto.VerifyPhoneRequest;
 import com.emginfo.emgnavi.user.model.mapper.UserMapper;
+import com.emginfo.emgnavi.user.model.vo.User;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
@@ -45,5 +47,11 @@ public class UserServiceImpl implements UserService {
     public int checkIdDuplicate(UserIdRequest request) {
         int result = mapper.checkIdDuplicate(request);
         return result;
+    }
+
+    @Override
+    public User selectIdByPhone(VerifyPhoneRequest request) {
+        User user = mapper.selectIdByPhone(request);
+        return user;
     }
 }

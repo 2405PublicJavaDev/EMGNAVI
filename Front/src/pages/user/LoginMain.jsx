@@ -1,4 +1,4 @@
-import { useState, EventHandler, ReactNode } from 'react'
+import { useState, EventHandler, ReactNode, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 const LoginMain = () => {
@@ -28,22 +28,49 @@ const LoginMain = () => {
         nav("/user/findPw");
     };
 
+    const kakaoLogin = () => {
+        const authorizationUri = "https://kauth.kakao.com/oauth/authorize";
+        const client_id = "2d6c55a21e936e4094381a23a82124d1";
+        const redirectUri = "http://127.0.0.1:3000/kakao/callback";
+
+        const url = `${authorizationUri}?client_id=${client_id}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code`
+
+        window.location.href = url;
+    };
+
+    // const { naver } = window
+    // const NAVER_CLIENT_ID = "HybacJJgFsuLnLngHigE"; // 발급 받은 Client ID 입력 
+    // const NAVER_CALLBACK_URL = "http://127.0.0.1:3000/naver/callback"; // 작성했던 Callback URL 입력
+
+    const naverLogin = new naver.LoginWithNaverId(
+        {
+            clientId: "HybacJJgFsuLnLngHigE",
+            callbackUrl: "http://127.0.0.1:3000/naver/callback",
+            // loginButton: { color: "green", type: 3, height: 40 }
+        }
+    );
+    naverLogin.init();
+    useEffect(() => {
+        naverLogin.init();
+        console.log("init!");
+    }, []);
+
     return (
         <>
             <div className="absolute left-[210px] top-[403px] w-[1500px] h-[937px] bg-[#7d85971a] rounded-[20px]"></div>
             <div className="absolute left-[787px] top-[842px] w-[346px] h-[23px] flex">
-                <div 
-                onClick={handlerGoRegister}
-                style={{ cursor : 'pointer' }}
-                className="absolute left-0 top-0 w-[77px] text-[17px] font-['Inter'] text-[#7d8597]">회원가입  </div>
+                <div
+                    onClick={handlerGoRegister}
+                    style={{ cursor: 'pointer' }}
+                    className="absolute left-0 top-0 w-[77px] text-[17px] font-['Inter'] text-[#7d8597]">회원가입  </div>
                 <div className="absolute left-[84px] top-0 w-[6px] text-[19px] font-['Inter'] text-[#7d8597]">|</div>
                 <div className="absolute left-[209px] top-0 w-[6px] text-[19px] font-['Inter'] text-[#7d8597]">|</div>
-                <div 
-                onClick={handlerGoFindId}
-                style={{ cursor : 'pointer' }} className="absolute left-[97px] top-0 w-[105px] text-[17px] font-['Inter'] text-[#7d8597] text-center">아이디 찾기</div>
-                <div 
-                onClick={handlerGoFindPw}
-                style={{ cursor : 'pointer' }} className="absolute left-[222px] top-0 w-[124px] text-[17px] font-['Inter'] text-[#7d8597] text-center">비밀번호 찾기</div>
+                <div
+                    onClick={handlerGoFindId}
+                    style={{ cursor: 'pointer' }} className="absolute left-[97px] top-0 w-[105px] text-[17px] font-['Inter'] text-[#7d8597] text-center">아이디 찾기</div>
+                <div
+                    onClick={handlerGoFindPw}
+                    style={{ cursor: 'pointer' }} className="absolute left-[222px] top-0 w-[124px] text-[17px] font-['Inter'] text-[#7d8597] text-center">비밀번호 찾기</div>
             </div>
             <div className="absolute left-0 top-[494px] w-[1920px] text-[28px] font-['Istok_Web'] font-bold text-[#0b2d85] text-center">응급NAVI</div>
             <div className="absolute left-[704px] top-[586px] w-[511px] h-[60px] flex">
@@ -82,16 +109,25 @@ const LoginMain = () => {
             <div className="absolute left-[1065px] top-[932px] w-[150px] h-0 border-[1px] border-solid border-[#7d8597]"></div>
             <div className="absolute left-[895px] top-[920px] text-[18px] font-['Inter'] font-semibold text-[#7d8597] whitespace-nowrap">SNS 간편 로그인</div>
             <div className="absolute left-[704px] top-[996px] w-[511px] h-[60px] flex">
-                <div className="absolute left-0 top-0 w-[511px] h-[60px] flex">
-                    <div className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#2db400] border-[1px] border-solid border-[#fff] rounded-[5px]"></div>
-                    <div className="absolute left-0 top-0 w-[511px] h-[60px] text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">네이버 로그인</div>
+                {/* <div className="absolute left-0 top-0 w-[511px] h-[60px] flex"> */}
+                <div
+                    id="naverIdLogin"
+                    // style={{ cursor: 'pointer' }}
+                    // onClick={naverLogin}
+                    // className="absolute left-0 top-0 w-[511px]"
+                    >
+                    {/* <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center mt-4">네이버 로그인</span> */}
                 </div>
-                <img className="absolute left-[28px] top-[19px]" width="27" height="22" src="/img/user/n 186_30.png"></img>
+                {/* </div> */}
+                {/* <img className="absolute left-[28px] top-[19px]" width="27" height="22" src="/img/user/n 186_30.png"></img> */}
             </div>
             <div className="absolute left-[704px] top-[1069px] w-[511px] h-[60px] flex">
                 <div className="absolute left-0 top-0 w-[511px] h-[60px] flex">
-                    <div className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#ffe100] border-[1px] border-solid border-[#fff] rounded-[5px]"></div>
-                    <div className="absolute left-0 top-0 w-[511px] h-[60px] text-[18px] font-['Inter'] font-medium text-[#000] text-center flex flex-col justify-center">카카오톡 로그인</div>
+                    <button
+                        onClick={kakaoLogin}
+                        className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#ffe100] border-[1px] border-solid border-[#fff] rounded-[5px]">
+                        <span className="text-[18px] font-['Inter'] font-medium text-[#000] text-center flex flex-col justify-center">카카오톡 로그인</span>
+                    </button>
                 </div>
                 <img className="absolute left-[24px] top-[14px]" width="36" height="32" src="/img/user/kakaotalk86_33.png"></img>
             </div>

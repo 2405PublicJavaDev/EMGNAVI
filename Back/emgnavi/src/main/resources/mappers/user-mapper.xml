@@ -11,5 +11,9 @@
     <select id="checkIdDuplicate" resultType="int">
         SELECT COUNT(*) FROM USER_TBL WHERE USER_ID = #{userId}
     </select>
+    <select id="selectIdByPhone" resultType="User">
+        SELECT USER_ID, USER_PHONE FROM USER_TBL WHERE USER_PHONE = #{userPhone}
+    </select>
+
 
 </mapper>

@@ -1,8 +1,43 @@
-import { useState, EventHandler, ReactNode } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useState, EventHandler, ReactNode, useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom';
+import useAxios from '../../axios/useAxios';
 
 const FIndEmailComplete = () => {
+
+    const location = useLocation();
+    const { userPhone } = location.state || {};
+    const { response, error, loading, setConfig } = useAxios();
+    const [email, setEmail] = useState(''); // 이메일 상태 추가
     const nav = useNavigate();
+
+    useEffect(() => {
+        console.log("userPhone:", userPhone); // userPhone 값 확인
+        if (userPhone) {
+            // API 호출 설정
+            setConfig({
+                method: 'POST',
+                url: '/api/findEmail',
+                data: { userPhone },
+            });
+        }
+    }, [userPhone, setConfig]);
+    
+    useEffect(() => {
+        if (response) {
+            console.log("Response received:", response);
+            // API 응답에서 아이디(이메일) 값 설정
+            setEmail(response);
+        }
+    
+        if (error) {
+            console.error("Error occurred:", error);
+            if (error.response && error.response.status === 404) {
+                setEmail('해당 휴대폰 번호로 등록된 아이디가 없습니다.');
+            } else {
+                setEmail('아이디를 찾는 중 오류가 발생했습니다.');
+            }
+        }
+    }, [response, error]);
 
     const handlerGoFindPw = () => {
         nav("/user/findPw");
@@ -16,7 +51,9 @@ const FIndEmailComplete = () => {
             <div className="absolute left-[210px] top-[426px] w-[1500px] h-[466px] bg-[#7d85971a]"></div>
             <div className="absolute left-[420px] top-[633px] w-[1080px] h-0 border-[1px] border-solid border-[#000]"></div>
             <div className="absolute left-[569px] top-[679px] w-[104px] h-[34px] text-[22px] font-['Inter'] font-medium text-[#000]">아이디</div>
-            <div className="absolute left-[1px] top-[679px] w-[1919px] h-[41px] text-[22px] font-['Inter'] font-light text-[#000] text-center">example@naver.com</div>
+            <div className="absolute left-[1px] top-[679px] w-[1919px] h-[41px] text-[22px] font-['Inter'] font-light text-[#000] text-center">
+                {email}
+            </div>
             <div className="absolute left-[420px] top-[754px] w-[1080px] h-0 border-[1px] border-solid border-[#7d8597]"></div>
             <div className="absolute left-0 top-[245px] w-[1920px] h-[47px] text-[40px] font-['Inter'] font-bold text-[#000] text-center">아이디 찾기</div>
             <div className="absolute left-[1px] top-[533px] w-[1920px] h-[51px] text-[24px] font-['Inter'] font-semibold text-[#000] text-center">회원가입 시 입력하신 아이디 정보입니다.</div>

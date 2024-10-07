@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserIdRequest {
-    @NotBlank(message = "아이디를 입력해주세요.")
+//    @NotBlank(message = "아이디를 입력해주세요.")
     private String userId;
 }
