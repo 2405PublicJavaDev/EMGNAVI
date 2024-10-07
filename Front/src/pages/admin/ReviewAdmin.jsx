@@ -66,7 +66,7 @@ const ReviewAdmin = () => {
                         <div className="absolute left-[212px] top-0 w-[333px] h-[57px] text-[25px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">
                             리뷰 리스트
                         </div>
-                        <div className="absolute -translate-y-1/2 right-[198px] top-[calc(50%+-36px)] w-[1460px] h-[535px] flex flex-col items-start justify-start bg-[#fff] border-[1px] border-solid border-[#fff] rounded-[5px] overflow-hidden">
+                        <div className="absolute -translate-y-1/2 right-[198px] top-[calc(50%+-36px)] w-[1460px] h-[535px] flex flex-col items-start justify-start bg-[#fff] border-[1px] border-solid border-[#fff] rounded-[5px] overflow-hidden shadow-sm border-[#0000001a]">
                             <table className="w-full">
                                 <thead>
                                     <tr className="bg-[#cccccc1a]">
@@ -100,7 +100,7 @@ const ReviewAdmin = () => {
                         </div>
                         
                         {/* Pagination */} 
-                        <div className="absolute left-[920px] top-[625px] w-[190px] h-[55px] bg-[#fff] overflow-hidden flex">
+                        <div className="absolute left-[920px] top-[615px] w-[190px] h-[55px] bg-[#fff] overflow-hidden flex">
                             {[...Array(totalPages).keys()].map((number) => (
                                 <div key={number} className="w-[35px] h-[35px] mx-[5px] flex items-center justify-center cursor-pointer" onClick={() => handlePageChange(number + 1)}>
                                     {/* <img src="/img/medicine/bluebox.png" alt="Page box" width="35" height="35" /> */}
