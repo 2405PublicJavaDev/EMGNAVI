@@ -44,9 +44,10 @@ import MedicineDetail from './pages/medicine/MedicineDetail';
 import ReviewAdmin from './pages/Admin/ReviewAdmin';
 
 
-import ReportList from './pages/report/reportList';
+import ReportList from './pages/report/ReportList';
 import FavoriteHospital from './pages/user/Favorite/FavHospital';
 import FavPharmacy from './pages/user/Favorite/FavPharmacy'
+import GetAedMap from './pages/map/GetAedMap'
 
 function App() {
 
@@ -111,6 +112,7 @@ function App() {
 
         <Route path='/user/mypage/favorite/hospital' element={<FavoriteHospital />} />
         <Route path='/user/mypage/favorite/pharmacy' element={<FavPharmacy/>} />
+        <Route path='/map/getAedMap' element={<GetAedMap />} />
 
         {/* 404 페이지 처리 */}
         <Route path='*' element={<PageNotFound />} />
