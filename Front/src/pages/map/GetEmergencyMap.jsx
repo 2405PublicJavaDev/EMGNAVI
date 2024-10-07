@@ -160,7 +160,7 @@ function GetEmergencyMap() {
 
                 // 마커의 인포윈도우를 생성합니다
                 var infowindow = new kakao.maps.InfoWindow({
-                    content: hospital.dutyName
+                    content: hospital.dutyName + '(응급병상:' + hospital.hvec + '석)'
                 });
                 addInfoWindow(infowindow);
 
