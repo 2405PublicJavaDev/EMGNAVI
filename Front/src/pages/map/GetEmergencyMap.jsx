@@ -19,7 +19,7 @@ function GetEmergencyMap() {
     const addMarkerPosition = (newPosition) => {
         setPosition(prev => [...prev, newPosition]);
     };
-    const [infoWindow, setInfoWindow] = useState([]);
+    const [infoWindows, setInfoWindow] = useState([]);
     const addInfoWindow = (newInfoWindow) => {
         setInfoWindow(prev => [...prev, newInfoWindow]);
     };
@@ -28,7 +28,7 @@ function GetEmergencyMap() {
 
         // 현재 위치를 받아오는 함수
         function onGeoOkay(position) {
-            console.log(position);
+            // console.log(position);
 
             // 위도 경도를 받아오는 부분
             let lat = position.coords.latitude;
@@ -116,10 +116,15 @@ function GetEmergencyMap() {
             setCircle(newCircle);
             // 설정한 원을 지도에 표시
             newCircle.setMap(map);
-            console.log('searchRadius:' + searchRadius);
+            // console.log('searchRadius:' + searchRadius);
 
+            // 마커를 새로 그리기 전에 기존 마커를 제거
             positions.forEach(position => {
                 position.setMap(null);
+            });
+            // 마커를 새로 그리기 전에 기존 인포윈도우를 제거
+            infoWindows.forEach(infoWindow => {
+                infoWindow.setMap(null);
             });
 
             map.addControl(zoomControl, kakao.maps.ControlPosition.TOPRIGHT);
@@ -130,13 +135,13 @@ function GetEmergencyMap() {
     // 병원 데이터를 이용해 마커 표시하기
     useEffect(() => {
         if (map && hospitals && hospitals.length > 0) {
-            console.log(hospitals);
+            // console.log(hospitals);
 
             // 마커 이미지의 이미지 주소입니다
             var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
 
             hospitals.forEach(hospital => {
-                console.log(hospital.dutyName, hospital.wgs84Lat, hospital.wgs84Lon);
+                // console.log(hospital.dutyName, hospital.wgs84Lat, hospital.wgs84Lon);
 
                 // 마커 이미지의 이미지 크기 입니다
                 var imageSize = new kakao.maps.Size(24, 35);
@@ -182,7 +187,7 @@ function GetEmergencyMap() {
     // searchRadius 변경을 감지하여 동작하는 useEffect
     useEffect(() => {
         if (map) {
-            console.log('mapLevel:' + map.getLevel());
+            // console.log('mapLevel:' + map.getLevel());
 
             if (circle) {
                 circle.setMap(null);
@@ -201,7 +206,7 @@ function GetEmergencyMap() {
             setCircle(newCircle);
             // 설정한 원을 지도에 표시
             newCircle.setMap(map);
-            console.log('searchRadius:' + searchRadius);
+            // console.log('searchRadius:' + searchRadius);
 
             positions.forEach(position => {
                 position.setMap(null);
@@ -215,9 +220,9 @@ function GetEmergencyMap() {
 
         // 현재 searchRadius 값과 새로운 값이 다를 때만 업데이트
         if (newRadius !== searchRadius) {
-            console.log('old:' + searchRadius);
+            // console.log('old:' + searchRadius);
             setSearchRadius(newRadius);
-            console.log('new:' + searchRadius);
+            // console.log('new:' + searchRadius);
         }
     };
 
@@ -228,9 +233,9 @@ function GetEmergencyMap() {
 
             // 현재 searchRadius 값과 새로운 값이 다를 때만 업데이트
             if (newRadius !== searchRadius) {
-                console.log('old:' + searchRadius);
+                // console.log('old:' + searchRadius);
                 setSearchRadius(newRadius);
-                console.log('new:' + searchRadius);
+                // console.log('new:' + searchRadius);
             }
         }
     };
