@@ -37,7 +37,7 @@ const MypageCheckPw = () => {
         <input
             type={isPasswordVisible ? 'text' : 'password'}
             placeholder='비밀번호를 입력해주세요.'
-            className="absolute left-[829px] top-[593px] w-[450px] h-[58px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px] text-[17px] pl-6 outline-0">
+            className="absolute left-[829px] top-[593px] w-[450px] h-[58px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px] text-[16px] pl-6 outline-0">
         </input>
         <img
             onMouseDown={() => handleMouseDown()}

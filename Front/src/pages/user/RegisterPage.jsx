@@ -1,11 +1,13 @@
 import { useState, EventHandler, ReactNode, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import useAxios from '../../axios/useAxios';
+import axios from 'axios';
 
 const RegisterPage = () => {
     const location = useLocation();
     const { userPhone } = location.state || {};
     const { response, error, loading, setConfig } = useAxios();
+
 
     const [isMaleChecked, setIsMaleChecked] = useState(true);
     const [isFemaleChecked, setIsFemaleChecked] = useState(false);
@@ -25,6 +27,12 @@ const RegisterPage = () => {
 
     const [randomNickname, setRandomNickname] = useState('');
     const nav = useNavigate();
+
+    const [isIdChecked, setIsIdChecked] = useState(false);  // 아이디 중복 확인 상태
+    const [isNicknameChecked, setIsNicknameChecked] = useState(false);  // 닉네임 중복 확인 상태
+
+    const [responseType, setResponseType] = useState(null); // 요청 타입 상태 추가
+
 
     const maleCheck = () => {
         if (!isMaleChecked) {
@@ -156,50 +164,121 @@ const RegisterPage = () => {
         uEmail: '',
     });
 
+    // 아이디 중복 확인
     const checkIdDuplicate = async (e) => {
         e.preventDefault();
-        setConfig({
-            method: 'POST',
-            url: `/api/id/duplicate`,
-            data: {
-                userId: values.uEmail,
-            },
-        })
+        setResponseType('id'); // 요청 타입 설정
+        setIdImageSrc(null); // 중복이면 공백 설정
+        try {
+            const response = await axios.post('/api/id/duplicate', { userId: values.uEmail });
+            handleResponse(response.data); // 응답을 처리하는 함수 호출
+        } catch (error) {
+            handleError(error); // 오류 처리 함수 호출
+        }
     };
+
+    // 닉네임 중복 확인
+    const checkNicknameDuplicate = async (e) => {
+        e.preventDefault();
+        setResponseType('nickname'); // 요청 타입 설정
+        try {
+            const response = await axios.post('/api/nickname/duplicate', { userNickname: values.uNickname });
+            handleResponse(response.data); // 응답을 처리하는 함수 호출
+        } catch (error) {
+            handleError(error); // 오류 처리 함수 호출
+        }
+    };
+    // 응답 처리 함수
+    const handleResponse = (message) => {
+        const trimmedMessage = message.trim(); // 공백 제거
+        console.log(trimmedMessage); // 로그 추가
+    
+        if (responseType === 'id') {
+            console.log("Response Type: id", trimmedMessage); // Response Type 확인용 로그
+    
+            if (trimmedMessage.includes("사용중")) {
+                setIdImageSrc("/img/user/pink.png"); // 중복이면 공백 설정
+                alert(trimmedMessage); // 중복 메시지 표시
+                setIsIdChecked(false); // 중복이므로 false 설정
+            } else if (trimmedMessage.includes("가능한")) {
+                setIdImageSrc("/img/user/green.png"); // 사용 가능이면 그린 이미지 설정
+                alert(trimmedMessage); // 사용 가능 메시지 표시
+                setIsIdChecked(true); // 사용 가능하므로 true 설정
+            }
+        } else if (responseType === 'nickname') {
+            console.log("Response Type: nickname", trimmedMessage); // Response Type 확인용 로그
+    
+            if (trimmedMessage.includes("사용중")) {
+                alert(trimmedMessage); // 중복 메시지 표시
+                setIsNicknameChecked(false); // 중복이므로 false 설정
+            } else if (trimmedMessage.includes("가능한")) {
+                alert(trimmedMessage); // 사용 가능 메시지 표시
+                setIsNicknameChecked(true); // 사용 가능하므로 true 설정
+            }
+        }
+    };
+
     useEffect(() => {
-        if (response) {
-            alert(response); // 서버에서 받은 메시지를 alert로 출력
-        } else if (error) {
+    console.log("isIdChecked 상태:", isIdChecked);
+}, [isIdChecked]);
+
+
+    // 오류 처리 함수
+    const handleError = (error) => {
+        if (error.response) {
+            console.error("에러 발생:", error);
+
+            alert(error.response.data); // 서버에서 반환된 오류 메시지 표시
+        } else {
             alert('오류가 발생했습니다. 다시 시도해주세요.');
         }
-    }, [response, error]);
+    };
 
-    const handleSignIn = (e) => {
+
+    const handleRegister = async (e) => {
         e.preventDefault();
-        if (!values.uEmail) {
-            alert("아이디를 입력해주세요.");
-            return; // 함수 종료
-        }
-        if (!values.uPassword) {
-            alert("비밀번호를 입력해주세요.");
-            return; // 함수 종료
-        }
-        if (!values.uCPassword) {
-            alert("비밀번호를 확인해주세요.");
-            return; // 함수 종료
-        }
-        if (!values.uNickname) {
-            alert("닉네임을 입력해주세요.");
-            return; // 함수 종료
-        }
+
         const userGender = isMaleChecked ? 'M' : isFemaleChecked ? 'F' : null;
         const userAddress = document.getElementById("address").value + " " + document.getElementById("detailAddress").value;
         const marketingAgree = isAgreeChecked ? 'Y' : isDisagreeChecked ? 'N' : null;
 
-        setConfig({
-            method: 'POST',
-            url: `/api/user`,
-            data: {
+        // 유효성 체크
+        if (!values.uEmail) {
+            alert("아이디를 입력해주세요.");
+            return;
+        }
+        if (!values.uPassword) {
+            alert("비밀번호를 입력해주세요.");
+            return;
+        }
+        if (!values.uCPassword) {
+            alert("비밀번호 확인을 입력해주세요.");
+            return;
+        }
+        if (!values.uNickname) {
+            alert("닉네임을 입력해주세요.");
+            return;
+        }
+        if (values.uPassword !== values.uCPassword) {
+            alert("비밀번호가 일치하지 않습니다.");
+            return;
+        }
+        if (!isIdChecked) {
+            alert("아이디 중복확인을 해주세요.");
+            return;
+        }
+        if (!isNicknameChecked) {
+            alert("닉네임 중복확인을 해주세요.");
+            return;
+        }
+        if (pwImageSrc !== "/img/user/green.png") {
+            alert("비밀번호를 다시 확인해주세요.");
+            return;
+        }
+
+        // API 요청
+        try {
+            const response = await axios.post('/api/user', {
                 userId: values.uEmail,
                 userPw: values.uPassword,
                 userNickname: values.uNickname,
@@ -207,12 +286,17 @@ const RegisterPage = () => {
                 userName: values.uName,
                 userGender: userGender,
                 userAddress: userAddress,
-                marketingAgree: marketingAgree
-            },
-            // nav("/user/register/complete");
-        });
-
+                marketingAgree: marketingAgree,
+            });
+            // 요청이 성공하면 페이지 이동
+            if (response.status === 200) {
+                nav("/user/register/complete");
+            }
+        } catch (error) {
+            alert("회원가입 중 오류가 발생했습니다. 다시 시도해 주세요.");
+        }
     };
+
 
 
 
@@ -247,7 +331,7 @@ const RegisterPage = () => {
             <div className="absolute left-[1256px] top-[703px] w-[203px] text-[16px] font-['Inter']"><span className="text-[#c2a55d]">*</span><span className="text-[#7d8597]">은 필수 입력 항목입니다.</span></div>
             <div className="absolute left-[461px] top-[745px] w-[998px] h-0 border-[1px] border-solid border-[#000]"></div>
 
-            <form id="form" onSubmit={handleSignIn} autoComplete='off'>
+            <form id="form" onSubmit={handleRegister} autoComplete='off'>
                 {/* 아이디 */}
                 <div className="absolute left-[534px] top-[814px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">아이디 </span><span className="text-[#c2a55d]">*</span></div>
                 <div className="absolute left-[748px] top-[798px] w-[506px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
@@ -355,7 +439,8 @@ const RegisterPage = () => {
                     style={{ cursor: 'pointer' }}
                     className="absolute left-[1208px] top-[1143px]" width="24" height="23" src="/img/user/reload 1117_124.png"></img>
                 <button
-
+                    type='button'
+                    onClick={checkNicknameDuplicate}
                     className="absolute left-[1264px] top-[1127px] w-[122px] h-[55px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]">
                     <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">중복확인</span>
                 </button>

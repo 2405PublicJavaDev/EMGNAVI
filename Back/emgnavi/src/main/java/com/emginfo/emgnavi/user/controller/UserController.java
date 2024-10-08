@@ -1,10 +1,9 @@
 package com.emginfo.emgnavi.user.controller;
 
-import com.emginfo.emgnavi.user.model.dto.UserIdRequest;
-import com.emginfo.emgnavi.user.model.dto.UserInfoRequest;
-import com.emginfo.emgnavi.user.model.dto.VerifyPhoneRequest;
+import com.emginfo.emgnavi.user.model.dto.*;
 import com.emginfo.emgnavi.user.model.vo.User;
 import com.emginfo.emgnavi.user.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,15 +46,27 @@ public class UserController {
     @PostMapping("/id/duplicate")
     public ResponseEntity<String> checkIdDuplicate(@RequestBody UserIdRequest request) {
         int result = uService.checkIdDuplicate(request);
-        String message;
+
         if (result > 0) {
-            message = "이미 사용중인 아이디입니다.";
-            System.out.println("사용중");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+            System.out.println("아이디 사용중");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 사용중인 아이디입니다.");
         } else {
-            message = "사용 가능한 아이디입니다.";
-            System.out.println("사용가능");
-            return ResponseEntity.ok(message);
+            System.out.println("아이디 사용가능");
+            return ResponseEntity.ok("사용 가능한 아이디입니다.");
+        }
+    }
+
+    @PostMapping("/nickname/duplicate")
+    public ResponseEntity<String> checkNicknameDuplicate(@RequestBody UserNicknameRequest request) {
+        System.out.println(request);
+        int result = uService.checkNicknameDuplicate(request);
+
+        if (result > 0) {
+            System.out.println("닉네임 사용중");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 사용중인 닉네임입니다.");
+        } else {
+            System.out.println("닉네임 사용가능");
+            return ResponseEntity.ok("사용 가능한 닉네임입니다.");
         }
     }
 
@@ -67,6 +78,25 @@ public class UserController {
             return ResponseEntity.ok(user.getUserId());  // 조회된 유저의 아이디 반환
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 휴대폰 번호로 등록된 아이디가 없습니다.");
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> checkLogin(@RequestBody LoginRequest request, HttpSession session) {
+        if (request.getUserId() == null || request.getUserPw() == null) {
+            return ResponseEntity.badRequest().body("아이디와 비밀번호는 필수입니다.");
+        }
+
+        System.out.println("controll 로그인 요청: " + request.getUserId() + ", 비밀번호: " + request.getUserPw());
+        User user = uService.checkLogin(request);
+
+        if (user != null) {
+            // 세션에 사용자 아이디 저장
+            session.setAttribute("userId", user.getUserId());
+            System.out.println(user.getUserNickname());
+            return ResponseEntity.ok("로그인 성공");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("아이디 또는 비밀번호가 잘못되었습니다.");
         }
     }
 }
