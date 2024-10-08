@@ -1,6 +1,7 @@
 import { useState, EventHandler, ReactNode, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import useAxios from '../../axios/useAxios';
+import axios from 'axios';
 
 const LoginMain = () => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -15,37 +16,26 @@ const LoginMain = () => {
         setIsPasswordVisible(false);
     };
 
-    const handleSignUp = () => {
+    const handleSignUp = async () => {
         if (!values.uEmail || !values.uPassword) {
             alert("아이디와 비밀번호를 입력해주세요.");
             return;
         }
-
-        setConfig({
-            method: 'POST',
-            url: '/api/login',
-            data: {
+    
+        try {
+            const response = await axios.post('/api/login', {
                 userId: values.uEmail,
                 userPw: values.uPassword,
-            }
-        });
-    };
-
-    useEffect(() => {
-        console.log("rchange:"+response);
-    }, [response]
-    )
-
-
-    // useEffect를 사용하여 응답 처리
-    useEffect(() => {
-        if (response) {
-            console.log(response.data);
+            });
+    
+            console.log(response.data); // 응답 확인
+            alert(response.data);
             nav("/"); // 로그인 성공 후 리다이렉트
-        } else if (error) {
-            alert(error.response?.data || "로그인 중 오류가 발생했습니다."); // 오류 메시지 표시
+        } catch (error) {
+            console.error(error);
+            alert(error.response?.data || "로그인 중 오류가 발생했습니다.");
         }
-    }, [response, error]);
+    };
 
     const handlerGoRegister = () => {
         nav("/user/register");
@@ -112,7 +102,6 @@ const LoginMain = () => {
             </div>
             <div className="absolute left-0 top-[494px] w-[1920px] text-[28px] font-['Istok_Web'] font-bold text-[#0b2d85] text-center">응급NAVI</div>
 
-            <form id='form' onSubmit={handleSignUp} autoComplete='off'>
                 <div className="absolute left-[704px] top-[586px] w-[511px] h-[60px] flex">
                     <div className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
                     <input
@@ -153,12 +142,11 @@ const LoginMain = () => {
 
                 <div className="absolute left-[704px] top-[757px] w-[511px] h-[60px] flex">
                     <button
-                        type='submit'
+                        onClick={handleSignUp}
                         className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]">
                         <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">로그인</span>
                     </button>
                 </div>
-            </form>
             <div className="absolute left-[704px] top-[932px] w-[150px] h-0 border-[1px] border-solid border-[#7d8597]"></div>
             <div className="absolute left-[1065px] top-[932px] w-[150px] h-0 border-[1px] border-solid border-[#7d8597]"></div>
             <div className="absolute left-[895px] top-[920px] text-[18px] font-['Inter'] font-semibold text-[#7d8597] whitespace-nowrap">SNS 간편 로그인</div>

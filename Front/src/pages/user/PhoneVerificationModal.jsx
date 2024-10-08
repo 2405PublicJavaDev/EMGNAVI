@@ -42,22 +42,13 @@ const PhoneVerificationModal = ({ onClose }) => {
         useEffect(() => {
             if (isNext && userPhone) {
                 const currentPath = location.pathname;
-
                 if (currentPath.startsWith("/user/register")) {
                     nav("/user/register/page", { state: { userPhone } });
                 } else if (currentPath.startsWith("/user/findEmail")) {
-                    // setConfig({
-                    //     method: 'POST',
-                    //     url: `/api/findEmail`,
-                    //     data: { userPhone: phone },
-                    // });
                     nav("/user/findEmail/complete", { state: { userPhone } });
                 }
             }
         }, [isNext, userPhone, nav, location.pathname]);
-
-
-    
 
     return (
         <>
