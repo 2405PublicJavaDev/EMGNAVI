@@ -31,12 +31,12 @@ import Mypage from './pages/user/Mypage';
 import MypageCheckPw from './pages/user/MypageCheckPw';
 import MypageModifyInf from './pages/user/MypageModifyInf';
 
-import PostNotice       from './pages/notice/PostNotice';
-import GetNoticeList    from './pages/notice/GetNoticeList';
-import GetNoticeDetail  from './pages/notice/GetNoticeDetail';
+import PostNotice from './pages/notice/PostNotice';
+import GetNoticeList from './pages/notice/GetNoticeList';
+import GetNoticeDetail from './pages/notice/GetNoticeDetail';
 
-import GetHospitalMap   from './pages/map/GetHospitalMap';
-import GetEmergencyMap  from './pages/map/GetEmergencyMap';
+import GetHospitalMap from './pages/map/GetHospitalMap';
+import GetEmergencyMap from './pages/map/GetEmergencyMap';
 
 
 import MedicineSearch from './pages/medicine/MedicineSearch';
@@ -48,6 +48,7 @@ import ReportList from './pages/report/ReportList';
 import FavoriteHospital from './pages/user/Favorite/FavHospital';
 import FavPharmacy from './pages/user/Favorite/FavPharmacy'
 import GetAedMap from './pages/map/GetAedMap'
+import GetEmergencyStat from './pages/stat/GetEmergencyStat';
 
 function App() {
 
@@ -68,7 +69,7 @@ function App() {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
 
       <Routes>
 
@@ -100,6 +101,8 @@ function App() {
         <Route path='/notice/getNoticeList' element={<GetNoticeList />} />
         <Route path='/notice/getNoticeDetail' element={<GetNoticeDetail />} />
 
+        <Route path='/stat/getEmergencyStat' element={<GetEmergencyStat />} />
+
         <Route path='/admin/reportList' element={<ReportList />} />
 
         <Route path='/map/getHospitalMap' element={<GetHospitalMap />} />
@@ -111,7 +114,7 @@ function App() {
         <Route path='/admin/ReviewAdmin' element={<ReviewAdmin />} />
 
         <Route path='/user/mypage/favorite/hospital' element={<FavoriteHospital />} />
-        <Route path='/user/mypage/favorite/pharmacy' element={<FavPharmacy/>} />
+        <Route path='/user/mypage/favorite/pharmacy' element={<FavPharmacy />} />
         <Route path='/map/getAedMap' element={<GetAedMap />} />
 
         {/* 404 페이지 처리 */}
