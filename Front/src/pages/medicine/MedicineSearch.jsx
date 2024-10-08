@@ -19,7 +19,7 @@ const MedicineSearch = () => {
     <>
       {/* 메인 검색 영역 */}
       <div className="flex flex-col items-center justify-center min-h-[1100px] bg-white"> {/* min-h-[1600px]로 세로 길이 확장 */}
-        <div className="w-full max-w-7xl mx-auto p-4 bg-white relative top-[90px]">
+        <div className="w-full max-w-7xl mx-auto p-4 bg-white relative top-[90px] ">
           {/* 검색 타이틀 */}
           <h1 className="text-[52px] font-bold text-center mb-8 leading-[48px] font-NotoSerifTamilSlanted">
             원하시는 의약품을 검색해 주세요
@@ -42,7 +42,7 @@ const MedicineSearch = () => {
 
           {/* 의약품 테이블 */}
           <div className="overflow-auto w-full">
-            <table className="table-auto w-full border-collapse text-center shadow-lg rounded-lg">
+            <table className="table-auto w-full border-collapse text-center shadow-lg rounded-lg border-color">
               <thead className="bg-[#cccccc1a]">
                 <tr>
                   <th className="py-4">번호</th>
