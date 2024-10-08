@@ -135,13 +135,13 @@ function GetEmergencyMap() {
     // 병원 데이터를 이용해 마커 표시하기
     useEffect(() => {
         if (map && hospitals && hospitals.length > 0) {
-            // console.log(hospitals);
+            console.log(hospitals);
 
             // 마커 이미지의 이미지 주소입니다
             var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
 
             hospitals.forEach(hospital => {
-                // console.log(hospital.dutyName, hospital.wgs84Lat, hospital.wgs84Lon);
+                console.log(hospital.dutyName, hospital.wgs84Lat, hospital.wgs84Lon);
 
                 // 마커 이미지의 이미지 크기 입니다
                 var imageSize = new kakao.maps.Size(24, 35);
@@ -153,8 +153,9 @@ function GetEmergencyMap() {
                 var marker = new kakao.maps.Marker({
                     map: map, // 마커를 표시할 지도
                     position: new kakao.maps.LatLng(hospital.wgs84Lat, hospital.wgs84Lon), // 마커를 표시할 위치
-                    title: hospital.dutyName, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
-                    image: markerImage // 마커 이미지 
+                    text: hospital.hvec,
+                    // title: hospital.dutyName, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+                    image: markerImage, // 마커 이미지 
                 });
                 addMarkerPosition(marker);
 
@@ -256,7 +257,7 @@ function GetEmergencyMap() {
                 height: '30px',
                 margin: '0',
                 padding: '0',
-                zIndex: 100,
+                zIndex: 10,
                 fontSize: '12px',
                 fontFamily: "'Malgun Gothic', '맑은 고딕', sans-serif",
                 border: '1px solid #919191',
@@ -273,6 +274,23 @@ function GetEmergencyMap() {
                 <button onClick={() => increaseRadius()} >
                     반경 증가
                 </button>
+            </div>
+            <div style={{
+                position: 'absolute',
+                top: '0px',
+                left: '0px',
+                overflow: 'hidden',
+                height: '100%',
+                width: '300px',
+                margin: '0',
+                padding: '0',
+                zIndex: 10,
+                fontSize: '12px',
+                fontFamily: "'Malgun Gothic', '맑은 고딕', sans-serif",
+                border: '1px solid #919191',
+                borderRadius: '5px',
+                backgroundColor: 'white'
+            }}>
 
             </div>
         </>
