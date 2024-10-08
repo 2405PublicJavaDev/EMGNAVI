@@ -16,24 +16,32 @@ const LoginMain = () => {
         setIsPasswordVisible(false);
     };
 
-    const handleSignUp = async () => {
-        if (!values.uEmail || !values.uPassword) {
-            alert("아이디와 비밀번호를 입력해주세요.");
-            return;
+    const handleSignUp = async (e) => {
+        if(e === 'Enter' || e.type === 'click') {
+            if (!values.uEmail || !values.uPassword) {
+                alert("아이디와 비밀번호를 입력해주세요.");
+                return;
+            }
+            
+            try {
+                const response = await axios.post('/api/login', {
+                    userId: values.uEmail,
+                    userPw: values.uPassword,
+                });
+                
+                console.log(response.data); // 응답 확인
+                alert(response.data);
+                nav("/"); // 로그인 성공 후 리다이렉트
+            } catch (error) {
+                console.error(error);
+                alert(error.response?.data || "로그인 중 오류가 발생했습니다.");
+            }
         }
-    
-        try {
-            const response = await axios.post('/api/login', {
-                userId: values.uEmail,
-                userPw: values.uPassword,
-            });
-    
-            console.log(response.data); // 응답 확인
-            alert(response.data);
-            nav("/"); // 로그인 성공 후 리다이렉트
-        } catch (error) {
-            console.error(error);
-            alert(error.response?.data || "로그인 중 오류가 발생했습니다.");
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleSignUp('Enter');
         }
     };
 
@@ -111,6 +119,7 @@ const LoginMain = () => {
                             const value = e.target.value;
                             setValues({ ...values, uEmail: value }); // 값 업데이트
                         }}
+                        onKeyDown={handleKeyDown}
                         placeholder='아이디(이메일)를 입력해주세요.'
                         className="absolute left-[79px] top-1 w-[298px] h-[55px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"></input>
                     <img className="absolute left-[28px] top-[19px]" width="22" height="22" src="/img/user/user 185_14.png"></img>
@@ -126,6 +135,7 @@ const LoginMain = () => {
                             const value = e.target.value;
                             setValues({ ...values, uPassword: value });
                         }}
+                        onKeyDown={handleKeyDown}
                         placeholder='비밀번호를 입력해주세요.'
                         className="absolute left-[79px] top-1 w-[298px] h-[55px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"></input>
                     <img className="absolute left-[27px] top-[17px]" width="25" height="25" src="/img/user/padlock (1) 186_6.png"></img>
@@ -142,7 +152,9 @@ const LoginMain = () => {
 
                 <div className="absolute left-[704px] top-[757px] w-[511px] h-[60px] flex">
                     <button
+                        type='button'
                         onClick={handleSignUp}
+                        // onKeyDown={handleKeyDown}
                         className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]">
                         <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">로그인</span>
                     </button>
