@@ -1,5 +1,6 @@
 package com.emginfo.emgnavi.map.controller;
 
+import com.emginfo.emgnavi.aed.vo.Aed;
 import com.emginfo.emgnavi.common.success.SuccessCode;
 import com.emginfo.emgnavi.common.success.SuccessResponse;
 import com.emginfo.emgnavi.hospital.vo.Hospital;
@@ -34,6 +35,19 @@ public class MapController {
 //            hospitals   ##요청을 보낸 웹 페이지로 보낼 데이터. SuccessResponse 객체의 필드로 저장되며 SuccessResponse째로 JSON 변환되어 요청 보냈던 페이지로 리턴
 //      )
         return new SuccessResponse(SuccessCode.RESOURCE_FOUND, hospitals);
+    }
+
+    @GetMapping("/map/getAroundAed")
+    public SuccessResponse getAroundAedList(double latitude, double longitude, double distance) {
+        GpsInfo gpsInfo = new GpsInfo(latitude, longitude, distance);
+        List<Aed> Aeds = mapService.getAroundAedList(gpsInfo);
+
+//      ##Return값 작성 예시##
+//      SuccessResponse(
+//            SuccessCode.[RESOURCE_FOUND,REGISTER_SUCCESS],    ##SuccessCode enum 객체에서 동작에 어울리는 메시지를 선택하면 된다(현재 등록 완료, 조회 성공 2가지가 있음)
+//            hospitals   ##요청을 보낸 웹 페이지로 보낼 데이터. SuccessResponse 객체의 필드로 저장되며 SuccessResponse째로 JSON 변환되어 요청 보냈던 페이지로 리턴
+//      )
+        return new SuccessResponse(SuccessCode.RESOURCE_FOUND, Aeds);
     }
 
 }
