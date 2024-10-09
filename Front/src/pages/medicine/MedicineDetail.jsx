@@ -17,10 +17,42 @@ const StarRating = ({ rating, onRatingChange, isClickable = true }) => {
     );
 };
 
+const 리뷰상세보기내용 = ({ review, onClose }) => {
+    return (
+        <div className="w-full bg-white border-t border-gray-200 p-4 transition-all duration-300 ease-in-out">
+            <div className="max-w-[1070px] mx-auto">
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-bold">리뷰 상세보기 - {review.작성자}</h3>
+                    <span className="text-sm text-gray-500">{review.작성일자}</span>
+                </div>
+                <div className="mb-4">
+                    <StarRating rating={review.평점} onRatingChange={() => { }} isClickable={false} />
+                </div>
+                <p className="text-base mb-6">{review.리뷰}</p>
+                <div className="flex justify-end space-x-4">
+                    <button
+                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+                        onClick={onClose}
+                    >
+                        삭제
+                    </button>
+                    <button
+                        className="px-4 py-2 bg-[#0B2D85] text-white rounded hover:bg-[#0939AD] transition"
+                        onClick={onClose}
+                    >
+                        등록
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const MedicineDetail = () => {
     const [review, setReview] = useState('');
     const [rating, setRating] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
+    const [expandedReviewId, setExpandedReviewId] = useState(null);
     const itemsPerPage = 10;
 
     const dummyProductInfo = {
@@ -69,6 +101,7 @@ const MedicineDetail = () => {
         { 번호: 13, 평점: 2, 리뷰: '다른 약이 더 잘 맞아요.', 작성일자: '2024.08.29', 작성자: 'P9283F' },
         { 번호: 14, 평점: 5, 리뷰: '저에게 딱 맞는 약이네요.', 작성일자: '2024.08.30', 작성자: 'K3729D' },
         { 번호: 15, 평점: 4, 리뷰: '부작용이 없어서 좋아요.', 작성일자: '2024.08.31', 작성자: 'M1827B' },
+        { 번호: 16, 평점: 5, 리뷰: '정말 잘 듣는 약입니다.', 작성일자: '2024.09.01', 작성자: 'Q12345' }
     ];
 
     const totalPages = Math.ceil(dummyReviews.length / itemsPerPage);
@@ -93,169 +126,133 @@ const MedicineDetail = () => {
         setCurrentPage(pageNumber);
     };
 
+    const toggleReviewDetail = (reviewId) => {
+        setExpandedReviewId(expandedReviewId === reviewId ? null : reviewId);
+    };
+
     return (
-        <>
-            <div className="flex flex-col min-h-screen">
-                <div className="flex-grow">
-                    <div className="relative w-[100%] h-[3200px] bg-[#fff] overflow-hidden mt-[-40px]">
-                        {/* 제품 상세 정보 섹션 */}
-                        <div className="absolute left-[122px] top-[224px] w-[1728px] h-[1799px] overflow-hidden">
-                            <div className="absolute left-0 top-[76px] w-[1728px] h-[1646px] bg-[#fff] overflow-hidden">
-                                <div className="absolute left-[303px] top-[181px] w-[1121px] h-[590px]"></div>
-                                <div className="absolute left-[-16px] top-[-96px] w-[1728px] h-[1646px] overflow-hidden">
-                                    <div className="absolute left-[65px] top-[638px] w-[925px] h-[571px]"></div>
-                                    <div className="absolute left-[535px] top-[69px] w-[913px] h-[447px]">
-                                        <div className="absolute left-0 top-0 w-[913px] h-[116px] text-[36px] leading-[18px] font-['Roboto'] font-bold text-[#000] flex flex-col justify-center">제품 상세 정보</div>
-                                        <div className="absolute left-0 top-[147px] w-[1175px] h-[500px] bg-[#fff] border-[1px] border-solid border-[#0000001a] rounded-[5px]">
-                                            <div className="absolute left-0 top-[-30px] w-[471px] h-[368px] flex">
-                                                <div className="absolute left-[1px] top-[151px] w-[470px] h-[22px]"></div>
-                                                <div className="absolute left-0 top-0 w-[470px] h-[368px]">
-                                                    <div className="absolute left-0 top-0 w-[459px] h-[435px]">
-                                                        <div className="absolute left-[10px] top-[50px] w-[1144px] h-[360px] text-[18px] leading-[18px] font-['Roboto'] font-bold text-[#000]">
-                                                            효능 (efcyQesitm): {dummyProductInfo.efcyQesitm}<br />
-                                                            사용법 (useMethodQesitm):<br />
-                                                            {dummyProductInfo.useMethodQesitm}<br />
-                                                            주의사항 경고 (atpnWarnQesitm): {dummyProductInfo.atpnWarnQesitm}<br />
-                                                            주의사항 (atpnQesitm):<br />
-                                                            {dummyProductInfo.atpnQesitm}<br />
-                                                            상호작용 (intrcQesitm): {dummyProductInfo.intrcQesitm}<br />
-                                                            부작용 (seQesitm): {dummyProductInfo.seQesitm}<br />
-                                                            보관법 (depositMethodQesitm):<br />
-                                                            {dummyProductInfo.depositMethodQesitm}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="absolute left-[22px] top-[-70px] w-[907px] h-[81px] leading-[18px] font-['Roboto'] font-bold flex flex-col justify-center">
-                                                <span className="text-[18px] text-[#000]">{dummyProductInfo.업체명}/{dummyProductInfo.제품명}</span>
-                                                <span className="text-[14px] text-[#00000078]">{dummyProductInfo.품목기준코드} | {dummyProductInfo.수정일자}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="absolute left-[-9px] top-[35px] w-[528px] h-[594px] overflow-hidden">
-                                <div className="absolute left-0 right-0 bottom-0 h-0 border-[1px] border-solid border-[#00000000]"></div>
-                            </div>
-                            <img className="absolute left-[-10px] top-[241px]" width="495" height="270" src="/img/medicine/AlYak.png" alt="Product"></img>
-                        </div>
-
-                        {/* 리뷰 작성 섹션 */}
-                        <div className="absolute left-[-35px] top-[1027px] w-[1869px] h-[637px] overflow-hidden">
-                            <div className="absolute left-[673px] top-[74px] w-[468px] h-[443px]">
-                                <div className="absolute left-[-444px] top-[-22px] w-[1355px] flex flex-col items-start justify-start gap-[22px]">
-                                    <div className="self-stretch text-[58px] leading-[43px] font-['Roboto'] font-bold text-[#000]">리뷰 작성</div> <br />
-                                    <div className="self-stretch text-[22px] leading-[22px] font-['Roboto'] text-[#000]">의견을 자유롭게 작성해 주세요.</div>
-                                </div>
-                                <div className="absolute left-[-444px] top-[198px] w-[1356px] h-[281px]">
-                                    <div className="absolute left-0 top-[-47px] w-[468px] h-[281px]">
-                                        <div className="absolute left-0 top-0 w-[977px] h-[329px] border-[1px] border-solid border-[#000] overflow-hidden">
-                                            <div className="absolute left-0 top-[0px] w-[977px] h-[328px] bg-[#fff] border-[1px] border-solid border-[#0000001a] rounded-[5px]">
-                                                <textarea
-                                                    className="w-full h-[286px] text-[13px] leading-[18px] font-['Roboto'] text-[#00000080] p-4 border rounded-lg mt-10"
-                                                    placeholder="내용을 입력 해 주세요"
-                                                    value={review}
-                                                    onChange={handleReviewChange}
-                                                />
-                                                <div className="absolute left-[0px] right-[0px] bottom-[286px] h-0 border-[1px] border-solid border-[#000]"></div>
-                                                <div className="absolute left-[810px] top-[8px] flex items-center">
-                                                    <div className="text-[14px] leading-[18px] font-['Roboto'] font-bold text-[#000] whitespace-nowrap">평점</div>
-                                                    <div className="ml-2">
-                                                        <StarRating rating={rating} onRatingChange={handleRatingChange} />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="absolute left-[234px] top-[180px] w-[216px] h-[43px]"></div>
-                                    <div className="absolute left-0 top-[180px] w-[216px] h-[43px]"></div>
-                                    <img className="absolute left-[1033px] top-[-184px]" width="544" height="554" src="/img/medicine/review.png" alt="Decoration"></img>
-                                </div>
-                            </div>
-                            <div className="absolute left-[991px] top-[574px] w-[216px] flex flex-col items-center justify-center p-[11px] bg-[#0b2d85] border-[1px] border-solid border-[#0939ad] rounded-[7px]">
-                                <button className="text-[14px] leading-[22px] font-['Roboto'] font-medium text-[#fff] whitespace-nowrap" onClick={handleSubmit}>작성 완료</button>
-                            </div>
-                        </div>
-
-                        {/* 리뷰 목록 섹션 */}
-                        <div className="absolute left-[-370px] top-[1752px] w-[2472px] h-[2132px] bg-[#fff] overflow-hidden">
-                            <div className="absolute left-[434px] top-[259px] w-[1604px] h-[843px]"></div>
-                            <div className="absolute left-[-371px] top-[-10px] w-[3213px] h-[1774px] ">
-                                <div className="absolute left-0 top-[0px] w-[3213px] h-[1774px] flex">
-                                    <div className="absolute -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 w-[3213px] h-[1774px] overflow-hidden">
-                                        <div className="absolute left-[417px] top-[128px] w-[2380px] h-[380px]">
-                                            <div className="absolute left-0 top-0 w-[2380px] h-[380px]">
-                                                <div className="absolute left-0 top-0 w-[2380px] h-[271px]">
-                                                    <div className="absolute left-[723px] top-[27px] w-[1105px] text-[59px] leading-[54px] font-['NotoSerifTamilSlanted'] font-bold text-[#000] text-center">리뷰 목록</div>
-                                                    <div className="absolute left-[1009px] top-[380px]"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="absolute -translate-y-1/2 right-[902px] top-[calc(50%+-51px)] w-[1239px] h-[859px] flex flex-col items-center justify-start border-[1.8px] border-solid border-[#0000001a] rounded-[4px] overflow-hidden">
-                                            <div className="relative self-stretch h-[90px] shrink-0 bg-[#cccccc1a] border-[1px] border-solid border-[#000]">
-                                                <div className="absolute left-[23px] top-[27px] w-[34px] h-[23px]"></div>
-                                                <div className="absolute left-[479px] top-[36px] w-[113px] text-[21px] leading-[23px] font-['Roboto'] font-medium text-[#000] text-center">리뷰</div>
-                                                <div className="absolute left-[699px] top-[36px] w-[113px] text-[21px] leading-[23px] font-['Roboto'] font-medium text-[#000] text-center">작성일자</div>
-                                                <div className="absolute left-[864px] top-[36px] w-[113px] text-[21px] leading-[23px] font-['Roboto'] font-medium text-[#000] text-center">작성자</div>
-                                                <div className="absolute left-[186px] top-[36px] w-[113px] text-[21px] leading-[23px] font-['Roboto'] font-medium text-[#000] text-center">평점</div>
-                                                <div className="absolute left-[870px] top-[35px] w-[508px] text-[21px] leading-[23px] font-['Roboto'] font-medium text-[#000] text-center">상세정보</div>
-                                                <div className="absolute left-[33px] top-[35px] text-[21px] leading-[23px] font-['Roboto'] font-medium text-[#000] text-center whitespace-nowrap">번호</div>
-                                            </div>
-                                            {currentReviews.map((review, index) => (
-                                                <div key={index} className="relative self-stretch h-[77px] shrink-0">
-                                                    <div className="absolute left-[34px] top-[32px] w-[34px] text-[18px] leading-[23px] font-['Roboto'] font-medium text-[#000] text-center">{review.번호}</div>
-                                                    <div className="absolute left-[186px] top-[32px] text-[18px] leading-[23px] font-['Roboto'] font-medium text-[#000] text-center">
-                                                        <StarRating rating={review.평점} onRatingChange={() => { }} isClickable={false} />
-                                                    </div>
-                                                    <div className="absolute left-[428px] top-[30px] w-[223px] text-[18px] leading-[23px] font-['Roboto'] font-medium text-[#000] text-center">{review.리뷰}</div>
-                                                    <div className="absolute left-[681px] top-[32px] w-[147px] text-[18px] leading-[23px] font-['Roboto'] font-medium text-[#000] text-center">{review.작성일자}</div>
-                                                    <div className="absolute left-[1010px] top-[23px] w-[169px] flex flex-col items-start justify-start pt-0 pr-0 pb-0 pl-[56px]">
-                                                        <div className="self-stretch h-[41px] shrink-0 flex flex-col items-center justify-center p-[14px] bg-[#0b2d85] border-[1px] border-solid border-[#0939ad] rounded-[9px]">
-                                                            <div className="text-[16px] leading-[27px] font-['Roboto'] font-bold text-[#fff] whitespace-nowrap">상세 정보</div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="absolute left-[881px] top-[17px] text-[18px] leading-[54px] font-['Roboto'] font-medium text-[#000] text-center whitespace-nowrap">{review.작성자}</div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                        {/* 페이지네이션 */}
-                                        <div className="absolute left-[1558px] top-[1301px] w-[286px] h-[83px] bg-[#fff] overflow-hidden flex justify-center space-x-2">
-                                            {[...Array(totalPages).keys()].map((page) => (
-                                                <div key={page} className="w-[53px] h-[53px] flex">
-                                                    
-                                                    <button
-                                                        onClick={() => handlePageChange(page + 1)}
-                                                        className={`absolute text-center bg-[#0b2d85] text-white px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold ${currentPage === page + 1 ? 'bg-blue-700' : ''}`}
-                                                    >
-                                                        {page + 1}
-                                                    </button>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
+        <div className="flex flex-col min-h-screen">
+            <div className="flex-grow">
+                <div className="container mx-auto px-4 py-64">
+                    {/* 제품 상세 정보 섹션 */}
+                    <div className="mb-12">
+                        <h1 className="text-3xl font-bold mb-6">제품 상세 정보</h1>
+                        <div className="bg-white p-6 rounded-lg shadow-md">
+                            <div className="flex mb-4">
+                                <img className="w-1/3 mr-6" src="/img/medicine/AlYak.png" alt="Product" />
+                                <div>
+                                    <h2 className="text-2xl font-semibold mb-2">{dummyProductInfo.업체명}/{dummyProductInfo.제품명}</h2>
+                                    <p className="text-gray-600 mb-2">{dummyProductInfo.품목기준코드} | {dummyProductInfo.수정일자}</p>
+                                    <p className="font-bold mb-2">효능: {dummyProductInfo.efcyQesitm}</p>
+                                    <p className="mb-2">사용법: {dummyProductInfo.useMethodQesitm}</p>
+                                    <p className="mb-2">주의사항: {dummyProductInfo.atpnQesitm}</p>
+                                    <p>보관법: {dummyProductInfo.depositMethodQesitm}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Footer 영역 */}
-                    <footer className="w-full bg-black text-white py-8 mt-auto">
-                        <div className="container mx-auto px-6 flex justify-between items-center">
-                            <div className="flex items-center">
-                                <img src="/img/footer/logo.png" alt="응급NAVI" width="117" height="100" />
-                                <div className="ml-4 text-xl font-bold">응급NAVI</div>
+                    {/* 리뷰 작성 섹션 */}
+                    <div className="mb-12 flex space-x-6">
+                        <div className="w-2/3">
+                            <h2 className="text-2xl font-bold mb-4">리뷰 작성</h2>
+                            <div className="bg-white p-6 rounded-lg shadow-md">
+                                <textarea
+                                    className="w-full h-32 p-2 border rounded-md mb-4"
+                                    placeholder="의견을 자유롭게 작성해 주세요."
+                                    value={review}
+                                    onChange={handleReviewChange}
+                                />
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center">
+                                        <span className="mr-2">평점:</span>
+                                        <StarRating rating={rating} onRatingChange={handleRatingChange} />
+                                    </div>
+                                    <button
+                                        className="px-4 py-2 bg-[#0B2D85] text-white rounded hover:bg-[#0939AD] transition"
+                                        onClick={handleSubmit}
+                                    >
+                                        작성 완료
+                                    </button>
+                                </div>
                             </div>
-                            <div className="text-gray-400 text-sm">
-                                서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원 | 대표전화: 1544-9970
-                                <br />
-                                © 2024 응급NAVI. All Rights Reserved.
-                            </div>
-                            <img src="/img/footer/group.png" alt="Group" width="145" height="34" />
                         </div>
-                    </footer>
+
+                        <div className="w-1/3">
+                            <img className="w-full h-auto object-cover" src="/img/medicine/review.png" alt="리뷰 작성 이미지" />
+                        </div>
+                    </div>
+
+                    {/* 리뷰 목록 섹션 */}
+                    <div className="mt-36">
+                        <h2 className="text-4xl font-bold mb-28 text-center">리뷰 목록</h2>
+                        <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-300 w-full">
+    <div className="px-6 py-4 bg-gray-100 flex font-bold text-lg">
+        <div className="w-14 text-center">번호</div> {/* 번호 열 크기 조금 축소 */}
+        <div className="w-28 text-center">평점</div> {/* 평점 열 크기 */}
+        <div className="flex-1 text-center">리뷰</div> {/* 리뷰 열 크기는 flex-1로 설정해 유동적으로 맞춤 */}
+        <div className="w-36 text-center">작성일자</div> {/* 작성일자 크기 축소 */}
+        <div className="w-36 text-center">작성자</div> {/* 작성자 크기 축소 */}
+        <div className="w-32 text-center">상세정보</div> {/* 상세정보 크기 */}
+    </div>
+    {currentReviews.map((review) => (
+        <React.Fragment key={review.번호}>
+            <div className="px-6 py-4 flex items-center border-t border-gray-200">
+                <div className="w-14 text-center">{review.번호}</div> {/* 번호 크기 */}
+                <div className="w-28 text-center">
+                    <StarRating rating={review.평점} onRatingChange={() => { }} isClickable={false} />
+                </div>
+                <div className="flex-1 text-center truncate">{review.리뷰}</div> {/* 리뷰 크기 */}
+                <div className="w-36 text-center">{review.작성일자}</div> {/* 작성일자 크기 */}
+                <div className="w-36 text-center">{review.작성자}</div> {/* 작성자 크기 */}
+                <div className="w-32 text-center">
+                    <button
+                        className="px-4 py-2 bg-[#0B2D85] text-white rounded-full hover:bg-[#0939AD] transition"
+                        onClick={() => toggleReviewDetail(review.번호)}
+                    >
+                        상세 정보
+                    </button>
                 </div>
             </div>
-        </>
+            {expandedReviewId === review.번호 && (
+                <리뷰상세보기내용 review={review} onClose={() => setExpandedReviewId(null)} />
+            )}
+        </React.Fragment>
+    ))}
+</div>
+
+                        {/* 페이지네이션 */}
+                        <div className="mt-14 flex justify-center space-x-2">
+                            {[...Array(totalPages).keys()].map((page) => (
+                                <button
+                                    key={page}
+                                    onClick={() => handlePageChange(page + 1)}
+                                    className={`px-4 py-2 rounded-lg border border-[#0939AD] ${currentPage === page + 1 ? 'bg-[#0B2D85] text-white' : 'bg-white text-[#0B2D85] hover:bg-gray-200'
+                                        }`}
+                                >
+                                    {page + 1}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <footer className="w-full bg-black text-white py-8 mt-auto">
+                <div className="container mx-auto px-6 flex justify-between items-center">
+                    <div className="flex items-center">
+                        <img src="/img/footer/logo.png" alt="응급NAVI" width="117" height="100" />
+                        <div className="ml-4 text-xl font-bold">응급NAVI</div>
+                    </div>
+                    <div className="text-gray-400 text-sm">
+                        서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원 | 대표전화: 1544-9970
+                        <br />
+                        © 2024 응급NAVI. All Rights Reserved.
+                    </div>
+                    <img src="/img/footer/group.png" alt="Group" width="145" height="34" />
+                </div>
+            </footer>
+        </div>
     );
 };
 

@@ -21,18 +21,29 @@ const FIndEmailComplete = () => {
             });
         }
     }, [userPhone, setConfig]);
-    
+
     useEffect(() => {
         if (response) {
             console.log("Response received:", response);
             // API 응답에서 아이디(이메일) 값 설정
-            setEmail(response);
+            // 이메일의 두 번째, 세 번째 문자를 '*'로 변경
+            const maskedEmail = response.split('').map((char, index) => {
+                if (index === 1 || index === 2) {
+                    return '*';
+                }
+                return char;
+            }).join('');
+            setEmail(maskedEmail);
         }
-    
+
         if (error) {
             console.error("Error occurred:", error);
             if (error.response && error.response.status === 404) {
                 setEmail('해당 휴대폰 번호로 등록된 아이디가 없습니다.');
+                const idElement = document.getElementById("idName");
+                if (idElement) {
+                    idElement.hidden = true; // hidden 속성을 사용하여 요소를 숨김
+                }
             } else {
                 setEmail('아이디를 찾는 중 오류가 발생했습니다.');
             }
@@ -50,7 +61,9 @@ const FIndEmailComplete = () => {
         <>
             <div className="absolute left-[210px] top-[426px] w-[1500px] h-[466px] bg-[#7d85971a]"></div>
             <div className="absolute left-[420px] top-[633px] w-[1080px] h-0 border-[1px] border-solid border-[#000]"></div>
-            <div className="absolute left-[569px] top-[679px] w-[104px] h-[34px] text-[22px] font-['Inter'] font-medium text-[#000]">아이디</div>
+            <div
+                id='idName'
+                className="absolute left-[569px] top-[679px] w-[104px] h-[34px] text-[22px] font-['Inter'] font-medium text-[#000]">아이디</div>
             <div className="absolute left-[1px] top-[679px] w-[1919px] h-[41px] text-[22px] font-['Inter'] font-light text-[#000] text-center">
                 {email}
             </div>

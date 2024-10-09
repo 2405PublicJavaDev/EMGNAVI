@@ -1,8 +1,6 @@
 package com.emginfo.emgnavi.user.service.impl;
 
-import com.emginfo.emgnavi.user.model.dto.UserIdRequest;
-import com.emginfo.emgnavi.user.model.dto.UserInfoRequest;
-import com.emginfo.emgnavi.user.model.dto.VerifyPhoneRequest;
+import com.emginfo.emgnavi.user.model.dto.*;
 import com.emginfo.emgnavi.user.model.mapper.UserMapper;
 import com.emginfo.emgnavi.user.model.vo.User;
 import net.nurigo.sdk.NurigoApp;
@@ -25,14 +23,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SingleMessageSentResponse sendVerificationCode(String userPhone) {
+    public SingleMessageSentResponse sendVerificationCode(String userPhone, String verificationCode) {
         Message message = new Message();
         message.setFrom("01053248588");
-        message.setTo(userPhone);
-        message.setText("제발 가져라");
 
+        message.setTo(userPhone);
+
+        message.setText("[응급NAVI] 인증번호를 입력해주세요 " + verificationCode);
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
-        System.out.println(response);
 
         return response;
     }
@@ -50,8 +48,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public int checkNicknameDuplicate(UserNicknameRequest request) {
+        int result = mapper.checkNicknameDuplicate(request);
+        return result;
+    }
+
+    @Override
     public User selectIdByPhone(VerifyPhoneRequest request) {
         User user = mapper.selectIdByPhone(request);
+        return user;
+    }
+
+    @Override
+    public User checkLogin(LoginRequest request) {
+        User user = mapper.checkLogin(request);
         return user;
     }
 }

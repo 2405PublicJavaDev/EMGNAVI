@@ -1,8 +1,12 @@
 import { useState, EventHandler, ReactNode, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
+import useAxios from '../../axios/useAxios';
+import axios from 'axios';
 
 const LoginMain = () => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const { response, error, loading, setConfig } = useAxios();
+
     const nav = useNavigate();
     const handleMouseDown = () => {
         setIsPasswordVisible(true);
@@ -12,8 +16,33 @@ const LoginMain = () => {
         setIsPasswordVisible(false);
     };
 
-    const handlerGoLogin = () => {
-        nav("/");
+    const handleSignUp = async (e) => {
+        if(e === 'Enter' || e.type === 'click') {
+            if (!values.uEmail || !values.uPassword) {
+                alert("아이디와 비밀번호를 입력해주세요.");
+                return;
+            }
+            
+            try {
+                const response = await axios.post('/api/login', {
+                    userId: values.uEmail,
+                    userPw: values.uPassword,
+                });
+                
+                console.log(response.data); // 응답 확인
+                alert(response.data);
+                nav("/"); // 로그인 성공 후 리다이렉트
+            } catch (error) {
+                console.error(error);
+                alert(error.response?.data || "로그인 중 오류가 발생했습니다.");
+            }
+        }
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleSignUp('Enter');
+        }
     };
 
     const handlerGoRegister = () => {
@@ -38,9 +67,9 @@ const LoginMain = () => {
         window.location.href = url;
     };
 
-    // const { naver } = window
-    // const NAVER_CLIENT_ID = "HybacJJgFsuLnLngHigE"; // 발급 받은 Client ID 입력 
-    // const NAVER_CALLBACK_URL = "http://127.0.0.1:3000/naver/callback"; // 작성했던 Callback URL 입력
+    const { naver } = window
+    const NAVER_CLIENT_ID = "HybacJJgFsuLnLngHigE"; // 발급 받은 Client ID 입력 
+    const NAVER_CALLBACK_URL = "http://127.0.0.1:3000/naver/callback"; // 작성했던 Callback URL 입력
 
     const naverLogin = new naver.LoginWithNaverId(
         {
@@ -52,8 +81,15 @@ const LoginMain = () => {
     naverLogin.init();
     useEffect(() => {
         naverLogin.init();
-        console.log("init!");
+        // console.log("init!");
     }, []);
+
+    const [values, setValues] = useState({
+        uEmail: '',
+        uPassword: '',
+    });
+
+
 
     return (
         <>
@@ -62,49 +98,67 @@ const LoginMain = () => {
                 <div
                     onClick={handlerGoRegister}
                     style={{ cursor: 'pointer' }}
-                    className="absolute left-0 top-0 w-[77px] text-[17px] font-['Inter'] text-[#7d8597]">회원가입  </div>
+                    className="absolute left-0 top-0 w-[77px] text-[16px] font-['Inter'] text-[#7d8597]">회원가입  </div>
                 <div className="absolute left-[84px] top-0 w-[6px] text-[19px] font-['Inter'] text-[#7d8597]">|</div>
                 <div className="absolute left-[209px] top-0 w-[6px] text-[19px] font-['Inter'] text-[#7d8597]">|</div>
                 <div
                     onClick={handlerGoFindId}
-                    style={{ cursor: 'pointer' }} className="absolute left-[97px] top-0 w-[105px] text-[17px] font-['Inter'] text-[#7d8597] text-center">아이디 찾기</div>
+                    style={{ cursor: 'pointer' }} className="absolute left-[97px] top-0 w-[105px] text-[16px] font-['Inter'] text-[#7d8597] text-center">아이디 찾기</div>
                 <div
                     onClick={handlerGoFindPw}
-                    style={{ cursor: 'pointer' }} className="absolute left-[222px] top-0 w-[124px] text-[17px] font-['Inter'] text-[#7d8597] text-center">비밀번호 찾기</div>
+                    style={{ cursor: 'pointer' }} className="absolute left-[222px] top-0 w-[124px] text-[16px] font-['Inter'] text-[#7d8597] text-center">비밀번호 찾기</div>
             </div>
             <div className="absolute left-0 top-[494px] w-[1920px] text-[28px] font-['Istok_Web'] font-bold text-[#0b2d85] text-center">응급NAVI</div>
-            <div className="absolute left-[704px] top-[586px] w-[511px] h-[60px] flex">
-                <div className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
-                <input
-                    type='text'
-                    placeholder='아이디(이메일)를 입력해주세요.'
-                    className="absolute left-[79px] top-1 w-[298px] h-[55px] text-[18px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"></input>
-                <img className="absolute left-[28px] top-[18px]" width="22" height="22" src="/img/user/user 185_14.png"></img>
-            </div>
-            <div className="absolute left-[704px] top-[757px] w-[511px] h-[60px] flex">
-                <button
-                    onClick={handlerGoLogin}
-                    className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]">
-                    <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">로그인</span>
-                </button>
-            </div>
-            <div className="absolute left-[704px] top-[659px] w-[511px] h-[60px] flex">
-                <div className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
-                <input
-                    type={isPasswordVisible ? 'text' : 'password'}
-                    // onChange={handlerPwChange}
-                    placeholder='비밀번호를 입력해주세요.'
-                    className="absolute left-[79px] top-1 w-[298px] h-[55px] text-[18px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"></input>
-                <img className="absolute left-[27px] top-[17px]" width="25" height="25" src="/img/user/padlock (1) 186_6.png"></img>
-                <img
-                    onMouseDown={() => handleMouseDown()}
-                    onMouseUp={() => handleMouseUp()}
-                    onMouseLeave={() => handleMouseUp()}
-                    style={{ cursor: 'pointer' }}
-                    className="absolute left-[460px] top-[20px]" width="20" height="20"
-                    src="/img/user/eye.png">
-                </img>
-            </div>
+
+                <div className="absolute left-[704px] top-[586px] w-[511px] h-[60px] flex">
+                    <div className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
+                    <input
+                        type='text'
+                        value={values.uEmail}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            setValues({ ...values, uEmail: value }); // 값 업데이트
+                        }}
+                        onKeyDown={handleKeyDown}
+                        placeholder='아이디(이메일)를 입력해주세요.'
+                        className="absolute left-[79px] top-1 w-[298px] h-[55px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"></input>
+                    <img className="absolute left-[28px] top-[19px]" width="22" height="22" src="/img/user/user 185_14.png"></img>
+                </div>
+
+
+                <div className="absolute left-[704px] top-[659px] w-[511px] h-[60px] flex">
+                    <div className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
+                    <input
+                        type={isPasswordVisible ? 'text' : 'password'}
+                        value={values.uPassword}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            setValues({ ...values, uPassword: value });
+                        }}
+                        onKeyDown={handleKeyDown}
+                        placeholder='비밀번호를 입력해주세요.'
+                        className="absolute left-[79px] top-1 w-[298px] h-[55px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"></input>
+                    <img className="absolute left-[27px] top-[17px]" width="25" height="25" src="/img/user/padlock (1) 186_6.png"></img>
+
+                    <img
+                        onMouseDown={() => handleMouseDown()}
+                        onMouseUp={() => handleMouseUp()}
+                        onMouseLeave={() => handleMouseUp()}
+                        style={{ cursor: 'pointer' }}
+                        className="absolute left-[460px] top-[20px]" width="20" height="20"
+                        src="/img/user/eye.png">
+                    </img>
+                </div>
+
+                <div className="absolute left-[704px] top-[757px] w-[511px] h-[60px] flex">
+                    <button
+                        type='button'
+                        onClick={handleSignUp}
+                        // onKeyDown={handleKeyDown}
+                        className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]">
+                        <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">로그인</span>
+                    </button>
+                </div>
             <div className="absolute left-[704px] top-[932px] w-[150px] h-0 border-[1px] border-solid border-[#7d8597]"></div>
             <div className="absolute left-[1065px] top-[932px] w-[150px] h-0 border-[1px] border-solid border-[#7d8597]"></div>
             <div className="absolute left-[895px] top-[920px] text-[18px] font-['Inter'] font-semibold text-[#7d8597] whitespace-nowrap">SNS 간편 로그인</div>
@@ -112,10 +166,10 @@ const LoginMain = () => {
                 {/* <div className="absolute left-0 top-0 w-[511px] h-[60px] flex"> */}
                 <div
                     id="naverIdLogin"
-                    // style={{ cursor: 'pointer' }}
-                    // onClick={naverLogin}
-                    // className="absolute left-0 top-0 w-[511px]"
-                    >
+                // style={{ cursor: 'pointer' }}
+                // onClick={naverLogin}
+                // className="absolute left-0 top-0 w-[511px]"
+                >
                     {/* <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center mt-4">네이버 로그인</span> */}
                 </div>
                 {/* </div> */}
