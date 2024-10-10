@@ -9,7 +9,7 @@
     </insert>
 
     <insert id="insertMedicine">
-        INSERT INTO MEDICINE_TBL VALUES (#{itemSeq}, #{entpName}, #{itemName}, #{efcyQesitm}, #{useMethodQesitm}, #{atpnWarnQesitm}, #{atpnQesitm}, #{intrcQesitm}, #{seQesitm}, #{depositMethodQesitm}, #{openDe}, #{updateDe})
+        INSERT INTO MEDICINE_TBL VALUES (#{itemSeq}, #{entpName}, #{itemName}, #{efcyQesitm}, #{useMethodQesitm}, #{atpnWarnQesitm}, #{atpnQesitm}, #{intrcQesitm}, #{seQesitm}, #{depositMethodQesitm}, #{openDe}, #{updateDe}, #{itemImage})
     </insert>
 
 </mapper>

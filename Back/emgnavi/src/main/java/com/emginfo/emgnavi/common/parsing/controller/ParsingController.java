@@ -129,6 +129,8 @@ public class ParsingController {
                     parsingMapper.insertHospital(hospital);
                 }
             }
+
+            System.out.println("작업완료!!!");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -176,12 +178,15 @@ public class ParsingController {
                     medicine.setDepositMethodQesitm(getTagValue("depositMethodQesitm", element));
                     medicine.setOpenDe(getTagValue("openDe", element));
                     medicine.setUpdateDe(getTagValue("updateDe", element));
+                    medicine.setItemImage(getTagValue("itemImage", element));
 
                     System.out.println(medicine);
 
                     parsingMapper.insertMedicine(medicine);
                 }
             }
+
+            System.out.println("작업완료!!!");
         } catch (Exception e) {
             e.printStackTrace();
         }
