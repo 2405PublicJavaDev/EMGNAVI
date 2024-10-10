@@ -10,7 +10,7 @@ const useAxios = () => {
         try {
             const res = await axios(config);
             setResponse(res.data.data);
-            if (res.data.status == 200 || res.data.status == 201) {
+            if (res.status >= 200 && res.status < 300) {
                 if (callback) callback(res.data);
             } else {
                 alert(`${res.data.status} | ${res.data.error}\n${res.data.message}\n에러코드 ${res.data.code}`);
@@ -28,7 +28,7 @@ const useAxios = () => {
                 // 요청 설정 중 오류가 발생한 경우
                 // alert('Error setting up the request. Please try again.');
             }
-            alert('[망함] 서버가 터졌다!');
+            // alert('[망함] 서버가 터졌다!');
         } finally {
             setLoading(false);
         }
