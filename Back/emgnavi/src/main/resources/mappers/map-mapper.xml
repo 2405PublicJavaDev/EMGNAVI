@@ -10,4 +10,10 @@
                      WGS_84_LAT BETWEEN ${minLat} AND ${maxLat} AND
                      DUTY_ERYN = 1
     </select>
+    <select id="getAroundAedList" resultType="Aed">
+        SELECT * FROM AED_TBL
+        WHERE
+            WGS84_LON BETWEEN ${minLon} AND ${maxLon} AND
+            WGS84_LAT BETWEEN ${minLat} AND ${maxLat}
+    </select>
 </mapper>

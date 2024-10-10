@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class AED {
+public class Aed {
 
     private String rnum;        // 제조 번호
     private String wgs84Lon;    // 경도

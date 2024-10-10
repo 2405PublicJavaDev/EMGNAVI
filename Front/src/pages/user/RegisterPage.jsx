@@ -287,13 +287,16 @@ const RegisterPage = () => {
                 userGender: userGender,
                 userAddress: userAddress,
                 marketingAgree: marketingAgree,
+            }, {
+                withCredentials: true // 쿠키를 포함하여 요청
             });
             // 요청이 성공하면 페이지 이동
             if (response.status === 200) {
-                nav("/user/register/complete");
+                nav("/user/register/complete", { state: { userNickname: values.uNickname } });
             }
         } catch (error) {
             alert("회원가입 중 오류가 발생했습니다. 다시 시도해 주세요.");
+            console.log(error.response ? error.response.data : error.message);
         }
     };
 

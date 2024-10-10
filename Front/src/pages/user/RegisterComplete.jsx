@@ -1,8 +1,15 @@
-import { useState, EventHandler, ReactNode } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, EventHandler, ReactNode, useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 const RegisterComplete = () => {
+    const location = useLocation();
+    const { userNickname } = location.state || {};
     const nav = useNavigate();
+
+    useEffect(() => {
+        console.log("받아온 userNickname:", userNickname);
+    }, [userNickname]);
+
     const handlerGoLogin = () => {
         nav("/user/login");
     }
@@ -12,7 +19,7 @@ const RegisterComplete = () => {
 
     return (<>
         <div className="absolute left-[265px] top-[645px] w-[1390px] h-[466px] bg-[#7d85971a] rounded-[20px]"></div>
-        <div className="absolute left-0 top-[875px] w-[1919px] h-[47px] text-[26px] font-['Inter'] font-semibold text-center"><span className="text-[#0b2d85]">응급NAVI88</span><span className="text-[#000]"> 님, 환영합니다.</span></div>
+        <div className="absolute left-0 top-[875px] w-[1919px] h-[47px] text-[26px] font-['Inter'] font-semibold text-center"><span className="text-[#0b2d85]">{userNickname}</span><span className="text-[#000]"> 님, 환영합니다.</span></div>
         <div className="absolute left-0 top-[940px] w-[1919px] h-[77px] text-[20px] leading-[150%] font-['Inter'] text-[#000] text-center">회원가입이 완료되었습니다.<br />응급NAVI 홈페이지에 가입해주셔서 감사합니다.</div>
         <div className="absolute left-0 top-[245px] w-[1919px] h-[47px] text-[40px] font-['Inter'] font-bold text-[#000] text-center">일반 회원가입</div>
         <div className="absolute left-0 top-[324px] w-[1919px] text-[15px] font-['Inter'] text-[#7d8597] text-center">회원가입 시 즐겨찾기, 리뷰작성 등 개인화 서비스를 제공받으실 수 있습니다.</div>

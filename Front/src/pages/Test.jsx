@@ -6,45 +6,45 @@ const Test = () => {
 
     const { no } = useParams();
 
-    const { response, error, loading } = useAxios({
-        method: 'GET',
-        url: `/api/test/${no}`,
-    });
+    const { response, fetchData } = useAxios();
 
-    console.log(response);
+    useEffect(() => {
+        fetchData(
+            {
+                method: 'GET',
+                url: `/api/test/${no}`,
+            },
+        );
+    }, []);
 
-    const button = () => {
-        const { response, error, loading } = useAxios({
-            method: 'POST',
-            url: `/api/test`,
-            data: {
-                data: 'a'
+    const button = async () => {
+        fetchData(
+            {
+                method: 'POST',
+                url: `/api/test/2`,
+                data: {
+                    no,
+                }
+            },
+            (data) => {
+                console.log(data);
+                if (data.status === 200) {
+                    console.log("다음 동작!!!");
+                }
             }
-        });
+        );
     }
 
     return (
         <>
-            <div className="flex items-center justify-center h-screen bg-gray-100">
-                {/* {loading && (
-                    <p>Loading...</p>
-                )}
-                {error && (
-                    <>
-                        <p>{error.status}</p>
-                        <p>{error.error}</p>
-                        <p>{error.message}</p>
-                        <p>에러 코드 : {error.code}</p>
-                    </>
-                )}
-                {!loading && !error && (
+            {response && (
+                <div className="flex items-center justify-center h-screen bg-gray-100">
                     <div className="text-center">
                         <h1 className="text-6xl font-extrabold text-black mb-4">{response.data}</h1>
                     </div>
-
-                )} */}
-                {/* <button onClick={button}>Test</button> */}
-            </div >
+                    <button onClick={button}>Test</button>
+                </div >
+            )}
         </>
     )
 }

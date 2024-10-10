@@ -11,9 +11,6 @@ import net.nurigo.sdk.message.service.DefaultMessageService;
 import com.emginfo.emgnavi.user.service.UserService;
 import org.springframework.stereotype.Service;
 
-import javax.sound.midi.SysexMessage;
-import java.sql.SQLOutput;
-
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -26,14 +23,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SingleMessageSentResponse sendVerificationCode(String userPhone) {
+    public SingleMessageSentResponse sendVerificationCode(String userPhone, String verificationCode) {
         Message message = new Message();
         message.setFrom("01053248588");
-        message.setTo(userPhone);
-        message.setText("제발 가져라");
 
+        message.setTo(userPhone);
+
+        message.setText("[응급NAVI] 인증번호를 입력해주세요 " + verificationCode);
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
-        System.out.println(response);
 
         return response;
     }

@@ -1,5 +1,6 @@
 package com.emginfo.emgnavi.map.service;
 
+import com.emginfo.emgnavi.aed.vo.Aed;
 import com.emginfo.emgnavi.hospital.vo.Hospital;
 import com.emginfo.emgnavi.map.vo.GpsInfo;
 
@@ -14,4 +15,10 @@ public interface MapService {
      */
     public List<Hospital> getAroundEmgRoomList(GpsInfo gpsInfo);
 
+    /**
+     *
+     * @param gpsInfo
+     * @return List<AED>
+     */
+    List<Aed> getAroundAedList(GpsInfo gpsInfo);
 }

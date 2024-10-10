@@ -1,5 +1,6 @@
 package com.emginfo.emgnavi.map.service.impl;
 
+import com.emginfo.emgnavi.aed.vo.Aed;
 import com.emginfo.emgnavi.hospital.vo.Hospital;
 import com.emginfo.emgnavi.map.mapper.MapMapper;
 import com.emginfo.emgnavi.map.service.MapService;
@@ -54,6 +55,42 @@ public class MapServiceImpl implements MapService {
             }
         }
         return resultAroundHospitalList;
+    }
+
+    @Override
+    public List<Aed> getAroundAedList(GpsInfo gpsInfo) {
+        //현재 위도 좌표 (y 좌표)
+        double nowLatitude = gpsInfo.getLatitude();
+        //현재 경도 좌표 (x 좌표)
+        double nowLongitude = gpsInfo.getLongitude();
+
+        //m당 y 좌표 이동 값
+        double mForLatitude =(1 /(EARTH_RADIUS* 1 *(Math.PI/ 180)))/ 1000;
+        //m당 x 좌표 이동 값
+        double mForLongitude =(1 /(EARTH_RADIUS* 1 *(Math.PI/ 180)* Math.cos(Math.toRadians(nowLatitude))))/ 1000;
+
+        //현재 위치 기준 검색 거리 좌표
+        double maxLat = nowLatitude +(gpsInfo.getDistance()* mForLatitude);
+        double minLat = nowLatitude -(gpsInfo.getDistance()* mForLatitude);
+        double maxLon = nowLongitude +(gpsInfo.getDistance()* mForLongitude);
+        double minLon = nowLongitude -(gpsInfo.getDistance()* mForLongitude);
+
+        System.out.println("maxLat="+maxLat+" minLat="+minLat+" maxLon="+maxLon+" minLon="+minLon);
+
+        //해당되는 좌표의 범위 안에 있는 가맹점
+        List<Aed>tempAroundAedList = mapMapper.getAroundAedList(maxLat, maxLon, minLat, minLon);
+        List<Aed>resultAroundAedList = new ArrayList<>();
+
+        System.out.println("listSize: "+tempAroundAedList.size());
+
+        //정확한 거리 측정
+        for(Aed aroundAed : tempAroundAedList) {
+            double distance = this.getDistance(nowLatitude, nowLongitude, Double.parseDouble(aroundAed.getWgs84Lat()), Double.parseDouble(aroundAed.getWgs84Lon()));
+            if(distance < gpsInfo.getDistance()) {
+                resultAroundAedList.add(aroundAed);
+            }
+        }
+        return resultAroundAedList;
     }
 
     private double getDistance(double nowLatitude, double nowLongitude, double locationLat, double locationLon){
