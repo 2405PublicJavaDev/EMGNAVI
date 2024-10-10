@@ -7,12 +7,15 @@ const MedicineSearch = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);  // 총 페이지 수
   const itemsPerPage = 10;
 
-  const fetchMedicines = () => {
+  const fetchMedicines = (page = 1) => {
     setIsLoading(true);
     setError(null);
-    fetch('/api/medicine/list')
+
+    // 페이지와 검색어 기반으로 데이터 요청
+    fetch(`/api/medicine/list?page=${page - 1}&size=${itemsPerPage}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -20,8 +23,8 @@ const MedicineSearch = () => {
         return response.json();
       })
       .then((data) => {
-        const medicinesData = Array.isArray(data) ? data : [data];
-        setMedicines(medicinesData);
+        setMedicines(data.medicines);  // 백엔드에서 받은 의약품 데이터
+        setTotalPages(data.totalPages);  // 백엔드에서 받은 총 페이지 수
         setIsLoading(false);
       })
       .catch((error) => {
@@ -32,14 +35,15 @@ const MedicineSearch = () => {
   };
 
   useEffect(() => {
-    fetchMedicines();
-  }, []);
+    fetchMedicines(currentPage);
+  }, [currentPage]);
 
   const handleSearch = () => {
     if (!searchQuery) return;
     setIsLoading(true);
     setError(null);
 
+    // 검색 쿼리를 바탕으로 API 요청
     fetch(`/api/medicine/search?${searchType}=${searchQuery}`)
       .then((response) => {
         if (!response.ok) {
@@ -48,8 +52,8 @@ const MedicineSearch = () => {
         return response.json();
       })
       .then((data) => {
-        const medicinesData = Array.isArray(data) ? data : [data];
-        setMedicines(medicinesData);
+        setMedicines(data.medicines);  // 검색된 데이터 설정
+        setTotalPages(data.totalPages);  // 검색된 데이터에 대한 총 페이지 수 설정
         setIsLoading(false);
       })
       .catch((error) => {
@@ -59,20 +63,14 @@ const MedicineSearch = () => {
       });
   };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentMedicines = medicines.slice(indexOfFirstItem, indexOfLastItem);
-
-  const totalPages = Math.ceil(medicines.length / itemsPerPage);
-  const maxVisiblePages = 10;
-
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
-
   const renderPageButtons = () => {
+    const maxVisiblePages = 10;
+    const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+
     const visiblePages = pageNumbers.slice(
       Math.floor((currentPage - 1) / maxVisiblePages) * maxVisiblePages,
       Math.floor((currentPage - 1) / maxVisiblePages) * maxVisiblePages + maxVisiblePages
@@ -149,10 +147,12 @@ const MedicineSearch = () => {
 
           <div className="overflow-auto w-full">
             {isLoading ? (
-              <p>Loading medicines...</p>
+              <div className="flex justify-center items-center h-screen text-[70px] font-roboto text-black">
+                <p>의약품 정보 불러오는중...</p>
+              </div>
             ) : error ? (
               <p>{error}</p>
-            ) : currentMedicines.length === 0 ? (
+            ) : medicines.length === 0 ? (
               <p>No medicines found</p>
             ) : (
               <table
@@ -169,10 +169,10 @@ const MedicineSearch = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white">
-                  {currentMedicines.map((item, index) => (
+                  {medicines.map((item, index) => (
                     <tr key={item.itemSeq} className="border-b">
                       <td className="py-4 font-roboto text-base text-black">
-                        {indexOfFirstItem + index + 1}
+                        {index + 1}
                       </td>
                       <td className="py-4 font-roboto text-base text-black">
                         <div className="truncate">{item.entpName}</div>

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 const StarRating = ({ rating, onRatingChange, isClickable = true }) => {
     return (
@@ -49,41 +50,21 @@ const 리뷰상세보기내용 = ({ review, onClose }) => {
 };
 
 const MedicineDetail = () => {
+    const [medicine, setMedicine] = useState(null);
     const [review, setReview] = useState('');
     const [rating, setRating] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const [expandedReviewId, setExpandedReviewId] = useState(null);
+    const { itemSeq } = useParams(); // URL에서 itemSeq를 가져옴
     const itemsPerPage = 10;
 
-    const dummyProductInfo = {
-        업체명: "제약회사",
-        제품명: "종합감기약",
-        품목기준코드: "123456789",
-        수정일자: "2024.08.15",
-        efcyQesitm: "이 약은 식욕감퇴(식욕부진), 위부팽만감, 소화불량, 과식, 체함, 구역, 구토에 사용합니다.",
-        useMethodQesitm: `
-            만 15세 이상 및 성인: 1회 1병(75 mL)
-            만 11세 이상~만 15세 미만: 1회 2/3병(50 mL)
-            만 8세 이상~만 11세 미만: 1회 1/2병(37.5 mL)
-            만 5세 이상~만 8세 미만: 1회 1/3병(25 mL)
-            만 3세 이상~만 5세 미만: 1회 1/4병(18.75 mL)
-            만 1세 이상~만 3세 미만: 1회 1/5병(15 mL) 1일 3회 식후에 복용합니다. 복용간격은 4시간 이상으로 합니다.
-        `,
-        atpnWarnQesitm: "(내용 없음)",
-        atpnQesitm: `
-            만 3개월 미만의 젖먹이는 이 약을 복용하지 마십시오.
-            복용 전 상의가 필요한 경우: 만 1세 미만의 젖먹이, 임부 또는 임신 가능성이 있는 여성, 카라멜에 과민증 환자 또는 경험자, 나트륨 제한 식이를 하는 사람
-            정해진 용법과 용량을 잘 지키십시오.
-            어린이에게 투여할 경우 보호자의 지도 감독하에 투여하십시오.
-            1개월 정도 복용해도 증상의 개선이 없을 경우 복용을 즉각 중지하고 의사 또는 약사와 상의하십시오.
-        `,
-        intrcQesitm: "(내용 없음)",
-        seQesitm: "(내용 없음)",
-        depositMethodQesitm: `
-            습기와 빛을 피해 실온에서 보관하십시오.
-            어린이의 손이 닿지 않는 곳에 보관하십시오.
-        `,
-    };
+    useEffect(() => {
+        // API 호출로 의약품 상세 정보를 가져옴
+        fetch(`/api/medicine/detail/${itemSeq}`)
+            .then((response) => response.json())
+            .then((data) => setMedicine(data))
+            .catch((error) => console.error('Error fetching medicine details:', error));
+    }, [itemSeq]);
 
     const dummyReviews = [
         { 번호: 1, 평점: 5, 리뷰: '의사 선생님 처방으로 먹기 시작했어요.', 작성일자: '2024.08.26', 작성자: 'CUS4829' },
@@ -102,7 +83,7 @@ const MedicineDetail = () => {
         { 번호: 14, 평점: 5, 리뷰: '저에게 딱 맞는 약이네요.', 작성일자: '2024.08.30', 작성자: 'K3729D' },
         { 번호: 15, 평점: 4, 리뷰: '부작용이 없어서 좋아요.', 작성일자: '2024.08.31', 작성자: 'M1827B' },
         { 번호: 16, 평점: 5, 리뷰: '정말 잘 듣는 약입니다.', 작성일자: '2024.09.01', 작성자: 'Q12345' }
-    ];
+    ]; {/*더미 리뷰*/}
 
     const totalPages = Math.ceil(dummyReviews.length / itemsPerPage);
     const indexOfLastReview = currentPage * itemsPerPage;
@@ -130,6 +111,10 @@ const MedicineDetail = () => {
         setExpandedReviewId(expandedReviewId === reviewId ? null : reviewId);
     };
 
+    if (!medicine) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div className="flex flex-col min-h-screen">
             <div className="flex-grow">
@@ -139,14 +124,19 @@ const MedicineDetail = () => {
                         <h1 className="text-3xl font-bold mb-6">제품 상세 정보</h1>
                         <div className="bg-white p-6 rounded-lg shadow-md">
                             <div className="flex mb-4">
-                                <img className="w-1/3 mr-6" src="/img/medicine/AlYak.png" alt="Product" />
+                                {medicine.itemImage ? (
+                                    <img className="w-1/3 mr-6" src={medicine.itemImage || "/img/no-image.png"} alt="Product" />
+
+                                ) : (
+                                    <div className="w-1/3 mr-6 flex items-center justify-center text-gray-500">이미지 준비 중</div>
+                                )}
                                 <div>
-                                    <h2 className="text-2xl font-semibold mb-2">{dummyProductInfo.업체명}/{dummyProductInfo.제품명}</h2>
-                                    <p className="text-gray-600 mb-2">{dummyProductInfo.품목기준코드} | {dummyProductInfo.수정일자}</p>
-                                    <p className="font-bold mb-2">효능: {dummyProductInfo.efcyQesitm}</p>
-                                    <p className="mb-2">사용법: {dummyProductInfo.useMethodQesitm}</p>
-                                    <p className="mb-2">주의사항: {dummyProductInfo.atpnQesitm}</p>
-                                    <p>보관법: {dummyProductInfo.depositMethodQesitm}</p>
+                                    <h2 className="text-2xl font-semibold mb-2">{medicine.entpName}/{medicine.itemName}</h2>
+                                    <p className="text-gray-600 mb-2">{medicine.itemSeq} | {medicine.updateDe}</p>
+                                    <p className="font-bold mb-2">효능: {medicine.efcyQesitm}</p>
+                                    <p className="mb-2">사용법: {medicine.useMethodQesitm}</p>
+                                    <p className="mb-2">주의사항: {medicine.atpnQesitm}</p>
+                                    <p>보관법: {medicine.depositMethodQesitm}</p>
                                 </div>
                             </div>
                         </div>
@@ -187,39 +177,39 @@ const MedicineDetail = () => {
                     <div className="mt-36">
                         <h2 className="text-4xl font-bold mb-28 text-center">리뷰 목록</h2>
                         <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-300 w-full">
-    <div className="px-6 py-4 bg-gray-100 flex font-bold text-lg">
-        <div className="w-14 text-center">번호</div> {/* 번호 열 크기 조금 축소 */}
-        <div className="w-28 text-center">평점</div> {/* 평점 열 크기 */}
-        <div className="flex-1 text-center">리뷰</div> {/* 리뷰 열 크기는 flex-1로 설정해 유동적으로 맞춤 */}
-        <div className="w-36 text-center">작성일자</div> {/* 작성일자 크기 축소 */}
-        <div className="w-36 text-center">작성자</div> {/* 작성자 크기 축소 */}
-        <div className="w-32 text-center">상세정보</div> {/* 상세정보 크기 */}
-    </div>
-    {currentReviews.map((review) => (
-        <React.Fragment key={review.번호}>
-            <div className="px-6 py-4 flex items-center border-t border-gray-200">
-                <div className="w-14 text-center">{review.번호}</div> {/* 번호 크기 */}
-                <div className="w-28 text-center">
-                    <StarRating rating={review.평점} onRatingChange={() => { }} isClickable={false} />
-                </div>
-                <div className="flex-1 text-center truncate">{review.리뷰}</div> {/* 리뷰 크기 */}
-                <div className="w-36 text-center">{review.작성일자}</div> {/* 작성일자 크기 */}
-                <div className="w-36 text-center">{review.작성자}</div> {/* 작성자 크기 */}
-                <div className="w-32 text-center">
-                    <button
-                        className="px-4 py-2 bg-[#0B2D85] text-white rounded-full hover:bg-[#0939AD] transition"
-                        onClick={() => toggleReviewDetail(review.번호)}
-                    >
-                        상세 정보
-                    </button>
-                </div>
-            </div>
-            {expandedReviewId === review.번호 && (
-                <리뷰상세보기내용 review={review} onClose={() => setExpandedReviewId(null)} />
-            )}
-        </React.Fragment>
-    ))}
-</div>
+                            <div className="px-6 py-4 bg-gray-100 flex font-bold text-lg">
+                                <div className="w-14 text-center">번호</div> {/* 번호 열 크기 조금 축소 */}
+                                <div className="w-28 text-center">평점</div> {/* 평점 열 크기 */}
+                                <div className="flex-1 text-center">리뷰</div> {/* 리뷰 열 크기는 flex-1로 설정해 유동적으로 맞춤 */}
+                                <div className="w-36 text-center">작성일자</div> {/* 작성일자 크기 축소 */}
+                                <div className="w-36 text-center">작성자</div> {/* 작성자 크기 축소 */}
+                                <div className="w-32 text-center">상세정보</div> {/* 상세정보 크기 */}
+                            </div>
+                            {currentReviews.map((review) => (
+                                <React.Fragment key={review.번호}>
+                                    <div className="px-6 py-4 flex items-center border-t border-gray-200">
+                                        <div className="w-14 text-center">{review.번호}</div> {/* 번호 크기 */}
+                                        <div className="w-28 text-center">
+                                            <StarRating rating={review.평점} onRatingChange={() => { }} isClickable={false} />
+                                        </div>
+                                        <div className="flex-1 text-center truncate">{review.리뷰}</div> {/* 리뷰 크기 */}
+                                        <div className="w-36 text-center">{review.작성일자}</div> {/* 작성일자 크기 */}
+                                        <div className="w-36 text-center">{review.작성자}</div> {/* 작성자 크기 */}
+                                        <div className="w-32 text-center">
+                                            <button
+                                                className="px-4 py-2 bg-[#0B2D85] text-white rounded-full hover:bg-[#0939AD] transition"
+                                                onClick={() => toggleReviewDetail(review.번호)}
+                                            >
+                                                상세 정보
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {expandedReviewId === review.번호 && (
+                                        <리뷰상세보기내용 review={review} onClose={() => setExpandedReviewId(null)} />
+                                    )}
+                                </React.Fragment>
+                            ))}
+                        </div>
 
                         {/* 페이지네이션 */}
                         <div className="mt-14 flex justify-center space-x-2">
