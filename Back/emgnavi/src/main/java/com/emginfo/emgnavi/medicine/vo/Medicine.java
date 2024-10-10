@@ -24,4 +24,5 @@ public class Medicine {
   private String depositMethodQesitm;
   private String openDe;
   private String updateDe;
+  private String itemImage;
 }

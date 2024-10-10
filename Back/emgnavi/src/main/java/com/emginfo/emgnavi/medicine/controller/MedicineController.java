@@ -1,12 +1,14 @@
 package com.emginfo.emgnavi.medicine.controller;
 
-
+import com.emginfo.emgnavi.medicine.mapper.MedicineMapper;
 import com.emginfo.emgnavi.medicine.service.MedicineService;
 import com.emginfo.emgnavi.medicine.vo.Medicine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/medicine")
@@ -15,10 +17,25 @@ public class MedicineController {
     @Autowired
     private MedicineService medicineService;
 
-    // 전체 의약품 목록 가져오기
+    @Autowired
+    private MedicineMapper medicineMapper;  // Mapper 추가
+
+    // 전체 의약품 목록 가져오기 (페이징 처리 추가)
     @GetMapping("/list")
-    public List<Medicine> getMedicineList() {
-        return medicineService.getMedicineList();
+    public Map<String, Object> getMedicineList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        int offset = page * size;
+        List<Medicine> medicines = medicineService.getMedicineList(offset, size);
+
+        int totalCount = medicineMapper.getTotalCount();  // 총 데이터 개수 가져오기
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("medicines", medicines);
+        response.put("totalPages", (int) Math.ceil((double) totalCount / size));
+
+        return response;
     }
 
     // 의약품 상세 정보 가져오기
@@ -32,9 +49,4 @@ public class MedicineController {
     public List<Medicine> searchMedicine(@RequestParam String itemName) {
         return medicineService.searchMedicineByName(itemName);
     }
-
-
-
-
-
 }

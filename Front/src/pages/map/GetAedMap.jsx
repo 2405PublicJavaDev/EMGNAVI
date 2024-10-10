@@ -1,7 +1,22 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { TableVirtuoso } from "react-virtuoso";
+import { TableContainer, Table, TableBody, TableCell, TableRow, Paper } from '@mui/material';  // Material-UI import
 
 const { kakao } = window;
 
+// 스크롤 페이징 (MUI Table)
+const TableComponents = {
+    Scroller: React.forwardRef((props, ref) => <TableContainer component={Paper} {...props} ref={ref} />),
+    Table: (props) => <Table {...props} style={{ borderCollapse: 'separate' }} />,
+    TableBody: React.forwardRef((props, ref) => <TableBody {...props} ref={ref} />),
+    TableRow: (props) => <TableRow {...props} />,  // 정의된 TableRow 사용
+};
+// displayName을 추가(작성 안해도 되는데 Component definition is missing display name 문구 떠있어서 추가함)
+TableComponents.Scroller.displayName = 'TableScroller';
+TableComponents.Table.displayName = 'Table';
+TableComponents.TableBody.displayName = 'TableBody';
+TableComponents.TableRow.displayName = 'TableRow';
+  
 function GetAedMap() {
     // AED 정보 저장
     const [aeds, setAeds] = useState();
@@ -243,51 +258,73 @@ function GetAedMap() {
         }
     };
 
+    // 현재 위치와 AED 위치 사이의 거리를 계산할 함수. Haversine 공식 사용
+    function getDistanceFromLatLonInKm(latitude1, longitude1, latitude2, longitude2) {
+        const R = 6371; // 지구의 반지름 (단위: km)
+        const dLat = deg2rad(latitude2 - latitude1);  // 위도 차이, radian으로 변환
+        const dLon = deg2rad(longitude2 - longitude1);  // 경도 차이, radian으로 변환'
+        // 두 좌표 사이의 구면 거리를 구하기 a
+        const a = 
+            Math.sin(dLat/2) * Math.sin(dLat/2) + // 위도 차이, 삼각 함수 계산
+            Math.cos(deg2rad(latitude1)) * Math.cos(deg2rad(latitude2)) * // 두 지점의 위도에 대한 코사인 곱
+            Math.sin(dLon/2) * Math.sin(dLon/2); // 경도 차이에 대한 삼각 함수 계산
+        // 구면 위에서 두 점 사이의 중심각 구하기 c
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        const distance = R * c; // 두 좌표 사이의 거리 (km)
+        return distance * 1000; // 미터로 변환
+    }
+    
+    // 각도 -> radian으로 변환하는 함수
+    function deg2rad(deg) {
+        return deg * (Math.PI / 180); // (pi/180)
+    }
+
     return (
         <div className="flex">
-        <div className="flex w-[15%] h-[100vh] bg-white p-4">
-            <div className="flex flex-col">
+        <div className="flex w-[20%] h-[100vh] bg-white p-4">
+            <div className="flex flex-col w-[25%]">
                 <h1>
                     <img className="left-[24px] top-0" width="111" height="97" src="/img/header/logo.png" alt="Logo"></img>
                 </h1>
                 <div className="text-center"><button>병원</button></div>
                 <div className="text-center"><button>약국</button></div>
-                <div className="text-center"><button>AED</button></div>
+                <div className="text-center bg-[#0B2D85] text-[#ffffff]"><button>AED</button></div>
 
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col w-[75%]">
                 <button className="bg-red-500 text-white mb-2">AED 사용 방법 가이드</button>
-                <div className="flex justify-between">
+                <div className="flex justify-between h-[150px]">
                     <button className="text-black">반경 1km</button>
                     <button className="text-black">반경 2km</button>
                 </div>
-                <div className="mt-4">
-                    {/* <table>
-                        <tbody>
-                            {aeds && aeds.length > 0 ?
-                                ( 
-                                    aeds.map((aed, index) => {(
-                                        <tr key={index}>
-                                            <td>{aed.org}</td>
-                                            <td>{aed.clerkTel}</td>
-                                            <td>{aed.buildAddress}</td>
-                                            <td>{aed.buildPlace}</td>
-                                        </tr>
-                                    )})
-                                )
-                                :
-                                (
-                                    <tr>
-                                        <td>조회 결과가 없습니다.</td>
-                                    </tr>
-                                )
-                            }
-                        </tbody>
-                    </table> */}
+                {/* 반경 내 조회된 장소들 리스트 출력 */}
+                <div className="mt-4 h-[calc(100vh-200px)]">
+                    <TableVirtuoso
+                        style={{ height: "100%" }}
+                        data={aeds && aeds.length > 0 ? 
+                            // searchRadius 보다 작은지
+                            aeds.filter(aed => getDistanceFromLatLonInKm(latitude, longitude, aed.wgs84Lat, aed.wgs84Lon) <= searchRadius) 
+                            : []
+                        }
+                        components={TableComponents}
+                        itemContent={(index, aed) => (
+                            <>
+                                <TableRow key={index} className="aed-item">
+                                    <TableCell className="aed-name font-bold text-gray-800" style={{border: 'none', padding:'5px 10px 0px 10px', fontWeight: '900', color: '#0B2D85', fontSize: '17px'}}>{aed.org}</TableCell>
+                                </TableRow>
+                                <TableRow key={`${index}-tel`}>
+                                    <TableCell className="aed-tel text-sm text-gray-600" style={{border: 'none', padding:'5px 10px'}}>{aed.clerkTel}</TableCell>
+                                </TableRow>
+                                <TableRow key={`${index}-address`}>
+                                    <TableCell className="aed-address text-sm text-gray-500" style={{padding: '0 10px 5px 10px'}}>{aed.buildAddress} {aed.buildPlace}</TableCell>
+                                </TableRow>
+                            </>
+                        )}
+                    />
                 </div>
             </div>
         </div>
-        <div className="w-[85%] h-[100vh] relative">
+        <div className="w-[80%] h-[100vh] relative">
             <div id='map' className="w-full h-full absolute"></div>
             <div style={{
                 position: 'absolute',

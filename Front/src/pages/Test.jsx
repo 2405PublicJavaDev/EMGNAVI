@@ -26,8 +26,8 @@ const Test = () => {
                     no,
                 }
             },
-            (data) => {
-                console.log(data);
+            (callback) => {
+                console.log(callback);
                 if (data.status === 200) {
                     console.log("다음 동작!!!");
                 }

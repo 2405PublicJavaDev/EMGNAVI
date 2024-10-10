@@ -109,7 +109,8 @@ function App() {
         <Route path='/map/getEmergencyMap' element={<GetEmergencyMap />} />
 
         <Route path='/medicine/MedicineSearch' element={<MedicineSearch />} />
-        <Route path='/medicine/MedicineDetail' element={<MedicineDetail />} />
+        <Route path='/medicine/detail/:itemSeq' element={<MedicineDetail />} />
+
 
         <Route path='/admin/ReviewAdmin' element={<ReviewAdmin />} />
 
