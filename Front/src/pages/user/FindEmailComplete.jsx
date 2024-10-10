@@ -11,7 +11,11 @@ const FIndEmailComplete = () => {
     const { fetchData, loading, error } = useAxios();
 
     useEffect(() => {
-        // console.log("userPhone:", userPhone); // userPhone 값 확인
+        const idElement = document.getElementById("idName");
+        if (idElement) {
+            idElement.hidden = true; // 초기 상태에서 숨김
+        }
+
         if (userPhone) {
             fetchData(
                 {
@@ -19,73 +23,26 @@ const FIndEmailComplete = () => {
                     url: '/api/findEmail',
                     data: { userPhone },
                 },
-                (responseData) => {
-                    // console.log("Response received:", responseData);
-                    if (responseData) {
-                        const responseEmail = responseData;
-                        // console.log("Email received:", responseEmail);
-                        // 이메일의 두 번째, 세 번째 문자를 '*'로 변경
-                        const maskedEmail = responseEmail.split('').map((char, index) => {
+                (data) => {
+                    if (data.includes('없습니다')) {
+                        alert('해당 휴대폰 번호로 등록된 아이디가 없습니다.'); // 사용자에게 보여줄 메시지
+                        nav("/user/findEmail");
+                    } else {
+                        const maskedEmail = data.split('').map((char, index) => {
                             if (index === 1 || index === 2) {
                                 return '*';
                             }
                             return char;
                         }).join('');
                         setEmail(maskedEmail);
-                        const idElement = document.getElementById("idName");
                         if (idElement) {
                             idElement.hidden = false; // 결과가 있으면 요소를 보이게 함
-                        }
-                    } else {
-                        setEmail('아이디를 찾을 수 없습니다.');
-                        const idElement = document.getElementById("idName");
-                        if (idElement) {
-                            idElement.hidden = true; // 결과가 없으면 요소를 숨김
                         }
                     }
                 }
             );
         }
-    }); // userPhone이나 fetchData가 변경될 때 useEffect 실행
-    
-    // // 로딩 상태 표시
-    // if (loading) {
-    //     return <div>Loading...</div>;
-    // }
-    
-    // // 에러 상태 표시
-    // if (error) {
-    //     return <div>Error: {error.message}</div>;
-    // }
-
-
-// useEffect(() => {
-//     if (response) {
-//         console.log("Response received:", response);
-//         // API 응답에서 아이디(이메일) 값 설정
-//         // 이메일의 두 번째, 세 번째 문자를 '*'로 변경
-//         const maskedEmail = response.split('').map((char, index) => {
-//             if (index === 1 || index === 2) {
-//                 return '*';
-//             }
-//             return char;
-//         }).join('');
-//         setEmail(maskedEmail);
-//     }
-
-//     if (error) {
-//         console.error("Error occurred:", error);
-//         if (error.response && error.response.status === 404) {
-//             setEmail('해당 휴대폰 번호로 등록된 아이디가 없습니다.');
-//             const idElement = document.getElementById("idName");
-//             if (idElement) {
-//                 idElement.hidden = true; // hidden 속성을 사용하여 요소를 숨김
-//             }
-//         } else {
-//             setEmail('아이디를 찾는 중 오류가 발생했습니다.');
-//         }
-//     }
-// }, [response, error]);
+    }, [userPhone]);
 
 const handlerGoFindPw = () => {
     nav("/user/findPw");

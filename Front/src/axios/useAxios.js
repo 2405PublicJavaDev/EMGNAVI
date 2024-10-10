@@ -23,13 +23,13 @@ const useAxios = () => {
             setError(err);
             if (err.response) {
                 // 서버 응답이 있는 경우
-                alert(`Error: ${err.response.status}\n${err.response.data.message || 'Unknown error'}`);
+                // alert(`Error: ${err.response.status}\n${err.response.data.message || 'Unknown error'}`);
             } else if (err.request) {
                 // 요청이 이루어졌으나 응답이 없는 경우
-                alert('No response received from server. Please try again later.');
+                // alert('No response received from server. Please try again later.');
             } else {
                 // 요청 설정 중 오류가 발생한 경우
-                alert('Error setting up the request. Please try again.');
+                // alert('Error setting up the request. Please try again.');
             }
         } finally {
             setLoading(false);

@@ -1,14 +1,19 @@
 package com.emginfo.emgnavi.user.controller;
 
 import com.emginfo.emgnavi.user.model.dto.*;
+import com.emginfo.emgnavi.user.model.vo.KakaoApi;
 import com.emginfo.emgnavi.user.model.vo.User;
 import com.emginfo.emgnavi.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import lombok.Getter;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 
 @RestController
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     public UserService uService;
+    public KakaoApi kakaoApi;
 
     public UserController() {
     }
@@ -63,7 +69,7 @@ public class UserController {
             return ResponseEntity.ok("인증 성공");
         } else {
             System.out.println("잘못된 인증 코드입니다."); // 오류 로그
-            return ResponseEntity.badRequest().body("잘못된 인증 코드입니다");
+            return ResponseEntity.ok("인증 실패");
         }
     }
 
@@ -104,10 +110,11 @@ public class UserController {
             System.out.println(user.getUserId());
             return ResponseEntity.ok(user.getUserId());  // 조회된 유저의 아이디 반환
         } else {
-            System.out.println("오류발생");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 휴대폰 번호로 등록된 아이디가 없습니다.");
+            System.out.println("정보 없음");
+            return ResponseEntity.ok("해당 휴대폰 번호로 등록된 아이디가 없습니다."); // 200 OK와 함께 메시지 반환
         }
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> checkLogin(@RequestBody LoginRequest request, HttpSession session) {
@@ -127,4 +134,40 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("아이디 또는 비밀번호가 잘못되었습니다.");
         }
     }
+    @GetMapping("/kakao/login")
+    public String loginForm(Model model){
+        model.addAttribute("kakaoApiKey", kakaoApi.getKakaoApiKey());
+        model.addAttribute("redirectUri", kakaoApi.getKakaoRedirectUri());
+        return "login";
+    }
+
+//    @GetMapping("/kakao/callback")
+//    public void kakaoLogin(@RequestParam String code) {
+//        // 1. 인가 코드 받기 (@RequestParam String code)
+//
+//        // 2. 토큰 받기
+//        String accessToken = kakaoApi.getAccessToken(code);
+//
+//        // 3. 사용자 정보 받기
+//        Map<String, Object> userInfo = kakaoApi.getUserInfo(accessToken);
+//
+//        String email = (String) userInfo.get("email");
+//        String nickname = (String) userInfo.get("nickname");
+//
+//        System.out.println("email = " + email);
+//        System.out.println("nickname = " + nickname);
+//        System.out.println("accessToken = " + accessToken);
+//    }
+
+
+
+    @GetMapping("/kakao/callback")
+    public ResponseEntity<String> kakaoLogin(@RequestParam ("code") String code) {
+        System.out.println("코드: " + code);
+        if (code == null || code.isEmpty()) {
+            return ResponseEntity.badRequest().body("오류");
+        }
+        return ResponseEntity.ok("코드: " + code);
+    }
+
 }

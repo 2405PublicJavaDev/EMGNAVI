@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
         message.setTo(userPhone);
 
-        message.setText("[응급NAVI] 인증번호를 입력해주세요 " + verificationCode);
+        message.setText("[응급NAVI] 인증번호[" + verificationCode + "]를 화면에 입력해주세요");
         SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
 
         return response;
