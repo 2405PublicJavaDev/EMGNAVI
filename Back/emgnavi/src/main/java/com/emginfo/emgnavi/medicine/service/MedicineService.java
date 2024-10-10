@@ -24,6 +24,6 @@ public class MedicineService {
 
     // 의약품 이름으로 검색
     public List<Medicine> searchMedicineByName(String itemName) {
-        return medicineMapper.searchMedicineByName(itemName);
+        return medicineMapper.searchMedicine(itemName);
     }
 }

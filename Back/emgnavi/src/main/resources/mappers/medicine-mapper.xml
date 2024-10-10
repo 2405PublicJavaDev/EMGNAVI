@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.emginfo.emgnavi.common.parsing.mapper.MedicineMapper">
+<mapper namespace="com.emginfo.emgnavi.medicine.mapper.MedicineMapper">
 
     <!-- 전체 의약품 리스트 -->
     <select id="selectMedicineList" resultType="com.emginfo.emgnavi.medicine.vo.Medicine">
@@ -10,18 +10,20 @@
         FROM MEDICINE_TBL
     </select>
 
-    <!-- 의약품 상세 정보 조회 -->
+    <!-- 의약품 상세 조회 -->
     <select id="selectMedicineDetail" parameterType="String" resultType="com.emginfo.emgnavi.medicine.vo.Medicine">
         SELECT item_seq, entp_name, item_name, efcy_qesitm, use_method_qesitm, atpn_warn_qesitm, atpn_qesitm, intrc_qesitm, se_qesitm, deposit_method_qesitm, open_de, update_de
         FROM MEDICINE_TBL
         WHERE item_seq = #{itemSeq}
     </select>
 
-    <!-- 제품명으로 의약품 검색 -->
-    <select id="searchMedicineByName" parameterType="String" resultType="com.emginfo.emgnavi.medicine.vo.Medicine">
+    <!-- 제품명 또는 업체명으로 의약품 검색 -->
+    <select id="searchMedicine" parameterType="map" resultType="com.emginfo.emgnavi.medicine.vo.Medicine">
         SELECT item_seq, entp_name, item_name, open_de
         FROM MEDICINE_TBL
-        WHERE item_name LIKE CONCAT('%', #{itemName}, '%')
+        WHERE (item_name LIKE '%' || #{searchKeyword} || '%'
+            OR entp_name LIKE '%' || #{searchKeyword} || '%')
     </select>
+
 
 </mapper>
