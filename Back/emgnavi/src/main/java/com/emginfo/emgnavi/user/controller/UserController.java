@@ -101,8 +101,10 @@ public class UserController {
     public ResponseEntity<String> selectIdByPhone(@RequestBody VerifyPhoneRequest request) {
         User user = uService.selectIdByPhone(request);
         if (user != null) {
+            System.out.println(user.getUserId());
             return ResponseEntity.ok(user.getUserId());  // 조회된 유저의 아이디 반환
         } else {
+            System.out.println("오류발생");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 휴대폰 번호로 등록된 아이디가 없습니다.");
         }
     }

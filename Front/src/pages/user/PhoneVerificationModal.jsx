@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import useAxios from '../../axios/useAxios';
 
 const PhoneVerificationModal = ({ onClose }) => {
-    const { response, error, loading, setConfig } = useAxios();
+    const { response, error, loading, fetchData } = useAxios();
     const nav = useNavigate();
     const [userPhone, setuserPhone] = useState("");
     const [isNext, setIsNext] = useState(false);  // 다음 페이지로 갈지 여부 상태
@@ -14,7 +14,7 @@ const PhoneVerificationModal = ({ onClose }) => {
         const userPhone = document.querySelector("#phone").value;
         if (userPhone.length === 11 && /^\d*$/.test(userPhone)) {
             console.log(userPhone);
-            setConfig({
+            fetchData({
                 method: 'POST',
                 url: `/api/verify/phone`,
                 data: {
@@ -46,35 +46,44 @@ const PhoneVerificationModal = ({ onClose }) => {
                 verifyCode: verifyCode
             };
             console.log("서버에 전송할 데이터:", requestData); // 전송할 데이터 로그
-            setConfig({
-                method: 'POST',
-                url: `/api/verify/code`,
-                data: requestData,
-            });
-            // if(response) {
-
-            // }
-        } else {
-            alert("인증번호를 입력해주세요");
-        }
+            fetchData(
+                {
+                    method: 'POST',
+                    url: `/api/verify/code`,
+                    data: {
+                        userPhone: userPhone,
+                        verifyCode: verifyCode
+                    }
+                },
+                (data) => {
+                    console.log(data);
+                    if (data.status === 200) {
+                        console.log("다음 동작!")
+                    }
+                    else {
+                        alert("인증번호를 입력해주세요");
+                    }
+                }
+            );
+        };
     };
-    useEffect(() => {
-        if (response) {
-            console.log("서버 응답:", response.data); // 서버 응답 로그
-            if (response.data === "인증 성공") {
-                console.log("인증이 성공했습니다.");
-                setIsNext(true);
-            } else {
-                console.log("인증이 실패했습니다:", response.data); // 인증 실패 로그
-            }
-        }
-    }, [response]);
+    // useEffect(() => {
+    //     if (response) {
+    //         console.log("서버 응답:", response.data); // 서버 응답 로그
+    //         if (response.data === "인증 성공") {
+    //             console.log("인증이 성공했습니다.");
+    //             setIsNext(true);
+    //         } else {
+    //             console.log("인증이 실패했습니다:", response.data); // 인증 실패 로그
+    //         }
+    //     }
+    // }, [response]);
 
-    
+
 
     const handlerGoNextPage = (e) => {
         e.preventDefault();
-        if (isNext) {  // 인증이 완료된 상태인지 확인
+        // if (isNext) {  // 인증이 완료된 상태인지 확인
             const phone = document.querySelector("#phone").value; // 핸드폰 번호 가져오기
             if (phone) {
                 setuserPhone(phone);  // 휴대폰 번호 설정
@@ -82,13 +91,14 @@ const PhoneVerificationModal = ({ onClose }) => {
             } else {
                 alert("휴대폰 번호를 입력해주세요");
             }
-        } else {
-            alert("본인인증을 먼저 진행해주세요"); // 인증이 완료되지 않은 경우
-        }
+        // } else {
+        //     alert("본인인증을 먼저 진행해주세요"); // 인증이 완료되지 않은 경우
+        // }
     };
 
     useEffect(() => {
-        if (isNext && userPhone) {
+        // if (isNext && userPhone) {
+        if (userPhone) {
             const currentPath = location.pathname;
             if (currentPath.startsWith("/user/register")) {
                 nav("/user/register/page", { state: { userPhone } });
