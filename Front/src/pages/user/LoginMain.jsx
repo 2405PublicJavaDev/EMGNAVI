@@ -59,25 +59,15 @@ const LoginMain = () => {
     const kakaoLogin = () => {
         const REST_API_KEY = "2d6c55a21e936e4094381a23a82124d1";
         const REDIRECT_URI = "https://127.0.0.1:3000/api/kakao/callback";
-        const url = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
+        const kakaoUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
-        window.location.href = url;
-        const code = new URL(window.location.href).searchParams.get('code'); // 코드 가져오기
-    
-        fetchData(
-            {
-                method: 'GET',
-                url: `/api/kakao/callback?code=${code}`,
-            }, 
-            (data) => {
-                if(data) {
-                    console.log("User data:", data);
-                    nav("/user/setNickname");
-                } else {
-                    alert('전송실패')
-                }
-            });
+        window.location.href = kakaoUrl;
     }
+
+
+
+
+
 
     const { naver } = window
     const NAVER_CLIENT_ID = "HybacJJgFsuLnLngHigE"; // 발급 받은 Client ID 입력 
