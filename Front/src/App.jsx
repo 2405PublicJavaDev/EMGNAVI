@@ -55,6 +55,15 @@ function App() {
   const location = useLocation();
 
   const { handleUser } = useContext(UserContext);
+  const [isLoginTrue, setIsLoginTrue] = useState(false);
+
+  useEffect(() => {
+    const loggedIn = localStorage.getItem('isLoginTrue');
+
+    if (loggedIn === 'true') {
+        setIsLoginTrue(true);
+    }
+}, []); // 초기 로그인 상태 확인
 
   useEffect(() => {
     const fetchSessionData = async () => {
@@ -69,7 +78,7 @@ function App() {
 
   return (
     <>
-      <Header />
+      <Header isLoginTrue={isLoginTrue} setIsLoginTrue={setIsLoginTrue}/>
 
       <Routes>
 
@@ -83,7 +92,7 @@ function App() {
         <Route path='/user/register/page' element={<RegisterPage />} />
         <Route path='/user/register/complete' element={<RegisterComplete />} />
 
-        <Route path='/user/login' element={<LoginMain />} />
+        <Route path='/user/login' element={<LoginMain setIsLoginTrue={setIsLoginTrue}/>} />
         <Route path="/user/setNickname" element={<SetNickname />} />
 
         <Route path='/user/findEmail' element={<FindEmail />} />

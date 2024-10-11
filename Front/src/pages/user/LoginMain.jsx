@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import useAxios from '../../axios/useAxios';
 import axios from 'axios';
 
-const LoginMain = () => {
+const LoginMain = ({ setIsLoginTrue }) => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-    const { fetchData, loading, error } = useAxios();
+
     const nav = useNavigate();
-    
+
     const handleMouseDown = () => {
         setIsPasswordVisible(true);
     };
@@ -16,7 +16,7 @@ const LoginMain = () => {
         setIsPasswordVisible(false);
     };
 
-    const handleSignUp = async (e) => {
+    const handleLogin = async (e) => {
         if (e === 'Enter' || e.type === 'click') {
             if (!values.uEmail || !values.uPassword) {
                 alert("아이디와 비밀번호를 입력해주세요.");
@@ -27,9 +27,14 @@ const LoginMain = () => {
                     userId: values.uEmail,
                     userPw: values.uPassword,
                 });
-
                 console.log(response.data); // 응답 확인
                 alert(response.data);
+                const sessionResponse = await axios.get('/api/check-session');
+                if (sessionResponse.status === 200) {
+                    localStorage.setItem('isLoginTrue', 'true'); // 로그인 상태 저장
+                    localStorage.setItem('userId', values.uEmail); // 사용자 이름 저장
+                    setIsLoginTrue(true); // 로그인 상태 업데이트
+                }
                 nav("/"); // 로그인 성공 후 리다이렉트
             } catch (error) {
                 console.error(error);
@@ -40,7 +45,7 @@ const LoginMain = () => {
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
-            handleSignUp('Enter');
+            handleLogin('Enter');
         }
     };
 
@@ -155,7 +160,7 @@ const LoginMain = () => {
             <div className="absolute left-[704px] top-[757px] w-[511px] h-[60px] flex">
                 <button
                     type='button'
-                    onClick={handleSignUp}
+                    onClick={handleLogin}
                     // onKeyDown={handleKeyDown}
                     className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]">
                     <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">로그인</span>

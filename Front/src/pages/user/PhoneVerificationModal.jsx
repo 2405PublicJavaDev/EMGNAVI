@@ -83,7 +83,7 @@ const PhoneVerificationModal = ({ onClose }) => {
     const handlerGoNextPage = (e) => {
         const userPhone = document.querySelector("#phone").value;
         e.preventDefault();
-        if (isNext) {  // 인증이 완료된 상태인지 확인
+        // if (isNext) {  // 인증이 완료된 상태인지 확인
         console.log("폰 : " + userPhone); 
             if (userPhone) {
                     const currentPath = location.pathname;
@@ -92,13 +92,15 @@ const PhoneVerificationModal = ({ onClose }) => {
                         nav("/user/register/page", { state });
                     } else if (currentPath.startsWith("/user/findEmail")) {
                         nav("/user/findEmail/complete", { state });
+                    } else if (currentPath.startsWith("/user/mypage/modify")) {
+                        nav("/user/mypage/modify", { state });
                     }
                 } else {
                     alert("휴대폰 번호를 입력해주세요");
                 }
-            } else {
-                alert("본인인증을 먼저 진행해주세요"); // 인증이 완료되지 않은 경우
-            }
+            // } else {
+            //     alert("본인인증을 먼저 진행해주세요"); // 인증이 완료되지 않은 경우
+            // }
         };
 
         return (

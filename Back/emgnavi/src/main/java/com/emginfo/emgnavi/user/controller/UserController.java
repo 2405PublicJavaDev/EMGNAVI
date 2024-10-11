@@ -4,6 +4,7 @@ import com.emginfo.emgnavi.user.model.dto.*;
 import com.emginfo.emgnavi.user.model.vo.KakaoApi;
 import com.emginfo.emgnavi.user.model.vo.User;
 import com.emginfo.emgnavi.user.service.UserService;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.sound.midi.Soundbank;
 import java.util.Map;
 
 
@@ -121,19 +123,33 @@ public class UserController {
         if (request.getUserId() == null || request.getUserPw() == null) {
             return ResponseEntity.badRequest().body("아이디와 비밀번호는 필수입니다.");
         }
-
-//        System.out.println("controll 로그인 요청: " + request.getUserId() + ", 비밀번호: " + request.getUserPw());
         User user = uService.checkLogin(request);
-
         if (user != null) {
             // 세션에 사용자 아이디 저장
             session.setAttribute("userId", user.getUserId());
-            System.out.println(session.getAttribute("userId"));
             return ResponseEntity.ok("로그인 성공");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("아이디 또는 비밀번호가 잘못되었습니다.");
         }
     }
+
+    @GetMapping("/check-session")
+    public ResponseEntity<?> checkSession(HttpSession session) {
+        String userId = (String) session.getAttribute("userId");
+        if (userId != null) {
+            System.out.println(userId);
+            return ResponseEntity.ok(userId); // 세션에 저장된 userId 반환
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션이 만료되었습니다.");
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        session.invalidate(); // 세션 무효화
+        return ResponseEntity.ok("로그아웃 성공");
+    }
+
     @GetMapping("/kakao/login")
     public String loginForm(Model model){
         model.addAttribute("kakaoApiKey", kakaoApi.getKakaoApiKey());
@@ -166,6 +182,15 @@ public class UserController {
         System.out.println("코드: " + code);
         if (code == null || code.isEmpty()) {
             return ResponseEntity.badRequest().body("오류");
+        }
+        return ResponseEntity.ok("코드: " + code);
+    }
+
+    @PostMapping("/getInf")
+    public ResponseEntity<String> getUserInf(@RequestBody UserInfoRequest request) {
+        User user = selectUserbyId(request);
+        if (user != null) {
+            return ResponseEntity.ok(user.getUserId());
         }
         return ResponseEntity.ok("코드: " + code);
     }

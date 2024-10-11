@@ -1,4 +1,5 @@
-import { useState, EventHandler, ReactNode } from 'react'
+import axios from 'axios';
+import { useState, EventHandler, ReactNode, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 const MypageCheckPw = () => {
@@ -12,8 +13,43 @@ const MypageCheckPw = () => {
         setIsPasswordVisible(false);
     };
 
-    const handlerGoModify = () => {
-        nav("/user/mypage/modify");
+    const [values, setValues] = useState({
+        uEmail: '',
+        uPassword: '',
+    });
+
+    useEffect(() => {
+        const userId = localStorage.getItem('userId');
+        if (userId) {
+            setValues(prevValues => ({ ...prevValues, uEmail: userId }));
+        }
+    }, []);
+
+    const handlePasswordCheck = async (e) => {
+        if (e === 'Enter' || e.type === 'click') {
+            if (!values.uPassword) {
+                alert("비밀번호를 입력해주세요.");
+                return;
+            }
+            try {
+                const response = await axios.post('/api/login', {
+                    userId: values.uEmail,
+                    userPw: values.uPassword,
+                });
+                console.log(response.data); // 응답 확인
+                alert(response.data); // 비밀번호 체크 결과 알림
+                nav("/user/mypage/modify")
+            } catch (error) {
+                console.error(error);
+                alert(error.response?.data || "비밀번호 체크 중 오류가 발생했습니다.");
+            }
+        }
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handlePasswordCheck('Enter');
+        }
     };
 
     return (<>
@@ -22,10 +58,10 @@ const MypageCheckPw = () => {
         <div className="absolute left-[937px] top-[964px] text-[24px] font-['Inter'] font-semibold text-[#fff] whitespace-nowrap">확인</div>
         <div className="absolute left-[235px] top-[190px] w-[149px] h-[57px] text-[24px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">내정보 관리</div>
         <div className="absolute left-[868px] top-[814px] w-[184px] h-[60px] flex">
-            <button 
-                onClick={handlerGoModify}
+            <button
+                onClick={handlePasswordCheck}
                 className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#0b2d85] border-[1px] border-solid border-[#0b2d85] rounded-[50px]">
-            <span className="text-[16px] font-['Inter'] font-bold text-[#fff] text-center">확인</span>
+                <span className="text-[16px] font-['Inter'] font-bold text-[#fff] text-center">확인</span>
             </button>
         </div>
         <div className="absolute left-[420px] top-[413px] w-[1080px] h-0 border-[1px] border-solid border-[#000]"></div>
@@ -33,10 +69,12 @@ const MypageCheckPw = () => {
         <div className="absolute left-[569px] top-[500px] w-[182px] h-[29px] text-[22px] font-['Inter'] font-medium text-[#000]">아이디</div>
         <div className="absolute left-[569px] top-[608px] w-[201px] h-[29px] text-[22px] font-['Inter'] font-medium text-[#000]">비밀번호</div>
         <div className="absolute left-0 top-[339px] w-[1920px] h-[51px] text-[24px] font-['Inter'] font-semibold text-[#000] text-center">개인정보 보호를 위해 비밀번호를 다시 한번 입력해주세요.</div>
-        <div className="absolute left-[829px] top-[485px] w-[450px] h-[58px] text-[17px] font-['Inter'] font-light text-[#000] flex flex-col justify-center">example@naver.com</div>
+        <div className="absolute left-[829px] top-[485px] w-[450px] h-[58px] text-[17px] font-['Inter'] font-light text-[#000] flex flex-col justify-center">{values.uEmail}</div>
         <input
             type={isPasswordVisible ? 'text' : 'password'}
             placeholder='비밀번호를 입력해주세요.'
+            onKeyDown={handleKeyDown}
+            onChange={(e) => setValues({ ...values, uPassword: e.target.value })}
             className="absolute left-[829px] top-[593px] w-[450px] h-[58px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px] text-[16px] pl-6 outline-0">
         </input>
         <img

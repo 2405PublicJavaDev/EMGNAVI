@@ -1,26 +1,42 @@
-import { useState, EventHandler, ReactNode } from 'react'
+import { useState, EventHandler, ReactNode, useEffect } from 'react'
 import ChangePasswordModal from './ChangePasswordModal';
 import PhoneVerificationModal from './PhoneVerificationModal';
+import useAxios from '../../axios/useAxios';
 
 const MypageModifyInf = () => {
     const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
     const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-
     const openPhoneModal = () => {
         setIsPhoneModalOpen(true);
     };
-
     const closePhoneModal = () => {
         setIsPhoneModalOpen(false);
     };
-
     const openPasswordModal = () => {
         setIsPasswordModalOpen(true);
     };
-
     const closePasswordModal = () => {
         setIsPasswordModalOpen(false);
     };
+    const { fetchData, loading, error } = useAxios();
+
+
+    useEffect(() => {
+        const userId = localStorage.getItem('userId');
+        if(userId) {
+            fetchData(
+                {
+                    method: 'POST',
+                    url: '/api/getInf',
+                    data: { userId }
+                },
+                (data) => {
+                    console.log(data);
+                }
+            )
+        }
+    })
+
 
     return (
         <>
