@@ -64,4 +64,16 @@ public class UserServiceImpl implements UserService {
         User user = mapper.checkLogin(request);
         return user;
     }
+
+    @Override
+    public User selectUserbyId(UserInfoRequest request) {
+        User user = mapper.selectUserById(request);
+        return user;
+    }
+
+    @Override
+    public int modifyUser(UserInfoRequest request) {
+        int result = mapper.modifyUser(request);
+        return result;
+    }
 }

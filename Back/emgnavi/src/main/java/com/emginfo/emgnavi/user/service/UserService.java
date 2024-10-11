@@ -17,4 +17,8 @@ public interface UserService {
     User selectIdByPhone(VerifyPhoneRequest request);
 
     User checkLogin(LoginRequest request);
+
+    User selectUserbyId(UserInfoRequest request);
+
+    int modifyUser(UserInfoRequest request);
 }

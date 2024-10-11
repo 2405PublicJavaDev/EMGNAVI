@@ -186,13 +186,33 @@ public class UserController {
         return ResponseEntity.ok("코드: " + code);
     }
 
-//    @PostMapping("/getInf")
-//    public ResponseEntity<String> getUserInf(@RequestBody UserInfoRequest request) {
-//        User user = selectUserbyId(request);
-//        if (user != null) {
-//            return ResponseEntity.ok(user.getUserId());
-//        }
-//        return ResponseEntity.ok("코드: " + code);
-//    }
+    @PostMapping("/getInf")
+    public ResponseEntity<UserInfoRequest> getUserInf(@RequestBody UserInfoRequest request) {
+        User user = uService.selectUserbyId(request);
+        if (user != null) {
+            UserInfoRequest response = new UserInfoRequest(
+                    user.getUserId(),
+                    user.getUserPw(),
+                    user.getUserNickname(),
+                    user.getUserPhone(),
+                    user.getUserName(),
+                    user.getUserGender(),
+                    user.getUserAddress(),
+                    user.getMarketingAgree()
+            );
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.badRequest().body(null); // 실패 시 null 반환
+    }
+
+    @PostMapping("/modify")
+    public void modifyUser(@RequestBody UserInfoRequest request) {
+        int result = uService.modifyUser(request);
+        if(result > 0) {
+            System.out.println("수정 성공");
+        } else {
+            System.out.println("수정 실패");
+        }
+    }
 
 }
