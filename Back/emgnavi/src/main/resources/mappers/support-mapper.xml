@@ -4,8 +4,16 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.emginfo.emgnavi.support.mapper.SupportMapper">
 
-    <insert id="postSupport">
+    <insert id="requestSupport">
         INSERT INTO SUPPORT_TBL VALUES (SEQ_SUPPORT_NO.nextval, #{writerId})
     </insert>
+
+    <select id="getSupportList">
+        SELECT * FROM SUPPORT_TBL
+    </select>
+
+    <select id="getSupportOneByNo">
+        SELECT * FROM SUPPORT_TBL WHERE NO = #{no}
+    </select>
 
 </mapper>

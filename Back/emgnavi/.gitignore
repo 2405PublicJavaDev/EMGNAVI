@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+
+### SECRECT KEY INFO ###
+src/main/resources/application-secrect-key.yml

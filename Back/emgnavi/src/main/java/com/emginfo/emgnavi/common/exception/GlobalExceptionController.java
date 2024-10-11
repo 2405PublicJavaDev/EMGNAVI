@@ -1,5 +1,6 @@
 package com.emginfo.emgnavi.common.exception;
 
+import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -101,7 +102,7 @@ public class GlobalExceptionController {
     /**
      * 처리할 수 없는 요청을 처리합니다.
      *
-     * 이 메서드는 요청한 리소스를 찾을 수 없을 때 발생하는 `NoResourceFoundException`을 처리합니다.
+     * 이 메서드는 요청한 리소스를 찾을 수 없을 때 발생하는 오류를 처리합니다.
      * 주로 존재하지 않는 URI나 잘못된 리소스 요청 시 호출됩니다.
      * 경고 로그를 기록하고 클라이언트에게 리소스가 없다는 내용을 포함한 에러 응답을 반환합니다.
      *
@@ -118,6 +119,29 @@ public class GlobalExceptionController {
                 "요청한 리소스를 찾을 수 없습니다.",
                 request,
                 "004"
+        );
+    }
+
+    /**
+     * 메시지 처리 중 발생한 예외를 처리합니다.
+     *
+     * 이 메서드는 메시지 처리 과정에서 발생하는 오류를 처리합니다.
+     * 이메일 또는 메시지 전송과 관련된 오류가 발생했을 때 호출됩니다.
+     * 경고 로그를 기록하고 클라이언트에게 서버 내부 오류임을 알리는 메시지와 함께 에러 응답을 반환합니다.
+     *
+     * @param ex 발생한 예외 객체. 메시지 처리 중 발생한 예외.
+     * @param request 웹 요청 객체. 요청 정보를 포함합니다.
+     * @return ErrorResponse 오류 응답 객체. 에러 상태, 메시지 및 관련 정보를 포함합니다.
+     */
+    @ExceptionHandler(MessagingException.class)
+    private ErrorResponse handleMessagingException(MessagingException ex, WebRequest request) {
+        logger.warn("메시지 처리 중 예외 발생: ", ex);
+
+        return new ErrorResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "서버에서 요청을 처리하던 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.",
+                request,
+                "005"
         );
     }
 
@@ -142,7 +166,7 @@ public class GlobalExceptionController {
 //                HttpStatus.FORBIDDEN,
 //                "요청한 리소스에 접근할 권한이 없습니다.",
 //                getPathFromRequest(request),
-//                "005"
+//                "006"
 //        );
 //    }
 
