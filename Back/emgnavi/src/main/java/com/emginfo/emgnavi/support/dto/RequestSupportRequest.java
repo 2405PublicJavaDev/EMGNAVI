@@ -4,10 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class PostSupportRequest {
+public class RequestSupportRequest {
 
     @NotBlank(message = "제목은 필수 입력 값입니다.")
     private String title;
-    @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
+    @NotBlank(message = "내용은 필수 입력 값입니다.")
     private String content;
 }
