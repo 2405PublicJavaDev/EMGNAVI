@@ -3,18 +3,6 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.emginfo.emgnavi.user.model.mapper.UserMapper">
-<!--    <resultMap id="UserResultMap" type="User">-->
-<!--        <result property="userId" column="USER_ID"/>-->
-<!--        <result property="userNickname" column="USER_NICKNAME"/>-->
-<!--        <result property="userPw" column="USER_PW"/>-->
-<!--        <result property="userPhone" column="USER_PHONE"/>-->
-<!--        <result property="userName" column="USER_NAME"/>-->
-<!--        <result property="userGender" column="USER_GENDER"/>-->
-<!--        <result property="userAddress" column="USER_ADDRESS"/>-->
-<!--        <result property="unfreezeDate" column="UNFREEZE_DATE"/>-->
-<!--        <result property="marketingAgree" column="MARKETING_AGREE"/>-->
-<!--    </resultMap>-->
-
     <insert id="insertUser">
         INSERT INTO USER_TBL
         VALUES(#{userId}, #{userNickname}, #{userPw}, #{userPhone}, #{userName}, #{userGender}, #{userAddress}, null, #{marketingAgree})
@@ -32,5 +20,18 @@
     <select id="checkLogin" resultType="User">
         SELECT * FROM USER_TBL WHERE USER_ID = #{userId} AND USER_PW = #{userPw}
     </select>
-
+    <select id="selectUserById" resultType="User">
+        SELECT * FROM USER_TBL WHERE USER_ID = #{userId}
+    </select>
+    <update id="modifyUser">
+        UPDATE USER_TBL
+        SET
+            userNickname = #{userNickname},
+            userPw = #{userPw},
+            userPhone = #{userPhone},
+            userAddress = #{userAddress},
+            marketingAgree = #{marketingAgree}
+        WHERE
+            userId = #{userId}
+    </update>
 </mapper>

@@ -12,11 +12,14 @@ const Header = ({ isLoginTrue, setIsLoginTrue }) => {
     const handlerGoMain = () => {
         nav("/");
     }
-    const handlerLogout = () => {
-        localStorage.removeItem('isLoginTrue'); // 로그아웃 시 세션 저장소 제거
-        localStorage.removeItem('userId'); // 사용자 ID 제거
-        nav("/user/login"); // 로그아웃 후 로그인 페이지로 이동
-        setIsLoginTrue(false); // 로그인 상태 업데이트
+    const handleLogout = () => {
+        const isConfirmed = confirm("로그아웃 하시겠습니까?");
+        if (isConfirmed) {
+            localStorage.removeItem('isLoginTrue'); // 로그아웃 시 세션 저장소 제거
+            localStorage.removeItem('userId'); // 사용자 ID 제거
+            nav("/user/login"); // 로그아웃 후 로그인 페이지로 이동
+            setIsLoginTrue(false); // 로그인 상태 업데이트
+        } // 취소 시 아무 동작도 하지 않음
     };
     const handlerGoMypage = () => {
         nav("/user/mypage");
@@ -43,7 +46,7 @@ const Header = ({ isLoginTrue, setIsLoginTrue }) => {
                                     <div className="absolute left-0 top-[4px] w-[1920px] h-[27px] flex">
                                         <div className="absolute left-[1865px] top-0 w-[55px] h-[27px] text-[16px]"><span className="font-['Inter'] font-extralight text-[#7d8597]">|</span><span className="font-['Inter'] font-semibold text-[#fff]"> </span></div>
                                         <div   
-                                            onClick={handlerLogout}
+                                            onClick={handleLogout}
                                             style={ {cursor : 'pointer'}}
                                             className="absolute left-[1778px] top-0 w-[87px] h-[27px] text-[16px] font-['Inter'] font-medium text-[#fff] text-center">로그아웃</div>
                                         <div className="absolute left-[1773px] top-0 w-[5px] h-[27px] text-[16px]"><span className="font-['Inter'] font-extralight text-[#7d8597]">|</span><span className="font-['Inter'] font-semibold text-[#fff]"> </span></div>

@@ -16,4 +16,8 @@ public interface UserMapper {
     User selectIdByPhone(VerifyPhoneRequest request);
 
     User checkLogin(LoginRequest request);
+
+    User selectUserById(UserInfoRequest request);
+
+    int modifyUser(UserInfoRequest request);
 }

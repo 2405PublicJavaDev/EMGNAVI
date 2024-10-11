@@ -37,7 +37,7 @@ const MypageCheckPw = () => {
                     userPw: values.uPassword,
                 });
                 console.log(response.data); // 응답 확인
-                alert(response.data); // 비밀번호 체크 결과 알림
+                // alert(response.data); // 비밀번호 체크 결과 알림
                 nav("/user/mypage/modify")
             } catch (error) {
                 console.error(error);

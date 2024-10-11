@@ -28,7 +28,7 @@ const LoginMain = ({ setIsLoginTrue }) => {
                     userPw: values.uPassword,
                 });
                 console.log(response.data); // 응답 확인
-                alert(response.data);
+                // alert(response.data);
                 const sessionResponse = await axios.get('/api/check-session');
                 if (sessionResponse.status === 200) {
                     localStorage.setItem('isLoginTrue', 'true'); // 로그인 상태 저장
