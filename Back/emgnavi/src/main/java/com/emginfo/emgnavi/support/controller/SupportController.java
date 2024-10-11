@@ -24,9 +24,6 @@ public class SupportController {
     private SupportService supportService;
     private EmailService emailService;
 
-    @Value("${email-username}")
-    private String testUsername;
-
     public SupportController() {}
     @Autowired
     public SupportController(SupportService supportService, EmailService emailService) {
@@ -53,7 +50,6 @@ public class SupportController {
 
     @GetMapping("/support/{no}")
     public SuccessResponse getSupportOneByNo(@PathVariable String no) {
-        System.out.println(testUsername);
         Support support = supportService.getSupportOneByNo(no);
         if (support != null) {
             GetSupportResponse response = new GetSupportResponse();
