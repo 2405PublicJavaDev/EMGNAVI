@@ -186,13 +186,13 @@ public class UserController {
         return ResponseEntity.ok("코드: " + code);
     }
 
-    @PostMapping("/getInf")
-    public ResponseEntity<String> getUserInf(@RequestBody UserInfoRequest request) {
-        User user = selectUserbyId(request);
-        if (user != null) {
-            return ResponseEntity.ok(user.getUserId());
-        }
-        return ResponseEntity.ok("코드: " + code);
-    }
+//    @PostMapping("/getInf")
+//    public ResponseEntity<String> getUserInf(@RequestBody UserInfoRequest request) {
+//        User user = selectUserbyId(request);
+//        if (user != null) {
+//            return ResponseEntity.ok(user.getUserId());
+//        }
+//        return ResponseEntity.ok("코드: " + code);
+//    }
 
 }
