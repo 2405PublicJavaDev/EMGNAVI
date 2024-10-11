@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { TableVirtuoso } from "react-virtuoso";
 import { TableContainer, Table, TableBody, TableCell, TableRow, Paper } from '@mui/material';  // Material-UI import
+import Modal from "react-modal";
 
 const { kakao } = window;
 
@@ -32,6 +33,23 @@ function GetAedMap() {
     const [infoWindows, setInfoWindow] = useState([]);
     const addInfoWindow = (newInfoWindow) => {
         setInfoWindow(prev => [...prev, newInfoWindow]);
+    };
+    
+    // 이미지 표시 및 다운로드 Modal
+    const [openModalId, setOpenModalId] = useState(null);
+    const [modalImage, setModalImage] = useState(null);
+    const [downloadFileName, setDownloadFileName] = useState("");
+
+    const openModal = (imagePath, fileName) => {
+        setModalImage(imagePath);
+        setDownloadFileName(fileName);
+        setOpenModalId(true);
+    };
+
+    const closeModal = () => {
+        setOpenModalId(null);
+        setModalImage(null);
+        setDownloadFileName("");
     };
     
     // 현재 위치 가져오기
@@ -106,15 +124,16 @@ function GetAedMap() {
         
     }, [searchRadius, latitude, longitude]);
     
+    // 로딩 상태 추가
+    const [loading, setLoading] = useState(false);
+
     // 데이터 가져오기, 반경 표시
     useEffect(() => {
         if (searchRadius && latitude && longitude) {
-            if (aeds) {
-                setAeds(null);
-            }
+            setLoading(true); // 데이터 가져오기 전에 로딩 상태로 변경
+            
             // aed 데이터 가져오기
             fetch(`/api/map/getAroundAed?latitude=${latitude}&longitude=${longitude}&distance=${searchRadius}`)
-            // fetch(`/api/map/getAroundAed?latitude=${latitude}&longitude=${longitude}&distance=100`)
             .then(response => response.json())
             .then(data => {
                 console.log(data);
@@ -237,7 +256,7 @@ function GetAedMap() {
         const newRadius = searchRadius + 100;
 
         // 현재 searchRadius 값과 새로운 값이 다를 때만 업데이트
-        if (newRadius !== searchRadius) {
+        if (newRadius !== searchRadius && newRadius <= 1000) {
             // console.log('old:' + searchRadius);
             setSearchRadius(newRadius);
             // console.log('new:' + searchRadius);
@@ -250,7 +269,7 @@ function GetAedMap() {
             const newRadius = searchRadius - 100;
 
             // 현재 searchRadius 값과 새로운 값이 다를 때만 업데이트
-            if (newRadius !== searchRadius) {
+            if (newRadius !== searchRadius && newRadius >= 100) {
                 // console.log('old:' + searchRadius);
                 setSearchRadius(newRadius);
                 // console.log('new:' + searchRadius);
@@ -281,80 +300,148 @@ function GetAedMap() {
 
     return (
         <div className="flex">
-        <div className="flex w-[20%] h-[100vh] bg-white p-4">
-            <div className="flex flex-col w-[25%]">
-                <h1>
-                    <img className="left-[24px] top-0" width="111" height="97" src="/img/header/logo.png" alt="Logo"></img>
-                </h1>
-                <div className="text-center"><button>병원</button></div>
-                <div className="text-center"><button>약국</button></div>
-                <div className="text-center bg-[#0B2D85] text-[#ffffff]"><button>AED</button></div>
-
-            </div>
-            <div className="flex flex-col w-[75%]">
-                <button className="bg-red-500 text-white mb-2">AED 사용 방법 가이드</button>
-                <div className="flex justify-between h-[150px]">
-                    <button className="text-black">반경 1km</button>
-                    <button className="text-black">반경 2km</button>
+            <div className="flex w-[20%] h-[100vh] bg-white p-4">
+                <div className="flex flex-col w-[25%]">
+                    <h1>
+                        <img className="left-[24px] top-0" width="111" height="97" src="/img/header/logo.png" alt="Logo"></img>
+                    </h1>
+                    <div className="text-center font-bold py-3"><button>병원</button></div>
+                    <div className="text-center font-bold py-3"><button>약국</button></div>
+                    <div className="text-center font-bold bg-[#0B2D85] text-[#ffffff] py-3"><button>AED</button></div>
                 </div>
-                {/* 반경 내 조회된 장소들 리스트 출력 */}
-                <div className="mt-4 h-[calc(100vh-200px)]">
-                    <TableVirtuoso
-                        style={{ height: "100%" }}
-                        data={aeds && aeds.length > 0 ? 
-                            // searchRadius 보다 작은지
-                            aeds.filter(aed => getDistanceFromLatLonInKm(latitude, longitude, aed.wgs84Lat, aed.wgs84Lon) <= searchRadius) 
-                            : []
-                        }
-                        components={TableComponents}
-                        itemContent={(index, aed) => (
-                            <>
-                                <TableRow key={index} className="aed-item">
-                                    <TableCell className="aed-name font-bold text-gray-800" style={{border: 'none', padding:'5px 10px 0px 10px', fontWeight: '900', color: '#0B2D85', fontSize: '17px'}}>{aed.org}</TableCell>
-                                </TableRow>
-                                <TableRow key={`${index}-tel`}>
-                                    <TableCell className="aed-tel text-sm text-gray-600" style={{border: 'none', padding:'5px 10px'}}>{aed.clerkTel}</TableCell>
-                                </TableRow>
-                                <TableRow key={`${index}-address`}>
-                                    <TableCell className="aed-address text-sm text-gray-500" style={{padding: '0 10px 5px 10px'}}>{aed.buildAddress} {aed.buildPlace}</TableCell>
-                                </TableRow>
-                            </>
+                <div className="flex flex-col w-[75%]">
+                    <div className="space-y-3 px-[10px]">
+                        <button onClick={() => openModal("/img/aed/자동심장충격기 사용방법.jpg", "자동심장충격기_사용방법.jpg")} 
+                            className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-lg transition duration-300">
+                            AED 사용 방법
+                        </button>
+                        <button onClick={() => openModal("/img/aed/심폐소생술 방법.jpg", "심폐소생술_방법.jpg")} 
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded-lg transition duration-300">
+                            심폐소생술 방법
+                        </button>
+                        <div className="bg-white p-4 rounded-lg !my-[5px]">
+                            <div className="flex items-center justify-between">
+                                <span className="text-gray-700 font-bold">검색 반경</span>
+                                <div className="flex items-center space-x-2">
+                                    <button onClick={() => reduceRadius()} className="w-8 h-8 flex items-center justify-center bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-full transition duration-300 ease-in-out">
+                                        -
+                                    </button>
+                                    <span className="text-gray-800 font-bold">{searchRadius}m</span>
+                                    <button onClick={() => increaseRadius()} className="w-8 h-8 flex items-center justify-center bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-full transition duration-300 ease-in-out">
+                                        +
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/* 반경 내 조회된 장소들 리스트 출력 */}
+                    <div className="h-[calc(100vh-200px)] border-t border-solid border-[#e5e7eb]">
+                        {aeds && aeds.length > 0 ? (
+                            <TableVirtuoso
+                                style={{ height: "100%", boxShadow: "none"}}
+                                // searchRadius 보다 작은지
+                                data={aeds.filter(aed => getDistanceFromLatLonInKm(latitude, longitude, aed.wgs84Lat, aed.wgs84Lon) <= searchRadius) }
+                                components={TableComponents}
+                                itemContent={(index, aed) => (
+                                    <>
+                                        <TableRow key={index} className="aed-item">
+                                            <TableCell className="aed-name font-bold text-gray-800" style={{border: 'none', padding:'5px 10px 0px 10px', fontWeight: '900', color: '#0B2D85', fontSize: '16px'}}>{aed.org}</TableCell>
+                                        </TableRow>
+                                        <TableRow key={`${index}-tel`}>
+                                            <TableCell className="aed-tel text-sm text-gray-600" style={{border: 'none', padding:'5px 10px'}}>{aed.clerkTel}</TableCell>
+                                        </TableRow>
+                                        <TableRow key={`${index}-address`}>
+                                            <TableCell className="aed-address text-sm text-gray-500" style={{padding: '0 10px 5px 10px'}}>{aed.buildAddress} {aed.buildPlace}</TableCell>
+                                        </TableRow>
+                                    </>
+                                )}
+                            />
+                        ) : (
+                            // 조회된 결과가 없을 때
+                            <div style={{ padding: '20px', textAlign: 'center', fontSize: '16px', color: '#999' }}>
+                            조회된 결과가 없습니다.
+                        </div>
                         )}
-                    />
+                    </div>
                 </div>
             </div>
-        </div>
-        <div className="w-[80%] h-[100vh] relative">
-            <div id='map' className="w-full h-full absolute"></div>
-            <div style={{
-                position: 'absolute',
-                top: '10px',
-                right: '10px',
-                overflow: 'hidden',
-                height: '30px',
-                margin: '0',
-                padding: '0',
-                zIndex: 100,
-                fontSize: '12px',
-                fontFamily: "'Malgun Gothic', '맑은 고딕', sans-serif",
-                border: '1px solid #919191',
-                borderRadius: '5px',
-                backgroundColor: 'lightGray'
-            }}>
-                <button onClick={() => reduceRadius()} >
-                    반경 감소
-                </button>
-                <span style={{
-                    paddingLeft: '10px',
-                    paddingRight: '10px'
-                }}>{("검색반경(" + searchRadius / 100) + "Km)"}</span>
-                <button onClick={() => increaseRadius()} >
-                    반경 증가
-                </button>
-
+            <div className="w-[80%] h-[100vh] relative">
+                <div id='map' className="w-full h-full absolute"></div>
+                {/* <div style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    overflow: 'hidden',
+                    height: '30px',
+                    margin: '0',
+                    padding: '0',
+                    zIndex: 100,
+                    fontSize: '12px',
+                    fontFamily: "'Malgun Gothic', '맑은 고딕', sans-serif",
+                    border: '1px solid #919191',
+                    borderRadius: '5px',
+                    backgroundColor: 'lightGray'
+                }}>
+                    <button onClick={() => reduceRadius()} >
+                        반경 감소
+                    </button>
+                    <span style={{
+                        paddingLeft: '10px',
+                        paddingRight: '10px'
+                    }}>{("검색반경(" + searchRadius / 100) + "Km)"}</span>
+                    <button onClick={() => increaseRadius()} >
+                        반경 증가
+                    </button>
+                </div> */}
             </div>
+            <Modal
+                isOpen={openModalId !== null}
+                onRequestClose={closeModal}
+                 className="fixed inset-0 flex items-center justify-center z-50"  // 모달이 부모 div에 종속되지 않도록 fixed로 설정하고 z-index를 50으로 설정하여 모달이 최상단에 나타나도록 수정
+                 overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-40"   // 오버레이의 z-index도 40으로 설정하여 전체 화면을 덮도록 수정
+                shouldCloseOnOverlayClick={true}
+                style={{
+                    content: {
+                        position: 'fixed',                // 모달을 페이지 상단에 고정시키기 위해 fixed로 설정
+                        top: '50%',                       
+                        left: '50%',                      
+                        right: 'auto',
+                        bottom: 'auto',
+                        transform: 'translate(-50%, -50%)', // 화면 중앙으로 정확히 배치되도록 transform 설정
+                        zIndex: 10000,                      // 모달의 z-index를 높게 설정하여 다른 요소 위에 표시되도록 수정
+                        },
+                        overlay: {
+                        zIndex: 9999,                       // 오버레이의 z-index도 높게 설정하여 모달과 함께 화면을 덮도록 수정
+                    }
+                }}
+            >
+                <div className="modal-content bg-white rounded-lg p-4 max-w-2xl w-full max-h-[90vh] flex flex-col">
+                    <div className="flex items-center justify-end px-4">
+                        {/* <h2 className="text-1.5xl font-bold">{downloadFileName.includes("AED") ? "AED 사용 방법" : "심폐소생술 방법"}</h2> */}
+                        <div className="flex justify-end mb-2">
+                            <a 
+                                href={modalImage} 
+                                download={downloadFileName}
+                                className="rounded py-2 px-5 text-sm font-bold text-blue"
+                            >
+                                다운로드
+                            </a>
+                            <button 
+                                onClick={closeModal}
+                                className="text-black font-bold transition duration-300"
+                            >
+                                X
+                            </button>
+                        </div>
+                    </div>
+                    <div className="overflow-y-auto flex-grow">
+                        {modalImage && (
+                            <img src={modalImage} alt="Modal Image" className="w-full" />
+                        )}
+                    </div>
+                </div>
+            </Modal>
         </div>
-    </div>
     );
 };
 
