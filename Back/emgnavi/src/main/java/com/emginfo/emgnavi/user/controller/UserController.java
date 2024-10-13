@@ -3,6 +3,7 @@ package com.emginfo.emgnavi.user.controller;
 import com.emginfo.emgnavi.user.model.dto.*;
 import com.emginfo.emgnavi.user.model.vo.KakaoApi;
 import com.emginfo.emgnavi.user.model.vo.User;
+import com.emginfo.emgnavi.user.service.EmailService;
 import com.emginfo.emgnavi.user.service.UserService;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpSession;
@@ -11,32 +12,38 @@ import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.sound.midi.Soundbank;
 import java.util.Map;
+import java.util.UUID;
 
 
 @RestController
 @RequestMapping("/api")
 public class UserController {
-
-    public UserService uService;
     public KakaoApi kakaoApi;
 
-    public UserController() {
+    private final UserService uService; // final 키워드로 불변성 보장
+    private final JavaMailSender javaMailSender; // JavaMailSender 주입
+    private final EmailService emailService;
+
+    // 생성자 주입을 통해 모든 필드 초기화
+    @Autowired
+    public UserController(UserService userService, JavaMailSender javaMailSender, EmailService emailService) {
+        this.uService = userService;
+        this.javaMailSender = javaMailSender; // JavaMailSender 주입
+        this.emailService = emailService;
     }
 
-    @Autowired
-    public UserController(UserService userService) {
-        this.uService = userService;
-    }
 
     @PostMapping("/verify/phone")
     public ResponseEntity<String> verifyPhone(@RequestBody VerifyPhoneRequest request, HttpSession session) {
         String userPhone = request.getUserPhone();
-        String verificationCode = Integer.toString((int)(Math.random() * (999999 - 100000 + 1)) + 100000);
+        String verificationCode = Integer.toString((int) (Math.random() * (999999 - 100000 + 1)) + 100000);
 
         SingleMessageSentResponse result = uService.sendVerificationCode(userPhone, verificationCode);
 
@@ -109,7 +116,7 @@ public class UserController {
     public ResponseEntity<String> selectIdByPhone(@RequestBody VerifyPhoneRequest request) {
         User user = uService.selectIdByPhone(request);
         if (user != null) {
-            System.out.println(user.getUserId());
+//            System.out.println(user.getUserId());
             return ResponseEntity.ok(user.getUserId());  // 조회된 유저의 아이디 반환
         } else {
             System.out.println("정보 없음");
@@ -151,9 +158,9 @@ public class UserController {
     }
 
     @GetMapping("/kakao/login")
-    public String loginForm(Model model){
-        model.addAttribute("kakaoApiKey", kakaoApi.getKakaoApiKey());
-        model.addAttribute("redirectUri", kakaoApi.getKakaoRedirectUri());
+    public String loginForm(Model model) {
+//        model.addAttribute("kakaoApiKey", kakaoApi.getKakaoApiKey());
+//        model.addAttribute("redirectUri", kakaoApi.getKakaoRedirectUri());
         return "login";
     }
 
@@ -176,15 +183,17 @@ public class UserController {
 //    }
 
 
-
     @GetMapping("/kakao/callback")
-    public ResponseEntity<String> kakaoLogin(@RequestParam ("code") String code) {
-        System.out.println("코드: " + code);
-        if (code == null || code.isEmpty()) {
-            return ResponseEntity.badRequest().body("오류");
+    public ResponseEntity<String> kakaoLogin(@RequestParam("code") String code) {
+        String accessToken = kakaoApi.getAccessToken(code);
+
+        if (accessToken == null) {
+            return ResponseEntity.badRequest().body("액세스 토큰 요청 실패");
         }
-        return ResponseEntity.ok("코드: " + code);
+
+        return ResponseEntity.ok("액세스 토큰: " + accessToken);
     }
+
 
     @PostMapping("/getInf")
     public ResponseEntity<UserInfoRequest> getUserInf(@RequestBody UserInfoRequest request) {
@@ -208,10 +217,80 @@ public class UserController {
     @PostMapping("/modify")
     public void modifyUser(@RequestBody UserInfoRequest request) {
         int result = uService.modifyUser(request);
-        if(result > 0) {
+        if (result > 0) {
             System.out.println("수정 성공");
         } else {
             System.out.println("수정 실패");
+        }
+    }
+
+    @PostMapping("/changePw")
+    public ResponseEntity<?> changePw(@RequestBody LoginRequest request) {
+
+        int result = uService.changePw(request);
+        if (result > 0) {
+            System.out.println("비번 변경 성공");
+            return ResponseEntity.ok("성공");
+        } else {
+            System.out.println("비번 변경 실패");
+        }
+        return ResponseEntity.badRequest().body("실패");
+    }
+
+
+    @PostMapping("/send-reset-mail")
+    public ResponseEntity<?> sendResetMail(@RequestBody UserIdRequest request) {
+        System.out.println("아이디: " + request.getUserId());
+        User user = uService.selectUserbyId(request);
+
+        if (user != null) {
+            String userId = user.getUserId();
+            String tokenId = generateResetToken();
+            String resetLink = "https://127.0.0.1:3000/user/findPw/resetPw?token=" + tokenId;
+
+            uService.saveResetToken(userId, tokenId); // ID에 해당하는 토큰 저장
+            emailService.sendResetPasswordEmail(userId, resetLink);
+
+            return ResponseEntity.ok("성공: " + user.getUserNickname());
+        } else {
+            return ResponseEntity.ok("실패");
+        }
+    }
+
+    private String generateResetToken() {
+        return UUID.randomUUID().toString(); // 랜덤 UUID 생성
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordRequest request) {
+        String tokenId = request.getTokenId();
+        String userPw = request.getUserPw();
+
+        boolean isSuccess = uService.resetPassword(tokenId, userPw);
+
+        if (isSuccess) {
+            return ResponseEntity.ok("성공");
+        } else {
+            return ResponseEntity.badRequest().body("유효하지 않은 토큰이거나 사용자 정보가 없습니다.");
+        }
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<String> deleteUser(@RequestBody UserIdRequest request) {
+        try {
+            // 사용자 조회
+            User user = uService.selectUserbyId(request);
+            // 사용자 삭제
+            int result = uService.deleteUser(request);
+
+            if (result > 0) {
+                return ResponseEntity.ok("성공");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("사용자 삭제 중 오류가 발생했습니다.");
+            }
+        } catch (Exception e) {
+            // 예외 처리
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류: " + e.getMessage());
         }
     }
 

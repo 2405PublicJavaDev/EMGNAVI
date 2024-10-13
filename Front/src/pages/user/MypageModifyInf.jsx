@@ -2,8 +2,9 @@ import { useState, EventHandler, ReactNode, useEffect } from 'react'
 import ChangePasswordModal from './ChangePasswordModal';
 import PhoneVerificationModal from './PhoneVerificationModal';
 import useAxios from '../../axios/useAxios';
+import { useNavigate } from 'react-router-dom';
 
-const MypageModifyInf = () => {
+const MypageModifyInf = ({ setIsLoginTrue }) => {
     const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
     const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
     const openPhoneModal = () => {
@@ -22,6 +23,10 @@ const MypageModifyInf = () => {
     const [userInfo, setUserInfo] = useState(null);
     const [isInitialLoad, setIsInitialLoad] = useState(true);
 
+    const [currentPw, setCurrentPw] = useState('');
+    const nav = useNavigate();
+    
+
     useEffect(() => {
         const userId = localStorage.getItem('userId');
         if (userId && isInitialLoad) {
@@ -34,6 +39,7 @@ const MypageModifyInf = () => {
                 (data) => {
                     setUserInfo(data);
                     const fullAddress = data.userAddress || '';
+                    const currentPw = data.userPw;
                     const lastIndex = fullAddress.lastIndexOf(" ");
                     setValues({
                         newNickname: data.userNickname || '',
@@ -41,10 +47,14 @@ const MypageModifyInf = () => {
                         detailedAddress: fullAddress.substring(lastIndex + 1),
                     });
                     setIsInitialLoad(false);
+                    setCurrentPw(currentPw);
                 }
             );
         }
     }, [isInitialLoad, fetchData]);
+
+    // console.log(currentPw);
+
 
     const [values, setValues] = useState({
         newNickname: '',
@@ -65,13 +75,6 @@ const MypageModifyInf = () => {
     }
 
     const findPostCode = () => {
-        // 우편번호 찾기 버튼을 누르면 즉시 주소 필드를 비웁니다.
-        // setValues(prevValues => ({
-        //     ...prevValues,
-        //     mainAddress: '',
-        //     detailedAddress: '',
-        // }));
-
         new window.daum.Postcode({
             oncomplete: function (data) {
                 const fullAddress = data.zonecode + " " + data.address;
@@ -112,6 +115,33 @@ const MypageModifyInf = () => {
         );
     };
 
+    const handlerDelete = () => {
+        const userId = localStorage.getItem('userId');
+        if (confirm("정말 탈퇴하시겠습니까?")) {
+            fetchData(
+                {
+                    method: 'POST',
+                    url: `/api/delete`,
+                    data: {
+                        userId: userId
+                    }
+                },
+                (data) => {
+                    if (data.includes("성공")) {
+                        localStorage.removeItem('isLoginTrue'); // 로그아웃 시 세션 저장소 제거
+                        localStorage.removeItem('userId'); // 사용자 ID 제거    
+                        setIsLoginTrue(false); // 로그인 상태 업데이트
+                        alert("탈퇴가 성공적으로 처리되었습니다.");
+                        nav("/");
+                    } else {
+                        alert("탈퇴 처리에 실패했습니다.");
+                    }
+                }
+            );
+        }
+    };
+    
+
 
 return (
     <>
@@ -129,6 +159,7 @@ return (
             <div className="absolute left-[534px] top-[695px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">비밀번호 </span><span className="text-[#c2a55d]">*</span></div>
             <button
                 onClick={openPasswordModal}
+                type='button'
                 className="absolute left-[748px] top-[678px] w-[121px] h-[51px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[45px]">
                 <span className="text-[17px] font-['Inter'] text-[#000] text-center flex flex-col justify-center">변경하기</span>
             </button>
@@ -155,6 +186,7 @@ return (
             <div className="absolute left-[748px] top-[905px] w-[214px] text-[17px] font-['Inter'] text-[#000]">{userInfo.userPhone}</div>
             <button
                 onClick={openPhoneModal}
+                type='button'
                 className="absolute left-[894px] top-[891px] w-[121px] h-[51px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[45px]">
                 <span className="text-[17px] font-['Inter'] text-[#000] text-center flex flex-col justify-center">변경하기</span>
             </button>
@@ -164,7 +196,6 @@ return (
             <div className="absolute left-[748px] top-[987px] w-[479px] h-[53px] text-[17px] font-['Inter'] text-[#000] flex flex-col justify-center">{userInfo.userName}</div>
 
             {/* 성별 */}
-            console.log(userInfo.userGender)
             <div className="absolute left-[534px] top-[1105px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">성별</div>
             <div className="absolute left-[748px] top-[1091px] w-[96px] h-[51px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[45px]"></div>
             <div className="absolute left-[803px] top-[1091px] w-[18px] h-[51px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center">남</div>
@@ -204,7 +235,11 @@ return (
         </form>
 
         <div className="absolute left-[420px] top-[1526px] w-[1080px] h-0 border-[1px] border-solid border-[#7d8597]"></div>
-        <div className="absolute left-[422px] top-[1600px] text-[17px] text-[#7d8597] whitespace-nowrap"><span className="font-['Inter']">회원 탈퇴를 하시겠습니까?   </span><span className="font-['Inter'] font-semibold">회원탈퇴</span></div>
+        <div className="absolute left-[422px] top-[1600px] text-[17px] text-[#7d8597] whitespace-nowrap"><span className="font-['Inter']">회원을 탈퇴 하시겠습니까?   </span>
+        <span
+            onClick={handlerDelete}
+            style={ { cursor : 'pointer' }}
+            className="font-['Inter'] font-semibold">회원탈퇴</span></div>
         <div className="absolute left-[1372px] top-[1851px] text-[24px] font-['Inter'] font-semibold text-[#fff] whitespace-nowrap">내정보 변경</div>
         <div className="absolute left-[1113px] top-[1690px] w-[387px] h-[60px] flex">
             <div className="absolute left-0 top-0 w-[184px] h-[60px] flex">
@@ -242,7 +277,7 @@ return (
                 <div
                     className="fixed inset-0 bg-black bg-opacity-50 z-40"
                     onClick={closePhoneModal}></div>
-                <PhoneVerificationModal onClose={closePhoneModal} />
+                <PhoneVerificationModal onClose={closePhoneModal}  />
             </>
         )}
         {isPasswordModalOpen && (
@@ -250,7 +285,7 @@ return (
                 <div
                     className="fixed inset-0 bg-black bg-opacity-50 z-40"
                     onClick={closePasswordModal}></div>
-                <ChangePasswordModal onClose={closePasswordModal} />
+                <ChangePasswordModal onClose={closePasswordModal} currentPw={currentPw}/>
             </>
         )}
     </>

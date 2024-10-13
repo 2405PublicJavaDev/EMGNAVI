@@ -104,7 +104,7 @@ function App() {
 
         <Route path="/user/mypage" element={<Mypage />} />
         <Route path="/user/mypage/check" element={<MypageCheckPw />} />
-        <Route path="/user/mypage/modify" element={<MypageModifyInf />} />
+        <Route path="/user/mypage/modify" element={<MypageModifyInf setIsLoginTrue={setIsLoginTrue}/>} />
 
         <Route path='/notice/postNotice' element={<PostNotice />} />
         <Route path='/notice/getNoticeList' element={<GetNoticeList />} />

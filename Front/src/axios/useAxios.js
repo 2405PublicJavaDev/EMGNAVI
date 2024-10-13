@@ -10,7 +10,7 @@ const useAxios = () => {
         try {
             const res = await axios(config);
             setResponse(res.data.data);
-            if (res.data.status == 200 || res.data.status == 201) {
+            if (res.status == 200 || res.status == 201) {
                 if (callback) callback(res.data);
             } else {
                 alert(`${res.data.status} | ${res.data.error}\n${res.data.message}\n에러코드 ${res.data.code}`);

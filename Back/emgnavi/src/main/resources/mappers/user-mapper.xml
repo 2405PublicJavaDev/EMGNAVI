@@ -26,12 +26,29 @@
     <update id="modifyUser">
         UPDATE USER_TBL
         SET
-            userNickname = #{userNickname},
-            userPw = #{userPw},
-            userPhone = #{userPhone},
-            userAddress = #{userAddress},
-            marketingAgree = #{marketingAgree}
+            USER_NICKNAME = #{userNickname},
+            USER_PHONE = #{userPhone},
+            USER_ADDRESS = #{userAddress},
+            MARKETING_AGREE = #{marketingAgree}
         WHERE
-            userId = #{userId}
+            USER_ID = #{userId}
     </update>
+    <update id="changePw">
+        UPDATE USER_TBL
+        SET USER_PW = #{userPw}
+        WHERE USER_ID = #{userId}
+    </update>
+    <insert id="saveResetToken">
+        INSERT INTO TOKEN_TBL
+        VALUES(#{tokenId}, #{userId}, DEFAULT)
+    </insert>
+    <select id="selectTokenById" resultType="Token">
+        SELECT * FROM TOKEN_TBL WHERE TOKEN_ID = #{token_id}
+    </select>
+    <delete id="deleteToken">
+        DELETE FROM TOKEN_TBL WHERE TOKEN_ID = #{token_id}
+    </delete>
+    <delete id="deleteUser">
+        DELETE FROM USER_TBL WHERE USER_ID = #{userId}
+    </delete>
 </mapper>

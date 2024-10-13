@@ -1,7 +1,12 @@
+import { data } from 'autoprefixer';
 import { useState, EventHandler, ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom';
+import useAxios from '../../axios/useAxios';
 
 const FindPw = () => {
+    const [email, setEmail] = useState('');
+    const { response, error, loading, fetchData } = useAxios();
+
     const nav = useNavigate();
     const handlerGoFindEmail = () => {
         nav("/user/findEmail");
@@ -10,10 +15,31 @@ const FindPw = () => {
     const handlerGoLogin = () => {
         nav("/user/login");
     };
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+    };
 
     const handlerGoComplete = () => {
-        alert("입력하신 이메일로 비밀번호 재설정 링크가 발송되었습니다.");
-        nav("/user/findPw/sent");
+        if (email) {
+            fetchData(
+                {
+                    method: 'POST',
+                    url: `/api/send-reset-mail`,
+                    data: {
+                        userId: email
+                    }
+                },
+                (data) => {
+                    if(data.includes('성공')) {
+                        console.log(data)
+                        alert("입력하신 이메일로 비밀번호 재설정 링크가 발송되었습니다.");
+                        nav("/user/findPw/sent");
+                    } else {
+                        alert("해당 이메일 주소를 찾을 수 없습니다. 올바른 이메일을 입력해 주세요.")
+                    }
+                }
+            )
+        }
     }
 
     return (<>
@@ -41,16 +67,18 @@ const FindPw = () => {
             </div>
         </div>
         <div className="absolute left-[731px] top-[671px] w-[489px] h-[52px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
-        <input 
+        <input
+            value={email}
             type='text'
+            onChange={handleEmailChange}
             placeholder='아이디(이메일)를 입력해주세요.'
             className="absolute left-[760px] top-[672px] w-[459px] h-[50px] text-[17px] font-['Inter'] text-[#7d8597] flex flex-col justify-center outline-0"></input>
         <div className="absolute left-[1248px] top-[671px] w-[103px] h-[52px] flex">
-            <button 
+            <button
                 onClick={handlerGoComplete}
                 className="absolute left-0 top-0 w-[103px] h-[52px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]">
-            <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">전송</span>
-                </button>
+                <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">전송</span>
+            </button>
         </div>
         <div className="absolute left-0 top-[1169px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">
             <div className="absolute left-[136px] top-[41px] w-[117px] h-[126px] flex">

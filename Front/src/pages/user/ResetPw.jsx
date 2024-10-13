@@ -1,4 +1,6 @@
-import { useState, EventHandler, ReactNode } from 'react'
+import axios from 'axios';
+import { useState, EventHandler, ReactNode, useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const ResetPw = () => {
     const [pwImageSrc, setPwImageSrc] = useState(null);
@@ -8,6 +10,20 @@ const ResetPw = () => {
     const [cpwImageSrc, setCpwImageSrc] = useState(null);
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isCPasswordVisible, setIsCPasswordVisible] = useState(false);
+
+    const location = useLocation(); // useLocation 훅을 사용하여 현재 위치 정보 가져오기
+    const query = new URLSearchParams(location.search); // 쿼리 파라미터를 쉽게 다루기 위해 URLSearchParams 사용
+    const token = query.get('token'); // token을 쿼리에서 가져옵니다.
+
+    const nav = useNavigate();
+
+    console.log(token);
+
+    useEffect(() => {
+        if (!token) {
+            alert("유효하지 않은 링크입니다."); // 토큰이 없으면 에러 메시지
+        }
+    }, [token]);
 
     const validationPw = (value) => {
         const regEx = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,16}$/;
@@ -49,7 +65,7 @@ const ResetPw = () => {
         else {
             setCpwImageSrc(null);
         }
-    }    
+    }
 
     const handleMouseDown = (type) => {
         if (type === 'password') {
@@ -58,12 +74,47 @@ const ResetPw = () => {
             setIsCPasswordVisible(true);
         }
     };
-    
+
     const handleMouseUp = (type) => {
         if (type === 'password') {
             setIsPasswordVisible(false);
         } else if (type === 'confirmPassword') {
             setIsCPasswordVisible(false);
+        }
+    };
+
+    const handleChangePassword = async () => {
+        if (!password) {
+            alert("비밀번호를 입력해주세요.");
+            return;
+        }
+        if (pwImageSrc !== "/img/user/green.png") {
+            alert("비밀번호를 다시 확인해주세요.");
+            return;
+        }
+        if (!confirmPassword) {
+            alert("비밀번호 확인을 입력해주세요.");
+            return;
+        }
+        if (password !== confirmPassword) {
+            alert("비밀번호가 일치하지 않습니다.");
+            return;
+        }
+        try {
+            // 비밀번호 변경 요청
+            const response = await axios.post('/api/reset-password', {
+                userPw: password,
+                tokenId: token // 토큰을 서버로 전송
+            });
+
+            if (response.data === "성공") {
+                alert("비밀번호가 성공적으로 변경되었습니다.");
+                nav("/user/login");
+            } else {
+                alert("비밀번호 변경 실패");
+            }
+        } catch (error) {
+            console.error("비밀번호 변경 오류", error);
         }
     };
 
@@ -78,7 +129,7 @@ const ResetPw = () => {
             <div className="absolute left-0 top-[245px] w-[1920px] h-[47px] text-[40px] font-['Inter'] font-bold text-[#000] text-center">비밀번호 찾기</div>
             <div className="absolute left-0 top-[324px] w-[1920px] text-[15px] font-['Inter'] text-[#7d8597] text-center">가입된 아이디(이메일)로 비밀번호를 재설정 하실 수 있습니다.</div>
             <div className="absolute left-[417px] top-[522px] w-[390px] h-[51px] text-[24px] font-['Inter'] font-semibold text-[#000]">새로운 비밀번호를 입력해주세요.</div>
-            <input 
+            <input
                 type={isPasswordVisible ? 'text' : 'password'}
                 onChange={(e) => handlerPwChange(e.target.value)}
                 name='password'
@@ -99,7 +150,7 @@ const ResetPw = () => {
                 </img>
             )}
 
-            <input 
+            <input
                 type={isCPasswordVisible ? 'text' : 'password'}
                 onChange={(e) => handlerConfirmPwChange(e.target.value)}
                 name='confirmpassword'
@@ -122,10 +173,10 @@ const ResetPw = () => {
 
             <div className="absolute left-[874px] top-[992px] w-[184px] h-[60px] flex">
                 <div className="absolute top-0 w-[184px] h-[60px] flex">
-                    <button 
-                        
+                    <button
+                        onClick={handleChangePassword}
                         className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#0b2d85] border-[1px] border-solid border-[#0b2d85] rounded-[50px]">
-                    <span className="text-[16px] font-['Inter'] font-bold text-[#fff] text-center">비밀번호 변경하기</span>
+                        <span className="text-[16px] font-['Inter'] font-bold text-[#fff] text-center">비밀번호 변경하기</span>
                     </button>
                 </div>
             </div>

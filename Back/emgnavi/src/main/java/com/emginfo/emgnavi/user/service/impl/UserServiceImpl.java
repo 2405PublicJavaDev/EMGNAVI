@@ -2,6 +2,7 @@ package com.emginfo.emgnavi.user.service.impl;
 
 import com.emginfo.emgnavi.user.model.dto.*;
 import com.emginfo.emgnavi.user.model.mapper.UserMapper;
+import com.emginfo.emgnavi.user.model.vo.Token;
 import com.emginfo.emgnavi.user.model.vo.User;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
@@ -72,8 +73,51 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User selectUserbyId(UserIdRequest request) {
+        User user = mapper.selectUserById(request);
+        return user;
+    }
+
+    @Override
     public int modifyUser(UserInfoRequest request) {
         int result = mapper.modifyUser(request);
+        return result;
+    }
+
+    @Override
+    public int changePw(LoginRequest request) {
+        int result = mapper.changePw(request);
+        return result;
+    }
+
+    @Override
+    public void saveResetToken(String userId, String tokenId) {
+        mapper.saveResetToken(userId, tokenId);
+    }
+
+    @Override
+    public boolean resetPassword(String tokenId, String userPw) {
+        Token token = mapper.selectTokenById(tokenId);
+        if (token != null) {
+            UserIdRequest request = new UserIdRequest();
+            request.setUserId(token.getUserId());
+            System.out.println("서비스토큰 :" + token.getTokenId());
+            User user = mapper.selectUserById(request);
+            if(user != null) {
+                LoginRequest request1 = new LoginRequest();
+                request1.setUserId(token.getUserId());
+                request1.setUserPw(userPw);
+                mapper.changePw(request1);
+                mapper.deleteToken(tokenId);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int deleteUser(UserIdRequest request) {
+        int result = mapper.deleteUser(request);
         return result;
     }
 }

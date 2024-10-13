@@ -1,7 +1,8 @@
 import { useState, EventHandler, ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
+import useAxios from '../../axios/useAxios';
 
-const ChangePasswordModal = ({ onClose }) => {
+const ChangePasswordModal = ({ onClose, currentPw }) => {
     const nav = useNavigate();
     const [pwImageSrc, setPwImageSrc] = useState(null);
     const [password, setPassword] = useState();
@@ -10,6 +11,70 @@ const ChangePasswordModal = ({ onClose }) => {
     const [cpwImageSrc, setCpwImageSrc] = useState(null);
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isCPasswordVisible, setIsCPasswordVisible] = useState(false);
+
+    const [isPossibleChange, setIsPossibleChange] = useState(false);
+    const { fetchData, loading, error } = useAxios();
+
+    const userId = localStorage.getItem('userId');
+
+    const handelrCurrentPw = (value) => {
+        console.log(value);
+        console.log(currentPw);
+        
+        if (value === currentPw) {
+            console.log("일치");
+            setIsPossibleChange(true);
+        } else {
+            console.log("불일치");
+            setIsPossibleChange(false);
+        }
+    }
+
+    const handlerChangeNewPw = () => {
+        if (!password) {
+            alert("비밀번호를 입력해주세요.");
+            return;
+        }
+        if (!confirmPassword) {
+            alert("비밀번호 확인을 입력해주세요.");
+            return;
+        }
+        if (password !== confirmPassword) {
+            alert("비밀번호가 일치하지 않습니다.");
+            return;
+        }
+        if (pwImageSrc !== "/img/user/green.png") {
+            alert("비밀번호를 다시 확인해주세요.");
+            return;
+        }
+        if (isPossibleChange) {
+            console.log("비번변경가능");
+            if (password) {
+                fetchData(
+                    {
+                        method: 'POST',
+                        url: '/api/changePw',
+                        data: { 
+                            userId : userId,
+                            userPw : password },
+                    },
+                    (data) => {
+                        console.log(data);
+                        if (data.includes('성공')) {
+                            alert("비밀번호가 변경되었습니다");
+                            onClose();
+                        } else {
+                            alert("비밀번호 변경 실패");
+                        }
+                    }
+                )
+            }
+        } else {
+            console.log("변경불가능");
+            alert("현재 비밀번호가 일치하지 않습니다")
+        }
+
+    }
 
     const validationPw = (value) => {
         const regEx = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,16}$/;
@@ -24,7 +89,6 @@ const ChangePasswordModal = ({ onClose }) => {
                 console.log("유효하지 않은 비밀번호");
                 setPwImageSrc("/img/user/pink.png");
             } else {
-                console.log(value);
                 setPwImageSrc("/img/user/green.png");
             }
         }
@@ -36,11 +100,9 @@ const ChangePasswordModal = ({ onClose }) => {
 
     const handlerConfirmPwChange = (value) => {
         setConfirmPassword(value);
-        console.log(confirmPassword);
 
         if (value.length > 0) {
             if (value === password) {
-                console.log(value);
                 setCpwImageSrc("/img/user/green.png");
             }
             else {
@@ -69,10 +131,6 @@ const ChangePasswordModal = ({ onClose }) => {
         }
     };
 
-    const handlerChangePw = () => {
-        nav("/user/mypage/modify");
-    };
-
 
     return (
         <>
@@ -83,7 +141,9 @@ const ChangePasswordModal = ({ onClose }) => {
                         <div className="absolute left-0 top-0 w-[169px] h-[31px] text-[16px] font-['Inter'] font-medium"><span className="text-[#000]">현재 비밀번호 </span><span className="text-[#c2a55d]">*</span></div>
                         <input
                             type='password'
+                            id='inputCurrentPw'
                             placeholder='현재 비밀번호를 입력해주세요.'
+                            onChange={(e) => handelrCurrentPw(e.target.value)}
                             className="absolute left-0 top-[31px] w-[453px] h-[44px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px] text-[16px] font-['Inter'] text-[#7d8597] pl-6 outline-0">
                         </input>
                     </div>
@@ -146,7 +206,7 @@ const ChangePasswordModal = ({ onClose }) => {
                         </div>
                         <div className="absolute left-[140px] top-0 w-[126px] h-[41px] flex">
                             <button
-                                onClick={handlerChangePw}
+                                onClick={handlerChangeNewPw}
                                 className="absolute left-0 top-0 w-[126px] h-[41px] bg-[#0b2d85] border-[1px] border-solid border-[#0b2d85] rounded-[50px]">
                                 <span className="text-[16px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">확인</span>
                             </button>

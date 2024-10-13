@@ -1,6 +1,5 @@
 package com.emginfo.emgnavi.user.model.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserIdRequest {
-    private String userId;
+public class ResetPasswordRequest {
+    private String tokenId;
+    private String userPw;
 }

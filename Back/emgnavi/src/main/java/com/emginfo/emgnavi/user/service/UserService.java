@@ -20,5 +20,15 @@ public interface UserService {
 
     User selectUserbyId(UserInfoRequest request);
 
+    User selectUserbyId(UserIdRequest request);
+
     int modifyUser(UserInfoRequest request);
+
+    int changePw(LoginRequest request);
+
+    void saveResetToken(String userId, String tokenId);
+
+    boolean resetPassword(String tokenId, String userPw);
+
+    int deleteUser(UserIdRequest request);
 }

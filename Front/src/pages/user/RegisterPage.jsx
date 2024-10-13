@@ -6,7 +6,6 @@ import axios from 'axios';
 const RegisterPage = () => {
     const location = useLocation();
     const { userPhone } = location.state || {};
-    const { response, error, loading, setConfig } = useAxios();
 
 
     const [isMaleChecked, setIsMaleChecked] = useState(true);
