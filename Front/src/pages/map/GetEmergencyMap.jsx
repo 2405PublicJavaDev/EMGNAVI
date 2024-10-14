@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { TableVirtuoso } from "react-virtuoso";
 import { TableContainer, Table, TableBody, TableCell, TableRow, Paper } from '@mui/material';  // Material-UI import
+import Chart from "../stat/Chart";
 
 const { kakao } = window;
 
@@ -258,43 +259,10 @@ function GetEmergencyMap() {
 
     return (
         <>
-            {/* <div id="map" style={{
-                width: '100%',
-                height: '900px',
-                // zIndex: 1
-            }}>
-            </div> */}
-
-            {/* <div style={{
-                position: 'absolute',
-                top: '10px',
-                right: '10px',
-                overflow: 'hidden',
-                height: '30px',
-                margin: '0',
-                padding: '0',
-                zIndex: 10,
-                fontSize: '12px',
-                fontFamily: "'Malgun Gothic', '맑은 고딕', sans-serif",
-                border: '1px solid #919191',
-                borderRadius: '5px',
-                backgroundColor: 'lightGray'
-            }}>
-                <button onClick={() => reduceRadius()} >
-                    반경 감소
-                </button>
-                <span style={{
-                    paddingLeft: '10px',
-                    paddingRight: '10px'
-                }}>{("검색반경(" + searchRadius / 1000) + "Km)"}</span>
-                <button onClick={() => increaseRadius()} >
-                    반경 증가
-                </button>
-            </div> */}
 
             <div className="flex">
 
-                <div className="flex w-[20%] h-[100vh] bg-white p-4">
+                <div className="flex w-[25%] h-[100vh] bg-white p-4">
                     <div className="flex flex-col w-[25%]">
                         <h1>
                             <img className="left-[24px] top-0" width="111" height="97" src="/img/header/logo.png" alt="Logo"></img>
@@ -327,8 +295,6 @@ function GetEmergencyMap() {
                             {hospitals && hospitals.length > 0 ? (
                                 <TableVirtuoso
                                     style={{ height: "100%", boxShadow: "none" }}
-                                    // searchRadius 보다 작은지
-                                    // data={hospitals.filter(hospital => getDistanceFromLatLonInKm(latitude, longitude, aed.wgs84Lat, aed.wgs84Lon) <= searchRadius)}
                                     data={hospitals}
                                     components={TableComponents}
                                     itemContent={(index, hospital) => (
@@ -345,6 +311,9 @@ function GetEmergencyMap() {
                                             <TableRow key={`${index}-address`}>
                                                 <TableCell className="aed-address text-sm text-gray-500" style={{ padding: '0 10px 5px 10px' }}>{hospital.dutyAddr}</TableCell>
                                             </TableRow>
+                                            <div className="w-[95%]">
+                                                <Chart statType="DOW" hpid={hospital.hpid} />
+                                            </div>
                                         </>
                                     )}
                                 />
@@ -359,8 +328,8 @@ function GetEmergencyMap() {
                 </div>
 
                 <div id="map" style={{
-                    width: '80%',
-                    height: '900px',
+                    width: '75%',
+                    height: '950px',
                     // zIndex: 1
                 }}></div>
 

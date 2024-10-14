@@ -5,9 +5,9 @@ function GetEmergencyStat() {
 
     return (
         <>
-            <div className="h-[80%]">
+            <div className="h-[100%] w-[100%]">
                 {/* <h2>My First Bar Chart</h2> */}
-                <Chart />
+                <Chart statType="DOW" />
             </div>
         </>
     )

@@ -15,8 +15,18 @@ public class StatServiceImpl implements StatService {
     private StatMapper statMapper;
 
     @Override
-    public List<Stat> getStatInfo(String statType) {
-        //switch(statType)... statType값으로 적절히 Mapper메서드를 매칭시켜줄 예정
-        return List.of();
+    public List<Stat> getDOWStatInfo(String hpid) {
+        System.out.println(hpid);
+        return statMapper.getDOWStatInfo(hpid);
+    }
+
+    @Override
+    public List<Stat> getHODStatInfo(String hpid) {
+        return statMapper.getHODStatInfo(hpid);
+    }
+
+    @Override
+    public List<Stat> getAPDWStatInfo(String hpid) {
+        return statMapper.getAPDWStatInfo(hpid);
     }
 }
