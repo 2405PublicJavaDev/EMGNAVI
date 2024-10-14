@@ -102,12 +102,14 @@ public class UserController {
 
     @PostMapping("/nickname/duplicate")
     public ResponseEntity<String> checkNicknameDuplicate(@RequestBody UserNicknameRequest request) {
-//        System.out.println(request);
+        System.out.println(request);
         int result = uService.checkNicknameDuplicate(request);
 
         if (result > 0) {
+            System.out.println("사용중");
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 사용중인 닉네임입니다.");
         } else {
+            System.out.println("사용가능");
             return ResponseEntity.ok("사용 가능한 닉네임입니다.");
         }
     }

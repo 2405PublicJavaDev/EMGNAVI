@@ -27,8 +27,8 @@
         UPDATE USER_TBL
         SET
             USER_NICKNAME = #{userNickname},
-            USER_PHONE = #{userPhone},
             USER_ADDRESS = #{userAddress},
+            USER_GENDER = #{userGender},
             MARKETING_AGREE = #{marketingAgree}
         WHERE
             USER_ID = #{userId}
