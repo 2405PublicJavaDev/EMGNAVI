@@ -1,0 +1,43 @@
+server:
+  port: 8888
+
+
+
+spring:
+  application:
+    name: emgnavi
+
+  profiles:
+    include: secret-key
+
+  datasource:
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@52.78.145.147:1521:XE
+    username: ENGNAVI
+    password: ENGNAVI
+
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${email-username}
+    password: ${email-password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
+
+mybatis:
+  configuration:
+    jdbc-type-for-null: VARCHAR
+    map-underscore-to-camel-case: true
+  type-aliases-package: com.emginfo.emgnavi
+  mapper-locations: classpath:/mappers/*-mapper.xml
