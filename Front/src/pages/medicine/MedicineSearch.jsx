@@ -186,8 +186,10 @@ const MedicineSearch = () => {
                       </td>
                       <td className="py-4">
                         <button
-                          onClick={() => handleDetailClick(item.itemSeq)} // 상세 페이지로 이동
-                          className="bg-[#0B2D85] text-white px-4 py-1 rounded-lg text-[14px] font-bold"
+                          onClick={() =>
+                            (window.location.href = `/medicine/detail/${item.itemSeq}`)
+                          }
+                          className="bg-[#0b2d85] text-white px-4 py-1 rounded-lg text-[14px] font-bold"
                         >
                           상세 정보
                         </button>
