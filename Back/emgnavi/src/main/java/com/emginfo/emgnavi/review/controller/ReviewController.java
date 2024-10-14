@@ -8,6 +8,7 @@ import com.emginfo.emgnavi.review.dto.PostReviewRequest;
 import com.emginfo.emgnavi.review.service.ReviewService;
 import com.emginfo.emgnavi.review.vo.Reviews;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class ReviewController {
     public ReviewController(ReviewService reviewService) { this.reviewService = reviewService; }
 
     @PostMapping("/review")
-    public SuccessResponse postReview(HttpSession session, @RequestBody PostReviewRequest request) {
+    public SuccessResponse postReview(HttpSession session, @Valid @RequestBody PostReviewRequest request) {
         String id = (String) session.getAttribute("userId");
         int result = reviewService.postReview(id, request);
         if (result > 0) {
