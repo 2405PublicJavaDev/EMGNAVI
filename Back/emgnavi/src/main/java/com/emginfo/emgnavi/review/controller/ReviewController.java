@@ -6,12 +6,12 @@ import com.emginfo.emgnavi.common.success.SuccessCode;
 import com.emginfo.emgnavi.common.success.SuccessResponse;
 import com.emginfo.emgnavi.review.dto.PostReviewRequest;
 import com.emginfo.emgnavi.review.service.ReviewService;
+import com.emginfo.emgnavi.review.vo.Reviews;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -32,5 +32,11 @@ public class ReviewController {
         } else {
             throw new CustomException(ErrorCode.SAVE_FAILED);
         }
+    }
+
+    @GetMapping("/review/{refNo}")
+    public SuccessResponse getReviewListByRefNo(@PathVariable String refNo) {
+        List<Reviews> reviewList = reviewService.getReviewListByRefNo(refNo);
+        return new SuccessResponse(SuccessCode.RESOURCE_FOUND, reviewList);
     }
 }

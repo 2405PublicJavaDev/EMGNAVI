@@ -8,4 +8,8 @@
         INSERT INTO REVIEW_TBL VALUES (SEQ_REVIEW_NO.nextval, #{writerId}, #{refNo}, #{rating}, #{content}, DEFAULT)
     </insert>
 
+    <select id="getReviewListByRefNo">
+        SELECT * FROM REVIEW_TBL WHERE REF_NO = #{refNo}
+    </select>
+
 </mapper>

@@ -6,6 +6,9 @@ import com.emginfo.emgnavi.review.service.ReviewService;
 import com.emginfo.emgnavi.review.vo.Reviews;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -25,5 +28,13 @@ public class ReviewServiceImpl implements ReviewService {
                 .content(request.getContent())
                 .build();
         return reviewMapper.postReview(review);
+    }
+
+    @Override
+    @Transactional
+    public List<Reviews> getReviewListByRefNo(String refNo) {
+        List<Reviews> reviews = reviewMapper.getReviewListByRefNo(refNo);
+        return reviews;
+//        return reviewMapper.getReviewListByRefNo(refNo);
     }
 }

@@ -1,10 +1,13 @@
 package com.emginfo.emgnavi.review.vo;
 
-import lombok.Builder;
+import lombok.*;
 
 import java.util.Date;
 
+@Getter
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Reviews {
   private int no;
   private String writerId;
