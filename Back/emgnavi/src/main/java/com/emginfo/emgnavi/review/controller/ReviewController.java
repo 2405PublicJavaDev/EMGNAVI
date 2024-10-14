@@ -1,4 +1,4 @@
-package com.emginfo.emgnavi.review.contorller;
+package com.emginfo.emgnavi.review.controller;
 
 import com.emginfo.emgnavi.common.exception.CustomException;
 import com.emginfo.emgnavi.common.exception.ErrorCode;
