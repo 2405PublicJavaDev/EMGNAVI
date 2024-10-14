@@ -23,8 +23,8 @@ const 리뷰상세보기내용 = ({ review, onClose }) => {
         <div className="w-full bg-white border border-gray-200 rounded-lg shadow-sm p-4">
             <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center">
-                    <StarRating rating={review.rating} onRatingChange={() => {}} isClickable={false} />
-                    <span className="ml-2 text-sm text-gray-600">{review.writerId}님 | {review.createdDateLong}</span>
+                    <StarRating rating={review.rating} onRatingChange={() => { }} isClickable={false} />
+                    <span className="ml-2 text-sm text-gray-600">{review.writerNickname}님 | {review.createdDateLong}</span>
                 </div>
                 <button className="flex items-center text-red-500 hover:text-red-600">
                     <img className="w-5 h-5 mr-1" src="/img/medicine/report.png" alt="신고버튼" />
@@ -60,7 +60,8 @@ const MedicineDetail = () => {
             .then((data) => setMedicine(data))
             .catch((error) => console.error('Error fetching medicine details:', error));
 
-        fetch(`/api/reviews/medicine?itemSeq=${itemSeq}`)
+        fetch(`/api/reviews
+/medicine?itemSeq=${itemSeq}`)
             .then((response) => response.json())
             .then((data) => {
                 if (Array.isArray(data)) {
@@ -173,7 +174,7 @@ const MedicineDetail = () => {
                                     <div className="w-28 text-center">평점</div>
                                     <div className="flex-1 text-center">리뷰</div>
                                     <div className="w-36 text-center">작성일자</div>
-                                    <div className="w-36 text-center">작성자</div>
+                                    <div className="w-40 text-center">작성자</div>
                                     <div className="w-32 text-center">상세정보</div>
                                 </div>
                                 {currentReviews.length === 0 ? (
@@ -186,9 +187,12 @@ const MedicineDetail = () => {
                                                 <div className="w-28 text-center">
                                                     <StarRating rating={review.rating} onRatingChange={() => { }} isClickable={false} />
                                                 </div>
-                                                <div className="flex-1 text-center truncate">{review.content}</div>
+                                                <div className="flex-1 text-center">
+                                                    {review.content.length > 15 ? `${review.content.slice(0, 15)}...` : review.content}
+                                                </div>
+
                                                 <div className="w-36 text-center">{review.createdDateShort}</div>
-                                                <div className="w-36 text-center">{review.writerId}</div>
+                                                <div className="w-40 text-center">{review.writerNickname}</div>
                                                 <div className="w-32 text-center">
                                                     <button
                                                         className="px-4 py-2 bg-[#0B2D85] text-white rounded-full hover:bg-[#0939AD] transition"
@@ -215,7 +219,7 @@ const MedicineDetail = () => {
                                         key={page}
                                         onClick={() => handlePageChange(page + 1)}
                                         className={`px-4 py-2 rounded-lg border border-[#0939AD] ${currentPage === page + 1 ? 'bg-[#0B2D85] text-white' : 'bg-white text-[#0B2D85] hover:bg-gray-200'
-                                        }`}
+                                            }`}
                                     >
                                         {page + 1}
                                     </button>

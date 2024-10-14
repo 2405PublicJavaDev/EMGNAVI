@@ -6,7 +6,9 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MedicineService {
@@ -25,8 +27,11 @@ public class MedicineService {
         return medicineMapper.selectMedicineDetail(itemSeq);
     }
 
-    // 의약품 이름으로 검색
-    public List<Medicine> searchMedicineByName(String itemName) {
-        return medicineMapper.searchMedicine(itemName);
+    // 의약품 이름 또는 업체명으로 검색
+    public List<Medicine> searchMedicine(String itemName, String entpName) {
+        Map<String, String> params = new HashMap<>();
+        params.put("itemName", itemName);
+        params.put("entpName", entpName);
+        return medicineMapper.searchMedicine(params);  // Map을 그대로 전달
     }
 }

@@ -21,9 +21,11 @@
     <select id="searchMedicine" parameterType="map" resultType="com.emginfo.emgnavi.medicine.vo.Medicine">
         SELECT item_seq, entp_name, item_name, open_de, item_image
         FROM MEDICINE_TBL
-        WHERE (item_name LIKE '%' || #{searchKeyword} || '%'
-            OR entp_name LIKE '%' || #{searchKeyword} || '%')
+        WHERE (item_name LIKE '%' || #{itemName} || '%'
+            OR entp_name LIKE '%' || #{entpName} || '%')
     </select>
+
+
 
 <!--    전체 데이터 개수 가져오가-->
     <select id="getTotalCount" resultType="int">

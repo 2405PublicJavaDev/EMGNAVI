@@ -44,9 +44,13 @@ public class MedicineController {
         return medicineService.getMedicineDetail(itemSeq);
     }
 
-    // 의약품 이름으로 검색
+    // 의약품 이름 또는 업체명으로 검색
     @GetMapping("/search")
-    public List<Medicine> searchMedicine(@RequestParam String itemName) {
-        return medicineService.searchMedicineByName(itemName);
+    public List<Medicine> searchMedicine(
+            @RequestParam(required = false) String itemName,
+            @RequestParam(required = false) String entpName
+    ) {
+        return medicineService.searchMedicine(itemName, entpName);
     }
+
 }
