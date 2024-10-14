@@ -38,4 +38,4 @@ out/
 
 
 ### SECRECT KEY INFO ###
-src/main/resources/application-secrect-key.yml
+src/main/resources/application-secret-key.yml
