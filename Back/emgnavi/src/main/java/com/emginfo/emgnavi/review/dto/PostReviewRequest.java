@@ -1,10 +1,8 @@
 package com.emginfo.emgnavi.review.dto;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
-@Builder
+@Data
 public class PostReviewRequest {
 
     private String refNo;
