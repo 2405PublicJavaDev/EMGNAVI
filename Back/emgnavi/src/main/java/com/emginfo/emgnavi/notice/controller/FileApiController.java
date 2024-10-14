@@ -27,7 +27,7 @@ public class FileApiController {
      * @return 업로드된 파일명
      */
     @PostMapping("/image-upload")
-    public String uploadEditorImage(@RequestParam final MultipartFile image) {
+    public String postEditorImage(@RequestParam final MultipartFile image) {
         if (image.isEmpty()) {
             return "";
         }
@@ -62,7 +62,7 @@ public class FileApiController {
      * @return image byte array
      */
     @GetMapping(value = "/image-print", produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE })
-    public byte[] printEditorImage(@RequestParam final String filename) {
+    public byte[] getEditorImage(@RequestParam final String filename) {
         // 업로드된 파일의 전체 경로
         String fileFullPath = Paths.get(uploadDir, filename).toString();
 

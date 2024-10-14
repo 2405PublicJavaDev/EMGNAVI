@@ -9,6 +9,7 @@ const ToastUI = ({ initialValue = "" }) => {
 
     // Editor DOM 선택용
     const editorRef = useRef(null);
+    const titleRef = useRef(null);
 
     useEffect(() => {
         if (editorRef.current) {
@@ -28,13 +29,15 @@ const ToastUI = ({ initialValue = "" }) => {
         console.log(editorRef.current?.getInstance().getMarkdown());
         // 입력창에 입력한 내용을 HTML 태그 형태로 취득
         console.log(editorRef.current?.getInstance().getHTML());
+        // 공지제목 input 태그에 입력한 내용을 취득
+        console.log(titleRef.current?.value);
     };
 
     return (
         <>
             <div className="mb-[16px]">
                 <div className="w-[67px] h-[25px] text-[24px] font-['Inter'] font-bold flex justify-center mb-[16px]"><span className="text-[#000]">제목 </span><span className="text-[#f00]">*</span></div>
-                <input type="text" className="w-[1246px] h-[50px] border-[1px] border-solid border-[#d9d9d9] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#7d899c] pl-[16px]" placeholder="제목 입력" />
+                <input id="noticeTitle" ref={titleRef} type="text" className="w-[1246px] h-[50px] border-[1px] border-solid border-[#d9d9d9] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#7d899c] pl-[16px]" placeholder="제목 입력" />
             </div>
 
             <Editor
@@ -59,9 +62,10 @@ const ToastUI = ({ initialValue = "" }) => {
                     addImageBlobHook(blob, callback) {  // 이미지 업로드 로직 커스텀
                         console.log(blob);
                         console.log(callback);
-                    }}
+                    }
                 }
-                /* end of hooks */
+                }
+            /* end of hooks */
             />
             <br />
             <div className="flex space-x-4">

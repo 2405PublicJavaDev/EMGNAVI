@@ -16,13 +16,13 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = "https://127.0.0.1:3000")
 //프로젝트에서 백엔드는 api 서버이기 때문에 URL 제일 앞단에 /api를 붙여준다
-@RequestMapping("/api")
+@RequestMapping("/api/stat")
 public class StatController {
 
     @Autowired
     private StatService statService;
 
-    @GetMapping("/stat/getEmergencyStat")
+    @GetMapping("/getEmergencyStat")
     public SuccessResponse getEmergencyStat(String statType, String hpid) {
 
 //        statType = "DOW";
