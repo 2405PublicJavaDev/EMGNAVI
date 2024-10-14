@@ -24,11 +24,10 @@ public class ReportServiceImpl implements ReportService {
         // 신고 데이터 설정
         Report report = new Report();
         report.setWriterId(reportDTO.getWriterId());  // 리뷰 작성자 ID
-        report.setContent(reportDTO.getContent());    // 신고 내용
         report.setReporterId(reportDTO.getReporterId()); // 신고자 ID
         report.setRefNo(reportDTO.getRefNo());        // 리뷰 번호
+        report.setContent(reportDTO.getContent());    // 신고 내용
         report.setStatus(reportDTO.getStatus());      // 신고 상태
-        report.setRefDate(reportDTO.getRefDate());    // 신고 날짜
 
         reportMapper.insertReport(report);
     }

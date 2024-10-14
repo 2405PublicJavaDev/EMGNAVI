@@ -31,7 +31,6 @@ public class ReportController {
         }
         // 신고한 ID = 로그인한 ID
         // 신고 날짜
-        reportDTO.setRefDate(reportDTO.getRefDate());
         reportService.saveReport(reportDTO);
         return ResponseEntity.ok("Report saved successfully");
     }

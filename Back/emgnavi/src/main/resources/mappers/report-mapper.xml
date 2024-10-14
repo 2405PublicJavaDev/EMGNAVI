@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.emginfo.emgnavi.report.model.mapper.ReportMapper">
     <insert id="insertReport">
-        INSERT INTO REPORT_TBL (NO, WRITER_ID, REPORTER_ID, REF_NO, CONTENT, STATUS, REF_DATE)
-        VALUES (SEQ_REPORT_NO.NEXTVAL, #{writerId}, #{reporterId}, #{refNo}, #{content}, #{status}, #{refDate});
+        INSERT INTO REPORT_TBL (NO, WRITER_ID, REPORTER_ID, REF_NO, CONTENT, CREATED_DATE, STATUS)
+        VALUES (SEQ_REPORT_NO.NEXTVAL, #{writerId}, #{reporterId}, #{refNo}, #{content}, DEFAULT, #{status});
     </insert>
 </mapper>
