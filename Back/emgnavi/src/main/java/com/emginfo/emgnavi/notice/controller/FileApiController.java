@@ -1,4 +1,4 @@
-package com.emginfo.emgnavi.notice.vo.controller;
+package com.emginfo.emgnavi.notice.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
