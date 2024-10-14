@@ -1,6 +1,21 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { TableVirtuoso } from "react-virtuoso";
+import { TableContainer, Table, TableBody, TableCell, TableRow, Paper } from '@mui/material';  // Material-UI import
 
 const { kakao } = window;
+
+// 스크롤 페이징 (MUI Table)
+const TableComponents = {
+    Scroller: React.forwardRef((props, ref) => <TableContainer component={Paper} {...props} ref={ref} />),
+    Table: (props) => <Table {...props} style={{ borderCollapse: 'separate' }} />,
+    TableBody: React.forwardRef((props, ref) => <TableBody {...props} ref={ref} />),
+    TableRow: (props) => <TableRow {...props} />,  // 정의된 TableRow 사용
+};
+// displayName을 추가(작성 안해도 되는데 Component definition is missing display name 문구 떠있어서 추가함)
+TableComponents.Scroller.displayName = 'TableScroller';
+TableComponents.Table.displayName = 'Table';
+TableComponents.TableBody.displayName = 'TableBody';
+TableComponents.TableRow.displayName = 'TableRow';
 
 function GetEmergencyMap() {
 
@@ -243,13 +258,14 @@ function GetEmergencyMap() {
 
     return (
         <>
-            <div id="map" style={{
+            {/* <div id="map" style={{
                 width: '100%',
                 height: '900px',
-                zIndex: 1
+                // zIndex: 1
             }}>
-            </div>
-            <div style={{
+            </div> */}
+
+            {/* <div style={{
                 position: 'absolute',
                 top: '10px',
                 right: '10px',
@@ -274,23 +290,79 @@ function GetEmergencyMap() {
                 <button onClick={() => increaseRadius()} >
                     반경 증가
                 </button>
-            </div>
-            <div style={{
-                position: 'absolute',
-                top: '0px',
-                left: '0px',
-                overflow: 'hidden',
-                height: '100%',
-                width: '300px',
-                margin: '0',
-                padding: '0',
-                zIndex: 10,
-                fontSize: '12px',
-                fontFamily: "'Malgun Gothic', '맑은 고딕', sans-serif",
-                border: '1px solid #919191',
-                borderRadius: '5px',
-                backgroundColor: 'white'
-            }}>
+            </div> */}
+
+            <div className="flex">
+
+                <div className="flex w-[20%] h-[100vh] bg-white p-4">
+                    <div className="flex flex-col w-[25%]">
+                        <h1>
+                            <img className="left-[24px] top-0" width="111" height="97" src="/img/header/logo.png" alt="Logo"></img>
+                        </h1>
+                        <div className="text-center font-bold bg-[#0B2D85] text-[#ffffff] py-3"><button>응급실</button></div>
+                        <div className="text-center font-bold py-3"><button>병원</button></div>
+                        <div className="text-center font-bold py-3"><button>약국</button></div>
+                        <div className="text-center font-bold py-3"><button>AED</button></div>
+                    </div>
+                    <div className="flex flex-col w-[75%]">
+                        <div className="space-y-3 px-[10px]">
+
+                            <div className="bg-white p-4 rounded-lg !my-[5px]">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-gray-700 font-bold">검색 반경</span>
+                                    <div className="flex items-center space-x-2">
+                                        <button onClick={() => reduceRadius()} className="w-8 h-8 flex items-center justify-center bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-full transition duration-300 ease-in-out">
+                                            -
+                                        </button>
+                                        <span className="text-gray-800 font-bold">{searchRadius / 1000}Km</span>
+                                        <button onClick={() => increaseRadius()} className="w-8 h-8 flex items-center justify-center bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-full transition duration-300 ease-in-out">
+                                            +
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {/* 반경 내 조회된 장소들 리스트 출력 */}
+                        <div className="h-[calc(100vh-200px)] border-t border-solid border-[#e5e7eb]">
+                            {hospitals && hospitals.length > 0 ? (
+                                <TableVirtuoso
+                                    style={{ height: "100%", boxShadow: "none" }}
+                                    // searchRadius 보다 작은지
+                                    // data={hospitals.filter(hospital => getDistanceFromLatLonInKm(latitude, longitude, aed.wgs84Lat, aed.wgs84Lon) <= searchRadius)}
+                                    data={hospitals}
+                                    components={TableComponents}
+                                    itemContent={(index, hospital) => (
+                                        <>
+                                            <TableRow key={index} className="emergency-item">
+                                                <TableCell className="aed-name font-bold text-gray-800" style={{ border: 'none', padding: '5px 10px 0px 10px', fontWeight: '900', color: '#0B2D85', fontSize: '16px' }}>{hospital.dutyName}</TableCell>
+                                            </TableRow>
+                                            <TableRow key={`${index}-hvec`}>
+                                                <TableCell className="aed-tel text-sm text-gray-600" style={{ border: 'none', padding: '5px 10px' }}>{'응급병상 : ' + hospital.hvec}</TableCell>
+                                            </TableRow>
+                                            <TableRow key={`${index}-tel`}>
+                                                <TableCell className="aed-tel text-sm text-gray-600" style={{ border: 'none', padding: '5px 10px' }}>{hospital.dutyTel3}</TableCell>
+                                            </TableRow>
+                                            <TableRow key={`${index}-address`}>
+                                                <TableCell className="aed-address text-sm text-gray-500" style={{ padding: '0 10px 5px 10px' }}>{hospital.dutyAddr}</TableCell>
+                                            </TableRow>
+                                        </>
+                                    )}
+                                />
+                            ) : (
+                                // 조회된 결과가 없을 때
+                                <div style={{ padding: '20px', textAlign: 'center', fontSize: '16px', color: '#999' }}>
+                                    조회된 결과가 없습니다.
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div id="map" style={{
+                    width: '80%',
+                    height: '900px',
+                    // zIndex: 1
+                }}></div>
 
             </div>
         </>
