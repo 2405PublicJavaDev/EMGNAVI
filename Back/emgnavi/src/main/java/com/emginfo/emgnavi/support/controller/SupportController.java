@@ -32,7 +32,7 @@ public class SupportController {
 
     @PostMapping("/support/request")
     public SuccessResponse requestSupport(@Valid @RequestBody RequestSupportRequest request, HttpSession session) {
-        String id = (String) session.getAttribute("id");
+        String id = (String) session.getAttribute("userId");
         int result = supportService.requestSupport(id, request);
         if (result > 0) {
             return new SuccessResponse(SuccessCode.REGISTER_SUCCESS);

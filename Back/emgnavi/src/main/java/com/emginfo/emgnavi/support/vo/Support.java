@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -15,6 +17,6 @@ public class Support {
   private String writerId;
   private String title;
   private String content;
-  private java.sql.Date createdDate;
+  private Date createdDate;
   private String status;
 }
