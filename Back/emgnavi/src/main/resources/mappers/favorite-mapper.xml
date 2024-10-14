@@ -3,6 +3,11 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.emginfo.emgnavi.favorite.model.mapper.FavoriteMapper">
+
+    <select id="findFavoriteByIdAndRefNo" resultType="com.emginfo.emgnavi.favorite.model.vo.Favorite">
+        SELECT * FROM FAVORITE_TBL WHERE USER_ID = #{userId} AND REF_NO = #{refNo}
+    </select>
+
     <!-- 병원 조회 -->
     <select id="findHospitalById" resultType="com.emginfo.emgnavi.hospital.vo.Hospital">
         SELECT HPID, DUTY_NAME, DUTY_ADDR, DUTY_TEL1
@@ -18,7 +23,12 @@
     </select>
 
     <insert id="addFavorite">
-        INSERT INTO FAVORITE_TBL (ID, REF_NO, DUTY_NAME, DUTY_ADDR, DUTY_TEL1)
-        VALUES (#{id}, #{refNo}, #{dutyName}, #{dutyAddr}, #{dutyTel1})
+        INSERT INTO FAVORITE_TBL (USER_ID, REF_NO, DUTY_NAME, DUTY_ADDR, DUTY_TEL1)
+        SELECT #{userId}, #{refNo}, #{dutyName}, #{dutyAddr}, #{dutyTel1}
+        FROM DUAL
+        WHERE NOT EXISTS (
+            SELECT 1 FROM FAVORITE_TBL
+            WHERE USER_ID = #{userId} AND REF_NO = #{refNo}
+        )
     </insert>
 </mapper>

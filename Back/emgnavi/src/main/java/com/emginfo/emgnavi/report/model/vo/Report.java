@@ -1,9 +1,11 @@
-package com.emginfo.emgnavi.report.vo;
+package com.emginfo.emgnavi.report.model.vo;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.time.LocalDate;
 
 @NoArgsConstructor
 @Getter
@@ -15,7 +17,7 @@ public class Report {
   private String writerId;      // 작성자 아이디
   private String reporterId;    // 신고자 아이디
   private int refNo;            // 리뷰 번호
-  private String content;       // 내용
+  private String content;       // 신고 내용
   private String status;        // 상태
-  private java.sql.Date refDate;// 신고 날짜
+  private LocalDate refDate;    // 신고 날짜
 }

@@ -11,7 +11,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class Favorite {
 
-  private String id;        // 회원 아이디
+  private String userId;        // 회원 아이디
   private String refNo;     // 기능 번호(병원, 약국)
   private String dutyName;  // 기관명
   private String dutyAddr;  // 주소

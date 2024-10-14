@@ -28,12 +28,10 @@ public class FavoriteController {
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
+
+        System.out.println("세션에 저장된 userId: " + userId);
+
         Favorite favorite = favoriteService.addFavorite(type, refNo, userId);
         return ResponseEntity.ok(favorite);
-//        오류 발생
-//        if (loggedInUser == null) {
-//            throw new CustomException(ErrorCode.UNAUTHORIZED_USER);  // 커스텀 예외 발생
-//        }
-//        return new SuccessResponse(SuccessCode.RESOURCE_ADDED, favorite);
     }
 }

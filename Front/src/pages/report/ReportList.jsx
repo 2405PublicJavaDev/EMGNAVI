@@ -125,7 +125,6 @@ export const ReportList = () => {
           <div className="text-[#CA1738] text-3xl font-bold py-4 px-6 border-b border-[#e9e9e9]">
             신고 관리
           </div>
-          
           <div className="px-6 py-4 space-y-4 flex-grow">
             {/* 작성자 정보 */}
             <div className="flex items-center">

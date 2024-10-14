@@ -177,6 +177,18 @@ function GetAedMap() {
     useEffect(() => {
         if (map && aeds && aeds.length > 0){
             console.log(aeds);
+
+            // 기존 마커 및 인포윈도우 제거
+            markers.forEach(marker => {
+                marker.setMap(null);  // 기존 마커 삭제
+            });
+            setMarkers([]);  // 상태 초기화
+
+            infoWindows.forEach(infoWindow => {
+                infoWindow.setMap(null);  // 기존 인포윈도우 삭제
+            });
+            setInfoWindow([]);  // 상태 초기화
+            
             const newMarkers = [];
             const imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
             aeds.forEach(aed => {
