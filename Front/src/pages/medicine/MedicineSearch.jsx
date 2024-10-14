@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const MedicineSearch = () => {
   const [medicines, setMedicines] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchType, setSearchType] = useState('itemName');
+  const [searchType, setSearchType] = useState('itemName'); // 'itemName' 또는 'entpName'
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);  // 총 페이지 수
   const itemsPerPage = 10;
+  const navigate = useNavigate(); // URL 이동을 위한 React Hook
 
   const fetchMedicines = (page = 1) => {
     setIsLoading(true);
@@ -145,7 +147,7 @@ const MedicineSearch = () => {
             </button>
           </div>
 
-          <div className="overflow-auto w-full">
+          <div className="overflow-auto w-full text-align-center">
             {isLoading ? (
               <div className="flex justify-center items-center h-screen text-[70px] font-roboto text-black">
                 <p>의약품 정보 불러오는중...</p>
@@ -155,17 +157,14 @@ const MedicineSearch = () => {
             ) : medicines.length === 0 ? (
               <p>No medicines found</p>
             ) : (
-              <table
-                className="table-auto w-full border-collapse text-center shadow-lg rounded-lg border-color"
-                style={{ tableLayout: 'fixed' }}
-              >
+              <table className="table-auto w-full border-collapse text-center shadow-lg rounded-lg border-color">
                 <thead className="bg-[#cccccc1a]">
                   <tr>
-                    <th className="py-4" style={{ width: '10%' }}>번호</th>
-                    <th className="py-4" style={{ width: '30%' }}>업체명</th>
-                    <th className="py-4" style={{ width: '30%' }}>제품명</th>
-                    <th className="py-4" style={{ width: '20%' }}>공개일자</th>
-                    <th className="py-4" style={{ width: '10%' }}>상세 정보</th>
+                    <th className="py-4">번호</th>
+                    <th className="py-4">업체명</th>
+                    <th className="py-4">제품명</th>
+                    <th className="py-4">공개일자</th>
+                    <th className="py-4">상세 정보</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white">
@@ -175,24 +174,20 @@ const MedicineSearch = () => {
                         {index + 1}
                       </td>
                       <td className="py-4 font-roboto text-base text-black">
-                        <div className="truncate">{item.entpName}</div>
+                        {item.entpName}
                       </td>
                       <td className="py-4 font-roboto text-base text-black">
-                        <div className="truncate">
-                          {item.itemName.length > 8
-                            ? item.itemName.slice(0, 8) + '...'
-                            : item.itemName}
-                        </div>
+                        {item.itemName.length > 8
+                          ? item.itemName.slice(0, 8) + '...'
+                          : item.itemName}
                       </td>
                       <td className="py-4 font-roboto text-base text-black">
                         {item.openDe.split(' ')[0]}
                       </td>
                       <td className="py-4">
                         <button
-                          onClick={() =>
-                            (window.location.href = `/medicine/detail/${item.itemSeq}`)
-                          }
-                          className="bg-[#0b2d85] text-white px-4 py-1 rounded-lg text-[14px] font-bold"
+                          onClick={() => handleDetailClick(item.itemSeq)} // 상세 페이지로 이동
+                          className="bg-[#0B2D85] text-white px-4 py-1 rounded-lg text-[14px] font-bold"
                         >
                           상세 정보
                         </button>

@@ -46,15 +46,15 @@ const 리뷰상세보기내용 = ({ review, onClose }) => {
 
 const MedicineDetail = () => {
     const [medicine, setMedicine] = useState(null);
-    const [reviews, setReviews] = useState([]);
-    const [rating, setRating] = useState(0);
     const [review, setReview] = useState('');
+    const [rating, setRating] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const [expandedReviewId, setExpandedReviewId] = useState(null);
-    const { itemSeq } = useParams();
+    const { itemSeq } = useParams(); // URL에서 itemSeq를 가져옴
     const itemsPerPage = 10;
 
     useEffect(() => {
+        // API 호출로 의약품 상세 정보를 가져옴
         fetch(`/api/medicine/detail/${itemSeq}`)
             .then((response) => response.json())
             .then((data) => setMedicine(data))
@@ -108,13 +108,35 @@ const MedicineDetail = () => {
     }
 
     return (
-        <>
-            <div className="flex flex-col min-h-screen">
-                <div className="flex-grow">
-                    <div className="container mx-auto px-4 py-64">
-                        {/* 제품 상세 정보 섹션 */}
-                        <div className="mb-12">
-                            <h1 className="text-3xl font-bold mb-6">제품 상세 정보</h1>
+        <div className="flex flex-col min-h-screen">
+            <div className="flex-grow">
+                <div className="container mx-auto px-4 py-64">
+                    {/* 제품 상세 정보 섹션 */}
+                    <div className="mb-12">
+                        <h1 className="text-3xl font-bold mb-6">제품 상세 정보</h1>
+                        <div className="bg-white p-6 rounded-lg shadow-md">
+                            <div className="flex mb-4">
+                                {medicine.itemImage ? (
+                                    <img className="w-1/3 mr-6" src={`data:image/jpeg;base64,${btoa(String.fromCharCode(...new Uint8Array(medicine.itemImage)))}`} alt="Product" />
+                                ) : (
+                                    <div className="w-1/3 mr-6 flex items-center justify-center text-gray-500">이미지 준비 중</div>
+                                )}
+                                <div>
+                                    <h2 className="text-2xl font-semibold mb-2">{medicine.entpName}/{medicine.itemName}</h2>
+                                    <p className="text-gray-600 mb-2">{medicine.itemSeq} | {medicine.updateDe}</p>
+                                    <p className="font-bold mb-2">효능: {medicine.efcyQesitm}</p>
+                                    <p className="mb-2">사용법: {medicine.useMethodQesitm}</p>
+                                    <p className="mb-2">주의사항: {medicine.atpnQesitm}</p>
+                                    <p>보관법: {medicine.depositMethodQesitm}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 리뷰 작성 섹션 */}
+                    <div className="mb-12 flex space-x-6">
+                        <div className="w-2/3">
+                            <h2 className="text-2xl font-bold mb-4">리뷰 작성</h2>
                             <div className="bg-white p-6 rounded-lg shadow-md">
                                 <div className="flex mb-4">
                                     {medicine.itemImage ? (
