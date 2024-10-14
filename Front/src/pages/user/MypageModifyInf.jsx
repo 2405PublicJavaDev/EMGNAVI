@@ -7,11 +7,14 @@ import axios from 'axios';
 
 const MypageModifyInf = ({ setIsLoginTrue }) => {
     const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
+    const [userPhone, setUserPhone] = useState(''); // 전화번호 상태 추가
+
     const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
     const openPhoneModal = () => {
         setIsPhoneModalOpen(true);
     };
     const closePhoneModal = () => {
+        window.location.reload(); // 새로고침
         setIsPhoneModalOpen(false);
     };
     const openPasswordModal = () => {
@@ -21,10 +24,11 @@ const MypageModifyInf = ({ setIsLoginTrue }) => {
         setIsPasswordModalOpen(false);
     };
     const { fetchData } = useAxios();
+    const nav = useNavigate();
 
     const [isMaleChecked, setIsMaleChecked] = useState(false);
     const [isFemaleChecked, setIsFemaleChecked] = useState(false);
-    const [isNicknameChecked, setIsNicknameChecked] = useState(false);
+    const [isNicknameChecked, setIsNicknameChecked] = useState(true);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [userInfo, setUserInfo] = useState(null);
@@ -37,7 +41,8 @@ const MypageModifyInf = ({ setIsLoginTrue }) => {
         marketingAgree: '',
     });
 
-    console.log(values);
+    // console.log(values);
+    // console.log(isNicknameChecked);
 
     useEffect(() => {
         const userId = localStorage.getItem('userId');
@@ -67,6 +72,10 @@ const MypageModifyInf = ({ setIsLoginTrue }) => {
             setLoading(false);
         }
     }, []); // 의존성 배열을 빈 배열로 설정
+
+    const handlePhoneChange = (newPhone) => {
+        setUserPhone(newPhone); // 전화번호 업데이트
+    };
 
     // 닉네임 중복 확인
     const checkNicknameDuplicate = async (e) => {
@@ -141,18 +150,20 @@ const MypageModifyInf = ({ setIsLoginTrue }) => {
         }));
     };
 
-    const handleModify = () => {
+    const handleModify = (e) => {
+        e.preventDefault();
         if (!isNicknameChecked) {
             alert("닉네임 중복확인을 해주세요.");
             return;
         }
-
+        const userId = localStorage.getItem('userId');
         const fullAddress = `${values.mainAddress} ${values.detailedAddress}`;
         fetchData(
             {
                 method: 'POST',
                 url: '/api/modify',
                 data: {
+                    userId: userId,
                     userNickname: values.newNickname,
                     userAddress: fullAddress,
                     userGender: values.userGender,
@@ -160,8 +171,8 @@ const MypageModifyInf = ({ setIsLoginTrue }) => {
                 }
             },
             (response) => {
-                console.log('수정 완료:', response);
                 alert('정보가 수정되었습니다.');
+                nav("/user/mypage");
             }
         )
     };
@@ -224,10 +235,14 @@ const MypageModifyInf = ({ setIsLoginTrue }) => {
                     value={values.newNickname || userInfo.userNickname || ''}
                     type='text'
                     id='nickname'
-                    onChange={(e) => setValues(prevValues => ({
-                        ...prevValues,
-                        newNickname: e.target.value // 상태 업데이트
-                    }))}
+                    onChange={(e) => {
+                        const newNickname = e.target.value; // 입력한 닉네임 값
+                        setValues(prevValues => ({
+                            ...prevValues,
+                            newNickname: newNickname, // 상태 업데이트
+                        }));
+                        setIsNicknameChecked(false); // 중복 확인 상태 초기화
+                    }}
                     className="absolute left-[775px] top-[791px] w-[399px] h-[53px] text-[17px] font-['Inter'] text-[#000] flex flex-col justify-center outline-0">
                 </input>
                 <button
@@ -376,7 +391,7 @@ const MypageModifyInf = ({ setIsLoginTrue }) => {
                     <div
                         className="fixed inset-0 bg-black bg-opacity-50 z-40"
                         onClick={closePhoneModal}></div>
-                    <PhoneVerificationModal onClose={closePhoneModal} />
+                    <PhoneVerificationModal onClose={closePhoneModal}/>
                 </>
             )}
             {isPasswordModalOpen && (

@@ -219,6 +219,7 @@ public class UserController {
     @PostMapping("/modify")
     public void modifyUser(@RequestBody UserInfoRequest request) {
         int result = uService.modifyUser(request);
+        System.out.println(request);
         if (result > 0) {
             System.out.println("수정 성공");
         } else {
@@ -226,10 +227,22 @@ public class UserController {
         }
     }
 
-    @PostMapping("/changePw")
-    public ResponseEntity<?> changePw(@RequestBody LoginRequest request) {
+        @PostMapping("/changePw")
+        public ResponseEntity<?> changePw(@RequestBody LoginRequest request) {
 
-        int result = uService.changePw(request);
+            int result = uService.changePw(request);
+            if (result > 0) {
+                System.out.println("비번 변경 성공");
+                return ResponseEntity.ok("성공");
+            } else {
+                System.out.println("비번 변경 실패");
+            }
+            return ResponseEntity.badRequest().body("실패");
+        }
+
+    @PostMapping("/changePhone")
+    public ResponseEntity<?> changePhone(@RequestBody ChangePhoneRequest request) {
+        int result = uService.changePhone(request);
         if (result > 0) {
             System.out.println("비번 변경 성공");
             return ResponseEntity.ok("성공");

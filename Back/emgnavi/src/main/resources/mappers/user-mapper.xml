@@ -51,4 +51,9 @@
     <delete id="deleteUser">
         DELETE FROM USER_TBL WHERE USER_ID = #{userId}
     </delete>
+    <update id="changePhone">
+        UPDATE USER_TBL
+        SET USER_PHONE = #{userPhone}
+        WHERE USER_ID = #{userId}
+    </update>
 </mapper>

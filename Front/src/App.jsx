@@ -18,7 +18,7 @@ import RegisterPage from './pages/user/RegisterPage';
 import RegisterComplete from './pages/user/RegisterComplete';
 
 import LoginMain from './pages/user/LoginMain';
-import SetNickname from './pages/user/SetNickname';
+import Kakao from './pages/user/Kakao';
 
 import FindEmail from './pages/user/FindEmail';
 import FIndEmailComplete from './pages/user/FindEmailComplete';
@@ -93,7 +93,7 @@ function App() {
         <Route path='/user/register/complete' element={<RegisterComplete />} />
 
         <Route path='/user/login' element={<LoginMain setIsLoginTrue={setIsLoginTrue}/>} />
-        <Route path="/user/setNickname" element={<SetNickname />} />
+        <Route path="//kakao/callback" element={<Kakao />} />
 
         <Route path='/user/findEmail' element={<FindEmail />} />
         <Route path='/user/findEmail/complete' element={<FIndEmailComplete />} />

@@ -82,6 +82,8 @@ const PhoneVerificationModal = ({ onClose }) => {
 
     const handlerGoNextPage = (e) => {
         const userPhone = document.querySelector("#phone").value;
+        const userId = localStorage.getItem('userId');
+
         e.preventDefault();
         // if (isNext) {  // 인증이 완료된 상태인지 확인
         console.log("폰 : " + userPhone); 
@@ -93,7 +95,25 @@ const PhoneVerificationModal = ({ onClose }) => {
                     } else if (currentPath.startsWith("/user/findEmail")) {
                         nav("/user/findEmail/complete", { state });
                     } else if (currentPath.startsWith("/user/mypage/modify")) {
-                        nav("/user/mypage/modify", { state });
+                        fetchData(
+                            {
+                                method: 'POST',
+                                url: '/api/changePhone',
+                                data: { 
+                                    userId : userId,
+                                    userPhone : userPhone },
+                            },
+                            (data) => {
+                                console.log(data);
+                                if (data.includes('성공')) {
+                                    alert("휴대폰번호가 변경되었습니다");
+                                    setuserPhone(userPhone);
+                                    onClose();
+                                } else {
+                                    alert("휴대폰번호 변경 실패");
+                                }
+                            }
+                        )
                     }
                 } else {
                     alert("휴대폰 번호를 입력해주세요");
@@ -148,14 +168,15 @@ const PhoneVerificationModal = ({ onClose }) => {
 
                         <div className="absolute left-[168px] top-[553px] w-[266px] h-[46px] flex">
                             <div className="absolute left-0 top-0 w-[126px] h-[46px] flex">
-                                <button onClick={onClose}
+                                <button 
+                                    onClick={onClose}
+                                    type='button'
                                     className="absolute left-0 top-0 w-[126px] h-[46px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[50px]">
                                     <span className="text-[16px] font-['Inter'] text-[#0b2d85] text-center flex flex-col justify-center">닫기</span>
                                 </button>
                             </div>
                             <div className="absolute left-[140px] top-0 w-[126px] h-[46px] flex">
                                 <button
-                                    type='button'
                                     onClick={handlerGoNextPage}
                                     className="absolute left-0 top-0 w-[126px] h-[46px] bg-[#0b2d85] border-[1px] border-solid border-[#0b2d85] rounded-[50px]">
                                     <span className="absolute left-[0px] top-[0px] w-[126px] h-[46px] text-[16px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">다음</span>

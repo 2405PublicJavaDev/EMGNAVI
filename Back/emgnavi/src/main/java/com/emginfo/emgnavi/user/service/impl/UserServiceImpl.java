@@ -120,4 +120,10 @@ public class UserServiceImpl implements UserService {
         int result = mapper.deleteUser(request);
         return result;
     }
+
+    @Override
+    public int changePhone(ChangePhoneRequest request) {
+        int result = mapper.changePhone(request);
+        return result;
+    }
 }

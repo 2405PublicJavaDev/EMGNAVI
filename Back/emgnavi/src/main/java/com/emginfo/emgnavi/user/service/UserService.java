@@ -31,4 +31,6 @@ public interface UserService {
     boolean resetPassword(String tokenId, String userPw);
 
     int deleteUser(UserIdRequest request);
+
+    int changePhone(ChangePhoneRequest request);
 }

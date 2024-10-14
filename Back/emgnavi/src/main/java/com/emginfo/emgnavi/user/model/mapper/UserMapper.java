@@ -33,4 +33,6 @@ public interface UserMapper {
     void deleteToken(String tokenId);
 
     int deleteUser(UserIdRequest request);
+
+    int changePhone(ChangePhoneRequest request);
 }
