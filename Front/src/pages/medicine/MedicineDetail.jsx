@@ -23,7 +23,7 @@ const 리뷰상세보기내용 = ({ review, onClose }) => {
         <div className="w-full bg-white border border-gray-200 rounded-lg shadow-sm p-4">
             <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center">
-                    <StarRating rating={review.rating} onRatingChange={() => { }} isClickable={false} />
+                    <StarRating rating={review.rating} onRatingChange={() => {}} isClickable={false} />
                     <span className="ml-2 text-sm text-gray-600">{review.writerNickname}님 | {review.createdDateLong}</span>
                 </div>
                 <button className="flex items-center text-red-500 hover:text-red-600">
@@ -46,22 +46,21 @@ const 리뷰상세보기내용 = ({ review, onClose }) => {
 
 const MedicineDetail = () => {
     const [medicine, setMedicine] = useState(null);
-    const [review, setReview] = useState('');
+    const [reviews, setReviews] = useState([]);
     const [rating, setRating] = useState(0);
+    const [review, setReview] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [expandedReviewId, setExpandedReviewId] = useState(null);
-    const { itemSeq } = useParams(); // URL에서 itemSeq를 가져옴
+    const { itemSeq } = useParams();
     const itemsPerPage = 10;
 
     useEffect(() => {
-        // API 호출로 의약품 상세 정보를 가져옴
         fetch(`/api/medicine/detail/${itemSeq}`)
             .then((response) => response.json())
             .then((data) => setMedicine(data))
             .catch((error) => console.error('Error fetching medicine details:', error));
 
-        fetch(`/api/reviews
-/medicine?itemSeq=${itemSeq}`)
+        fetch(`/api/medicine_reviews/medicine?itemSeq=${itemSeq}`)
             .then((response) => response.json())
             .then((data) => {
                 if (Array.isArray(data)) {
@@ -108,35 +107,13 @@ const MedicineDetail = () => {
     }
 
     return (
-        <div className="flex flex-col min-h-screen">
-            <div className="flex-grow">
-                <div className="container mx-auto px-4 py-64">
-                    {/* 제품 상세 정보 섹션 */}
-                    <div className="mb-12">
-                        <h1 className="text-3xl font-bold mb-6">제품 상세 정보</h1>
-                        <div className="bg-white p-6 rounded-lg shadow-md">
-                            <div className="flex mb-4">
-                                {medicine.itemImage ? (
-                                    <img className="w-1/3 mr-6" src={`data:image/jpeg;base64,${btoa(String.fromCharCode(...new Uint8Array(medicine.itemImage)))}`} alt="Product" />
-                                ) : (
-                                    <div className="w-1/3 mr-6 flex items-center justify-center text-gray-500">이미지 준비 중</div>
-                                )}
-                                <div>
-                                    <h2 className="text-2xl font-semibold mb-2">{medicine.entpName}/{medicine.itemName}</h2>
-                                    <p className="text-gray-600 mb-2">{medicine.itemSeq} | {medicine.updateDe}</p>
-                                    <p className="font-bold mb-2">효능: {medicine.efcyQesitm}</p>
-                                    <p className="mb-2">사용법: {medicine.useMethodQesitm}</p>
-                                    <p className="mb-2">주의사항: {medicine.atpnQesitm}</p>
-                                    <p>보관법: {medicine.depositMethodQesitm}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* 리뷰 작성 섹션 */}
-                    <div className="mb-12 flex space-x-6">
-                        <div className="w-2/3">
-                            <h2 className="text-2xl font-bold mb-4">리뷰 작성</h2>
+        <>
+            <div className="flex flex-col min-h-screen">
+                <div className="flex-grow">
+                    <div className="container mx-auto px-4 py-64">
+                        {/* 제품 상세 정보 섹션 */}
+                        <div className="mb-12">
+                            <h1 className="text-3xl font-bold mb-6">제품 상세 정보</h1>
                             <div className="bg-white p-6 rounded-lg shadow-md">
                                 <div className="flex mb-4">
                                     {medicine.itemImage ? (
@@ -193,7 +170,7 @@ const MedicineDetail = () => {
                             <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-300 w-full">
                                 <div className="px-6 py-4 bg-gray-100 flex font-bold text-lg">
                                     <div className="w-14 text-center">번호</div>
-                                    <div className="w-28 text-center">평점</div>
+                                    <div className="w-28 text-center ml-16">평점</div>
                                     <div className="flex-1 text-center">리뷰</div>
                                     <div className="w-36 text-center">작성일자</div>
                                     <div className="w-40 text-center">작성자</div>
@@ -206,13 +183,12 @@ const MedicineDetail = () => {
                                         <React.Fragment key={review.no}>
                                             <div className="px-6 py-4 flex items-center border-t border-gray-200">
                                                 <div className="w-14 text-center">{review.no}</div>
-                                                <div className="w-28 text-center">
-                                                    <StarRating rating={review.rating} onRatingChange={() => { }} isClickable={false} />
-                                                </div>
-                                                <div className="flex-1 text-center">
-                                                    {review.content.length > 15 ? `${review.content.slice(0, 15)}...` : review.content}
-                                                </div>
-
+                                                <div className="w-28 text-center ml-16">
+    <StarRating rating={review.rating} onRatingChange={() => { }} isClickable={false} />
+</div>
+<div className="flex-1 text-center truncate">
+    {review.content.length > 15 ? review.content.slice(0, 15) + '...' : review.content}
+</div>
                                                 <div className="w-36 text-center">{review.createdDateShort}</div>
                                                 <div className="w-40 text-center">{review.writerNickname}</div>
                                                 <div className="w-32 text-center">
@@ -241,7 +217,7 @@ const MedicineDetail = () => {
                                         key={page}
                                         onClick={() => handlePageChange(page + 1)}
                                         className={`px-4 py-2 rounded-lg border border-[#0939AD] ${currentPage === page + 1 ? 'bg-[#0B2D85] text-white' : 'bg-white text-[#0B2D85] hover:bg-gray-200'
-                                            }`}
+                                        }`}
                                     >
                                         {page + 1}
                                     </button>
@@ -265,9 +241,8 @@ const MedicineDetail = () => {
                     <img src="/img/footer/group.png" alt="Group" width="145" height="34" />
                 </div>
             </footer>
-        </div>
+        </>
     );
 };
-
 
 export default MedicineDetail;
