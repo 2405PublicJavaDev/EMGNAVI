@@ -28,7 +28,6 @@ const LoginMain = ({ setIsLoginTrue }) => {
                     userPw: values.uPassword,
                 });
                 console.log(response.data); // 응답 확인
-                // alert(response.data);
                 const sessionResponse = await axios.get('/api/check-session');
                 if (sessionResponse.status === 200) {
                     localStorage.setItem('isLoginTrue', 'true'); // 로그인 상태 저장
@@ -69,34 +68,19 @@ const LoginMain = ({ setIsLoginTrue }) => {
         window.location.href = kakaoUrl;
     }
 
+    const naverLogin = () => {
+        const NAVER_CLIENT_ID = "HybacJJgFsuLnLngHigE"; // 발급 받은 Client ID 입력 
+        const NAVER_CALLBACK_URL = "http://127.0.0.1:3000/naver/callback"; // 작성했던 Callback URL 입력
+    }
 
 
 
 
-
-    const { naver } = window
-    const NAVER_CLIENT_ID = "HybacJJgFsuLnLngHigE"; // 발급 받은 Client ID 입력 
-    const NAVER_CALLBACK_URL = "http://127.0.0.1:3000/naver/callback"; // 작성했던 Callback URL 입력
-
-    const naverLogin = new naver.LoginWithNaverId(
-        {
-            clientId: "HybacJJgFsuLnLngHigE",
-            callbackUrl: "http://127.0.0.1:3000/naver/callback",
-            // loginButton: { color: "green", type: 3, height: 40 }
-        }
-    );
-    naverLogin.init();
-    useEffect(() => {
-        naverLogin.init();
-        // console.log("init!");
-    }, []);
 
     const [values, setValues] = useState({
         uEmail: '',
         uPassword: '',
     });
-
-
 
     return (
         <>
@@ -170,18 +154,16 @@ const LoginMain = ({ setIsLoginTrue }) => {
             <div className="absolute left-[1065px] top-[932px] w-[150px] h-0 border-[1px] border-solid border-[#7d8597]"></div>
             <div className="absolute left-[895px] top-[920px] text-[18px] font-['Inter'] font-semibold text-[#7d8597] whitespace-nowrap">SNS 간편 로그인</div>
             <div className="absolute left-[704px] top-[996px] w-[511px] h-[60px] flex">
-                {/* <div className="absolute left-0 top-0 w-[511px] h-[60px] flex"> */}
-                <div
-                    id="naverIdLogin"
-                // style={{ cursor: 'pointer' }}
-                // onClick={naverLogin}
-                // className="absolute left-0 top-0 w-[511px]"
-                >
-                    {/* <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center mt-4">네이버 로그인</span> */}
+                <div className="absolute left-0 top-0 w-[511px] h-[60px] flex bg-[#2DB400]">
+                    <button
+                        onClick={naverLogin}
+                        className="absolute left-0 top-0 w-[511px]">
+                        <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center mt-4">네이버 로그인</span>
+                    </button>
                 </div>
-                {/* </div> */}
-                {/* <img className="absolute left-[28px] top-[19px]" width="27" height="22" src="/img/user/n 186_30.png"></img> */}
+                <img className="absolute left-[28px] top-[19px]" width="27" height="22" src="/img/user/n 186_30.png"></img>
             </div>
+
             <div className="absolute left-[704px] top-[1069px] w-[511px] h-[60px] flex">
                 <div className="absolute left-0 top-0 w-[511px] h-[60px] flex">
                     <button
@@ -192,6 +174,7 @@ const LoginMain = ({ setIsLoginTrue }) => {
                 </div>
                 <img className="absolute left-[24px] top-[14px]" width="36" height="32" src="/img/user/kakaotalk86_33.png"></img>
             </div>
+
             <div className="absolute left-[704px] top-[1142px] w-[511px] h-[60px] flex">
                 <div className="absolute left-0 top-0 w-[511px] h-[60px] flex">
                     <div className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>

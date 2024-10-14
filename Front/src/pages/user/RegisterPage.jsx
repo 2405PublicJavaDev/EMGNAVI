@@ -424,9 +424,7 @@ const RegisterPage = () => {
                 <div className="absolute left-[534px] top-[1143px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">닉네임 </span><span className="text-[#c2a55d]">*</span></div>
                 <div className="absolute left-[748px] top-[1127px] w-[506px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
                 <input
-                    // id='nickname'
                     type='text'
-                    // name='nickname'
                     value={randomNickname}
                     onChange={(e) => {
                         const value = e.target.value;

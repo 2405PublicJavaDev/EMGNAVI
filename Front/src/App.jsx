@@ -49,6 +49,7 @@ import FavoriteHospital from './pages/user/Favorite/FavHospital';
 import FavPharmacy from './pages/user/Favorite/FavPharmacy'
 import GetAedMap from './pages/map/GetAedMap'
 import GetEmergencyStat from './pages/stat/GetEmergencyStat';
+import Naver from './pages/user/Naver';
 
 function App() {
 
@@ -94,6 +95,7 @@ function App() {
 
         <Route path='/user/login' element={<LoginMain setIsLoginTrue={setIsLoginTrue}/>} />
         <Route path="/kakao/callback" element={<Kakao />} />
+        <Route path="/naver/callback" element={<Naver />} />
 
         <Route path='/user/findEmail' element={<FindEmail />} />
         <Route path='/user/findEmail/complete' element={<FIndEmailComplete />} />

@@ -158,6 +158,7 @@ public class UserController {
         String accessToken = uService.getAccessToken(requestBody.get("code"));
         System.out.println("토큰 : " + accessToken);
         HashMap<String, Object> kakaoInfo = uService.getUserInfo(accessToken);
+        System.out.println(kakaoInfo.get("email"));
     }
 
 //    @GetMapping("/kakao/callback")

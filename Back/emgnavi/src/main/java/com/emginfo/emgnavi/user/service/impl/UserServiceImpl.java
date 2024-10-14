@@ -10,7 +10,9 @@ import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 import com.emginfo.emgnavi.user.service.UserService;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -159,7 +161,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public HashMap<String, Object> getUserInfo(String accessToken) {
+        System.out.println("서비스토큰" + accessToken);
+        HashMap<String, Object> kakaoInfo = new HashMap<>();
+        String postURL = "https://kapi.kakao.com/v2/user/me";
 
-        return null;
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(postURL, HttpMethod.POST, entity, Map.class);
+        System.out.println(response.getBody());
+        Map<String, Object> body = response.getBody();
+        if (body != null) {
+            Map<String, Object> kakaoAccount = (Map<String, Object>) body.get("kakao_account");
+            System.out.println("카카오계정" + kakaoAccount);
+            String email = (String) kakaoAccount.get("email");
+            System.out.println("이메일" + email);
+            kakaoInfo.put("email", email);
+        }
+        return kakaoInfo;
     }
 }
