@@ -136,6 +136,7 @@ public class UserController {
         if (user != null) {
             // 세션에 사용자 아이디 저장
             session.setAttribute("userId", user.getUserId());
+            session.setAttribute("userNickname", user.getUserNickname());
             return ResponseEntity.ok("로그인 성공");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("아이디 또는 비밀번호가 잘못되었습니다.");
@@ -159,11 +160,11 @@ public class UserController {
         return ResponseEntity.ok("로그아웃 성공");
     }
 
-    @GetMapping("/kakao/login")
-    public String loginForm(Model model) {
-//        model.addAttribute("kakaoApiKey", kakaoApi.getKakaoApiKey());
-//        model.addAttribute("redirectUri", kakaoApi.getKakaoRedirectUri());
-        return "login";
+    @PostMapping("/kakao")
+    public void kakaoCheck(@RequestBody Map<String, String> requestBody, HttpSession session) {
+        System.out.println("인가코드 :" + requestBody.get("code"));
+        String accessToken = uService.getAccessToken(requestBody.get("code"));
+//        System.out.println("토큰 :" + accessToken);
     }
 
 //    @GetMapping("/kakao/callback")
@@ -184,17 +185,17 @@ public class UserController {
 //        System.out.println("accessToken = " + accessToken);
 //    }
 
-
-    @GetMapping("/kakao/callback")
-    public ResponseEntity<String> kakaoLogin(@RequestParam("code") String code) {
-        String accessToken = kakaoApi.getAccessToken(code);
-
-        if (accessToken == null) {
-            return ResponseEntity.badRequest().body("액세스 토큰 요청 실패");
-        }
-
-        return ResponseEntity.ok("액세스 토큰: " + accessToken);
-    }
+//
+//    @GetMapping("/kakao/callback")
+//    public ResponseEntity<String> kakaoLogin(@RequestParam("code") String code) {
+//        String accessToken = kakaoApi.getAccessToken(code);
+//
+//        if (accessToken == null) {
+//            return ResponseEntity.badRequest().body("액세스 토큰 요청 실패");
+//        }
+//
+//        return ResponseEntity.ok("액세스 토큰: " + accessToken);
+//    }
 
 
     @PostMapping("/getInf")
