@@ -20,6 +20,7 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewServiceImpl(ReviewMapper reviewMapper) { this.reviewMapper = reviewMapper; }
 
     @Override
+    @Transactional()
     public int postReview(String id, PostReviewRequest request) {
         Reviews review = Reviews.builder()
                 .writerId(id)
@@ -31,7 +32,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Reviews> getReviewListByRefNo(String refNo) {
         List<Reviews> reviews = reviewMapper.getReviewListByRefNo(refNo);
         return reviews;
