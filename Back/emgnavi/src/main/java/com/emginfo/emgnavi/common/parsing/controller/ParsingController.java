@@ -71,7 +71,7 @@ public class ParsingController {
                     hospital.setDutyName(getTagValue("dutyName", element));
                     hospital.setDutyAddr(getTagValue("dutyAddr", element));
                     hospital.setDutyTel1(getTagValue("dutyTel1", element));
-                    hospital.setErTel(getTagValue("dutyTel3", element));
+                    hospital.setDutyTel3(getTagValue("dutyTel3", element));
                     hospital.setHvec(getTagValue("hvec", element));
                     hospital.setHvoc(getTagValue("hvoc", element));
                     hospital.setHvcc(getTagValue("hvcc", element));

@@ -15,7 +15,7 @@ public class Hospital {
   private String dutyName;
   private String dutyAddr;
   private String dutyTel1;
-  private String erTel;
+  private String dutyTel3;
   private String hvec;
   private String hvoc;
   private String hvcc;
