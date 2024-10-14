@@ -10,17 +10,31 @@ import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 import com.emginfo.emgnavi.user.service.UserService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final DefaultMessageService messageService;
     private UserMapper mapper;
+    private RestTemplate restTemplate;
+
+    private static final String restApiKey = "2d6c55a21e936e4094381a23a82124d1";
+    private static final String redirectUri = "https://127.0.0.1:3000/kakao/callback";
+    private static final String tokenUri = "https://kauth.kakao.com/oauth/token";
 
     public UserServiceImpl(UserMapper mapper) {
         this.messageService = NurigoApp.INSTANCE.initialize("NCSY6JZLRXVWS3BX", "RDC9PGPKKGCSIQSWT4IFHK0NNO1IOVW1", "https://api.coolsms.co.kr");
         this.mapper = mapper;
+        this.restTemplate = new RestTemplate();
     }
 
     @Override
@@ -125,5 +139,27 @@ public class UserServiceImpl implements UserService {
     public int changePhone(ChangePhoneRequest request) {
         int result = mapper.changePhone(request);
         return result;
+    }
+
+    @Override
+    public String getAccessToken(String code) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type", "authorization_code");
+        params.add("client_id", restApiKey);
+        params.add("redirect_url", redirectUri);
+        params.add("code", code);
+
+        ResponseEntity<Map> response = restTemplate.postForEntity(tokenUri, params, Map.class);
+        Map responseBody = response.getBody();
+        return (String) responseBody.get("access_token");
+    }
+
+    @Override
+    public HashMap<String, Object> getUserInfo(String accessToken) {
+
+        return null;
     }
 }

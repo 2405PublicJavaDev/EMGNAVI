@@ -4,24 +4,23 @@ import useAxios from "../../axios/useAxios";
 
 const Kakao = () => {
     const nav = useNavigate();
-    const { fetchData, loading, error } = useAxios(); // destructuring 시 useAxios가 맞는지 확인
+    const { fetchData, loading, error } = useAxios();
 
     useEffect(() => {
-        const code = new URL(window.location.href).searchParams.get('code'); // URL에서 코드 가져오기
-
+        const code = new URLSearchParams(window.location.search).get('code');
         if (code) {
             fetchData(
                 {
-                    method: 'GET',
-                    url: `/api/kakao/callback?code=${code}`, // 백엔드 API로 코드 전송
+                    method: 'POST',
+                    url: `/api/kakao`, // 백엔드 API로 코드 전송
+                    data : { code }
                 },
                 (data) => {
                     if (data) {
-                        console.log("서버 응답: ", data);
+                        alert("서버 응답: ", data);
                         // 원하는 로직 실행, 예: 로그인 후 이동
-                        nav('/'); // 인증 성공 후 리다이렉트
                     } else {
-                        console.log("오류 발생");
+                        alert("오류 발생");
                     }
                 }
             );

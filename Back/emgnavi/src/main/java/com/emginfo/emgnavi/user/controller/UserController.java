@@ -1,23 +1,18 @@
 package com.emginfo.emgnavi.user.controller;
 
 import com.emginfo.emgnavi.user.model.dto.*;
-import com.emginfo.emgnavi.user.model.vo.KakaoApi;
 import com.emginfo.emgnavi.user.model.vo.User;
 import com.emginfo.emgnavi.user.service.EmailService;
 import com.emginfo.emgnavi.user.service.UserService;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpSession;
-import lombok.Getter;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.sound.midi.Soundbank;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,8 +20,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api")
 public class UserController {
-    public KakaoApi kakaoApi;
-
     private final UserService uService; // final 키워드로 불변성 보장
     private final JavaMailSender javaMailSender; // JavaMailSender 주입
     private final EmailService emailService;
@@ -38,7 +31,6 @@ public class UserController {
         this.javaMailSender = javaMailSender; // JavaMailSender 주입
         this.emailService = emailService;
     }
-
 
     @PostMapping("/verify/phone")
     public ResponseEntity<String> verifyPhone(@RequestBody VerifyPhoneRequest request, HttpSession session) {
@@ -162,9 +154,10 @@ public class UserController {
 
     @PostMapping("/kakao")
     public void kakaoCheck(@RequestBody Map<String, String> requestBody, HttpSession session) {
-        System.out.println("인가코드 :" + requestBody.get("code"));
+        System.out.println("인가코드 : " + requestBody.get("code"));
         String accessToken = uService.getAccessToken(requestBody.get("code"));
-//        System.out.println("토큰 :" + accessToken);
+        System.out.println("토큰 : " + accessToken);
+        HashMap<String, Object> kakaoInfo = uService.getUserInfo(accessToken);
     }
 
 //    @GetMapping("/kakao/callback")

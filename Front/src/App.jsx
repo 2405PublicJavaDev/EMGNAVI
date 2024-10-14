@@ -93,7 +93,7 @@ function App() {
         <Route path='/user/register/complete' element={<RegisterComplete />} />
 
         <Route path='/user/login' element={<LoginMain setIsLoginTrue={setIsLoginTrue}/>} />
-        <Route path="//kakao/callback" element={<Kakao />} />
+        <Route path="/kakao/callback" element={<Kakao />} />
 
         <Route path='/user/findEmail' element={<FindEmail />} />
         <Route path='/user/findEmail/complete' element={<FIndEmailComplete />} />
