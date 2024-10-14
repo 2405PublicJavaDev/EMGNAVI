@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import useAxios from "./path/to/useAxios"; // useAxios의 경로를 제대로 설정해주세요.
+import useAxios from "../../axios/useAxios";
 
 const Kakao = () => {
     const nav = useNavigate();
