@@ -1,43 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.emginfo.emgnavi.review.mapper.ReviewMapper">
 
-    <!-- 의약품 리뷰 조회 -->
-    <select id="selectMedicineReviews" resultType="com.emginfo.emgnavi.review.vo.Reviews">
-        SELECT
-            NO,
-            WRITER_ID,
-            REF_NO,
-            CONTENT,
-            CREATED_DATE,
-            TO_CHAR(CREATED_DATE, 'YYYY-MM-DD') AS CREATED_DATE_SHORT,
-            TO_CHAR(CREATED_DATE, 'YYYY-MM-DD HH24:MI') AS CREATED_DATE_LONG,
-            RATING
-        FROM REVIEW_TBL
-        WHERE REF_NO = #{itemSeq}
-        ORDER BY CREATED_DATE DESC, NO DESC
-    </select>
-
-<!--    &lt;!&ndash; 약국 리뷰 조회 &ndash;&gt;-->
-<!--    <select id="selectPharmacyReviews" resultType="com.emginfo.emgnavi.review.vo.Reviews">-->
-<!--        SELECT NO, WRITER_ID, REF_NO, CONTENT, CREATED_DATE, RATING-->
-<!--        FROM REVIEW_TBL-->
-<!--        WHERE REF_NO = 'PHARM' || #{pharmacyId}-->
-<!--        ORDER BY CREATED_DATE DESC-->
-<!--    </select>-->
-
-<!--    &lt;!&ndash; 병원 리뷰 조회 &ndash;&gt;-->
-<!--    <select id="selectHospitalReviews" resultType="com.emginfo.emgnavi.review.vo.Reviews">-->
-<!--        SELECT NO, WRITER_ID, REF_NO, CONTENT, CREATED_DATE, RATING-->
-<!--        FROM REVIEW_TBL-->
-<!--        WHERE REF_NO = 'HOSP' || #{hospitalId}-->
-<!--        ORDER BY CREATED_DATE DESC-->
-<!--    </select>-->
-
-<!--    &lt;!&ndash; 리뷰 작성 &ndash;&gt;-->
-<!--    <insert id="insertReview" parameterType="com.emginfo.emgnavi.review.vo.Reviews">-->
-<!--        INSERT INTO REVIEW_TBL (NO, WRITER_ID, REF_NO, CONTENT, CREATED_DATE, RATING)-->
-<!--        VALUES (REVIEW_SEQ.NEXTVAL, #{writerId}, #{refNo}, #{content}, SYSDATE, #{rating})-->
-<!--    </insert>-->
+    <insert id="postReview">
+        INSERT INTO REVIEW_TBL VALUES (SEQ_REVIEW_NO.nextval, #{writerId}, #{refNo}, #{rating}, #{content}, DEFAULT)
+    </insert>
 
 </mapper>
