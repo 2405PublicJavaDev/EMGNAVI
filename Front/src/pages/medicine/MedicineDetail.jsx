@@ -265,8 +265,9 @@ const MedicineDetail = () => {
                     <img src="/img/footer/group.png" alt="Group" width="145" height="34" />
                 </div>
             </footer>
-        </>
+        </div>
     );
 };
+
 
 export default MedicineDetail;
