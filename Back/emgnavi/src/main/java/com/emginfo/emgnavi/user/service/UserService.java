@@ -39,4 +39,6 @@ public interface UserService {
     String getAccessToken(String code);
 
     HashMap<String, Object> getUserInfo(String accessToken);
+
+    User selectUserbyId(String userId);
 }

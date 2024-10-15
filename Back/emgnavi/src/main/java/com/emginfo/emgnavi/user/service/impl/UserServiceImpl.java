@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     private UserMapper mapper;
     private RestTemplate restTemplate;
 
-    private static final String restApiKey = "2d6c55a21e936e4094381a23a82124d1";
+    private static final String restApiKey = "43916dfc99b7a10c04471fb22501a64e";
     private static final String redirectUri = "https://127.0.0.1:3000/kakao/callback";
     private static final String tokenUri = "https://kauth.kakao.com/oauth/token";
 
@@ -171,15 +171,20 @@ public class UserServiceImpl implements UserService {
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<Map> response = restTemplate.exchange(postURL, HttpMethod.POST, entity, Map.class);
-        System.out.println(response.getBody());
+//        System.out.println(response.getBody());
         Map<String, Object> body = response.getBody();
         if (body != null) {
             Map<String, Object> kakaoAccount = (Map<String, Object>) body.get("kakao_account");
-            System.out.println("카카오계정" + kakaoAccount);
+//            System.out.println("카카오계정" + kakaoAccount);
             String email = (String) kakaoAccount.get("email");
-            System.out.println("이메일" + email);
             kakaoInfo.put("email", email);
         }
         return kakaoInfo;
+    }
+
+    @Override
+    public User selectUserbyId(String userId) {
+        User user = mapper.selectUserById(userId);
+        return user;
     }
 }

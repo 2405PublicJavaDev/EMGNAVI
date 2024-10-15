@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAxios from "../../axios/useAxios";
+import axios from "axios"
 
-const Kakao = () => {
+const Kakao = ({ setIsLoginTrue }) => {
     const nav = useNavigate();
-    const { fetchData, loading, error } = useAxios();
     const [randomNickname, setRandomNickname] = useState('');
     const makeRandomNickname = () => {
         const adjectives = ['가냘픈', '가는', '가엾은', '가파른', '같은', '거센', '거친', '검은', '게으른', '고달픈', '고른', '고마운', '고운', '고픈', '곧은', '괜찮은', '구석진', '굳은', '굵은', '귀여운', '그런', '그른', '그리운', '기다란', '기쁜', '긴', '깊은', '깨끗한', '나쁜', '나은', '난데없는', '날랜', '날카로운', '낮은', '너그러운', '너른', '널따란', '넓은', '네모난', '노란', '높은', '누런', '눅은', '느닷없는', '느린', '늦은', '다른', '더러운', '더운', '덜된', '동그란', '돼먹잖은', '된', '둥그런', '둥근', '뒤늦은', '드문', '딱한', '때늦은', '뛰어난', '뜨거운', '막다른', '많은', '매운', '먼', '멋진', '메마른', '메스꺼운', '모난', '못난', '못된', '못생긴', '무거운', '무딘', '무른', '무서운', '미끄러운', '미운', '바람직한', '반가운', '밝은', '밤늦은', '보드라운', '보람찬', '부드러운', '부른', '붉은', '비싼', '빠른', '뼈저린', '뽀얀', '뿌연', '새로운', '서툰', '섣부른', '설운', '성가신', '센', '수줍은', '쉬운', '스스러운', '슬픈', '시원찮은', '싫은', '쌀쌀맞은', '쏜살같은', '쓰디쓴', '쓰린', '쓴', '아니꼬운', '아닌', '아름다운', '아쉬운', '안된', '안쓰러운', '알맞은', '약빠른', '얇은', '얕은', '어두운', '어려운', '어린', '엄청난', '열띤', '예쁜', '올바른', '옳은', '외로운', '이른', '익은', '있는', '작은', '잘난', '잘생긴', '재미있는', '적은', '젊은', '점잖은', '조그만', '좁은', '좋은', '줄기찬', '즐거운', '지나친', '지혜로운', '질긴', '짓궂은', '짙은', '짠', '짧은', '큰', '탐스러운', '푸른', '한결같은', '흐린', '희망찬', '흰'];
@@ -14,40 +14,41 @@ const Kakao = () => {
         const randomNumber = Math.floor(Math.random() * 100);
         const nickname = `${adjectives[randomAdjectiveIndex]}${nouns[randomNounIndex]}${randomNumber}`;
         setRandomNickname(nickname);
-        // setValues((prevValues) => ({ ...prevValues, uNickname: nickname }));
+        setValues((prevValues) => ({ ...prevValues, uNickname: nickname }));
     };
+    const [values, setValues] = useState({
+        uNickname: '',
+    });
+    // console.log(values.uNickname);
+
+
     useEffect(() => {
         makeRandomNickname(); // 기존 코드
     }, []); // 컴포넌트 마운트 시 한 번만 실행
 
-    useEffect(() => {
-        const code = new URLSearchParams(window.location.search).get('code');
-        if (code) {
-            fetchData(
-                {
-                    method: 'POST',
-                    url: `/api/kakao`, // 백엔드 API로 코드 전송
-                    data: { code }
-                },
-                (data) => {
-                    if (data) {
-                        console.log("서버 응답: ", data);
-                        // 원하는 로직 실행, 예: 로그인 후 이동
-                    } else {
-                        alert("오류 발생");
-                    }
+    const code = new URLSearchParams(window.location.search).get('code');
+    if (code) {
+        axios.post('/api/kakao', { code })
+            .then(response => {
+                if (response.data.unickname != null) {
+                    localStorage.setItem('isLoginTrue', 'true'); 
+                    localStorage.setItem('userId', response.data.uEmail);
+                    setIsLoginTrue(true); 
+                    window.location.href = "/";
+                } else {
+                    setValues({ uEmail: response.data.uemail });
                 }
-            );
-        } else {
-            console.log("코드가 없습니다");
-        }
-    }, [fetchData, nav]); // useEffect에 종속성 추가
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
 
     const checkNicknameDuplicate = async (e) => {
-        e.preventDefault(); // Prevent form submission
+        e.preventDefault();
         try {
-            const response = await axios.post('/api/nickname/duplicate', { userNickname: values.newNickname });
-            alert(response.data); // Show response message
+            const response = await axios.post('/api/nickname/duplicate', { userNickname: values.uNickname });
+            alert(response.data);
             setIsNicknameChecked(true);
         } catch (error) {
             console.error("에러 발생:", error);
@@ -68,15 +69,15 @@ const Kakao = () => {
                 <div className="absolute left-0 top-0 w-[467px] h-[52px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
                 <input
                     type="text"
-                    // value={randomNickname}
-                    // onChange={(e) => {
-                    //     const value = e.target.value;
-                    //     setRandomNickname(value)
-                    //     setValues({ ...values, uNickname: value });
-                    // }}
+                    value={randomNickname}
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        setRandomNickname(value)
+                        setValues({ ...values, uNickname: value });
+                    }}
                     className="absolute left-[36px] top-1 w-[282px] h-[47px] text-[17px] font-['Inter'] text-[#000] flex flex-col justify-center outline-0"></input>
                 <img
-                    // onClick={makeRandomNickname}
+                    onClick={makeRandomNickname}
                     style={{ cursor: 'pointer' }}
                     className="absolute left-[407px] top-[12px]" width="30" height="30" src="/img/user/reload 1117_124.png"></img>
             </div>
@@ -84,7 +85,7 @@ const Kakao = () => {
             <div className="absolute left-[1207px] top-[671px] w-[144px] h-[52px] flex">
                 <button
                     type='button'
-                    // onClick={checkNicknameDuplicate}
+                    onClick={checkNicknameDuplicate}
                     className="absolute left-0 top-0 w-[144px] h-[52px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]">
                     <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">중복확인</span>
                 </button>
@@ -122,4 +123,4 @@ const Kakao = () => {
         </>)
 }
 
-export default Kakao
+export default Kakao;

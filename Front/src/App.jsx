@@ -94,8 +94,8 @@ function App() {
         <Route path='/user/register/complete' element={<RegisterComplete />} />
 
         <Route path='/user/login' element={<LoginMain setIsLoginTrue={setIsLoginTrue}/>} />
-        <Route path="/kakao/callback" element={<Kakao />} />
-        <Route path="/naver/callback" element={<Naver />} />
+        <Route path="/kakao/callback" element={<Kakao setIsLoginTrue={setIsLoginTrue}/>} />
+        <Route path="/naver/callback" element={<Naver setIsLoginTrue={setIsLoginTrue}/>} />
 
         <Route path='/user/findEmail' element={<FindEmail />} />
         <Route path='/user/findEmail/complete' element={<FIndEmailComplete />} />

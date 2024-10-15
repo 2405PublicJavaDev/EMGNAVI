@@ -35,4 +35,6 @@ public interface UserMapper {
     int deleteUser(UserIdRequest request);
 
     int changePhone(ChangePhoneRequest request);
+
+    User selectUserById(String userId);
 }

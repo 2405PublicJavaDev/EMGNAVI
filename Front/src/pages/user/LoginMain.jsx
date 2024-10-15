@@ -61,7 +61,7 @@ const LoginMain = ({ setIsLoginTrue }) => {
     };
 
     const kakaoLogin = () => {
-        const REST_API_KEY = "2d6c55a21e936e4094381a23a82124d1";
+        const REST_API_KEY = "43916dfc99b7a10c04471fb22501a64e";
         const REDIRECT_URI = "https://127.0.0.1:3000/kakao/callback";
         const kakaoUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
@@ -155,7 +155,7 @@ const LoginMain = ({ setIsLoginTrue }) => {
             <div className="absolute left-[895px] top-[920px] text-[18px] font-['Inter'] font-semibold text-[#7d8597] whitespace-nowrap">SNS 간편 로그인</div>
             <div className="absolute left-[704px] top-[996px] w-[511px] h-[60px] flex">
                 <div className="absolute left-0 top-0 w-[511px] h-[60px] flex bg-[#2DB400]">
-                    <button
+                    <button type="button"
                         onClick={naverLogin}
                         className="absolute left-0 top-0 w-[511px]">
                         <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center mt-4">네이버 로그인</span>
@@ -166,7 +166,7 @@ const LoginMain = ({ setIsLoginTrue }) => {
 
             <div className="absolute left-[704px] top-[1069px] w-[511px] h-[60px] flex">
                 <div className="absolute left-0 top-0 w-[511px] h-[60px] flex">
-                    <button
+                    <button type="button"
                         onClick={kakaoLogin}
                         className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#ffe100] border-[1px] border-solid border-[#fff] rounded-[5px]">
                         <span className="text-[18px] font-['Inter'] font-medium text-[#000] text-center flex flex-col justify-center">카카오톡 로그인</span>

@@ -4,15 +4,24 @@ import com.emginfo.emgnavi.user.model.dto.*;
 import com.emginfo.emgnavi.user.model.vo.User;
 import com.emginfo.emgnavi.user.service.EmailService;
 import com.emginfo.emgnavi.user.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -153,43 +162,25 @@ public class UserController {
     }
 
     @PostMapping("/kakao")
-    public void kakaoCheck(@RequestBody Map<String, String> requestBody, HttpSession session) {
+    public User kakaoCheck(@RequestBody Map<String, String> requestBody, HttpSession session) {
         System.out.println("인가코드 : " + requestBody.get("code"));
         String accessToken = uService.getAccessToken(requestBody.get("code"));
         System.out.println("토큰 : " + accessToken);
         HashMap<String, Object> kakaoInfo = uService.getUserInfo(accessToken);
-        System.out.println(kakaoInfo.get("email"));
+        String userId = (String) kakaoInfo.get("email");
+        User user = uService.selectUserbyId(userId);
+        if(user != null) {
+            System.out.println("이미 존재하는 회원");
+            session.setAttribute("userId", user.getUserId());
+            session.setAttribute("userNickname", user.getUserNickname());
+            return user;
+        } else {
+            System.out.println("회원가입 필요");
+            User newUser = new User();
+            newUser.setUserId(userId);
+            return newUser;
+        }
     }
-
-//    @GetMapping("/kakao/callback")
-//    public void kakaoLogin(@RequestParam String code) {
-//        // 1. 인가 코드 받기 (@RequestParam String code)
-//
-//        // 2. 토큰 받기
-//        String accessToken = kakaoApi.getAccessToken(code);
-//
-//        // 3. 사용자 정보 받기
-//        Map<String, Object> userInfo = kakaoApi.getUserInfo(accessToken);
-//
-//        String email = (String) userInfo.get("email");
-//        String nickname = (String) userInfo.get("nickname");
-//
-//        System.out.println("email = " + email);
-//        System.out.println("nickname = " + nickname);
-//        System.out.println("accessToken = " + accessToken);
-//    }
-
-//
-//    @GetMapping("/kakao/callback")
-//    public ResponseEntity<String> kakaoLogin(@RequestParam("code") String code) {
-//        String accessToken = kakaoApi.getAccessToken(code);
-//
-//        if (accessToken == null) {
-//            return ResponseEntity.badRequest().body("액세스 토큰 요청 실패");
-//        }
-//
-//        return ResponseEntity.ok("액세스 토큰: " + accessToken);
-//    }
 
 
     @PostMapping("/getInf")
@@ -304,4 +295,33 @@ public class UserController {
         }
     }
 
-}
+    @GetMapping("/news")
+    public ResponseEntity<String> search() throws Exception {
+        String clientId = "HybacJJgFsuLnLngHigE";
+        String clientSecret = "JofjIZZUKG";
+
+        // Naver OpenAPI URL 설정
+        String apiURL = "https://openapi.naver.com/v1/search/news.json?query=" + URLEncoder.encode("병원", "UTF-8");
+
+        // Http 요청 설정
+        HttpURLConnection urlConnection = (HttpURLConnection) new URL(apiURL).openConnection();
+        urlConnection.setRequestMethod("GET");
+        urlConnection.setRequestProperty("X-Naver-Client-Id", clientId);
+        urlConnection.setRequestProperty("X-Naver-Client-Secret", clientSecret);
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), StandardCharsets.UTF_8));
+
+        StringBuilder responseText = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+            responseText.append(line);
+        }
+
+        br.close();
+        urlConnection.disconnect();
+
+        // 응답을 JSON 문자열로 반환
+        return ResponseEntity.ok(responseText.toString());
+    }
+    }
+
