@@ -209,7 +209,7 @@ const MedicineDetail = () => {
                             <h2 className="text-4xl font-bold mb-28 text-center">리뷰 목록</h2>
                             <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-300 w-full">
                                 <div className="px-6 py-4 bg-gray-100 flex font-bold text-lg">
-                                    <div className="w-14 text-center">번호</div>
+                                    {/* <div className="w-14 text-center">번호</div> */}
                                     <div className="w-28 text-center ml-16">평점</div>
                                     <div className="flex-1 text-center">리뷰</div>
                                     <div className="w-36 text-center">작성일자</div>
@@ -224,7 +224,7 @@ const MedicineDetail = () => {
                                         {currentReviews.map((review) => (
                                             <React.Fragment key={review.no}>
                                                 <div className="px-6 py-4 flex items-center border-t border-gray-200">
-                                                    <div className="w-14 text-center">{review.no}</div>
+                                                    {/* <div className="w-14 text-center">{review.no}</div> */}
                                                     <div className="w-28 text-center ml-16">
                                                         <StarRating rating={review.rating} onRatingChange={() => { }} isClickable={false} />
                                                     </div>
