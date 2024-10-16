@@ -35,9 +35,34 @@ const ToastUI = ({ initialValue = "" }) => {
         // 입력창에 입력한 내용을 HTML 태그 형태로 취득
         console.log(editorRef.current?.getInstance().getHTML());
         // 공지제목 input 태그에 입력한 내용을 취득
-        console.log(titleRef.current?.value);
+        console.log('title' + titleRef.current?.value);
+        console.log('uid' + userId);
 
-        fetch(`http://127.0.0.1:8888/api/notice/post?writerId=${userId}&noticeTitle=${titleRef.current?.value}&noticeContents=${editorRef.current?.getInstance().getHTML()}`)
+        fetch(`/api/notice/post`, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: JSON.stringify({
+                writerId: userId,
+                noticeTitle: titleRef.current?.value,
+                noticeContents: editorRef.current?.getInstance().getHTML(),
+                noticeMarkdown: editorRef.current?.getInstance().getMarkdown(),
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('data: ' + data);
+                if (data === 1) {
+                    //성공 처리
+                    console.log('DB입력 성공');
+                    alert('공지사항 등록 성공');
+                    window.location.href = 'https://127.0.0.1:3000/notice/getNoticeList';
+                } else {
+                    console.log('DB입력 실패');
+                    alert('공지사항 등록 실패');
+                }
+            })
             .catch(error => {
                 console.error('Error fetching notice data:', error);
             });
