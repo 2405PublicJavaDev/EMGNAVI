@@ -10,9 +10,11 @@ const MedicineSearch = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);  // 총 페이지 수
   const itemsPerPage = 10;
-  const navigate = useNavigate(); // URL 이동을 위한 React Hook
+
+  const nav = useNavigate();
 
   const fetchMedicines = (page = 1) => {
+
     setIsLoading(true);
     setError(null);
 
@@ -93,11 +95,10 @@ const MedicineSearch = () => {
           <button
             key={page}
             onClick={() => handlePageChange(page)}
-            className={`${
-              page === currentPage
-                ? 'bg-white text-[#0b2d85] border-2 border-[#0b2d85]'
-                : 'bg-[#0b2d85] text-white'
-            } px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold`}
+            className={`${page === currentPage
+              ? 'bg-white text-[#0b2d85] border-2 border-[#0b2d85]'
+              : 'bg-[#0b2d85] text-white'
+              } px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold`}
           >
             {page}
           </button>
@@ -187,7 +188,7 @@ const MedicineSearch = () => {
                       <td className="py-4">
                         <button
                           onClick={() =>
-                            (window.location.href = `/medicine/detail/${item.itemSeq}`)
+                            (nav(`/medicine/detail/${item.itemSeq}`))
                           }
                           className="bg-[#0b2d85] text-white px-4 py-1 rounded-lg text-[14px] font-bold"
                         >
