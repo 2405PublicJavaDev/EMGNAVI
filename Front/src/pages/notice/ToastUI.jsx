@@ -5,6 +5,11 @@ import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 import { useRef, useState, useEffect } from "react";
 
 const ToastUI = ({ initialValue = "" }) => {
+
+    useEffect(() => {
+        const userId = localStorage.getItem('userId');
+    }, []);
+
     const [initialValueState, setInitialValueState] = useState(initialValue); // initialValue 값을 상태값으로 관리
 
     // Editor DOM 선택용
@@ -31,6 +36,11 @@ const ToastUI = ({ initialValue = "" }) => {
         console.log(editorRef.current?.getInstance().getHTML());
         // 공지제목 input 태그에 입력한 내용을 취득
         console.log(titleRef.current?.value);
+
+        fetch(`http://127.0.0.1:8888/api/notice/post?writerId=${userId}&noticeTitle=${titleRef.current?.value}&noticeContents=${editorRef.current?.getInstance().getHTML()}`)
+            .catch(error => {
+                console.error('Error fetching notice data:', error);
+            });
     };
 
     return (

@@ -1,6 +1,22 @@
+import { useEffect } from 'react';
 import ToastUI from './ToastUI';
+import { useNavigate } from 'react-router-dom';
 
 const PostNotice = () => {
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const userId = localStorage.getItem('userId');
+        if (userId) {
+            console.log(userId);
+            if (userId != 'admin') {
+                // 경고문구 출력 후 이전 페이지로 강제이동
+                alert('관리자 계정이 아닙니다!');
+                navigate(-1);
+            }
+        }
+    }, []);
 
     return (
         <>
