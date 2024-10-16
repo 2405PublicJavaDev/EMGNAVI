@@ -4,11 +4,11 @@ import com.emginfo.emgnavi.user.model.dto.*;
 import com.emginfo.emgnavi.user.model.mapper.UserMapper;
 import com.emginfo.emgnavi.user.model.vo.Token;
 import com.emginfo.emgnavi.user.model.vo.User;
-import net.nurigo.sdk.NurigoApp;
-import net.nurigo.sdk.message.model.Message;
-import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
-import net.nurigo.sdk.message.response.SingleMessageSentResponse;
-import net.nurigo.sdk.message.service.DefaultMessageService;
+//import net.nurigo.sdk.NurigoApp;
+//import net.nurigo.sdk.message.model.Message;
+//import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
+//import net.nurigo.sdk.message.response.SingleMessageSentResponse;
+//import net.nurigo.sdk.message.service.DefaultMessageService;
 import com.emginfo.emgnavi.user.service.UserService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +25,7 @@ import java.util.Map;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final DefaultMessageService messageService;
+//    private final DefaultMessageService messageService;
     private UserMapper mapper;
     private RestTemplate restTemplate;
 
@@ -34,23 +34,23 @@ public class UserServiceImpl implements UserService {
     private static final String tokenUri = "https://kauth.kakao.com/oauth/token";
 
     public UserServiceImpl(UserMapper mapper) {
-        this.messageService = NurigoApp.INSTANCE.initialize("NCSY6JZLRXVWS3BX", "RDC9PGPKKGCSIQSWT4IFHK0NNO1IOVW1", "https://api.coolsms.co.kr");
+//        this.messageService = NurigoApp.INSTANCE.initialize("NCSY6JZLRXVWS3BX", "RDC9PGPKKGCSIQSWT4IFHK0NNO1IOVW1", "https://api.coolsms.co.kr");
         this.mapper = mapper;
         this.restTemplate = new RestTemplate();
     }
 
-    @Override
-    public SingleMessageSentResponse sendVerificationCode(String userPhone, String verificationCode) {
-        Message message = new Message();
-        message.setFrom("01053248588");
-
-        message.setTo(userPhone);
-
-        message.setText("[응급NAVI] 인증번호[" + verificationCode + "]를 화면에 입력해주세요");
-        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
-
-        return response;
-    }
+//    @Override
+//    public SingleMessageSentResponse sendVerificationCode(String userPhone, String verificationCode) {
+//        Message message = new Message();
+//        message.setFrom("01053248588");
+//
+//        message.setTo(userPhone);
+//
+//        message.setText("[응급NAVI] 인증번호[" + verificationCode + "]를 화면에 입력해주세요");
+//        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+//
+//        return response;
+//    }
 
     @Override
     public int insertUser(UserInfoRequest request) {
