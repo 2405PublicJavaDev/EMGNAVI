@@ -26,4 +26,24 @@
         VALUES (SEQ_REVIEW_NO.NEXTVAL, #{writerId}, #{refNo}, #{content}, SYSDATE, #{rating})
     </insert>
 
+    <!-- 리뷰 삭제 -->
+    <delete id="deleteReview" parameterType="long">
+        DELETE FROM REVIEW_TBL
+        WHERE NO = #{reviewId}
+    </delete>
+
+    <!-- 리뷰 작성자 ID 조회 -->
+    <select id="selectWriterIdByReviewId" resultType="String">
+        SELECT WRITER_ID
+        FROM REVIEW_TBL
+        WHERE NO = #{reviewId}
+    </select>
+
+    <!-- WRITER_ID로 닉네임 조회 -->
+    <select id="selectNicknameByWriterId" resultType="String">
+        SELECT USER_NICKNAME
+        FROM USER_TBL
+        WHERE USER_ID = #{writerId}
+    </select>
+
 </mapper>
