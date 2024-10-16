@@ -18,7 +18,14 @@ const StarRating = ({ rating, onRatingChange, isClickable = true }) => {
     );
 };
 
-const 리뷰상세보기내용 = ({ review, onClose }) => {
+const 리뷰상세보기내용 = ({ review, onClose, onDelete }) => {
+    const handleDeleteClick = () => {
+        const confirmed = window.confirm("정말 삭제하시겠습니까?");
+        if (confirmed) {
+            onDelete(review.no); // 리뷰 삭제 로직 실행
+        }
+    };
+
     return (
         <div className="w-full bg-white border border-gray-200 rounded-lg shadow-sm p-4">
             <div className="flex justify-between items-center mb-4">
@@ -33,6 +40,14 @@ const 리뷰상세보기내용 = ({ review, onClose }) => {
             </div>
             <p className="text-base mb-4">{review.content}</p>
             <div className="flex justify-end">
+                {review.isOwner && (
+                    <button
+                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm mr-2"
+                        onClick={handleDeleteClick}
+                    >
+                        삭제
+                    </button>
+                )}
                 <button
                     className="px-4 py-2 bg-[#0B2D85] text-white rounded hover:bg-[#0939AD] transition text-sm"
                     onClick={onClose}
@@ -51,6 +66,7 @@ const MedicineDetail = () => {
     const [review, setReview] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [expandedReviewId, setExpandedReviewId] = useState(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 추가
     const { itemSeq } = useParams();
     const itemsPerPage = 10;
 
@@ -73,6 +89,19 @@ const MedicineDetail = () => {
     }, [itemSeq]);
 
     useEffect(() => {
+        // 로그인 상태 확인 로직
+        const checkLoginStatus = async () => {
+            try {
+                const response = await fetch('/api/user/checkLogin', { credentials: 'include' });
+                setIsLoggedIn(response.ok);
+            } catch (error) {
+                console.error('로그인 상태 확인 실패:', error);
+                setIsLoggedIn(false);
+            }
+        };
+
+        checkLoginStatus();
+
         fetch(`/api/medicine/detail/${itemSeq}`)
             .then((response) => response.json())
             .then((data) => setMedicine(data))
@@ -80,6 +109,25 @@ const MedicineDetail = () => {
 
         fetchReviews();
     }, [itemSeq, fetchReviews]);
+
+    const handleDeleteReview = async (reviewId) => {
+        try {
+            const response = await fetch(`/api/medicine_reviews/medicine/${reviewId}`, {
+                method: 'DELETE',
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                throw new Error('리뷰 삭제에 실패했습니다.');
+            }
+
+            alert('리뷰가 성공적으로 삭제되었습니다.');
+            fetchReviews(); // 리뷰 목록 새로고침
+        } catch (error) {
+            console.error('리뷰 삭제 중 오류 발생:', error);
+            alert('리뷰 삭제 중 오류가 발생했습니다.');
+        }
+    };
 
     console.log('Total reviews:', reviews.length);
     console.log('Items per page:', itemsPerPage);
@@ -101,6 +149,11 @@ const MedicineDetail = () => {
     };
 
     const handleSubmit = async () => {
+        if (!isLoggedIn) {
+            alert('로그인 후 리뷰를 작성할 수 있습니다.');
+            return;
+        }
+
         try {
             const response = await fetch('/api/medicine_reviews/medicine', {
                 method: 'POST',
@@ -108,20 +161,23 @@ const MedicineDetail = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    writerId: 'currentUserId', // 실제 사용자 ID로 대체해야 함
                     refNo: itemSeq,
                     content: review,
                     rating: rating
                 }),
+                credentials: 'include' // 세션 쿠키를 포함시키기 위해
             });
 
             if (!response.ok) {
-                throw new Error('리뷰 작성에 실패했습니다.');
+                throw new Error('로그인후 작성가능합니다.');
             }
 
             const data = await response.json();
             console.log('리뷰가 성공적으로 작성되었습니다:', data);
-            
+
+            // 알림 창 표시
+            alert('리뷰가 성공적으로 작성되었습니다!');
+
             // 리뷰 작성 후 리뷰 목록 새로고침
             fetchReviews();
 
@@ -183,18 +239,43 @@ const MedicineDetail = () => {
                                         placeholder="의견을 자유롭게 작성해 주세요."
                                         value={review}
                                         onChange={handleReviewChange}
+                                        disabled={!isLoggedIn}
                                     />
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center">
                                             <span className="mr-2">평점:</span>
-                                            <StarRating rating={rating} onRatingChange={handleRatingChange} />
+                                            <StarRating rating={rating} onRatingChange={handleRatingChange} isClickable={isLoggedIn} />
                                         </div>
-                                        <button
-                                            className="px-4 py-2 bg-[#0B2D85] text-white rounded hover:bg-[#0939AD] transition"
-                                            onClick={handleSubmit}
-                                        >
-                                            작성 완료
-                                        </button>
+                                        <div className="flex items-center">
+                                            {!isLoggedIn && (
+                                                <div className="flex items-center mr-4 text-red-500">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        className="h-5 w-5 mr-1"
+                                                        viewBox="0 0 20 20"
+                                                        fill="currentColor"
+                                                    >
+                                                        <path
+                                                            fillRule="evenodd"
+                                                            d="M18 8a8 8 0 11-16 0 8 8 0 0116 0zm-8 3a1 1 0 10-2 0 1 1 0 002 0zm-1-5a1 1 0 00-1 1v2a1 1 0 102 0V7a1 1 0 00-1-1z"
+                                                            clipRule="evenodd"
+                                                        />
+                                                    </svg>
+                                                    <span>로그인 후 작성 가능합니다.</span>
+                                                </div>
+                                            )}
+                                            <button
+                                                className={`px-4 py-2 rounded transition ${
+                                                    isLoggedIn 
+                                                        ? "bg-[#0B2D85] text-white hover:bg-[#0939AD]" 
+                                                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                                }`}
+                                                onClick={handleSubmit}
+                                                disabled={!isLoggedIn}
+                                            >
+                                                작성 완료
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -244,7 +325,11 @@ const MedicineDetail = () => {
                                                 </div>
                                                 {expandedReviewId === review.no && (
                                                     <div className="px-6 py-4">
-                                                        <리뷰상세보기내용 review={review} onClose={() => setExpandedReviewId(null)} />
+                                                        <리뷰상세보기내용
+                                                            review={review}
+                                                            onClose={() => setExpandedReviewId(null)}
+                                                            onDelete={handleDeleteReview}
+                                                        />
                                                     </div>
                                                 )}
                                             </React.Fragment>

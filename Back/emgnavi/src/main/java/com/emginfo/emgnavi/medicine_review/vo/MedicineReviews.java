@@ -11,17 +11,28 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-public class MedicineReviews { // 클래스 이름 변경
+public class MedicineReviews {
 
     private int no;
     private String writerId;
-    private String writerNickname; // 작성자 닉네임 추가
+    private String writerNickname;
     private String refNo;
     private String content;
     private Date createdDate;
-    private String createdDateShort; // 리뷰 날짜 일까지만 표시용
-    private String createdDateLong;  // 리뷰 자세히 보기에서 시간까지 표시용
+    private String createdDateShort;
+    private String createdDateLong;
     private int rating;
 
+    // 현재 로그인된 사용자와 작성자가 일치하는지 여부를 나타내는 필드
+    private boolean isOwner;
 
+    public boolean getIsOwner() {
+        return isOwner;
+    }
+
+    public void setIsOwner(boolean isOwner) {
+        this.isOwner = isOwner;
+    }
+
+    // 기존 필드에 대한 getter와 setter는 Lombok으로 처리
 }
