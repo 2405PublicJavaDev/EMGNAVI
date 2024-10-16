@@ -173,7 +173,7 @@ const ChangePasswordModal = ({ onClose, currentPw }) => {
                                 src={pwImageSrc}>
                             </img>
                         )}
-                        <div className="absolute left-[5px] top-[88px] w-[438px] h-[17px] text-[14px] font-['Inter'] text-[#7d8597]">영문, 숫자포함 8자 이상 16자 이하로 입력해주세요.</div>
+                        <div className="absolute left-[5px] top-[88px] w-[438px] h-[17px] text-[14px] font-['Inter'] text-[#7d8597]">영어, 숫자, 특수문자 포함 8자 이상 16자 이하로 입력해주세요.</div>
                     </div>
                     <div className="absolute left-[73px] top-[438px] w-[453px] h-[75px] flex">
                         <div className="absolute left-0 top-0 w-[169px] h-[31px] text-[16px] font-['Inter'] font-medium"><span className="text-[#000]">새로운 비밀번호 확인 </span><span className="text-[#c2a55d]">*</span></div>
