@@ -1,10 +1,21 @@
 package com.emginfo.emgnavi.favorite.service;
 
+import com.emginfo.emgnavi.favorite.model.dto.FavoriteDTO;
 import com.emginfo.emgnavi.favorite.model.vo.Favorite;
-import com.emginfo.emgnavi.hospital.vo.Hospital;
-import com.emginfo.emgnavi.user.model.vo.User;
+
+import java.util.List;
 
 public interface FavoriteService {
 
-    Favorite addFavorite(String type, String refNo, String userId);
+    // 즐겨찾기 추가
+    Favorite addFavHospital(FavoriteDTO favoriteDTO);
+    Favorite addFavPharmacy(FavoriteDTO favoriteDTO);
+
+    // 즐겨찾기 조회
+    List<Favorite> selectHospitalByUserId(String userId);
+    List<Favorite> selectPharmacyByUserId(String userId);
+
+    // 단일, 다중 즐겨찾기 삭제
+    int deleteFavorite(String refNo, String userId);
+    void deleteFavorites(List<String> refNos, String userId);
 }

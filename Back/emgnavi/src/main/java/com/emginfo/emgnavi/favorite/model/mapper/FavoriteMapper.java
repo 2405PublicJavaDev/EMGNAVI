@@ -1,22 +1,33 @@
 package com.emginfo.emgnavi.favorite.model.mapper;
 
+import com.emginfo.emgnavi.favorite.model.dto.FavoriteDTO;
 import com.emginfo.emgnavi.favorite.model.vo.Favorite;
 import com.emginfo.emgnavi.hospital.vo.Hospital;
 import com.emginfo.emgnavi.pharmacy.vo.Pharmacy;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 @Mapper
 public interface FavoriteMapper {
 
-    // SELECT HPID AS REF_NO, DUTY_NAME, DUTY_ADDR, DUTY_TEL1 FROM HOSPITAL_TBL WHERE HPID = #{hpid}
+    // 병원, 약국 정보 조회
     Hospital findHospitalById(String hpid);
-
-    // SELECT HPID AS REF_NO, DUTY_NAME, DUTY_ADDR, DUTY_TEL1 FROM PHARMACY_TBL WHERE hpid = #{hpid}
     Pharmacy findPharmacyById(String hpid);
 
-    int addFavorite(Favorite favorite);
+    // 즐겨찾기에 있는지 확인
+    Favorite findFavoriteByIdAndRefNo(FavoriteDTO favoriteDTO);
 
-    Favorite findFavoriteByIdAndRefNo(@Param("userId") String userId, @Param("refNo") String refNo);
+    // 병원, 약국 즐겨찾기 추가
+    void addFavHospital(Favorite favorite);
+    void addFavPharmacy(Favorite favorite);
+
+    // 병원, 약국 즐겨찾기 조회
+    List<Favorite> getHospitalFavoriteListByUserId(String userId);
+    List<Favorite> getPharmacyFavoriteListByUserId(String userId);
+
+    // 즐겨찾기 삭제 - 단일
+    int deleteFavorite(Favorite favorite);
 
 }

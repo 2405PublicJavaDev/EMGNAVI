@@ -4,9 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.emginfo.emgnavi.favorite.model.mapper.FavoriteMapper">
 
-    <select id="findFavoriteByIdAndRefNo" resultType="com.emginfo.emgnavi.favorite.model.vo.Favorite">
-        SELECT * FROM FAVORITE_TBL WHERE USER_ID = #{userId} AND REF_NO = #{refNo}
-    </select>
+<!--    <select id="findFavoriteByIdAndRefNo" resultType="com.emginfo.emgnavi.favorite.model.vo.Favorite">-->
+<!--        SELECT * FROM FAVORITE_TBL WHERE USER_ID = #{userId} AND REF_NO = #{refNo}-->
+<!--    </select>-->
 
     <!-- 병원 조회 -->
     <select id="findHospitalById" resultType="com.emginfo.emgnavi.hospital.vo.Hospital">
@@ -14,7 +14,6 @@
         FROM HOSPITAL_TBL
         WHERE HPID = #{hpid}
     </select>
-
     <!-- 약국 조회 -->
     <select id="findPharmacyById" resultType="com.emginfo.emgnavi.pharmacy.vo.Pharmacy">
         SELECT HPID, DUTY_NAME, DUTY_ADDR, DUTY_TEL1
@@ -22,7 +21,24 @@
         WHERE HPID = #{hpid}
     </select>
 
-    <insert id="addFavorite">
+    <select id="findFavoriteByIdAndRefNo" resultType="com.emginfo.emgnavi.favorite.model.vo.Favorite">
+        SELECT *
+        FROM FAVORITE_TBL
+        WHERE USER_ID = #{userId} AND REF_NO = #{refNo}
+    </select>
+
+
+    <!-- 병원 즐겨찾기 조회   -->
+    <select id="getHospitalFavoriteListByUserId">
+        SELECT * FROM FAVORITE_TBL WHERE USER_ID = #{userId} AND REF_NO LIKE 'A%'
+    </select>
+    <!-- 약국 즐겨찾기 조회   -->
+    <select id="getPharmacyFavoriteListByUserId">
+        SELECT * FROM FAVORITE_TBL WHERE USER_ID = #{userId} AND REF_NO LIKE 'C%'
+    </select>
+
+    <!-- 병원 즐겨찾기 추가-->
+    <insert id="addFavHospital">
         INSERT INTO FAVORITE_TBL (USER_ID, REF_NO, DUTY_NAME, DUTY_ADDR, DUTY_TEL1)
         SELECT #{userId}, #{refNo}, #{dutyName}, #{dutyAddr}, #{dutyTel1}
         FROM DUAL
@@ -31,4 +47,20 @@
             WHERE USER_ID = #{userId} AND REF_NO = #{refNo}
         )
     </insert>
+    <!-- 약국 즐겨찾기 추가-->
+    <insert id="addFavPharmacy">
+        INSERT INTO FAVORITE_TBL (USER_ID, REF_NO, DUTY_NAME, DUTY_ADDR, DUTY_TEL1)
+        SELECT #{userId}, #{refNo}, #{dutyName}, #{dutyAddr}, #{dutyTel1}
+        FROM DUAL
+        WHERE NOT EXISTS (
+            SELECT 1 FROM FAVORITE_TBL
+            WHERE USER_ID = #{userId} AND REF_NO = #{refNo}
+        )
+    </insert>
+
+    <!-- 즐겨찾기 삭제 -->
+    <delete id="deleteFavorite">
+        DELETE FROM FAVORITE_TBL WHERE USER_ID = #{userId} AND REF_NO = #{refNo}
+    </delete>
+
 </mapper>

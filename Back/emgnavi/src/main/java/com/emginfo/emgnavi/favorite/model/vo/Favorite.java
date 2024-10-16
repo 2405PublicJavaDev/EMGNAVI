@@ -17,13 +17,4 @@ public class Favorite {
   private String dutyAddr;  // 주소
   private String dutyTel1;  // 대표전화
 
-  // 병원인지 확인하는 메서드
-  public boolean isHospital() {
-    return refNo != null && refNo.startsWith("A");
-  }
-
-  // 약국인지 확인하는 메서드
-  public boolean isPharmacy() {
-    return refNo != null && refNo.startsWith("C");
-  }
 }
