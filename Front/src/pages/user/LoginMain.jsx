@@ -1,9 +1,15 @@
-import { useState, EventHandler, ReactNode, useEffect } from 'react'
+import { useState, EventHandler, ReactNode, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
 import useAxios from '../../axios/useAxios';
 import axios from 'axios';
+import { UserContext } from '../../UserContext';
 
-const LoginMain = ({ setIsLoginTrue }) => {
+const LoginMain = () => {
+
+    const { handleReload } = useContext(UserContext);
+
+
+
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const nav = useNavigate();
@@ -28,6 +34,7 @@ const LoginMain = ({ setIsLoginTrue }) => {
                     userPw: values.uPassword,
                 });
                 if (response.status === 200) {
+                    handleReload(true);
                     nav("/"); // 로그인 성공 후 리다이렉트
                 }
             } catch (error) {

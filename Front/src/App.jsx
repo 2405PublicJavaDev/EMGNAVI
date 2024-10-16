@@ -53,10 +53,12 @@ import Naver from './pages/user/Naver';
 
 function App() {
 
-  const { handleUser } = useContext(UserContext);
+  const { reload, handleReload, handleUser, userId } = useContext(UserContext);
 
   useEffect(() => {
+
     const fetchSessionData = async () => {
+      handleReload(false);
       const response = await Session();
       if (response) {
         handleUser(response.userId, response.userNickname);
@@ -64,7 +66,7 @@ function App() {
     };
 
     fetchSessionData();
-  });
+  }, [reload == true]);
 
   return (
     <>

@@ -5,9 +5,10 @@ import { UserContext } from '../UserContext';
 
 const Header = () => {
 
-    const { userId } = useContext(UserContext);
+    const { handleReload, userId } = useContext(UserContext);
 
     const nav = useNavigate();
+
     const handlerGoLogin = () => {
         nav("/user/login");
     };
@@ -21,6 +22,7 @@ const Header = () => {
         const isConfirmed = confirm("로그아웃 하시겠습니까?");
         if (isConfirmed) {
             await axios.post('/api/logout');
+            handleReload(true);
             nav("/"); // 로그아웃 후 로그인 페이지로 이동
         } // 취소 시 아무 동작도 하지 않음
     };
