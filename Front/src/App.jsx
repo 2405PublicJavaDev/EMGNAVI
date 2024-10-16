@@ -41,7 +41,7 @@ import GetEmergencyMap from './pages/map/GetEmergencyMap';
 
 import MedicineSearch from './pages/medicine/MedicineSearch';
 import MedicineDetail from './pages/medicine/MedicineDetail';
-import PharmacySearch from './pharmacy/PharmacySearch';
+import PharmacySearch from './pages/pharmacy/PharmacySearch';
 
 
 import ReportList from './pages/report/ReportList';
