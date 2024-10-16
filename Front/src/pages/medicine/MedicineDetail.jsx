@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 
 const StarRating = ({ rating, onRatingChange, isClickable = true }) => {
@@ -54,19 +54,11 @@ const MedicineDetail = () => {
     const { itemSeq } = useParams();
     const itemsPerPage = 10;
 
-    useEffect(() => {
-        fetch(`/api/medicine/detail/${itemSeq}`)
-            .then((response) => response.json())
-            .then((data) => setMedicine(data))
-            .catch((error) => console.error('Error fetching medicine details:', error));
-
-        fetchReviews();
-    }, [itemSeq]);
-
-    const fetchReviews = () => {
+    const fetchReviews = useCallback(() => {
         fetch(`/api/medicine_reviews/medicine?itemSeq=${itemSeq}`)
             .then((response) => response.json())
             .then((data) => {
+                console.log('Received review data:', data); // 추가된 로그
                 if (Array.isArray(data)) {
                     setReviews(data);
                 } else {
@@ -78,12 +70,27 @@ const MedicineDetail = () => {
                 console.error('리뷰 데이터를 가져오는 중 오류 발생:', error);
                 setReviews([]);
             });
-    };
+    }, [itemSeq]);
 
-    const totalPages = Math.ceil(reviews.length / itemsPerPage);
+    useEffect(() => {
+        fetch(`/api/medicine/detail/${itemSeq}`)
+            .then((response) => response.json())
+            .then((data) => setMedicine(data))
+            .catch((error) => console.error('Error fetching medicine details:', error));
+
+        fetchReviews();
+    }, [itemSeq, fetchReviews]);
+
+    console.log('Total reviews:', reviews.length);
+    console.log('Items per page:', itemsPerPage);
+    console.log('Current page:', currentPage);
     const indexOfLastReview = currentPage * itemsPerPage;
     const indexOfFirstReview = indexOfLastReview - itemsPerPage;
+    console.log('Index range:', indexOfFirstReview, '-', indexOfLastReview);
     const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
+    console.log('Current reviews:', currentReviews);
+
+    const totalPages = Math.ceil(reviews.length / itemsPerPage);
 
     const handleReviewChange = (e) => {
         setReview(e.target.value);
@@ -212,34 +219,37 @@ const MedicineDetail = () => {
                                 {currentReviews.length === 0 ? (
                                     <div className="px-6 py-4 text-center">리뷰가 없습니다.</div>
                                 ) : (
-                                    currentReviews.map((review) => (
-                                        <React.Fragment key={review.no}>
-                                            <div className="px-6 py-4 flex items-center border-t border-gray-200">
-                                                <div className="w-14 text-center">{review.no}</div>
-                                                <div className="w-28 text-center ml-16">
-                                                    <StarRating rating={review.rating} onRatingChange={() => { }} isClickable={false} />
+                                    <>
+                                        {console.log('Rendering reviews:', currentReviews)} {/* 추가된 로그 */}
+                                        {currentReviews.map((review) => (
+                                            <React.Fragment key={review.no}>
+                                                <div className="px-6 py-4 flex items-center border-t border-gray-200">
+                                                    <div className="w-14 text-center">{review.no}</div>
+                                                    <div className="w-28 text-center ml-16">
+                                                        <StarRating rating={review.rating} onRatingChange={() => { }} isClickable={false} />
+                                                    </div>
+                                                    <div className="flex-1 text-center truncate">
+                                                        {review.content.length > 15 ? review.content.slice(0, 15) + '...' : review.content}
+                                                    </div>
+                                                    <div className="w-36 text-center">{review.createdDateShort}</div>
+                                                    <div className="w-40 text-center">{review.writerNickname}</div>
+                                                    <div className="w-32 text-center">
+                                                        <button
+                                                            className="px-4 py-2 bg-[#0B2D85] text-white rounded-full hover:bg-[#0939AD] transition"
+                                                            onClick={() => toggleReviewDetail(review.no)}
+                                                        >
+                                                            자세히 보기
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                                <div className="flex-1 text-center truncate">
-                                                    {review.content.length > 15 ? review.content.slice(0, 15) + '...' : review.content}
-                                                </div>
-                                                <div className="w-36 text-center">{review.createdDateShort}</div>
-                                                <div className="w-40 text-center">{review.writerNickname}</div>
-                                                <div className="w-32 text-center">
-                                                    <button
-                                                        className="px-4 py-2 bg-[#0B2D85] text-white rounded-full hover:bg-[#0939AD] transition"
-                                                        onClick={() => toggleReviewDetail(review.no)}
-                                                    >
-                                                        자세히 보기
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            {expandedReviewId === review.no && (
-                                                <div className="px-6 py-4">
-                                                    <리뷰상세보기내용 review={review} onClose={() => setExpandedReviewId(null)} />
-                                                </div>
-                                            )}
-                                        </React.Fragment>
-                                    ))
+                                                {expandedReviewId === review.no && (
+                                                    <div className="px-6 py-4">
+                                                        <리뷰상세보기내용 review={review} onClose={() => setExpandedReviewId(null)} />
+                                                    </div>
+                                                )}
+                                            </React.Fragment>
+                                        ))}
+                                    </>
                                 )}
                             </div>
 

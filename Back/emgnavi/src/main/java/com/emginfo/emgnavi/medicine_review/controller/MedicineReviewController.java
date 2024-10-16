@@ -3,7 +3,6 @@ package com.emginfo.emgnavi.medicine_review.controller;
 import com.emginfo.emgnavi.medicine_review.service.MedicineReviewService;
 import com.emginfo.emgnavi.medicine_review.vo.MedicineReviews;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,11 +32,11 @@ public class MedicineReviewController {
 
     @PostMapping("/medicine")
     public ResponseEntity<MedicineReviews> createMedicineReview(@RequestBody MedicineReviews review, HttpSession session) {
-        String userId = (String) session.getAttribute("userId");
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        String writerId = (String) session.getAttribute("userId");
+        if (writerId == null) {
+            return ResponseEntity.badRequest().body(null);
         }
-        review.setWriterId(userId);
+        review.setWriterId(writerId);
         MedicineReviews createdReview = medicineReviewService.createMedicineReview(review);
         return ResponseEntity.ok(createdReview);
     }
