@@ -30,11 +30,8 @@ const LoginMain = ({ setIsLoginTrue }) => {
                 console.log(response.data); // 응답 확인
                 const sessionResponse = await axios.get('/api/check-session');
                 if (sessionResponse.status === 200) {
-                    localStorage.setItem('isLoginTrue', 'true'); // 로그인 상태 저장
-                    localStorage.setItem('userId', values.uEmail); // 사용자 이름 저장
-                    setIsLoginTrue(true); // 로그인 상태 업데이트
+                    nav("/"); // 로그인 성공 후 리다이렉트
                 }
-                nav("/"); // 로그인 성공 후 리다이렉트
             } catch (error) {
                 console.error(error);
                 alert(error.response?.data || "로그인 중 오류가 발생했습니다.");

@@ -4,11 +4,13 @@ export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
     const [values, setValues] = useState({
-        id: '',
+        userId: '',
+        userNickname: '',
     });
 
-    const handleUser = (id) => setValues({
-        id: id,
+    const handleUser = (userId, userNickname) => setValues({
+        userId: userId,
+        userNickname: userNickname,
     });
 
     return (

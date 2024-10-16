@@ -14,12 +14,12 @@ public class SessionController {
 
     @GetMapping("/session")
     public Map<String, String> getSession(HttpSession session) {
-        String uEmail = (String) session.getAttribute("uEmail");
-        String uNickname = (String) session.getAttribute("uNickname");
+        String userId = (String) session.getAttribute("userId");
+        String userNickname = (String) session.getAttribute("userNickname");
 
         Map<String, String> response = new HashMap<>();
-        response.put("uEmail", uEmail);
-        response.put("uNickname", uNickname);
+        response.put("userId", userId);
+        response.put("userNickname", userNickname);
         return response;
     }
 }

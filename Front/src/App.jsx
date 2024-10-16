@@ -53,24 +53,13 @@ import Naver from './pages/user/Naver';
 
 function App() {
 
-  const location = useLocation();
-
   const { handleUser } = useContext(UserContext);
-  const [isLoginTrue, setIsLoginTrue] = useState(false);
-
-  useEffect(() => {
-    const loggedIn = localStorage.getItem('isLoginTrue');
-
-    if (loggedIn === 'true') {
-        setIsLoginTrue(true);
-    }
-}, []); // 초기 로그인 상태 확인
 
   useEffect(() => {
     const fetchSessionData = async () => {
       const response = await Session();
       if (response) {
-        handleUser(response.id);
+        handleUser(response.userId, response.userNickname);
       }
     };
 
@@ -79,7 +68,7 @@ function App() {
 
   return (
     <>
-      <Header isLoginTrue={isLoginTrue} setIsLoginTrue={setIsLoginTrue}/>
+      <Header/>
 
       <Routes>
 
@@ -93,9 +82,9 @@ function App() {
         <Route path='/user/register/page' element={<RegisterPage />} />
         <Route path='/user/register/complete' element={<RegisterComplete />} />
 
-        <Route path='/user/login' element={<LoginMain setIsLoginTrue={setIsLoginTrue}/>} />
-        <Route path="/kakao/callback" element={<Kakao setIsLoginTrue={setIsLoginTrue}/>} />
-        <Route path="/naver/callback" element={<Naver setIsLoginTrue={setIsLoginTrue}/>} />
+        <Route path='/user/login' element={<LoginMain />} />
+        <Route path="/kakao/callback" element={<Kakao />} />
+        <Route path="/naver/callback" element={<Naver />} />
 
         <Route path='/user/findEmail' element={<FindEmail />} />
         <Route path='/user/findEmail/complete' element={<FIndEmailComplete />} />
@@ -106,7 +95,7 @@ function App() {
 
         <Route path="/user/mypage" element={<Mypage />} />
         <Route path="/user/mypage/check" element={<MypageCheckPw />} />
-        <Route path="/user/mypage/modify" element={<MypageModifyInf setIsLoginTrue={setIsLoginTrue}/>} />
+        <Route path="/user/mypage/modify" element={<MypageModifyInf />} />
 
         <Route path='/notice/postNotice' element={<PostNotice />} />
         <Route path='/notice/getNoticeList' element={<GetNoticeList />} />
