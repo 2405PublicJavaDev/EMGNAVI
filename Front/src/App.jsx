@@ -64,11 +64,11 @@ function App() {
     };
 
     fetchSessionData();
-  }, []);
+  });
 
   return (
     <>
-      <Header/>
+      <Header />
 
       <Routes>
 
