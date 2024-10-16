@@ -6,18 +6,18 @@ const PharmacySearch = () => {
     const [showCategoryList, setShowCategoryList] = useState(false);
     const itemsPerPage = 7;
 
-    const categories = ['아이디', '리뷰 내용', '작성일자', '평점', '기능 번호'];
+    const categories = ['기관명', '주소', '전화번호'];
 
     const dummyReviews = [
-        { id: 1, userId: 'user01@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 5, feature: 'A' },
-        { id: 2, userId: 'user02@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 4, feature: 'B' },
-        { id: 3, userId: 'user03@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 5, feature: 'C' },
-        { id: 4, userId: 'user04@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 3, feature: 'D' },
-        { id: 5, userId: 'user05@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 4, feature: 'E' },
-        { id: 6, userId: 'user06@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 2, feature: 'F' },
-        { id: 7, userId: 'user07@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 5, feature: 'G' },
-        { id: 8, userId: 'user08@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 3, feature: 'H' },
-        { id: 9, userId: 'user09@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 4, feature: 'I' },
+        // { id: 1, userId: 'user01@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 5, feature: 'A' },
+        // { id: 2, userId: 'user02@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 4, feature: 'B' },
+        // { id: 3, userId: 'user03@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 5, feature: 'C' },
+        // { id: 4, userId: 'user04@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 3, feature: 'D' },
+        // { id: 5, userId: 'user05@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 4, feature: 'E' },
+        // { id: 6, userId: 'user06@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 2, feature: 'F' },
+        // { id: 7, userId: 'user07@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 5, feature: 'G' },
+        // { id: 8, userId: 'user08@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 3, feature: 'H' },
+        // { id: 9, userId: 'user09@gmail', content: '리뷰 내용입니다.', date: '2024.09.30', rating: 4, feature: 'I' },
     ];
 
     const indexOfLastReview = currentPage * itemsPerPage;
@@ -30,22 +30,22 @@ const PharmacySearch = () => {
         setCurrentPage(pageNumber);
     };
 
-    const renderStars = (rating) => {
-        return (
-            <div className="flex justify-center"> {/* justify-center 추가 */}
-                {[1, 2, 3, 4, 5].map((star) => (
-                    <img
-                        key={star}
-                        src={star <= rating ? "/img/medicine/goldonestar.png" : "/img/medicine/greyonestar.png"}
-                        alt={`Star ${star}`}
-                        width="33"
-                        height="27"
-                        className="mx-1"  
-                    />
-                ))}
-            </div>
-        );
-    };
+    // const renderStars = (rating) => {
+    //     return (
+    //         <div className="flex justify-center"> {/* justify-center 추가 */}
+    //             {[1, 2, 3, 4, 5].map((star) => (
+    //                 <img
+    //                     key={star}
+    //                     src={star <= rating ? "/img/medicine/goldonestar.png" : "/img/medicine/greyonestar.png"}
+    //                     alt={`Star ${star}`}
+    //                     width="33"
+    //                     height="27"
+    //                     className="mx-1"  
+    //                 />
+    //             ))}
+    //         </div>
+    //     );
+    // };
 
     const toggleCategoryList = () => {
         setShowCategoryList(!showCategoryList);
@@ -71,12 +71,12 @@ const PharmacySearch = () => {
                                 <thead>
                                     <tr className="bg-[#cccccc1a]">
                                         <th className="py-[24px] text-[16px] font-['Roboto'] font-bold text-[#000] text-center">번호</th>
-                                        <th className="py-[24px] text-[16px] font-['Roboto'] font-bold text-[#000] text-center">작성자 아이디</th>
-                                        <th className="py-[24px] text-[16px] font-['Roboto'] font-bold text-[#000] text-center">리뷰 내용</th>
-                                        <th className="py-[24px] text-[16px] font-['Roboto'] font-bold text-[#000] text-center">작성일자</th>
-                                        <th className="py-[24px] text-[16px] font-['Roboto'] font-bold text-[#000] text-center">평점</th>
-                                        <th className="py-[24px] text-[16px] font-['Roboto'] font-bold text-[#000] text-center">기능 번호</th>
-                                        <th className="py-[24px] text-[16px] font-['Roboto'] font-bold text-[#000] text-center">리뷰 관리</th>
+                                        <th className="py-[24px] text-[16px] font-['Roboto'] font-bold text-[#000] text-center">기관명</th>
+                                        <th className="py-[24px] text-[16px] font-['Roboto'] font-bold text-[#000] text-center">간이약도</th>
+                                        <th className="py-[24px] text-[16px] font-['Roboto'] font-bold text-[#000] text-center">전화번호</th>
+                                        <th className="py-[24px] text-[16px] font-['Roboto'] font-bold text-[#000] text-center">상세정보</th>
+                                        {/* <th className="py-[24px] text-[16px] font-['Roboto'] font-bold text-[#000] text-center">기능 번호</th>
+                                        <th className="py-[24px] text-[16px] font-['Roboto'] font-bold text-[#000] text-center">리뷰 관리</th> */}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -122,7 +122,7 @@ const PharmacySearch = () => {
                             </select>
                             <input
                                 type="text"
-                                placeholder="원하시는 리뷰를 검색해 주세요"
+                                placeholder="약국을 검색해보세요"
                                 className="border p-2 w-[250px] h-[36px] text-[14px] leading-[20px] text-[#00000080] border-[#0000001a] rounded-l-md"
                             />
                             <button className="bg-[#0b2d85] text-white px-4 h-[36px] text-[18px] rounded-r-md">

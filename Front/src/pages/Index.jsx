@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const Index = () => {
     const [data, setData] = useState([]);
+    const [isOpen, setIsOpen] = useState(false); // 아코디언 상태 관리
 
     const Icon = ({ children }) => (
         <div className="text-4xl text-[#0b2d85] mb-4">{children}</div>
@@ -33,18 +34,31 @@ const Index = () => {
         fetchNews(); // 컴포넌트가 렌더링되면 뉴스 데이터를 가져옴
     }, []);
 
+    // 패널 열림/닫힘 상태를 토글하는 함수
+    const togglePanel = () => {
+        setIsOpen(!isOpen);
+    };
+
     return (
         <>
             <div className="bg-gray-50 min-h-screen">
                 <div className="fixed right-[50px] top-[160px] w-72 bg-white shadow-lg rounded-sm overflow-hidden z-50 border border-gray-200">
                     <div className="bg-[#0b2d85] p-3 flex items-center justify-between">
                         <h1 className="text-lg font-semibold text-white">최신 의료 뉴스</h1>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                            <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-                        </svg>
+                        {/* 뷰 박스 아이콘 눈알모양 - 클릭 시 패널 열고 닫기 */}
+                        <button onClick={togglePanel}>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                            </svg>
+                        </button>
                     </div>
-                    <div className="max-h-[calc(100vh-220px)] overflow-y-auto">
+
+                    {/* 슬라이드 효과 적용된 패널 */}
+                    <div
+                        className={`transition-max-height duration-500 ease-in-out overflow-hidden ${isOpen ? 'max-h-[500px]' : 'max-h-0'}`}
+                        style={{ transition: 'max-height 0.5s ease-in-out' }}
+                    >
                         {data.length > 0 ? (
                             <div className="divide-y divide-gray-100">
                                 {data.map((item, index) => (
@@ -80,6 +94,7 @@ const Index = () => {
                         )}
                     </div>
                 </div>
+
                 {/* 히어로 섹션 */}
                 <section className="bg-[#0b2d85] text-white pt-[300px] pb-[200px]">
                     <div className="container mx-auto px-4">
@@ -168,6 +183,5 @@ const Index = () => {
         </>
     );
 };
-
 
 export default Index;

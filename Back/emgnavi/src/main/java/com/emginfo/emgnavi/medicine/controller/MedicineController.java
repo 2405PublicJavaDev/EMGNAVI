@@ -50,6 +50,7 @@ public class MedicineController {
             @RequestParam(required = false) String itemName,
             @RequestParam(required = false) String entpName
     ) {
+        System.out.println("Received search request with itemName: " + itemName + ", entpName: " + entpName);
         return medicineService.searchMedicine(itemName, entpName);
     }
 

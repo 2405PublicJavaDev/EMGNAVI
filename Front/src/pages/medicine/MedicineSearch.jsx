@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const MedicineSearch = () => {
-  const [medicines, setMedicines] = useState([]);
+  const [medicines, setMedicines] = useState([]); // 빈 배열로 초기화
   const [searchQuery, setSearchQuery] = useState('');
   const [searchType, setSearchType] = useState('itemName'); // 'itemName' 또는 'entpName'
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);  // 총 페이지 수
+  const [totalPages, setTotalPages] = useState(1); // 총 페이지 수
   const itemsPerPage = 10;
-
   const nav = useNavigate();
 
-  const fetchMedicines = (page = 1) => {
+  const categories = [
+    { value: 'itemName', label: '제품명' },
+    { value: 'entpName', label: '업체명' },
+  ];
 
+  const fetchMedicines = (page = 1) => {
     setIsLoading(true);
     setError(null);
 
@@ -27,8 +30,8 @@ const MedicineSearch = () => {
         return response.json();
       })
       .then((data) => {
-        setMedicines(data.medicines);  // 백엔드에서 받은 의약품 데이터
-        setTotalPages(data.totalPages);  // 백엔드에서 받은 총 페이지 수
+        setMedicines(data.medicines || []); // 데이터를 가져올 때 배열이 없을 경우 빈 배열로 설정
+        setTotalPages(data.totalPages || 1); // 총 페이지 수 설정
         setIsLoading(false);
       })
       .catch((error) => {
@@ -44,6 +47,9 @@ const MedicineSearch = () => {
 
   const handleSearch = () => {
     if (!searchQuery) return;
+    console.log("검색어:", searchQuery); // 입력된 검색어 로그 출력
+    console.log(`요청 URL: /api/medicine/search?${searchType}=${searchQuery}`);
+
     setIsLoading(true);
     setError(null);
 
@@ -56,8 +62,9 @@ const MedicineSearch = () => {
         return response.json();
       })
       .then((data) => {
-        setMedicines(data.medicines);  // 검색된 데이터 설정
-        setTotalPages(data.totalPages);  // 검색된 데이터에 대한 총 페이지 수 설정
+        console.log("검색 결과:", data);  // 여기서 콘솔에 결과 출력
+        setMedicines(data.medicines || []); // 데이터를 배열로 설정
+        setTotalPages(data.totalPages || 1); // 총 페이지 수 설정
         setIsLoading(false);
       })
       .catch((error) => {
@@ -130,8 +137,11 @@ const MedicineSearch = () => {
               onChange={(e) => setSearchType(e.target.value)}
               className="border p-2 rounded-l-md w-[87px] h-[36px] text-[14px] leading-[20px] text-[#00000080] border-[#00000033]"
             >
-              <option value="itemName">제품명</option>
-              <option value="entpName">업체명</option>
+              {categories.map((category) => (
+                <option key={category.value} value={category.value}>
+                  {category.label}
+                </option>
+              ))}
             </select>
             <input
               type="text"
@@ -148,57 +158,62 @@ const MedicineSearch = () => {
             </button>
           </div>
 
-          <div className="overflow-auto w-full text-align-center">
+          <div className="w-full max-w-7xl mx-auto p-4 bg-white relative top-[90px] min-h-[500px]">
             {isLoading ? (
-              <div className="flex justify-center items-center h-screen text-[70px] font-roboto text-black">
-                <p>의약품 정보 불러오는중...</p>
+              <div className="flex justify-center items-center h-full">
+                <p className="text-4xl">의약품 정보 불러오는 중...</p>
               </div>
             ) : error ? (
-              <p>{error}</p>
+              <div className="flex justify-center items-center h-full">
+                <p className="text-4xl">에러 발생: {error}</p>
+              </div>
             ) : medicines.length === 0 ? (
-              <p>No medicines found</p>
+              <div className="flex justify-center items-center h-full">
+                <p className="text-4xl">검색 결과가 없습니다.</p>
+              </div>
             ) : (
-              <table className="table-auto w-full border-collapse text-center shadow-lg rounded-lg border-color">
-                <thead className="bg-[#cccccc1a]">
-                  <tr>
-                    <th className="py-4">번호</th>
-                    <th className="py-4">업체명</th>
-                    <th className="py-4">제품명</th>
-                    <th className="py-4">공개일자</th>
-                    <th className="py-4">상세 정보</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white">
-                  {medicines.map((item, index) => (
-                    <tr key={item.itemSeq} className="border-b">
-                      <td className="py-4 font-roboto text-base text-black">
-                        {index + 1}
-                      </td>
-                      <td className="py-4 font-roboto text-base text-black">
-                        {item.entpName}
-                      </td>
-                      <td className="py-4 font-roboto text-base text-black">
-                        {item.itemName.length > 8
-                          ? item.itemName.slice(0, 8) + '...'
-                          : item.itemName}
-                      </td>
-                      <td className="py-4 font-roboto text-base text-black">
-                        {item.openDe.split(' ')[0]}
-                      </td>
-                      <td className="py-4">
-                        <button
-                          onClick={() =>
-                            (nav(`/medicine/detail/${item.itemSeq}`))
-                          }
-                          className="bg-[#0b2d85] text-white px-4 py-1 rounded-lg text-[14px] font-bold"
-                        >
-                          상세 정보
-                        </button>
-                      </td>
+              // 실제 검색 결과가 있을 경우 테이블을 표시
+              <div className="overflow-auto w-full text-align-center">
+                <table className="table-auto w-full border-collapse text-center shadow-lg rounded-lg border-color">
+                  <thead className="bg-[#cccccc1a]">
+                    <tr>
+                      <th className="py-4">번호</th>
+                      <th className="py-4">업체명</th>
+                      <th className="py-4">제품명</th>
+                      <th className="py-4">공개일자</th>
+                      <th className="py-4">상세 정보</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="bg-white">
+                    {medicines.map((item, index) => (
+                      <tr key={item.itemSeq} className="border-b">
+                        <td className="py-4 font-roboto text-base text-black">
+                          {index + 1}
+                        </td>
+                        <td className="py-4 font-roboto text-base text-black">
+                          {item.entpName}
+                        </td>
+                        <td className="py-4 font-roboto text-base text-black">
+                          {item.itemName.length > 8
+                            ? item.itemName.slice(0, 8) + '...'
+                            : item.itemName}
+                        </td>
+                        <td className="py-4 font-roboto text-base text-black">
+                          {item.openDe.split(' ')[0]}
+                        </td>
+                        <td className="py-4">
+                          <button
+                            onClick={() => nav(`/medicine/detail/${item.itemSeq}`)}
+                            className="bg-[#0b2d85] text-white px-4 py-1 rounded-lg text-[14px] font-bold"
+                          >
+                            상세 정보
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
 

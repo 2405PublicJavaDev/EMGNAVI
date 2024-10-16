@@ -21,9 +21,16 @@
     <select id="searchMedicine" parameterType="map" resultType="com.emginfo.emgnavi.medicine.vo.Medicine">
         SELECT item_seq, entp_name, item_name, open_de, item_image
         FROM MEDICINE_TBL
-        WHERE (item_name LIKE '%' || #{itemName} || '%'
-            OR entp_name LIKE '%' || #{entpName} || '%')
+        WHERE 1=1
+        <if test="itemName != null">
+            AND item_name LIKE '%' || #{itemName} || '%'
+        </if>
+        <if test="entpName != null">
+            AND entp_name LIKE '%' || #{entpName} || '%'
+        </if>
     </select>
+
+
 
 
 
