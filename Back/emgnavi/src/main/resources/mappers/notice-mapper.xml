@@ -3,7 +3,16 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.emginfo.emgnavi.notice.mapper.NoticeMapper">
+    <!--공지사항 등록-->
     <insert id="postNotice">
-        INSERT INTO NOTICE_TBL VALUES (SEQ_NOTICE_NO.nextval, #{writerId}, #{noticeTitle}, #{noticeContents}, DEFAULT)
+        INSERT INTO NOTICE_TBL VALUES (SEQ_NOTICE_NO.nextval, #{writerId}, #{noticeTitle}, #{noticeContents}, DEFAULT, #{noticeMarkdown})
     </insert>
+
+    <select id="getNoticeList">
+        SELECT * FROM NOTICE_TBL
+    </select>
+
+    <select id="getListTotalCount" resultType="int">
+        SELECT COUNT(*) FROM NOTICE_TBL
+    </select>
 </mapper>
