@@ -60,6 +60,10 @@ const MedicineDetail = () => {
             .then((data) => setMedicine(data))
             .catch((error) => console.error('Error fetching medicine details:', error));
 
+        fetchReviews();
+    }, [itemSeq]);
+
+    const fetchReviews = () => {
         fetch(`/api/medicine_reviews/medicine?itemSeq=${itemSeq}`)
             .then((response) => response.json())
             .then((data) => {
@@ -74,7 +78,7 @@ const MedicineDetail = () => {
                 console.error('리뷰 데이터를 가져오는 중 오류 발생:', error);
                 setReviews([]);
             });
-    }, [itemSeq]);
+    };
 
     const totalPages = Math.ceil(reviews.length / itemsPerPage);
     const indexOfLastReview = currentPage * itemsPerPage;
@@ -89,9 +93,38 @@ const MedicineDetail = () => {
         setRating(newRating);
     };
 
-    const handleSubmit = () => {
-        console.log('리뷰:', review);
-        console.log('평점:', rating);
+    const handleSubmit = async () => {
+        try {
+            const response = await fetch('/api/medicine_reviews/medicine', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    writerId: 'currentUserId', // 실제 사용자 ID로 대체해야 함
+                    refNo: itemSeq,
+                    content: review,
+                    rating: rating
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('리뷰 작성에 실패했습니다.');
+            }
+
+            const data = await response.json();
+            console.log('리뷰가 성공적으로 작성되었습니다:', data);
+            
+            // 리뷰 작성 후 리뷰 목록 새로고침
+            fetchReviews();
+
+            // 입력 필드 초기화
+            setReview('');
+            setRating(0);
+        } catch (error) {
+            console.error('Error:', error);
+            alert(error.message);
+        }
     };
 
     const handlePageChange = (pageNumber) => {
@@ -184,11 +217,11 @@ const MedicineDetail = () => {
                                             <div className="px-6 py-4 flex items-center border-t border-gray-200">
                                                 <div className="w-14 text-center">{review.no}</div>
                                                 <div className="w-28 text-center ml-16">
-    <StarRating rating={review.rating} onRatingChange={() => { }} isClickable={false} />
-</div>
-<div className="flex-1 text-center truncate">
-    {review.content.length > 15 ? review.content.slice(0, 15) + '...' : review.content}
-</div>
+                                                    <StarRating rating={review.rating} onRatingChange={() => { }} isClickable={false} />
+                                                </div>
+                                                <div className="flex-1 text-center truncate">
+                                                    {review.content.length > 15 ? review.content.slice(0, 15) + '...' : review.content}
+                                                </div>
                                                 <div className="w-36 text-center">{review.createdDateShort}</div>
                                                 <div className="w-40 text-center">{review.writerNickname}</div>
                                                 <div className="w-32 text-center">

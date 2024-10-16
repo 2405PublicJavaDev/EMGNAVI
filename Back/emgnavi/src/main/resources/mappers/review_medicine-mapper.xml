@@ -3,61 +3,25 @@
 <mapper namespace="com.emginfo.emgnavi.medicine_review.mapper.MedicineReviewMapper">
 
     <!-- 의약품 리뷰 조회 - 닉네임 추가 -->
-    <select id="selectMedicineReviews" resultType="com.emginfo.emgnavi.medicine_review.vo.MedicineReviews"> <!-- VO 경로 수정 -->
+    <select id="selectMedicineReviews" resultType="com.emginfo.emgnavi.medicine_review.vo.MedicineReviews">
         SELECT
-        R.NO,
-        R.WRITER_ID,
-        U.USER_NICKNAME AS WRITER_NICKNAME,  <!-- 닉네임 추가 -->
-        R.REF_NO,
-        R.CONTENT,
-        R.CREATED_DATE,
-        TO_CHAR(R.CREATED_DATE, 'YYYY-MM-DD') AS CREATED_DATE_SHORT,
-        TO_CHAR(R.CREATED_DATE, 'YYYY-MM-DD HH24:MI') AS CREATED_DATE_LONG,
-        R.RATING
+            R.NO,
+            R.WRITER_ID,
+            U.USER_NICKNAME AS WRITER_NICKNAME,
+            R.REF_NO,
+            R.CONTENT,
+            R.CREATED_DATE,
+            TO_CHAR(R.CREATED_DATE, 'YYYY-MM-DD') AS CREATED_DATE_SHORT,
+            TO_CHAR(R.CREATED_DATE, 'YYYY-MM-DD HH24:MI') AS CREATED_DATE_LONG,
+            R.RATING
         FROM REVIEW_TBL R
-        JOIN USER_TBL U ON R.WRITER_ID = U.USER_ID  <!-- USER_TBL과 조인 -->
+                 JOIN USER_TBL U ON R.WRITER_ID = U.USER_ID
         WHERE R.REF_NO = #{itemSeq}
         ORDER BY R.CREATED_DATE DESC, R.NO DESC
     </select>
 
-    <!-- 약국 리뷰 조회 -->
-    <select id="selectPharmacyReviews" resultType="com.emginfo.emgnavi.medicine_review.vo.MedicineReviews"> <!-- VO 경로 수정 -->
-        SELECT
-        R.NO,
-        R.WRITER_ID,
-        U.USER_NICKNAME AS WRITER_NICKNAME,  <!-- 닉네임 추가 -->
-        R.REF_NO,
-        R.CONTENT,
-        R.CREATED_DATE,
-        TO_CHAR(R.CREATED_DATE, 'YYYY-MM-DD') AS CREATED_DATE_SHORT,
-        TO_CHAR(R.CREATED_DATE, 'YYYY-MM-DD HH24:MI') AS CREATED_DATE_LONG,
-        R.RATING
-        FROM REVIEW_TBL R
-        JOIN USER_TBL U ON R.WRITER_ID = U.USER_ID  <!-- USER_TBL과 조인 -->
-        WHERE R.REF_NO = 'PHARM' || #{pharmacyId}
-        ORDER BY R.CREATED_DATE DESC, R.NO DESC
-    </select>
-
-    <!-- 병원 리뷰 조회 -->
-    <select id="selectHospitalReviews" resultType="com.emginfo.emgnavi.medicine_review.vo.MedicineReviews"> <!-- VO 경로 수정 -->
-        SELECT
-        R.NO,
-        R.WRITER_ID,
-        U.USER_NICKNAME AS WRITER_NICKNAME,  <!-- 닉네임 추가 -->
-        R.REF_NO,
-        R.CONTENT,
-        R.CREATED_DATE,
-        TO_CHAR(R.CREATED_DATE, 'YYYY-MM-DD') AS CREATED_DATE_SHORT,
-        TO_CHAR(R.CREATED_DATE, 'YYYY-MM-DD HH24:MI') AS CREATED_DATE_LONG,
-        R.RATING
-        FROM REVIEW_TBL R
-        JOIN USER_TBL U ON R.WRITER_ID = U.USER_ID  <!-- USER_TBL과 조인 -->
-        WHERE R.REF_NO = 'HOSP' || #{hospitalId}
-        ORDER BY R.CREATED_DATE DESC, R.NO DESC
-    </select>
-
     <!-- 리뷰 작성 -->
-    <insert id="insertReview" parameterType="com.emginfo.emgnavi.medicine_review.vo.MedicineReviews"> <!-- VO 경로 수정 -->
+    <insert id="insertReview" parameterType="com.emginfo.emgnavi.medicine_review.vo.MedicineReviews">
         INSERT INTO REVIEW_TBL (NO, WRITER_ID, REF_NO, CONTENT, CREATED_DATE, RATING)
         VALUES (REVIEW_SEQ.NEXTVAL, #{writerId}, #{refNo}, #{content}, SYSDATE, #{rating})
     </insert>

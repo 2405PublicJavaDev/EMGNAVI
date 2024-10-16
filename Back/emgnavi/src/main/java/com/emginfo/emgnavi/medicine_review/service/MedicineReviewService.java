@@ -20,17 +20,14 @@ public class MedicineReviewService {
         return medicineReviewMapper.selectMedicineReviews(itemSeq);
     }
 
+    // 의약품 리뷰 작성
+    public MedicineReviews createMedicineReview(MedicineReviews review) {
+        medicineReviewMapper.insertReview(review);
+        return review;
+    }
+
     // 닉네임 조회
     public String getNicknameByWriterId(String writerId) {
         return medicineReviewMapper.selectNicknameByWriterId(writerId);
     }
-
-    // 아래 메서드들은 주석 처리된 상태로 유지
-    // public List<MedicineReviews> getPharmacyReviews(String pharmacyId) {
-    //     return medicineReviewMapper.selectPharmacyReviews(pharmacyId);
-    // }
-    //
-    // public List<MedicineReviews> getHospitalReviews(String hospitalId) {
-    //     return medicineReviewMapper.selectHospitalReviews(hospitalId);
-    // }
 }

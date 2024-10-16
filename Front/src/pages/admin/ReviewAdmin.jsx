@@ -64,7 +64,7 @@ const ReviewAdmin = () => {
                     <div className="absolute left-[-3px] top-[124px] w-[1923px] h-[170px] bg-[#0b2d85]"></div>
                     <div className="absolute left-[-5px] top-[161px] w-[100%] h-[725px] overflow-hidden">
                         <div className="absolute left-[212px] top-0 w-[333px] h-[57px] text-[25px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">
-                            리뷰 리스트
+                            약국 조회
                         </div>
                         <div className="absolute -translate-y-1/2 right-[198px] top-[calc(50%+-36px)] w-[1460px] h-[535px] flex flex-col items-start justify-start bg-[#fff] border-[1px] border-solid border-[#fff] rounded-[5px] overflow-hidden shadow-sm border-[#0000001a]">
                             <table className="w-full">
