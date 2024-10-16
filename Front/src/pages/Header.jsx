@@ -1,7 +1,12 @@
-import { useState, EventHandler, ReactNode, useEffect } from 'react'
+import { useState, EventHandler, ReactNode, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios';
+import { UserContext } from '../UserContext';
 
-const Header = ({ isLoginTrue, setIsLoginTrue }) => {
+const Header = () => {
+
+    const { userId } = useContext(UserContext);
+
     const nav = useNavigate();
     const handlerGoLogin = () => {
         nav("/user/login");
@@ -12,24 +17,16 @@ const Header = ({ isLoginTrue, setIsLoginTrue }) => {
     const handlerGoMain = () => {
         nav("/");
     }
-    const handleLogout = () => {
+    const handleLogout = async () => {
         const isConfirmed = confirm("로그아웃 하시겠습니까?");
         if (isConfirmed) {
-            localStorage.removeItem('isLoginTrue'); // 로그아웃 시 세션 저장소 제거
-            localStorage.removeItem('userId'); // 사용자 ID 제거
-            nav("/user/login"); // 로그아웃 후 로그인 페이지로 이동
-            setIsLoginTrue(false); // 로그인 상태 업데이트
+            await axios.post('/api/logout');
+            nav("/"); // 로그아웃 후 로그인 페이지로 이동
         } // 취소 시 아무 동작도 하지 않음
     };
     const handlerGoMypage = () => {
         nav("/user/mypage");
     }
-
-    useEffect(() => {
-        const loggedIn = sessionStorage.getItem('isLoginTrue');
-        if (loggedIn === 'true') {
-        }
-    }, [setIsLoginTrue]);
 
     return (
         <>
@@ -40,7 +37,7 @@ const Header = ({ isLoginTrue, setIsLoginTrue }) => {
                             <div className="absolute left-0 top-0 w-[100%] h-[93px] bg-[#fff]"></div>
                         </div>
                         <div className="absolute left-0 top-0 w-[100%] h-[31px] flex">
-                            {isLoginTrue ? (
+                            {userId ? (
                                 <div className="absolute left-0 top-0 w-[1920px] h-[31px] flex">
                                     <div className="absolute left-0 top-0 w-[1920px] h-[31px] bg-[#0b2d85]"></div>
                                     <div className="absolute left-0 top-[4px] w-[1920px] h-[27px] flex">

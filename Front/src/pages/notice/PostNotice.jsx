@@ -1,15 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import ToastUI from './ToastUI';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../UserContext';
 
 const PostNotice = () => {
+
+    const { userId } = useContext(UserContext);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        const userId = localStorage.getItem('userId');
         if (userId) {
-            console.log(userId);
             if (userId != 'admin') {
                 // 경고문구 출력 후 이전 페이지로 강제이동
                 alert('관리자 계정이 아닙니다!');

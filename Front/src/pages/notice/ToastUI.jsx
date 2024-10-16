@@ -2,13 +2,13 @@ import { Editor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useContext } from "react";
+
+import { UserContext } from "../../UserContext";
 
 const ToastUI = ({ initialValue = "" }) => {
 
-    useEffect(() => {
-        const userId = localStorage.getItem('userId');
-    }, []);
+    const { userId } = useContext(UserContext);
 
     const [initialValueState, setInitialValueState] = useState(initialValue); // initialValue 값을 상태값으로 관리
 
