@@ -38,4 +38,9 @@ public class ReviewServiceImpl implements ReviewService {
         return reviews;
 //        return reviewMapper.getReviewListByRefNo(refNo);
     }
+
+    @Override
+    public int deleteReview(String no) {
+        return reviewMapper.deleteReview(no);
+    }
 }

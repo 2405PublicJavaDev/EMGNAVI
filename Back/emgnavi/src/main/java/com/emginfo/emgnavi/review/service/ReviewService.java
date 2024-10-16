@@ -10,4 +10,6 @@ public interface ReviewService {
     int postReview(String id, PostReviewRequest request);
 
     List<Reviews> getReviewListByRefNo(String refNo);
+
+    int deleteReview(String no);
 }
