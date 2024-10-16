@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const ReviewAdmin = () => {
+const PharmacySearch = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchCategory, setSearchCategory] = useState('아이디');
     const [showCategoryList, setShowCategoryList] = useState(false);
@@ -152,4 +152,4 @@ const ReviewAdmin = () => {
     );
 };
 
-export default ReviewAdmin;
+export default PharmacySearch;

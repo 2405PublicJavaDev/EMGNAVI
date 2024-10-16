@@ -41,7 +41,7 @@ import GetEmergencyMap from './pages/map/GetEmergencyMap';
 
 import MedicineSearch from './pages/medicine/MedicineSearch';
 import MedicineDetail from './pages/medicine/MedicineDetail';
-import ReviewAdmin from './pages/Admin/ReviewAdmin';
+import PharmacySearch from './pharmacy/PharmacySearch';
 
 
 import ReportList from './pages/report/ReportList';
@@ -114,7 +114,7 @@ function App() {
         <Route path='/medicine/detail/:itemSeq' element={<MedicineDetail />} />
 
 
-        <Route path='/admin/ReviewAdmin' element={<ReviewAdmin />} />
+        <Route path='/pharmacy/PharmacySearch' element={<PharmacySearch />} />
 
         <Route path='/user/mypage/favorite/hospital' element={<FavoriteHospital />} />
         <Route path='/user/mypage/favorite/pharmacy' element={<FavPharmacy />} />
