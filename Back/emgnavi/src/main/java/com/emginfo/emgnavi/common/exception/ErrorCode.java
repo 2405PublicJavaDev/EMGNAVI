@@ -11,8 +11,11 @@ public enum ErrorCode {
     //404 NOT_FOUND 잘못된 리소스 접근
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 정보입니다.", "173"),
 
-    //500 SAVE FAILED 데이터 베이스 저장 오류
-    SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "데이터 베이스에 저장을 실패했습니다.", "096");
+    //500 SAVE FAILED 데이터 저장 오류
+    SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "데이터 저장을 실패했습니다.", "096"),
+
+    // 500 DELETE FAILED 데이터 삭제 오류
+    DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "데이터 삭제를 실패했습니다.", "079");
 
     private final HttpStatus status;
     private final String message;
