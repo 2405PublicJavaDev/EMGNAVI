@@ -290,7 +290,9 @@ public class UserController {
         String clientSecret = "JofjIZZUKG";
 
         // Naver OpenAPI URL 설정
-        String apiURL = "https://openapi.naver.com/v1/search/news.json?query=" + URLEncoder.encode("병원", "UTF-8");
+        String apiURL = "https://openapi.naver.com/v1/search/news.json?query="
+                + URLEncoder.encode("교통사고 사망 응급실이송", "UTF-8")
+                + "&display=4";
 
         // Http 요청 설정
         HttpURLConnection urlConnection = (HttpURLConnection) new URL(apiURL).openConnection();
