@@ -1,8 +1,12 @@
-import { useState, EventHandler, ReactNode } from 'react'
+import { useState, EventHandler, ReactNode, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAxios from '../../axios/useAxios';
+import { UserContext } from '../../UserContext';
 
 const ChangePasswordModal = ({ onClose, currentPw }) => {
+
+    const { userId } = useContext(UserContext);
+
     const nav = useNavigate();
     const [pwImageSrc, setPwImageSrc] = useState(null);
     const [password, setPassword] = useState();
@@ -15,12 +19,11 @@ const ChangePasswordModal = ({ onClose, currentPw }) => {
     const [isPossibleChange, setIsPossibleChange] = useState(false);
     const { fetchData, loading, error } = useAxios();
 
-    const userId = localStorage.getItem('userId');
 
     const handelrCurrentPw = (value) => {
         console.log(value);
         console.log(currentPw);
-        
+
         if (value === currentPw) {
             console.log("일치");
             setIsPossibleChange(true);
@@ -54,9 +57,10 @@ const ChangePasswordModal = ({ onClose, currentPw }) => {
                     {
                         method: 'POST',
                         url: '/api/changePw',
-                        data: { 
-                            userId : userId,
-                            userPw : password },
+                        data: {
+                            userId: userId,
+                            userPw: password
+                        },
                     },
                     (data) => {
                         console.log(data);

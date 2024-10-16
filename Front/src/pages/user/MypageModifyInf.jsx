@@ -1,11 +1,14 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import ChangePasswordModal from './ChangePasswordModal';
 import PhoneVerificationModal from './PhoneVerificationModal';
 import useAxios from '../../axios/useAxios';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { UserContext } from '../../UserContext';
 
 const MypageModifyInf = ({ setIsLoginTrue }) => {
+    const { userId } = useContext(UserContext);
+
     const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
     const [userPhone, setUserPhone] = useState(''); // 전화번호 상태 추가
 
@@ -45,7 +48,6 @@ const MypageModifyInf = ({ setIsLoginTrue }) => {
     // console.log(isNicknameChecked);
 
     useEffect(() => {
-        const userId = localStorage.getItem('userId');
         if (userId) {
             const fetchData = async () => {
                 try {
@@ -156,7 +158,6 @@ const MypageModifyInf = ({ setIsLoginTrue }) => {
             alert("닉네임 중복확인을 해주세요.");
             return;
         }
-        const userId = localStorage.getItem('userId');
         const fullAddress = `${values.mainAddress} ${values.detailedAddress}`;
         fetchData(
             {
@@ -179,7 +180,6 @@ const MypageModifyInf = ({ setIsLoginTrue }) => {
 
 
     const handlerDelete = () => {
-        const userId = localStorage.getItem('userId');
         if (confirm("정말 탈퇴하시겠습니까?")) {
             fetchData(
                 {
@@ -191,9 +191,6 @@ const MypageModifyInf = ({ setIsLoginTrue }) => {
                 },
                 (data) => {
                     if (data.includes("성공")) {
-                        localStorage.removeItem('isLoginTrue'); // Remove session storage on logout
-                        localStorage.removeItem('userId'); // Remove user ID
-                        setIsLoginTrue(false); // Update login state
                         alert("탈퇴가 성공적으로 처리되었습니다.");
                         nav("/");
                     } else {
@@ -391,7 +388,7 @@ const MypageModifyInf = ({ setIsLoginTrue }) => {
                     <div
                         className="fixed inset-0 bg-black bg-opacity-50 z-40"
                         onClick={closePhoneModal}></div>
-                    <PhoneVerificationModal onClose={closePhoneModal}/>
+                    <PhoneVerificationModal onClose={closePhoneModal} />
                 </>
             )}
             {isPasswordModalOpen && (

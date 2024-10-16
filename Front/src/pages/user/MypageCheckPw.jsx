@@ -1,8 +1,12 @@
 import axios from 'axios';
-import { useState, EventHandler, ReactNode, useEffect } from 'react'
+import { useState, EventHandler, ReactNode, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../UserContext';
 
 const MypageCheckPw = () => {
+
+    const { userId } = useContext(UserContext);
+
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const nav = useNavigate();
     const handleMouseDown = () => {
@@ -19,7 +23,6 @@ const MypageCheckPw = () => {
     });
 
     useEffect(() => {
-        const userId = localStorage.getItem('userId');
         if (userId) {
             setValues(prevValues => ({ ...prevValues, uEmail: userId }));
         }

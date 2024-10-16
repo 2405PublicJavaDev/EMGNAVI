@@ -31,9 +31,6 @@ const Kakao = ({ setIsLoginTrue }) => {
         axios.post('/api/kakao', { code })
             .then(response => {
                 if (response.data.unickname != null) {
-                    localStorage.setItem('isLoginTrue', 'true'); 
-                    localStorage.setItem('userId', response.data.uEmail);
-                    setIsLoginTrue(true); 
                     window.location.href = "/";
                 } else {
                     setValues({ uEmail: response.data.uemail });
