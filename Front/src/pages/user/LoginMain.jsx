@@ -27,9 +27,7 @@ const LoginMain = ({ setIsLoginTrue }) => {
                     userId: values.uEmail,
                     userPw: values.uPassword,
                 });
-                console.log(response.data); // 응답 확인
-                const sessionResponse = await axios.get('/api/check-session');
-                if (sessionResponse.status === 200) {
+                if (response.status === 200) {
                     nav("/"); // 로그인 성공 후 리다이렉트
                 }
             } catch (error) {
