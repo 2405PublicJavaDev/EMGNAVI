@@ -144,17 +144,6 @@ public class UserController {
         }
     }
 
-    @GetMapping("/check-session")
-    public ResponseEntity<?> checkSession(HttpSession session) {
-        String userId = (String) session.getAttribute("userId");
-        if (userId != null) {
-            System.out.println(userId);
-            return ResponseEntity.ok(userId); // 세션에 저장된 userId 반환
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션이 만료되었습니다.");
-        }
-    }
-
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session) {
         session.invalidate(); // 세션 무효화
