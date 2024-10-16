@@ -27,6 +27,7 @@ public class ReviewController {
     @PostMapping("/review")
     public SuccessResponse postReview(HttpSession session, @Valid @RequestBody PostReviewRequest request) {
         String id = (String) session.getAttribute("userId");
+        if (id == null) { throw new CustomException(ErrorCode.SESSION_INVALID); }
         int result = reviewService.postReview(id, request);
         if (result > 0) {
             return new SuccessResponse(SuccessCode.REGISTER_SUCCESS);
@@ -39,5 +40,17 @@ public class ReviewController {
     public SuccessResponse getReviewListByRefNo(@PathVariable String refNo) {
         List<Reviews> reviewList = reviewService.getReviewListByRefNo(refNo);
         return new SuccessResponse(SuccessCode.RESOURCE_FOUND, reviewList);
+    }
+
+    @DeleteMapping("/review/{no}")
+    public SuccessResponse deleteReview(HttpSession session, @PathVariable String no) {
+        String id = (String) session.getAttribute("userId");
+        if (id == null) { throw new CustomException(ErrorCode.SESSION_INVALID); }
+        int result = reviewService.deleteReview(no);
+        if (result > 0) {
+            return new SuccessResponse(SuccessCode.DELETE_SUCCESS);
+        } else {
+            throw new CustomException(ErrorCode.DELETE_FAILED);
+        }
     }
 }

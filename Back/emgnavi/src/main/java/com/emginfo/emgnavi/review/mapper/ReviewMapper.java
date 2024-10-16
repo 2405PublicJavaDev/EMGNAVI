@@ -11,4 +11,6 @@ public interface ReviewMapper {
     int postReview(Reviews review);
 
     List<Reviews> getReviewListByRefNo(String refNo);
+
+    int deleteReview(String no);
 }

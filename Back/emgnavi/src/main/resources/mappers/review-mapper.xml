@@ -12,4 +12,8 @@
         SELECT * FROM REVIEW_TBL WHERE REF_NO = #{refNo}
     </select>
 
+    <delete id="deleteReview">
+        DELETE REVIEW_TBL WHERE NO = #{no}
+    </delete>
+
 </mapper>
