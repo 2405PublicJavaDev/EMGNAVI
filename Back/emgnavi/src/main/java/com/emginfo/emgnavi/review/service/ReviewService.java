@@ -13,35 +13,35 @@ public interface ReviewService {
      * 리뷰 작성 Service
      * @param id
      * @param request
-     * @return
+     * @return int
      */
     int postReview(String id, PostReviewRequest request);
 
     /**
      * 리뷰 참조로 조회 Service
      * @param refNo
-     * @return
+     * @return List<Reviews>
      */
     List<Reviews> getReviewListByRefNo(String refNo);
 
     /**
      * 리뷰 번호로 조회 Service
      * @param no
-     * @return
+     * @return GetReviewOneByNoResponse
      */
     GetReviewOneByNoResponse getReviewOneByNo(String no);
 
     /**
      * 리뷰 수정 Service
      * @param no
-     * @return
+     * @return int
      */
     int updateReview(int no, UpdateReviewRequest request);
 
     /**
      * 리뷰 삭제 Service
      * @param no
-     * @return
+     * @return int
      */
     int deleteReview(String no);
 }

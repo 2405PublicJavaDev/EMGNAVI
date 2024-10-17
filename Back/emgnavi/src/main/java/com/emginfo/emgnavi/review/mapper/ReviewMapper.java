@@ -11,35 +11,35 @@ public interface ReviewMapper {
     /**
      * 리뷰 작성 Mapper
      * @param review
-     * @return
+     * @return int
      */
     int postReview(Reviews review);
 
     /**
      * 리뷰 참조로 조회 Mapper
      * @param refNo
-     * @return
+     * @return List<Reviews>
      */
     List<Reviews> getReviewListByRefNo(String refNo);
 
     /**
      * 리뷰 번호로 조회 Mapper
      * @param no
-     * @return
+     * @return Reviews
      */
     Reviews getReviewOneByNo(String no);
 
     /**
      * 리뷰 수정 Mapper
      * @param review
-     * @return
+     * @return int
      */
     int updateReview(Reviews review);
 
     /**
      * 리뷰 삭제 Mapper
      * @param no
-     * @return
+     * @return int
      */
     int deleteReview(String no);
 }
