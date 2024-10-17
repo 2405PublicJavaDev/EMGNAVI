@@ -150,7 +150,7 @@ const SocialMypageModifyInf = () => {
             },
             (response) => {
                 alert('정보가 수정되었습니다.');
-                nav("/user/mypage");
+                nav("/");
             }
         )
     };

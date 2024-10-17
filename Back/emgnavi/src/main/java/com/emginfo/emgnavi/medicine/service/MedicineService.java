@@ -27,11 +27,28 @@ public class MedicineService {
         return medicineMapper.selectMedicineDetail(itemSeq);
     }
 
-    // 의약품 이름 또는 업체명으로 검색
-    public List<Medicine> searchMedicine(String itemName, String entpName) {
-        Map<String, String> params = new HashMap<>();
+    // 의약품 이름 또는 업체명으로 검색 (페이징 적용)
+    public List<Medicine> searchMedicine(String itemName, String entpName, int page, int size) {
+        Map<String, Object> params = new HashMap<>();
         params.put("itemName", itemName);
         params.put("entpName", entpName);
-        return medicineMapper.searchMedicine(params);  // Map을 그대로 전달
+
+        int offset = page * size;
+        RowBounds rowBounds = new RowBounds(offset, size);
+
+        return medicineMapper.searchMedicine(params, rowBounds);
+    }
+
+    // 검색 결과의 총 개수를 가져오는 메소드
+    public int getSearchResultCount(String itemName, String entpName) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("itemName", itemName);
+        params.put("entpName", entpName);
+        return medicineMapper.getSearchResultCount(params);
+    }
+
+    // 전체 의약품 개수를 가져오는 메소드
+    public int getTotalCount() {
+        return medicineMapper.getTotalCount();
     }
 }

@@ -43,9 +43,6 @@ const MypageModifyInf = () => {
         marketingAgree: '',
     });
 
-    // console.log(values);
-    // console.log(isNicknameChecked);
-
     useEffect(() => {
         if (userId) {
             const fetchData = async () => {
