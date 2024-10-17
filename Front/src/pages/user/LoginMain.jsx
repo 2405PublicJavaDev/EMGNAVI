@@ -44,7 +44,7 @@ const LoginMain = () => {
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
-            //handleLogin('Enter');
+            handleLogin('Enter');
         }
     };
 

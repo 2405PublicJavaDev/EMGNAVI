@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { UserContext } from '../../UserContext';
 
-const MypageModifyInf = ({ setIsLoginTrue }) => {
+const MypageModifyInf = () => {
     const { userId } = useContext(UserContext);
 
     const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
@@ -191,7 +191,7 @@ const MypageModifyInf = ({ setIsLoginTrue }) => {
                 (data) => {
                     if (data.includes("성공")) {
                         alert("탈퇴가 성공적으로 처리되었습니다.");
-                        nav("/");
+                        window.location.href = "/";
                     } else {
                         alert("탈퇴 처리에 실패했습니다.");
                     }
