@@ -20,6 +20,7 @@ import RegisterComplete from './pages/user/RegisterComplete';
 import LoginMain from './pages/user/LoginMain';
 import Kakao from './pages/user/Kakao';
 import Naver from './pages/user/Naver';
+import Google from './pages/user/Google';
 import SocialComplete from './pages/user/SocialComplete';
 import SocialMypageModifyInf from './pages/user/SocialMypageModifyInf';
 
@@ -89,6 +90,7 @@ function App() {
         <Route path='/user/login' element={<LoginMain />} />
         <Route path="/kakao/callback" element={<Kakao />} />
         <Route path="/naver/callback" element={<Naver />} />
+        <Route path="/google/callback" element={<Google />} />
         <Route path="/user/social/complete" element={<SocialComplete />} />
         <Route path="/user/social/mypage/modify" element={<SocialMypageModifyInf />} />
 

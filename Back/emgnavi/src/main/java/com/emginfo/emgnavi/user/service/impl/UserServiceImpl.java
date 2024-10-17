@@ -4,11 +4,11 @@ import com.emginfo.emgnavi.user.model.dto.*;
 import com.emginfo.emgnavi.user.model.mapper.UserMapper;
 import com.emginfo.emgnavi.user.model.vo.Token;
 import com.emginfo.emgnavi.user.model.vo.User;
-//import net.nurigo.sdk.NurigoApp;
-//import net.nurigo.sdk.message.model.Message;
-//import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
-//import net.nurigo.sdk.message.response.SingleMessageSentResponse;
-//import net.nurigo.sdk.message.service.DefaultMessageService;
+import net.nurigo.sdk.NurigoApp;
+import net.nurigo.sdk.message.model.Message;
+import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
+import net.nurigo.sdk.message.response.SingleMessageSentResponse;
+import net.nurigo.sdk.message.service.DefaultMessageService;
 import com.emginfo.emgnavi.user.service.UserService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +25,7 @@ import java.util.Map;
 @Service
 public class UserServiceImpl implements UserService {
 
-//    private final DefaultMessageService messageService;
+    private final DefaultMessageService messageService;
     private UserMapper mapper;
     private RestTemplate restTemplate;
 
@@ -35,28 +35,31 @@ public class UserServiceImpl implements UserService {
 
     private static final String naverClientId = "HybacJJgFsuLnLngHigE";
     private static final String naverClientSecret = "JofjIZZUKG";
-    private static final String naverRedirectUri = "https://127.0.0.1:3000/kakao/callback";
-    private static final String naverTokenUri = "https://nid.naver.com/oauth2.0/token\t";
+    private static final String naverTokenUri = "https://nid.naver.com/oauth2.0/token";
 
+    private static final String googleClientId = "827647998514-r5d3r90h5gpdmnsufack8vq2p1n5a0hi.apps.googleusercontent.com";
+    private static final String googleClientSecret = "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";
+    private static final String googleTokenUri = "https://oauth2.googleapis.com/token";
+    private static final String googleRedirectUri = "https://127.0.0.1:3000/google/callback";
 
     public UserServiceImpl(UserMapper mapper) {
-//        this.messageService = NurigoApp.INSTANCE.initialize("NCSY6JZLRXVWS3BX", "RDC9PGPKKGCSIQSWT4IFHK0NNO1IOVW1", "https://api.coolsms.co.kr");
+        this.messageService = NurigoApp.INSTANCE.initialize("NCSY6JZLRXVWS3BX", "RDC9PGPKKGCSIQSWT4IFHK0NNO1IOVW1", "https://api.coolsms.co.kr");
         this.mapper = mapper;
         this.restTemplate = new RestTemplate();
     }
 
-//    @Override
-//    public SingleMessageSentResponse sendVerificationCode(String userPhone, String verificationCode) {
-//        Message message = new Message();
-//        message.setFrom("01053248588");
-//
-//        message.setTo(userPhone);
-//
-//        message.setText("[응급NAVI] 인증번호[" + verificationCode + "]를 화면에 입력해주세요");
-//        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
-//
-//        return response;
-//    }
+    @Override
+    public SingleMessageSentResponse sendVerificationCode(String userPhone, String verificationCode) {
+        Message message = new Message();
+        message.setFrom("01053248588");
+
+        message.setTo(userPhone);
+
+        message.setText("[응급NAVI] 인증번호[" + verificationCode + "]를 화면에 입력해주세요");
+        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+
+        return response;
+    }
 
     @Override
     public int insertUser(UserInfoRequest request) {
@@ -123,7 +126,6 @@ public class UserServiceImpl implements UserService {
         if (token != null) {
             UserIdRequest request = new UserIdRequest();
             request.setUserId(token.getUserId());
-            System.out.println("서비스토큰 :" + token.getTokenId());
             User user = mapper.selectUserById(request);
             if(user != null) {
                 LoginRequest request1 = new LoginRequest();
@@ -179,8 +181,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String getGoogleAccessToken(String code) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type", "authorization_code");
+        params.add("client_id", googleClientId);
+        params.add("client_secret", googleClientSecret);
+        params.add("redirect_uri", googleRedirectUri);
+        params.add("code", code);
+
+        ResponseEntity<Map> response = restTemplate.postForEntity(googleTokenUri, params, Map.class);
+        Map responseBody = response.getBody();
+        return (String) responseBody.get("access_token");
+    }
+
+    @Override
     public HashMap<String, Object> getKakaoUserInfo(String accessToken) {
-        System.out.println("서비스토큰" + accessToken);
         HashMap<String, Object> kakaoInfo = new HashMap<>();
         String postURL = "https://kapi.kakao.com/v2/user/me";
 
@@ -190,14 +205,11 @@ public class UserServiceImpl implements UserService {
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<Map> response = restTemplate.exchange(postURL, HttpMethod.POST, entity, Map.class);
-//        System.out.println(response.getBody());
         Map<String, Object> body = response.getBody();
         if (body != null) {
             Map<String, Object> kakaoAccount = (Map<String, Object>) body.get("kakao_account");
-            System.out.println("카카오계정" + kakaoAccount);
             String email = (String) kakaoAccount.get("email");
             String phone = (String) kakaoAccount.get("phone_number");
-            System.out.println(phone);
             String gender = (String) kakaoAccount.get("gender");
             String name = (String) kakaoAccount.get("name");
             kakaoInfo.put("email", email);
@@ -210,7 +222,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public HashMap<String, Object> getNaverUserInfo(String accessToken) {
-//        System.out.println("서비스토큰" + accessToken);
         HashMap<String, Object> naverInfo = new HashMap<>();
         String postURL = "https://openapi.naver.com/v1/nid/me";
 
@@ -220,14 +231,11 @@ public class UserServiceImpl implements UserService {
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<Map> response = restTemplate.exchange(postURL, HttpMethod.POST, entity, Map.class);
-//        System.out.println(response.getBody());
         Map<String, Object> body = response.getBody();
         if (body != null) {
             Map<String, Object> naverAccount = (Map<String, Object>) body.get("response");
-            System.out.println("카카오계정" + naverAccount);
             String email = (String) naverAccount.get("email");
             String phone = (String) naverAccount.get("mobile");
-            System.out.println(phone);
             String gender = (String) naverAccount.get("gender");
             String name = (String) naverAccount.get("name");
             naverInfo.put("email", email);
@@ -236,6 +244,25 @@ public class UserServiceImpl implements UserService {
             naverInfo.put("name", name);
         }
         return naverInfo;
+    }
+
+    @Override
+    public HashMap<String, Object> getGoogleUserInfo(String accessToken) {
+        HashMap<String, Object> googleInfo = new HashMap<>();
+        String postURL = "https://www.googleapis.com/userinfo/v2/me";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(postURL, HttpMethod.GET, entity, Map.class);
+        Map<String, Object> googleAccount = response.getBody();
+        String email = (String) googleAccount.get("email");
+        String name = (String) googleAccount.get("name");
+        googleInfo.put("email", email);
+        googleInfo.put("name", name);
+        return googleInfo;
     }
 
     @Override

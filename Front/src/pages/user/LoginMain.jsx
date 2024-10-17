@@ -76,9 +76,13 @@ const LoginMain = () => {
         window.location.href = naverUrl;
     }
 
+    const googleLogin = () => {
+        const GOOGLE_CLIENT_ID = "827647998514-r5d3r90h5gpdmnsufack8vq2p1n5a0hi.apps.googleusercontent.com"
+        const REDIRECT_URL = "https://127.0.0.1:3000/google/callback";
+        const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${REDIRECT_URL}&response_type=code&scope=email profile`
 
-
-
+        window.location.href = googleUrl;
+    }
 
     const [values, setValues] = useState({
         uEmail: '',
@@ -148,7 +152,6 @@ const LoginMain = () => {
                 <button
                     type='button'
                     onClick={handleLogin}
-                    // onKeyDown={handleKeyDown}
                     className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]">
                     <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">로그인</span>
                 </button>
@@ -169,7 +172,8 @@ const LoginMain = () => {
 
             <div className="absolute left-[704px] top-[1069px] w-[511px] h-[60px] flex">
                 <div className="absolute left-0 top-0 w-[511px] h-[60px] flex">
-                    <button type="button"
+                    <button
+                        type="button"
                         onClick={kakaoLogin}
                         className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#ffe100] border-[1px] border-solid border-[#fff] rounded-[5px]">
                         <span className="text-[18px] font-['Inter'] font-medium text-[#000] text-center flex flex-col justify-center">카카오톡 로그인</span>
@@ -180,8 +184,12 @@ const LoginMain = () => {
 
             <div className="absolute left-[704px] top-[1142px] w-[511px] h-[60px] flex">
                 <div className="absolute left-0 top-0 w-[511px] h-[60px] flex">
-                    <div className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
-                    <div className="absolute left-0 top-0 w-[511px] h-[60px] text-[18px] font-['Inter'] text-[#686868] text-center flex flex-col justify-center">구글 로그인</div>
+                    <button
+                        type='button'
+                        onClick={googleLogin}
+                        className="absolute left-0 top-0 w-[511px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]">
+                        <span className="text-[18px] font-['Inter'] text-[#686868] text-center flex flex-col justify-center">구글 로그인</span>
+                    </button>
                 </div>
                 <img className="absolute left-[29px] top-[18px]" width="25" height="25" src="/img/user/search (1) 186_36.png"></img>
             </div>
