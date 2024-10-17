@@ -8,9 +8,24 @@ import java.util.List;
 @Mapper
 public interface ReviewMapper {
 
+    /**
+     * 리뷰 작성 Mapper
+     * @param review
+     * @return
+     */
     int postReview(Reviews review);
 
+    /**
+     * 리뷰 참조로 조회 Mapper
+     * @param refNo
+     * @return
+     */
     List<Reviews> getReviewListByRefNo(String refNo);
 
+    /**
+     * 리뷰 삭제 Mapper
+     * @param no
+     * @return
+     */
     int deleteReview(String no);
 }
