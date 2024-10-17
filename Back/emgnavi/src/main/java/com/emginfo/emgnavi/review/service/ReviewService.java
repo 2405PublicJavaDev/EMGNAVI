@@ -30,17 +30,9 @@ public interface ReviewService {
     List<Reviews> getReviewListByNo(String no);
 
     /**
-     * 리뷰 수정 Service
-     * @param no
-     * @return
-     */
-    int updateReview(String no);
-
-    /**
      * 리뷰 삭제 Service
      * @param no
      * @return
      */
     int deleteReview(String no);
-
 }
