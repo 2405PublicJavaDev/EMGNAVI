@@ -2,6 +2,7 @@ package com.emginfo.emgnavi.review.service;
 
 import com.emginfo.emgnavi.review.dto.GetReviewOneByNoResponse;
 import com.emginfo.emgnavi.review.dto.PostReviewRequest;
+import com.emginfo.emgnavi.review.dto.UpdateReviewRequest;
 import com.emginfo.emgnavi.review.vo.Reviews;
 
 import java.util.List;
@@ -29,6 +30,13 @@ public interface ReviewService {
      * @return
      */
     GetReviewOneByNoResponse getReviewOneByNo(String no);
+
+    /**
+     * 리뷰 수정 Service
+     * @param no
+     * @return
+     */
+    int updateReview(int no, UpdateReviewRequest request);
 
     /**
      * 리뷰 삭제 Service

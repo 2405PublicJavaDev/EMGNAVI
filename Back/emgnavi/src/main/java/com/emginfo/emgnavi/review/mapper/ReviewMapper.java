@@ -30,6 +30,13 @@ public interface ReviewMapper {
     Reviews getReviewOneByNo(String no);
 
     /**
+     * 리뷰 수정 Mapper
+     * @param review
+     * @return
+     */
+    int updateReview(Reviews review);
+
+    /**
      * 리뷰 삭제 Mapper
      * @param no
      * @return
