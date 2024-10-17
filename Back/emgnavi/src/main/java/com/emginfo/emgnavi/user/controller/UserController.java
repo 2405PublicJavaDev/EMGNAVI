@@ -6,7 +6,7 @@ import com.emginfo.emgnavi.user.service.EmailService;
 import com.emginfo.emgnavi.user.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
-import net.nurigo.sdk.message.response.SingleMessageSentResponse;
+//import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -41,47 +41,47 @@ public class UserController {
         this.emailService = emailService;
     }
 
-    @PostMapping("/verify/phone")
-    public ResponseEntity<String> verifyPhone(@RequestBody VerifyPhoneRequest request, HttpSession session) {
-        String userPhone = request.getUserPhone();
-        String verificationCode = Integer.toString((int) (Math.random() * (999999 - 100000 + 1)) + 100000);
-
-        SingleMessageSentResponse result = uService.sendVerificationCode(userPhone, verificationCode);
-
-        // 세션에 인증 코드와 전화번호 저장
-        session.setAttribute("verificationCode", verificationCode);
-        session.setAttribute("verificationPhone", userPhone);
-
-        return ResponseEntity.ok("인증 코드가 전송되었습니다");
-    }
-
-    @PostMapping("/verify/code")
-    public ResponseEntity<String> verifyCode(@RequestBody VerifyCodeRequest request, HttpSession session) {
-        String storedCode = (String) session.getAttribute("verificationCode");
-        String storedPhone = (String) session.getAttribute("verificationPhone");
-
-        // 디버깅용 출력
-        System.out.println("전송된 인증 코드: " + request.getVerifyCode());
-        System.out.println("저장된 인증 코드: " + storedCode);
-        System.out.println("전송된 전화번호: " + request.getUserPhone());
-        System.out.println("저장된 전화번호: " + storedPhone);
-
-        if (storedCode == null || storedPhone == null) {
-            System.out.println("인증 코드가 만료되었거나 전송되지 않았습니다."); // 오류 로그
-            return ResponseEntity.badRequest().body("인증 코드가 만료되었거나 전송되지 않았습니다");
-        }
-
-        if (storedCode.equals(request.getVerifyCode()) && storedPhone.equals(request.getUserPhone())) {
-            // 인증 성공 후 세션에서 코드와 전화번호 제거
-            session.removeAttribute("verificationCode");
-            session.removeAttribute("verificationPhone");
-            System.out.println("인증 성공!"); // 성공 로그
-            return ResponseEntity.ok("인증 성공");
-        } else {
-            System.out.println("잘못된 인증 코드입니다."); // 오류 로그
-            return ResponseEntity.ok("인증 실패");
-        }
-    }
+//    @PostMapping("/verify/phone")
+//    public ResponseEntity<String> verifyPhone(@RequestBody VerifyPhoneRequest request, HttpSession session) {
+//        String userPhone = request.getUserPhone();
+//        String verificationCode = Integer.toString((int) (Math.random() * (999999 - 100000 + 1)) + 100000);
+//
+//        SingleMessageSentResponse result = uService.sendVerificationCode(userPhone, verificationCode);
+//
+//        // 세션에 인증 코드와 전화번호 저장
+//        session.setAttribute("verificationCode", verificationCode);
+//        session.setAttribute("verificationPhone", userPhone);
+//
+//        return ResponseEntity.ok("인증 코드가 전송되었습니다");
+//    }
+//
+//    @PostMapping("/verify/code")
+//    public ResponseEntity<String> verifyCode(@RequestBody VerifyCodeRequest request, HttpSession session) {
+//        String storedCode = (String) session.getAttribute("verificationCode");
+//        String storedPhone = (String) session.getAttribute("verificationPhone");
+//
+//        // 디버깅용 출력
+//        System.out.println("전송된 인증 코드: " + request.getVerifyCode());
+//        System.out.println("저장된 인증 코드: " + storedCode);
+//        System.out.println("전송된 전화번호: " + request.getUserPhone());
+//        System.out.println("저장된 전화번호: " + storedPhone);
+//
+//        if (storedCode == null || storedPhone == null) {
+//            System.out.println("인증 코드가 만료되었거나 전송되지 않았습니다."); // 오류 로그
+//            return ResponseEntity.badRequest().body("인증 코드가 만료되었거나 전송되지 않았습니다");
+//        }
+//
+//        if (storedCode.equals(request.getVerifyCode()) && storedPhone.equals(request.getUserPhone())) {
+//            // 인증 성공 후 세션에서 코드와 전화번호 제거
+//            session.removeAttribute("verificationCode");
+//            session.removeAttribute("verificationPhone");
+//            System.out.println("인증 성공!"); // 성공 로그
+//            return ResponseEntity.ok("인증 성공");
+//        } else {
+//            System.out.println("잘못된 인증 코드입니다."); // 오류 로그
+//            return ResponseEntity.ok("인증 실패");
+//        }
+//    }
 
 
     @PostMapping("/user")
@@ -152,9 +152,9 @@ public class UserController {
     @PostMapping("/kakao")
     public User kakaoCheck(@RequestBody Map<String, String> requestBody, HttpSession session) {
         System.out.println("인가코드 : " + requestBody.get("code"));
-        String accessToken = uService.getAccessToken(requestBody.get("code"));
+        String accessToken = uService.getKaKaoAccessToken(requestBody.get("code"));
         System.out.println("토큰 : " + accessToken);
-        HashMap<String, Object> kakaoInfo = uService.getUserInfo(accessToken);
+        HashMap<String, Object> kakaoInfo = uService.getKakaoUserInfo(accessToken);
         String userId = (String) kakaoInfo.get("email");
         String phone = (String) kakaoInfo.get("phone_number");
         String userPhone = uService.convertPhone(phone);
@@ -178,6 +178,36 @@ public class UserController {
             return newUser;
         }
     }
+
+    @PostMapping("/naver")
+    public User naverCheck(@RequestBody Map<String, String> requestBody, HttpSession session) {
+        System.out.println("인가코드 : " + requestBody.get("code"));
+        String accessToken = uService.getNaverAccessToken(requestBody.get("code"));
+        System.out.println("토큰 : " + accessToken);
+        HashMap<String, Object> naverInfo = uService.getNaverUserInfo(accessToken);
+        String userId = (String) naverInfo.get("email");
+        String phone = (String) naverInfo.get("phone_number");
+        String userPhone = uService.convertPhone(phone);
+        String userGender = (String) naverInfo.get("gender");
+        String userName = (String) naverInfo.get("name");
+        User user = uService.selectUserbyId(userId);
+        if (user != null) {
+            System.out.println("이미 존재하는 회원");
+            session.setAttribute("userId", user.getUserId());
+            session.setAttribute("userNickname", user.getUserNickname());
+            System.out.println(user.getUserNickname());
+            return user;
+        } else {
+            System.out.println("회원가입 필요");
+            User newUser = new User();
+            newUser.setUserId(userId);
+            newUser.setUserPhone(userPhone);
+            newUser.setUserGender(userGender);
+            newUser.setUserName(userName);
+            return newUser;
+        }
+    }
+
 
     @PostMapping("/getInf")
     public ResponseEntity<UserInfoRequest> getUserInf(@RequestBody UserInfoRequest request) {

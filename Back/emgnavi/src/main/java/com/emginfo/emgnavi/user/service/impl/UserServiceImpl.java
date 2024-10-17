@@ -4,11 +4,11 @@ import com.emginfo.emgnavi.user.model.dto.*;
 import com.emginfo.emgnavi.user.model.mapper.UserMapper;
 import com.emginfo.emgnavi.user.model.vo.Token;
 import com.emginfo.emgnavi.user.model.vo.User;
-import net.nurigo.sdk.NurigoApp;
-import net.nurigo.sdk.message.model.Message;
-import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
-import net.nurigo.sdk.message.response.SingleMessageSentResponse;
-import net.nurigo.sdk.message.service.DefaultMessageService;
+//import net.nurigo.sdk.NurigoApp;
+//import net.nurigo.sdk.message.model.Message;
+//import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
+//import net.nurigo.sdk.message.response.SingleMessageSentResponse;
+//import net.nurigo.sdk.message.service.DefaultMessageService;
 import com.emginfo.emgnavi.user.service.UserService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,32 +25,38 @@ import java.util.Map;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final DefaultMessageService messageService;
+//    private final DefaultMessageService messageService;
     private UserMapper mapper;
     private RestTemplate restTemplate;
 
-    private static final String restApiKey = "43916dfc99b7a10c04471fb22501a64e";
-    private static final String redirectUri = "https://127.0.0.1:3000/kakao/callback";
-    private static final String tokenUri = "https://kauth.kakao.com/oauth/token";
+    private static final String kakaoRestApiKey = "43916dfc99b7a10c04471fb22501a64e";
+    private static final String kakaoRedirectUri = "https://127.0.0.1:3000/kakao/callback";
+    private static final String kakaoTokenUri = "https://kauth.kakao.com/oauth/token";
+
+    private static final String naverClientId = "HybacJJgFsuLnLngHigE";
+    private static final String naverClientSecret = "JofjIZZUKG";
+    private static final String naverRedirectUri = "https://127.0.0.1:3000/kakao/callback";
+    private static final String naverTokenUri = "https://nid.naver.com/oauth2.0/token\t";
+
 
     public UserServiceImpl(UserMapper mapper) {
-        this.messageService = NurigoApp.INSTANCE.initialize("NCSY6JZLRXVWS3BX", "RDC9PGPKKGCSIQSWT4IFHK0NNO1IOVW1", "https://api.coolsms.co.kr");
+//        this.messageService = NurigoApp.INSTANCE.initialize("NCSY6JZLRXVWS3BX", "RDC9PGPKKGCSIQSWT4IFHK0NNO1IOVW1", "https://api.coolsms.co.kr");
         this.mapper = mapper;
         this.restTemplate = new RestTemplate();
     }
 
-    @Override
-    public SingleMessageSentResponse sendVerificationCode(String userPhone, String verificationCode) {
-        Message message = new Message();
-        message.setFrom("01053248588");
-
-        message.setTo(userPhone);
-
-        message.setText("[응급NAVI] 인증번호[" + verificationCode + "]를 화면에 입력해주세요");
-        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
-
-        return response;
-    }
+//    @Override
+//    public SingleMessageSentResponse sendVerificationCode(String userPhone, String verificationCode) {
+//        Message message = new Message();
+//        message.setFrom("01053248588");
+//
+//        message.setTo(userPhone);
+//
+//        message.setText("[응급NAVI] 인증번호[" + verificationCode + "]를 화면에 입력해주세요");
+//        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+//
+//        return response;
+//    }
 
     @Override
     public int insertUser(UserInfoRequest request) {
@@ -144,23 +150,36 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String getAccessToken(String code) {
+    public String getKaKaoAccessToken(String code) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", restApiKey);
-        params.add("redirect_url", redirectUri);
+        params.add("client_id", kakaoRestApiKey);
+        params.add("redirect_url", kakaoRedirectUri);
         params.add("code", code);
 
-        ResponseEntity<Map> response = restTemplate.postForEntity(tokenUri, params, Map.class);
+        ResponseEntity<Map> response = restTemplate.postForEntity(kakaoTokenUri, params, Map.class);
         Map responseBody = response.getBody();
         return (String) responseBody.get("access_token");
     }
 
     @Override
-    public HashMap<String, Object> getUserInfo(String accessToken) {
+    public String getNaverAccessToken(String code) {
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type", "authorization_code");
+        params.add("client_id", naverClientId);
+        params.add("client_secret", naverClientSecret);
+        params.add("code", code);
+
+        ResponseEntity<Map> response = restTemplate.postForEntity(naverTokenUri, params, Map.class);
+        Map responseBody = response.getBody();
+        return (String) responseBody.get("access_token");
+    }
+
+    @Override
+    public HashMap<String, Object> getKakaoUserInfo(String accessToken) {
         System.out.println("서비스토큰" + accessToken);
         HashMap<String, Object> kakaoInfo = new HashMap<>();
         String postURL = "https://kapi.kakao.com/v2/user/me";
@@ -187,6 +206,36 @@ public class UserServiceImpl implements UserService {
             kakaoInfo.put("name", name);
         }
         return kakaoInfo;
+    }
+
+    @Override
+    public HashMap<String, Object> getNaverUserInfo(String accessToken) {
+//        System.out.println("서비스토큰" + accessToken);
+        HashMap<String, Object> naverInfo = new HashMap<>();
+        String postURL = "https://openapi.naver.com/v1/nid/me";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(postURL, HttpMethod.POST, entity, Map.class);
+//        System.out.println(response.getBody());
+        Map<String, Object> body = response.getBody();
+        if (body != null) {
+            Map<String, Object> naverAccount = (Map<String, Object>) body.get("response");
+            System.out.println("카카오계정" + naverAccount);
+            String email = (String) naverAccount.get("email");
+            String phone = (String) naverAccount.get("mobile");
+            System.out.println(phone);
+            String gender = (String) naverAccount.get("gender");
+            String name = (String) naverAccount.get("name");
+            naverInfo.put("email", email);
+            naverInfo.put("phone_number", phone);
+            naverInfo.put("gender", gender);
+            naverInfo.put("name", name);
+        }
+        return naverInfo;
     }
 
     @Override

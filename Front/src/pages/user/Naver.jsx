@@ -1,64 +1,123 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAxios from "../../axios/useAxios";
+import axios from "axios";
 
 const Naver = () => {
     const nav = useNavigate();
-    const { fetchData, loading, error } = useAxios();
+    const [values, setValues] = useState({
+        userId: '',
+        userNickname: '',
+        userPhone: '',
+        userGender: '',
+        userName: '',
+    });
+    const [isNicknameChecked, setIsNicknameChecked] = useState(false);  // 닉네임 중복 확인 상태
 
     useEffect(() => {
         const code = new URLSearchParams(window.location.search).get('code');
         if (code) {
-            fetchData(
-                {
-                    method: 'POST',
-                    url: `/api/kakao`, // 백엔드 API로 코드 전송
-                    data : { code }
-                },
-                (data) => {
-                    if (data) {
-                        console.log("서버 응답: ", data);
-                        // 원하는 로직 실행, 예: 로그인 후 이동
+            axios.post('/api/naver', { code })
+                .then(response => {
+                    if (response.data.userNickname != null) {
+                        window.location.href = "/";
                     } else {
-                        alert("오류 발생");
+                        console.log(response);
+                        setValues(prevValues => ({
+                            ...prevValues,
+                            userId: response.data.userId,
+                            userGender: response.data.userGender,
+                            userPhone: response.data.userPhone,
+                            userName: response.data.userName
+                        }));
                     }
-                }
-            );
-        } else {
-            console.log("코드가 없습니다");
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         }
-    }, [fetchData, nav]); // useEffect에 종속성 추가
+    }, [nav]);
+
+    const checkNicknameDuplicate = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('/api/nickname/duplicate', { userNickname: values.uNickname });
+            alert(response.data);
+            setIsNicknameChecked(true);
+        } catch (error) {
+            console.error("에러 발생:", error);
+            alert(error.response.data);
+        }
+    };
+
+    const handleSignUp = async (e) => {
+        e.preventDefault();
+        if (!values.userNickname) {
+            alert("닉네임을 입력해주세요");
+            return;
+        }
+        if (!isNicknameChecked) {
+            alert("닉네임 중복확인을 해주세요");
+            return;
+        }
+        const response = await axios.post('/api/user', {
+            userId: values.userId,
+            userNickname: values.userNickname,
+            userPhone: values.userPhone,
+            userName: values.userName,
+            userGender: values.userGender,
+        })
+        if (response.status === 200) {
+            nav("/user/social/complete", { state: { userNickname: values.userNickname } });
+        } else {
+            console.log(response);
+        }
+    }
 
     return (
-        <>
+<>
+            <div className="absolute left-0 top-[245px] w-[1920px] h-[47px] text-[40px] font-['Inter'] font-bold text-[#000] text-center">소셜 회원가입</div>
+            <div className="absolute left-0 top-[324px] w-[1920px] text-[15px] font-['Inter'] text-[#7d8597] text-center">소셜 로그인 시 리뷰 등록, 즐겨찾기에 사용할 닉네임을 설정해주세요.</div>
             <div className="absolute left-[210px] top-[425px] w-[1500px] h-[545px] bg-[#7d85971a]"></div>
+            <div className="absolute left-[338px] top-[522px] w-[281px] h-[51px] text-[24px] font-['Inter'] font-semibold text-[#000] text-center">닉네임 입력</div>
             <div className="absolute left-[420px] top-[596px] w-[1080px] h-0 border-[1px] border-solid border-[#000]"></div>
             <div className="absolute left-[569px] top-[682px] w-[98px] h-[30px] text-[22px] font-['Inter'] font-medium text-[#000]">닉네임</div>
+
+            <div className="absolute left-[715px] top-[671px] w-[467px] h-[52px] flex">
+                <div className="absolute left-0 top-0 w-[467px] h-[52px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
+                <input
+                    type="text"
+                    id="nickname"
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        setValues({ ...values, userNickname: value });
+                    }}
+                    className="absolute left-[36px] top-1 w-[282px] h-[47px] text-[17px] font-['Inter'] text-[#000] flex flex-col justify-center outline-0"></input>
+            </div>
+
+            <div className="absolute left-[1207px] top-[671px] w-[144px] h-[52px] flex">
+                <button
+                    type='button'
+                    onClick={checkNicknameDuplicate}
+                    className="absolute left-0 top-0 w-[144px] h-[52px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]">
+                    <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">중복확인</span>
+                </button>
+            </div>
+
             <div className="absolute left-[420px] top-[804px] w-[1080px] h-0 border-[1px] border-solid border-[#7d8597]"></div>
-            <div className="absolute left-0 top-[245px] w-[1920px] h-[47px] text-[40px] font-['Inter'] font-bold text-[#000] text-center">소셜 회원가입</div>
-            <div className="absolute left-[338px] top-[522px] w-[281px] h-[51px] text-[24px] font-['Inter'] font-semibold text-[#000] text-center">닉네임 입력</div>
-            <div className="absolute left-0 top-[324px] w-[1920px] text-[15px] font-['Inter'] text-[#7d8597] text-center">소셜 로그인 시 리뷰 등록, 즐겨찾기에 사용할 닉네임을 설정해주세요.</div>
+
             <div className="absolute left-[874px] top-[867px] w-[184px] h-[60px] flex">
                 <div className="absolute top-0 w-[184px] h-[60px] flex">
-                    <button 
-
+                    <button
+                        onClick={handleSignUp}
                         className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#0b2d85] border-[1px] border-solid border-[#0b2d85] rounded-[50px]">
                         <span className="text-[16px] font-['Inter'] font-bold text-[#fff] text-center">닉네임 설정하기</span>
                     </button>
                 </div>
             </div>
-            <div className="absolute left-[1207px] top-[671px] w-[144px] h-[52px] flex">
-                <button 
-                    
-                    className="absolute left-0 top-0 w-[144px] h-[52px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]">
-                <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">중복확인</span>
-                    </button>
-            </div>
-            <div className="absolute left-[715px] top-[671px] w-[467px] h-[52px] flex">
-                <div className="absolute left-0 top-0 w-[467px] h-[52px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
-                <div className="absolute left-[36px] top-0 w-[282px] h-[52px] text-[17px] font-['Inter'] text-[#000] flex flex-col justify-center">응급NAVI66</div>
-                <img className="absolute left-[410px] top-[10px]" width="32" height="32" src="/img/user/reload 1117_124.png"></img>
-            </div>
+
+
+
             <div className="absolute left-0 top-[1169px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">
                 <div className="absolute left-[136px] top-[41px] w-[117px] h-[126px] flex">
                     <div className="absolute left-[13px] top-[97px] text-[24px] font-['Advent_Pro'] font-black text-[#333] whitespace-nowrap">응급NAVI</div>
