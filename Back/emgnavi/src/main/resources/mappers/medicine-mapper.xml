@@ -17,24 +17,34 @@
         WHERE item_seq = #{itemSeq}
     </select>
 
-    <!-- 제품명 또는 업체명으로 의약품 검색 -->
+    <!-- 제품명 또는 업체명으로 의약품 검색 (페이징 적용) -->
     <select id="searchMedicine" parameterType="map" resultType="com.emginfo.emgnavi.medicine.vo.Medicine">
         SELECT item_seq, entp_name, item_name, open_de, item_image
         FROM MEDICINE_TBL
         WHERE 1=1
-        <if test="itemName != null">
+        <if test="itemName != null and itemName != ''">
             AND item_name LIKE '%' || #{itemName} || '%'
         </if>
-        <if test="entpName != null">
+        <if test="entpName != null and entpName != ''">
+            AND entp_name LIKE '%' || #{entpName} || '%'
+        </if>
+        <!-- RowBounds를 사용하므로 OFFSET과 LIMIT은 여기서 지정하지 않습니다 -->
+    </select>
+
+    <!-- 검색 결과의 총 개수를 가져오는 쿼리 -->
+    <select id="getSearchResultCount" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM MEDICINE_TBL
+        WHERE 1=1
+        <if test="itemName != null and itemName != ''">
+            AND item_name LIKE '%' || #{itemName} || '%'
+        </if>
+        <if test="entpName != null and entpName != ''">
             AND entp_name LIKE '%' || #{entpName} || '%'
         </if>
     </select>
 
-
-
-
-
-<!--    전체 데이터 개수 가져오가-->
+    <!-- 전체 데이터 개수 가져오기 -->
     <select id="getTotalCount" resultType="int">
         SELECT COUNT(*) FROM MEDICINE_TBL
     </select>

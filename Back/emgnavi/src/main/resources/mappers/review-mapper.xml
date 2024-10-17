@@ -16,6 +16,10 @@
         SELECT * FROM REVIEW_TBL WHERE NO = #{no}
     </select>
 
+    <update id="updateReview">
+        UPDATE REVIEW_TBL SET RATING = #{rating}, CONTENT = #{content} WHERE NO = #{no}
+    </update>
+
     <delete id="deleteReview">
         DELETE REVIEW_TBL WHERE NO = #{no}
     </delete>

@@ -6,6 +6,7 @@ import com.emginfo.emgnavi.common.success.SuccessCode;
 import com.emginfo.emgnavi.common.success.SuccessResponse;
 import com.emginfo.emgnavi.review.dto.GetReviewOneByNoResponse;
 import com.emginfo.emgnavi.review.dto.PostReviewRequest;
+import com.emginfo.emgnavi.review.dto.UpdateReviewRequest;
 import com.emginfo.emgnavi.review.service.ReviewService;
 import com.emginfo.emgnavi.review.vo.Reviews;
 import jakarta.servlet.http.HttpSession;
@@ -47,6 +48,18 @@ public class ReviewController {
     public SuccessResponse getReviewOneByNo(@PathVariable String no) {
         GetReviewOneByNoResponse response = reviewService.getReviewOneByNo(no);
         return new SuccessResponse(SuccessCode.RESOURCE_FOUND, response);
+    }
+
+    @PatchMapping("/review/{no}")
+    public SuccessResponse updateReview(HttpSession session, @PathVariable int no, @RequestBody UpdateReviewRequest request) {
+        String id = (String) session.getAttribute("userId");
+        if (id == null) { throw new CustomException(ErrorCode.SESSION_INVALID); }
+        int result = reviewService.updateReview(no, request);
+        if (result > 0) {
+            return new SuccessResponse(SuccessCode.UPDATE_SUCCESS);
+        } else {
+            throw new CustomException(ErrorCode.UPDATE_FAILED);
+        }
     }
 
     @DeleteMapping("/review/{no}")

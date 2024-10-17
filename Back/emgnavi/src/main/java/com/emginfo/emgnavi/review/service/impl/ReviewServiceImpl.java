@@ -2,6 +2,7 @@ package com.emginfo.emgnavi.review.service.impl;
 
 import com.emginfo.emgnavi.review.dto.GetReviewOneByNoResponse;
 import com.emginfo.emgnavi.review.dto.PostReviewRequest;
+import com.emginfo.emgnavi.review.dto.UpdateReviewRequest;
 import com.emginfo.emgnavi.review.mapper.ReviewMapper;
 import com.emginfo.emgnavi.review.service.ReviewService;
 import com.emginfo.emgnavi.review.vo.Reviews;
@@ -48,6 +49,16 @@ public class ReviewServiceImpl implements ReviewService {
         response.setWriterId(review.getWriterId());
         response.setContent(review.getContent());
         return response;
+    }
+
+    @Override
+    public int updateReview(int no, UpdateReviewRequest request) {
+        Reviews review = Reviews.builder()
+                .no(no)
+                .rating(request.getRating())
+                .content(request.getContent())
+                .build();
+        return reviewMapper.updateReview(review);
     }
 
     @Override

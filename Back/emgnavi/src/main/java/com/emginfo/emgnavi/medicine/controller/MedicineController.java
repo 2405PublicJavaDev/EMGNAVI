@@ -46,12 +46,21 @@ public class MedicineController {
 
     // 의약품 이름 또는 업체명으로 검색
     @GetMapping("/search")
-    public List<Medicine> searchMedicine(
+    public Map<String, Object> searchMedicine(
             @RequestParam(required = false) String itemName,
-            @RequestParam(required = false) String entpName
+            @RequestParam(required = false) String entpName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
     ) {
-        System.out.println("Received search request with itemName: " + itemName + ", entpName: " + entpName);
-        return medicineService.searchMedicine(itemName, entpName);
-    }
+        List<Medicine> results = medicineService.searchMedicine(itemName, entpName, page, size);
+        int totalCount = medicineService.getSearchResultCount(itemName, entpName);
 
+        Map<String, Object> response = new HashMap<>();
+        response.put("medicines", results);
+        response.put("totalPages", (int) Math.ceil((double) totalCount / size));
+        response.put("currentPage", page);
+        response.put("totalItems", totalCount);
+
+        return response;
+    }
 }
