@@ -12,7 +12,7 @@
         SELECT * FROM REVIEW_TBL WHERE REF_NO = #{refNo}
     </select>
 
-    <select id="getReviewListByNo">
+    <select id="getReviewOneByNo">
         SELECT * FROM REVIEW_TBL WHERE NO = #{no}
     </select>
 

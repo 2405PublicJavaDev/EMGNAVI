@@ -27,7 +27,7 @@ public interface ReviewMapper {
      * @param no
      * @return
      */
-    List<Reviews> getReviewListByNo(String no);
+    Reviews getReviewOneByNo(String no);
 
     /**
      * 리뷰 삭제 Mapper

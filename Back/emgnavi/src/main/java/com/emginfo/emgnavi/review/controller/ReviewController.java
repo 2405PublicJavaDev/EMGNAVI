@@ -42,10 +42,11 @@ public class ReviewController {
         return new SuccessResponse(SuccessCode.RESOURCE_FOUND, reviewList);
     }
 
-    @GetMapping("/review/report/{no}")
-    public SuccessResponse getReviewListByNo(@PathVariable String no) {
-        List<Reviews> reviewList = reviewService.getReviewListByNo(no);
-        return new SuccessResponse(SuccessCode.RESOURCE_FOUND, reviewList);
+    @GetMapping("/review/{no}")
+    public SuccessResponse getReviewOneByNo(@PathVariable String no) {
+        GetReviewOneByNoResponse response = reviewService.getReviewOneByNo(no);
+        return new SuccessResponse(SuccessCode.RESOURCE_FOUND, response);
+    }
     }
 
     @DeleteMapping("/review/{no}")
