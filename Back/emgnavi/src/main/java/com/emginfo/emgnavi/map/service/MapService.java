@@ -3,6 +3,7 @@ package com.emginfo.emgnavi.map.service;
 import com.emginfo.emgnavi.aed.vo.Aed;
 import com.emginfo.emgnavi.hospital.vo.Hospital;
 import com.emginfo.emgnavi.map.vo.GpsInfo;
+import com.emginfo.emgnavi.pharmacy.vo.Pharmacy;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface MapService {
      * @return List<AED>
      */
     List<Aed> getAroundAedList(GpsInfo gpsInfo);
+
+    List<Pharmacy> getAroundPharmacyList(GpsInfo gpsInfo);
 }

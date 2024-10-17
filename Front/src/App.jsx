@@ -54,6 +54,7 @@ import FavoriteHospital from './pages/user/Favorite/FavHospital';
 import FavPharmacy from './pages/user/Favorite/FavPharmacy'
 import GetAedMap from './pages/map/GetAedMap'
 import GetEmergencyStat from './pages/stat/GetEmergencyStat';
+import GetPharmacyMap from './pages/map/GetPharmacyMap';
 
 function App() {
 
@@ -117,6 +118,7 @@ function App() {
 
         <Route path='/map/getHospitalMap' element={<GetHospitalMap />} />
         <Route path='/map/getEmergencyMap' element={<GetEmergencyMap />} />
+        <Route path='/map/getPharmacyMap' element={<GetPharmacyMap />} />
 
         <Route path='/medicine/MedicineSearch' element={<MedicineSearch />} />
         <Route path='/medicine/detail/:itemSeq' element={<MedicineDetail />} />

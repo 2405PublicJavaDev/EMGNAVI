@@ -5,6 +5,7 @@ import com.emginfo.emgnavi.hospital.vo.Hospital;
 import com.emginfo.emgnavi.map.mapper.MapMapper;
 import com.emginfo.emgnavi.map.service.MapService;
 import com.emginfo.emgnavi.map.vo.GpsInfo;
+import com.emginfo.emgnavi.pharmacy.vo.Pharmacy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -91,6 +92,42 @@ public class MapServiceImpl implements MapService {
             }
         }
         return resultAroundAedList;
+    }
+
+    @Override
+    public List<Pharmacy> getAroundPharmacyList(GpsInfo gpsInfo) {
+        //현재 위도 좌표 (y 좌표)
+        double nowLatitude = gpsInfo.getLatitude();
+        //현재 경도 좌표 (x 좌표)
+        double nowLongitude = gpsInfo.getLongitude();
+
+        //m당 y 좌표 이동 값
+        double mForLatitude =(1 /(EARTH_RADIUS* 1 *(Math.PI/ 180)))/ 1000;
+        //m당 x 좌표 이동 값
+        double mForLongitude =(1 /(EARTH_RADIUS* 1 *(Math.PI/ 180)* Math.cos(Math.toRadians(nowLatitude))))/ 1000;
+
+        //현재 위치 기준 검색 거리 좌표
+        double maxLat = nowLatitude +(gpsInfo.getDistance()* mForLatitude);
+        double minLat = nowLatitude -(gpsInfo.getDistance()* mForLatitude);
+        double maxLon = nowLongitude +(gpsInfo.getDistance()* mForLongitude);
+        double minLon = nowLongitude -(gpsInfo.getDistance()* mForLongitude);
+
+        System.out.println("maxLat="+maxLat+" minLat="+minLat+" maxLon="+maxLon+" minLon="+minLon);
+
+        //해당되는 좌표의 범위 안에 있는 가맹점
+        List<Pharmacy>tempAroundPharmacyList = mapMapper.getAroundPharmacyList(maxLat, maxLon, minLat, minLon);
+        List<Pharmacy>resultAroundPharmacyList = new ArrayList<>();
+
+        System.out.println("listSize: "+tempAroundPharmacyList.size());
+
+        //정확한 거리 측정
+        for(Pharmacy aroundPharmacy : tempAroundPharmacyList) {
+            double distance = this.getDistance(nowLatitude, nowLongitude, Double.parseDouble(aroundPharmacy.getPostCdn2()), Double.parseDouble(aroundPharmacy.getPostCdn1()));
+            if(distance < gpsInfo.getDistance()) {
+                resultAroundPharmacyList.add(aroundPharmacy);
+            }
+        }
+        return resultAroundPharmacyList;
     }
 
     private double getDistance(double nowLatitude, double nowLongitude, double locationLat, double locationLon){

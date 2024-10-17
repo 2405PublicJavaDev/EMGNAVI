@@ -16,4 +16,10 @@
             WGS84_LON BETWEEN ${minLon} AND ${maxLon} AND
             WGS84_LAT BETWEEN ${minLat} AND ${maxLat}
     </select>
+    <select id="getAroundPharmacyList" resultType="Pharmacy">
+        SELECT * FROM PHARMACY_TBL
+        WHERE
+            TO_NUMBER(POST_CDN1) BETWEEN ${minLon} AND ${maxLon} AND
+            TO_NUMBER(POST_CDN2) BETWEEN ${minLat} AND ${maxLat}
+    </select>
 </mapper>
