@@ -86,8 +86,8 @@ public class UserController {
 
     @PostMapping("/user")
     public void insertUser(@RequestBody UserInfoRequest request) {
+        System.out.println(request);
         int result = uService.insertUser(request);
-//        return new SuccessResponse(SuccessCode.REGISTER_SUCCESS);
     }
 
     @PostMapping("/id/duplicate")
@@ -103,7 +103,7 @@ public class UserController {
 
     @PostMapping("/nickname/duplicate")
     public ResponseEntity<String> checkNicknameDuplicate(@RequestBody UserNicknameRequest request) {
-        System.out.println(request);
+//        System.out.println(request);
         int result = uService.checkNicknameDuplicate(request);
 
         if (result > 0) {
@@ -157,20 +157,27 @@ public class UserController {
         System.out.println("토큰 : " + accessToken);
         HashMap<String, Object> kakaoInfo = uService.getUserInfo(accessToken);
         String userId = (String) kakaoInfo.get("email");
+        String userPhone = (String) kakaoInfo.get("phone_number");
+        String gender = (String) kakaoInfo.get("gender");
+        String userGender = uService.convertGender(gender);
+        String userName = (String) kakaoInfo.get("name");
         User user = uService.selectUserbyId(userId);
         if(user != null) {
             System.out.println("이미 존재하는 회원");
             session.setAttribute("userId", user.getUserId());
             session.setAttribute("userNickname", user.getUserNickname());
+            System.out.println(user.getUserNickname());
             return user;
         } else {
             System.out.println("회원가입 필요");
             User newUser = new User();
             newUser.setUserId(userId);
+            newUser.setUserPhone(userPhone);
+            newUser.setUserGender(userGender);
+            newUser.setUserName(userName);
             return newUser;
         }
     }
-
 
     @PostMapping("/getInf")
     public ResponseEntity<UserInfoRequest> getUserInf(@RequestBody UserInfoRequest request) {

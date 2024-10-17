@@ -8,8 +8,6 @@ const LoginMain = () => {
 
     const { handleReload } = useContext(UserContext);
 
-
-
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const nav = useNavigate();
@@ -46,7 +44,7 @@ const LoginMain = () => {
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
-            handleLogin('Enter');
+            //handleLogin('Enter');
         }
     };
 

@@ -175,9 +175,16 @@ public class UserServiceImpl implements UserService {
         Map<String, Object> body = response.getBody();
         if (body != null) {
             Map<String, Object> kakaoAccount = (Map<String, Object>) body.get("kakao_account");
-//            System.out.println("카카오계정" + kakaoAccount);
+            System.out.println("카카오계정" + kakaoAccount);
             String email = (String) kakaoAccount.get("email");
+            String phone = (String) kakaoAccount.get("phone_number");
+            System.out.println(phone);
+            String gender = (String) kakaoAccount.get("gender");
+            String name = (String) kakaoAccount.get("name");
             kakaoInfo.put("email", email);
+            kakaoInfo.put("phone_number", phone);
+            kakaoInfo.put("gender", gender);
+            kakaoInfo.put("name", name);
         }
         return kakaoInfo;
     }
@@ -186,5 +193,21 @@ public class UserServiceImpl implements UserService {
     public User selectUserbyId(String userId) {
         User user = mapper.selectUserById(userId);
         return user;
+    }
+
+    @Override
+    public String convertGender(String gender) {
+        if (gender == null) {
+            return ""; // null 값 처리
+        }
+
+        switch (gender.toLowerCase()) {
+            case "female":
+                return "F";
+            case "male":
+                return "M";
+            default:
+                return gender; // 변환되지 않은 값은 그대로 반환
+        }
     }
 }

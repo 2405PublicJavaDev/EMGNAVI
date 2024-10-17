@@ -37,4 +37,5 @@ public interface UserMapper {
     int changePhone(ChangePhoneRequest request);
 
     User selectUserById(String userId);
+
 }

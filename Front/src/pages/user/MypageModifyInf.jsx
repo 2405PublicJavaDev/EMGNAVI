@@ -17,7 +17,6 @@ const MypageModifyInf = ({ setIsLoginTrue }) => {
         setIsPhoneModalOpen(true);
     };
     const closePhoneModal = () => {
-        window.location.reload(); // 새로고침
         setIsPhoneModalOpen(false);
     };
     const openPasswordModal = () => {

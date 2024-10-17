@@ -41,4 +41,6 @@ public interface UserService {
     HashMap<String, Object> getUserInfo(String accessToken);
 
     User selectUserbyId(String userId);
+
+    String convertGender(String gender);
 }
