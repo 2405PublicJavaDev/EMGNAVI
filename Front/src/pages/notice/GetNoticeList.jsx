@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import StyledHTMLContent from '../common/StyledHTMLContent';
+import Truncate from 'react-truncate';
+import parse, { domToReact } from 'html-react-parser';
 
 const GetNoticeList = () => {
 
@@ -134,6 +135,25 @@ const GetNoticeList = () => {
         return `${year}-${month}-${day}`;
     };
 
+    // 블록 요소 제거 함수
+    const blockToInline = (html) => {
+        const blockElements = ['div', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li'];
+
+        return parse(html, {
+            replace: (domNode) => {
+                // if (domNode.name === 'div' || domNode.name === 'p' || domNode.name === 'h1' || domNode.name === 'li') {
+                if (blockElements.includes(domNode.name)) {
+                    return (
+                        <>
+                            <span>{domToReact(domNode.children)}</span>
+                            <br />
+                        </>
+                    );
+                }
+            }
+        });
+    };
+
     return (
         <div className="bg-white flex flex-row justify-center w-full">
             <div className="bg-white w-[100%] h-[2143px] relative">
@@ -171,8 +191,8 @@ const GetNoticeList = () => {
                                             <div>
                                                 {notices.map((notice) => (
 
-                                                    <div key={notice.noticeId} className="bg-white border-b border-gray-200 py-4 flex">
-                                                        <div className="flex flex-col items-center text-sm text-gray-500 mb-2 w-[500px]">
+                                                    <div id='div0' key={notice.noticeId} className="bg-white border-b border-gray-200 py-4 flex">
+                                                        <div id='div1' className="flex-shrink-0 flex flex-col items-center text-sm text-gray-500 mb-2 w-[500px]">
                                                             <div className="flex items-center space-x-2">
                                                                 <span>{notice.writerId}</span>
                                                                 <span>&nbsp;|&nbsp;</span>
@@ -181,10 +201,11 @@ const GetNoticeList = () => {
                                                             </div>
                                                             <h2 className="text-xl font-bold mt-2 text-center">{notice.noticeTitle}</h2>
                                                         </div>
-                                                        <div>
-                                                            {/* <div className="text-gray-700 html-content" dangerouslySetInnerHTML={{ __html: notice.noticeContents }} /> */}
-                                                            <StyledHTMLContent htmlContent={notice.noticeContents} />
-                                                            <span className="text-blue-600 hover:underline cursor-pointer"> [Read more]</span>
+                                                        <div id='div2' className='flex-grow min-w-0'>
+                                                            <Truncate lines={3} ellipsis={<span>... <span className="text-gray-400 hover:underline cursor-pointer">[상세보기]</span></span>}>
+                                                                {blockToInline(notice.noticeContents)}
+                                                            </Truncate>
+
                                                         </div>
                                                     </div>
                                                 ))}

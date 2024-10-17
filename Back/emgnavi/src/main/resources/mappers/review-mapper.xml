@@ -12,6 +12,10 @@
         SELECT * FROM REVIEW_TBL WHERE REF_NO = #{refNo}
     </select>
 
+    <select id="getReviewListByNo">
+        SELECT * FROM REVIEW_TBL WHERE NO = #{no}
+    </select>
+
     <delete id="deleteReview">
         DELETE REVIEW_TBL WHERE NO = #{no}
     </delete>

@@ -42,6 +42,12 @@ public class ReviewController {
         return new SuccessResponse(SuccessCode.RESOURCE_FOUND, reviewList);
     }
 
+    @GetMapping("/review/report/{no}")
+    public SuccessResponse getReviewListByNo(@PathVariable String no) {
+        List<Reviews> reviewList = reviewService.getReviewListByNo(no);
+        return new SuccessResponse(SuccessCode.RESOURCE_FOUND, reviewList);
+    }
+
     @DeleteMapping("/review/{no}")
     public SuccessResponse deleteReview(HttpSession session, @PathVariable String no) {
         String id = (String) session.getAttribute("userId");

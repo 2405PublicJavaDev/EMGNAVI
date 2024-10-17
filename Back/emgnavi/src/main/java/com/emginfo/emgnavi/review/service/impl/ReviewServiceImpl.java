@@ -34,9 +34,16 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional(readOnly = true)
     public List<Reviews> getReviewListByRefNo(String refNo) {
-        List<Reviews> reviews = reviewMapper.getReviewListByRefNo(refNo);
-        return reviews;
+        List<Reviews> reviewList = reviewMapper.getReviewListByRefNo(refNo);
+        return reviewList;
 //        return reviewMapper.getReviewListByRefNo(refNo);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Reviews> getReviewListByNo(String no) {
+        List<Reviews> reviewList = reviewMapper.getReviewListByNo(no);
+        return reviewList;
     }
 
     @Override
