@@ -303,7 +303,7 @@ function GetEmergencyMap() {
                                                 <TableCell className="aed-name font-bold text-gray-800" style={{ border: 'none', padding: '5px 10px 0px 10px', fontWeight: '900', color: '#0B2D85', fontSize: '16px' }}>{hospital.dutyName}</TableCell>
                                             </TableRow>
                                             <TableRow key={`${index}-hvec`}>
-                                                <TableCell className="aed-tel text-sm text-gray-600" style={{ border: 'none', padding: '5px 10px' }}>{'응급병상 : ' + hospital.hvec}</TableCell>
+                                                <TableCell className="aed-tel text-sm text-gray-600" style={{ border: 'none', padding: '5px 10px' }}><b>{'응급병상 : ' + hospital.hvec + ' 🛏️'}</b></TableCell>
                                             </TableRow>
                                             <TableRow key={`${index}-tel`}>
                                                 <TableCell className="aed-tel text-sm text-gray-600" style={{ border: 'none', padding: '5px 10px' }}>{hospital.dutyTel3}</TableCell>
