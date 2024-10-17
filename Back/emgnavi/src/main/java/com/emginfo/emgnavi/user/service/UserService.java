@@ -43,4 +43,6 @@ public interface UserService {
     User selectUserbyId(String userId);
 
     String convertGender(String gender);
+
+    String convertPhone(String phone);
 }

@@ -67,8 +67,7 @@ const Kakao = () => {
             userGender: values.userGender,
         })
         if (response.status === 200) {
-            alert("소셜 회원가입 완료");
-            window.location.href = "/";
+            nav("/user/social/complete", { state: { userNickname: values.userNickname } });
         } else {
             console.log(response);
         }

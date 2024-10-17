@@ -200,7 +200,6 @@ public class UserServiceImpl implements UserService {
         if (gender == null) {
             return ""; // null 값 처리
         }
-
         switch (gender.toLowerCase()) {
             case "female":
                 return "F";
@@ -209,5 +208,18 @@ public class UserServiceImpl implements UserService {
             default:
                 return gender; // 변환되지 않은 값은 그대로 반환
         }
+    }
+
+    @Override
+    public String convertPhone(String phone) {
+        // 1. "+82"를 "0"으로 대체
+        if (phone.startsWith("+82")) {
+            phone = phone.replaceFirst("\\+82", "0");
+        }
+        // 2. 모든 하이픈("-") 제거
+        phone = phone.replaceAll("-", "");
+        // 3. 공백도 제거
+        phone = phone.replaceAll("\\s+", "");
+        return phone;
     }
 }

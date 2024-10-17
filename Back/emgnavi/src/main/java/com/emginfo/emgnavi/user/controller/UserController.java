@@ -93,7 +93,6 @@ public class UserController {
     @PostMapping("/id/duplicate")
     public ResponseEntity<String> checkIdDuplicate(@RequestBody UserIdRequest request) {
         int result = uService.checkIdDuplicate(request);
-
         if (result > 0) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 사용중인 아이디입니다.");
         } else {
@@ -157,7 +156,8 @@ public class UserController {
         System.out.println("토큰 : " + accessToken);
         HashMap<String, Object> kakaoInfo = uService.getUserInfo(accessToken);
         String userId = (String) kakaoInfo.get("email");
-        String userPhone = (String) kakaoInfo.get("phone_number");
+        String phone = (String) kakaoInfo.get("phone_number");
+        String userPhone = uService.convertPhone(phone);
         String gender = (String) kakaoInfo.get("gender");
         String userGender = uService.convertGender(gender);
         String userName = (String) kakaoInfo.get("name");
@@ -273,14 +273,15 @@ public class UserController {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<String> deleteUser(@RequestBody UserIdRequest request) {
+    public ResponseEntity<String> deleteUser(@RequestBody UserIdRequest request, HttpSession session) {
         try {
             // 사용자 조회
             User user = uService.selectUserbyId(request);
             // 사용자 삭제
             int result = uService.deleteUser(request);
-
+            session.invalidate(); // 세션 무효화
             if (result > 0) {
+
                 return ResponseEntity.ok("성공");
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("사용자 삭제 중 오류가 발생했습니다.");
