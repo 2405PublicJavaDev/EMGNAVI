@@ -6,7 +6,7 @@ import com.emginfo.emgnavi.user.service.EmailService;
 import com.emginfo.emgnavi.user.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
-//import net.nurigo.sdk.message.response.SingleMessageSentResponse;
+import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -41,47 +41,47 @@ public class UserController {
         this.emailService = emailService;
     }
 
-//    @PostMapping("/verify/phone")
-//    public ResponseEntity<String> verifyPhone(@RequestBody VerifyPhoneRequest request, HttpSession session) {
-//        String userPhone = request.getUserPhone();
-//        String verificationCode = Integer.toString((int) (Math.random() * (999999 - 100000 + 1)) + 100000);
-//
-//        SingleMessageSentResponse result = uService.sendVerificationCode(userPhone, verificationCode);
-//
-//        // 세션에 인증 코드와 전화번호 저장
-//        session.setAttribute("verificationCode", verificationCode);
-//        session.setAttribute("verificationPhone", userPhone);
-//
-//        return ResponseEntity.ok("인증 코드가 전송되었습니다");
-//    }
+    @PostMapping("/verify/phone")
+    public ResponseEntity<String> verifyPhone(@RequestBody VerifyPhoneRequest request, HttpSession session) {
+        String userPhone = request.getUserPhone();
+        String verificationCode = Integer.toString((int) (Math.random() * (999999 - 100000 + 1)) + 100000);
 
-//    @PostMapping("/verify/code")
-//    public ResponseEntity<String> verifyCode(@RequestBody VerifyCodeRequest request, HttpSession session) {
-//        String storedCode = (String) session.getAttribute("verificationCode");
-//        String storedPhone = (String) session.getAttribute("verificationPhone");
-//
-//        // 디버깅용 출력
-//        System.out.println("전송된 인증 코드: " + request.getVerifyCode());
-//        System.out.println("저장된 인증 코드: " + storedCode);
-//        System.out.println("전송된 전화번호: " + request.getUserPhone());
-//        System.out.println("저장된 전화번호: " + storedPhone);
-//
-//        if (storedCode == null || storedPhone == null) {
-//            System.out.println("인증 코드가 만료되었거나 전송되지 않았습니다."); // 오류 로그
-//            return ResponseEntity.badRequest().body("인증 코드가 만료되었거나 전송되지 않았습니다");
-//        }
-//
-//        if (storedCode.equals(request.getVerifyCode()) && storedPhone.equals(request.getUserPhone())) {
-//            // 인증 성공 후 세션에서 코드와 전화번호 제거
-//            session.removeAttribute("verificationCode");
-//            session.removeAttribute("verificationPhone");
-//            System.out.println("인증 성공!"); // 성공 로그
-//            return ResponseEntity.ok("인증 성공");
-//        } else {
-//            System.out.println("잘못된 인증 코드입니다."); // 오류 로그
-//            return ResponseEntity.ok("인증 실패");
-//        }
-//    }
+        SingleMessageSentResponse result = uService.sendVerificationCode(userPhone, verificationCode);
+
+        // 세션에 인증 코드와 전화번호 저장
+        session.setAttribute("verificationCode", verificationCode);
+        session.setAttribute("verificationPhone", userPhone);
+
+        return ResponseEntity.ok("인증 코드가 전송되었습니다");
+    }
+
+    @PostMapping("/verify/code")
+    public ResponseEntity<String> verifyCode(@RequestBody VerifyCodeRequest request, HttpSession session) {
+        String storedCode = (String) session.getAttribute("verificationCode");
+        String storedPhone = (String) session.getAttribute("verificationPhone");
+
+        // 디버깅용 출력
+        System.out.println("전송된 인증 코드: " + request.getVerifyCode());
+        System.out.println("저장된 인증 코드: " + storedCode);
+        System.out.println("전송된 전화번호: " + request.getUserPhone());
+        System.out.println("저장된 전화번호: " + storedPhone);
+
+        if (storedCode == null || storedPhone == null) {
+            System.out.println("인증 코드가 만료되었거나 전송되지 않았습니다."); // 오류 로그
+            return ResponseEntity.badRequest().body("인증 코드가 만료되었거나 전송되지 않았습니다");
+        }
+
+        if (storedCode.equals(request.getVerifyCode()) && storedPhone.equals(request.getUserPhone())) {
+            // 인증 성공 후 세션에서 코드와 전화번호 제거
+            session.removeAttribute("verificationCode");
+            session.removeAttribute("verificationPhone");
+            System.out.println("인증 성공!"); // 성공 로그
+            return ResponseEntity.ok("인증 성공");
+        } else {
+            System.out.println("잘못된 인증 코드입니다."); // 오류 로그
+            return ResponseEntity.ok("인증 실패");
+        }
+    }
 
 
     @PostMapping("/user")
@@ -102,14 +102,14 @@ public class UserController {
 
     @PostMapping("/nickname/duplicate")
     public ResponseEntity<String> checkNicknameDuplicate(@RequestBody UserNicknameRequest request) {
-//        System.out.println(request);
+        System.out.println(request);
         int result = uService.checkNicknameDuplicate(request);
 
         if (result > 0) {
-            System.out.println("사용중");
+//            System.out.println("사용중");
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 사용중인 닉네임입니다.");
         } else {
-            System.out.println("사용가능");
+//            System.out.println("사용가능");
             return ResponseEntity.ok("사용 가능한 닉네임입니다.");
         }
     }
@@ -121,7 +121,7 @@ public class UserController {
 //            System.out.println(user.getUserId());
             return ResponseEntity.ok(user.getUserId());  // 조회된 유저의 아이디 반환
         } else {
-            System.out.println("정보 없음");
+//            System.out.println("정보 없음");
             return ResponseEntity.ok("해당 휴대폰 번호로 등록된 아이디가 없습니다."); // 200 OK와 함께 메시지 반환
         }
     }

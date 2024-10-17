@@ -2,13 +2,13 @@ package com.emginfo.emgnavi.user.service;
 
 import com.emginfo.emgnavi.user.model.dto.*;
 import com.emginfo.emgnavi.user.model.vo.User;
-//import net.nurigo.sdk.message.response.SingleMessageSentResponse;
+import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 
 import java.util.HashMap;
 
 public interface UserService {
 
-//    SingleMessageSentResponse sendVerificationCode(String userPhone, String verificationCode);
+    SingleMessageSentResponse sendVerificationCode(String userPhone, String verificationCode);
 
     int insertUser(UserInfoRequest request);
 
