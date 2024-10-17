@@ -11,10 +11,14 @@
     <select id="getNoticeList">
         SELECT *
         FROM NOTICE_TBL
-        ORDER BY NOTICE_DATE DESC 
+        ORDER BY NOTICE_DATE DESC
     </select>
 
     <select id="getListTotalCount" resultType="int">
         SELECT COUNT(*) FROM NOTICE_TBL
+    </select>
+
+    <select id="getNoticeDetail">
+        SELECT * FROM NOTICE_TBL WHERE NOTICE_ID = #{noticeId}
     </select>
 </mapper>

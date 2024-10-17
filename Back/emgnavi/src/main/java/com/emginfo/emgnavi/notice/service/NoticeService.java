@@ -16,4 +16,6 @@ public interface NoticeService {
     List<Notice> getNoticeList(int offset, int size);
 
     int getListTotalCount();
+
+    Notice getNoticeDetail(int noticeId);
 }

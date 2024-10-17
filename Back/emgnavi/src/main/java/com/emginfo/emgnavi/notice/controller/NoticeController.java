@@ -2,13 +2,14 @@ package com.emginfo.emgnavi.notice.controller;
 
 import com.emginfo.emgnavi.common.success.SuccessCode;
 import com.emginfo.emgnavi.common.success.SuccessResponse;
-import com.emginfo.emgnavi.medicine.vo.Medicine;
 import com.emginfo.emgnavi.notice.service.NoticeService;
 import com.emginfo.emgnavi.notice.vo.Notice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "https://127.0.0.1:3000")
@@ -37,7 +38,22 @@ public class NoticeController {
 
         int totalCount = noticeService.getListTotalCount();  // 총 데이터 개수 가져오기
         System.out.println("전체 notice 갯수"+totalCount);
-        return new SuccessResponse(SuccessCode.RESOURCE_FOUND, notices);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("notices", notices);
+        response.put("totalPages", (int) Math.ceil((double) totalCount / size));
+
+        return new SuccessResponse(SuccessCode.RESOURCE_FOUND, response);
+    }
+
+    @GetMapping("/detail")
+    public SuccessResponse getNoticeDetail(
+            @RequestParam int noticeId
+    ){
+        System.out.println("ck01");
+        Notice notice = noticeService.getNoticeDetail(noticeId);
+        System.out.println("notice객체:"+notice.toString());
+        return new SuccessResponse(SuccessCode.RESOURCE_FOUND, notice);
     }
 
 }

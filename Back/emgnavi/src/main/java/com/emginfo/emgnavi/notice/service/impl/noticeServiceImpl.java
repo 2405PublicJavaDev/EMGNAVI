@@ -30,4 +30,9 @@ public class noticeServiceImpl implements NoticeService {
     public int getListTotalCount() {
         return noticeMapper.getListTotalCount();
     }
+
+    @Override
+    public Notice getNoticeDetail(int noticeId) {
+        return noticeMapper.getNoticeDetail(noticeId);
+    }
 }

@@ -13,4 +13,6 @@ public interface NoticeMapper {
     List<Notice> getNoticeList(RowBounds rowBounds);
 
     int getListTotalCount();
+
+    Notice getNoticeDetail(int noticeId);
 }
