@@ -4,11 +4,11 @@ import com.emginfo.emgnavi.user.model.dto.*;
 import com.emginfo.emgnavi.user.model.mapper.UserMapper;
 import com.emginfo.emgnavi.user.model.vo.Token;
 import com.emginfo.emgnavi.user.model.vo.User;
-//import net.nurigo.sdk.NurigoApp;
-//import net.nurigo.sdk.message.model.Message;
-//import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
-//import net.nurigo.sdk.message.response.SingleMessageSentResponse;
-//import net.nurigo.sdk.message.service.DefaultMessageService;
+import net.nurigo.sdk.NurigoApp;
+import net.nurigo.sdk.message.model.Message;
+import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
+import net.nurigo.sdk.message.response.SingleMessageSentResponse;
+import net.nurigo.sdk.message.service.DefaultMessageService;
 import com.emginfo.emgnavi.user.service.UserService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +25,7 @@ import java.util.Map;
 @Service
 public class UserServiceImpl implements UserService {
 
-//    private final DefaultMessageService messageService;
+    private final DefaultMessageService messageService;
     private UserMapper mapper;
     private RestTemplate restTemplate;
 
@@ -34,23 +34,23 @@ public class UserServiceImpl implements UserService {
     private static final String tokenUri = "https://kauth.kakao.com/oauth/token";
 
     public UserServiceImpl(UserMapper mapper) {
-//        this.messageService = NurigoApp.INSTANCE.initialize("NCSY6JZLRXVWS3BX", "RDC9PGPKKGCSIQSWT4IFHK0NNO1IOVW1", "https://api.coolsms.co.kr");
+        this.messageService = NurigoApp.INSTANCE.initialize("NCSY6JZLRXVWS3BX", "RDC9PGPKKGCSIQSWT4IFHK0NNO1IOVW1", "https://api.coolsms.co.kr");
         this.mapper = mapper;
         this.restTemplate = new RestTemplate();
     }
 
-//    @Override
-//    public SingleMessageSentResponse sendVerificationCode(String userPhone, String verificationCode) {
-//        Message message = new Message();
-//        message.setFrom("01053248588");
-//
-//        message.setTo(userPhone);
-//
-//        message.setText("[응급NAVI] 인증번호[" + verificationCode + "]를 화면에 입력해주세요");
-//        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
-//
-//        return response;
-//    }
+    @Override
+    public SingleMessageSentResponse sendVerificationCode(String userPhone, String verificationCode) {
+        Message message = new Message();
+        message.setFrom("01053248588");
+
+        message.setTo(userPhone);
+
+        message.setText("[응급NAVI] 인증번호[" + verificationCode + "]를 화면에 입력해주세요");
+        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
+
+        return response;
+    }
 
     @Override
     public int insertUser(UserInfoRequest request) {
@@ -200,7 +200,6 @@ public class UserServiceImpl implements UserService {
         if (gender == null) {
             return ""; // null 값 처리
         }
-
         switch (gender.toLowerCase()) {
             case "female":
                 return "F";
@@ -209,5 +208,18 @@ public class UserServiceImpl implements UserService {
             default:
                 return gender; // 변환되지 않은 값은 그대로 반환
         }
+    }
+
+    @Override
+    public String convertPhone(String phone) {
+        // 1. "+82"를 "0"으로 대체
+        if (phone.startsWith("+82")) {
+            phone = phone.replaceFirst("\\+82", "0");
+        }
+        // 2. 모든 하이픈("-") 제거
+        phone = phone.replaceAll("-", "");
+        // 3. 공백도 제거
+        phone = phone.replaceAll("\\s+", "");
+        return phone;
     }
 }

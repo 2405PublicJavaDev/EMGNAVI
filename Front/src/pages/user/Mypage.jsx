@@ -1,8 +1,41 @@
-import { useState, EventHandler, ReactNode } from 'react'
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../UserContext';
+import useAxios from '../../axios/useAxios';
+import axios from 'axios';
 
 const Mypage = () => {
     const nav = useNavigate();
+    const { userId } = useContext(UserContext);  // UserContext에서 userId를 가져옴
+    const { fetchData: fetchCustomData } = useAxios();  // useAxios의 fetchData 가져오기
+    const [userInfo, setUserInfo] = useState(null);
+    const [values, setValues] = useState({ userPw: '' });
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (userId) {
+                try {
+                    const response = await axios.post('/api/getInf', { userId });
+                    setUserInfo(response.data); 
+                    setValues({
+                        userPw: response.data.userPw
+                    });
+
+                    if (response.data.userPw == null) {
+                        nav("/user/social/mypage/modify");
+                    }
+                } catch (error) {
+                    alert("데이터 가져오는 중 오류 발생");
+                    console.error(error);  // 오류 출력
+                }
+            }
+        };
+
+        fetchData();  // 비동기 함수 호출
+    }, [userId]);  // userId가 변경될 때만 실행
+
+
+
     const handlerGoMypage = () => {
         nav("/user/mypage/check");
     }

@@ -265,12 +265,12 @@ function GetEmergencyMap() {
                 <div className="flex w-[25%] h-[100vh] bg-white p-4">
                     <div className="flex flex-col w-[25%]">
                         <h1>
-                            <img className="left-[24px] top-0" width="111" height="97" src="/img/header/logo.png" alt="Logo"></img>
+                            <img className="left-[24px] top-0 cursor-pointer" width="111" height="97" src="/img/header/logo.png" alt="Logo" onClick={() => window.location.href = '/'}></img>
                         </h1>
                         <div className="text-center font-bold bg-[#0B2D85] text-[#ffffff] py-3"><button>응급실</button></div>
-                        <div className="text-center font-bold py-3"><button>병원</button></div>
-                        <div className="text-center font-bold py-3"><button>약국</button></div>
-                        <div className="text-center font-bold py-3"><button>AED</button></div>
+                        <div className="text-center font-bold py-3"><button onClick={() => window.location.href = 'getHospitalMap'}>병원</button></div>
+                        <div className="text-center font-bold py-3"><button onClick={() => window.location.href = 'getPharmacyMap'}>약국</button></div>
+                        <div className="text-center font-bold py-3"><button onClick={() => window.location.href = 'getAedMap'}>AED</button></div>
                     </div>
                     <div className="flex flex-col w-[75%]">
                         <div className="space-y-3 px-[10px]">
@@ -303,7 +303,7 @@ function GetEmergencyMap() {
                                                 <TableCell className="aed-name font-bold text-gray-800" style={{ border: 'none', padding: '5px 10px 0px 10px', fontWeight: '900', color: '#0B2D85', fontSize: '16px' }}>{hospital.dutyName}</TableCell>
                                             </TableRow>
                                             <TableRow key={`${index}-hvec`}>
-                                                <TableCell className="aed-tel text-sm text-gray-600" style={{ border: 'none', padding: '5px 10px' }}>{'응급병상 : ' + hospital.hvec}</TableCell>
+                                                <TableCell className="aed-tel text-sm text-gray-600" style={{ border: 'none', padding: '5px 10px' }}><b>{'응급병상 : ' + hospital.hvec + ' 🛏️'}</b></TableCell>
                                             </TableRow>
                                             <TableRow key={`${index}-tel`}>
                                                 <TableCell className="aed-tel text-sm text-gray-600" style={{ border: 'none', padding: '5px 10px' }}>{hospital.dutyTel3}</TableCell>

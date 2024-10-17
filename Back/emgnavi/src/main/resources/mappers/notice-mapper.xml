@@ -9,7 +9,9 @@
     </insert>
 
     <select id="getNoticeList">
-        SELECT * FROM NOTICE_TBL
+        SELECT *
+        FROM NOTICE_TBL
+        ORDER BY NOTICE_DATE DESC 
     </select>
 
     <select id="getListTotalCount" resultType="int">

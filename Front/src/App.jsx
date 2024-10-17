@@ -19,6 +19,9 @@ import RegisterComplete from './pages/user/RegisterComplete';
 
 import LoginMain from './pages/user/LoginMain';
 import Kakao from './pages/user/Kakao';
+import Naver from './pages/user/Naver';
+import SocialComplete from './pages/user/SocialComplete';
+import SocialMypageModifyInf from './pages/user/SocialMypageModifyInf';
 
 import FindEmail from './pages/user/FindEmail';
 import FIndEmailComplete from './pages/user/FindEmailComplete';
@@ -49,7 +52,6 @@ import FavoriteHospital from './pages/user/Favorite/FavHospital';
 import FavPharmacy from './pages/user/Favorite/FavPharmacy'
 import GetAedMap from './pages/map/GetAedMap'
 import GetEmergencyStat from './pages/stat/GetEmergencyStat';
-import Naver from './pages/user/Naver';
 
 function App() {
 
@@ -87,6 +89,8 @@ function App() {
         <Route path='/user/login' element={<LoginMain />} />
         <Route path="/kakao/callback" element={<Kakao />} />
         <Route path="/naver/callback" element={<Naver />} />
+        <Route path="/user/social/complete" element={<SocialComplete />} />
+        <Route path="/user/social/mypage/modify" element={<SocialMypageModifyInf />} />
 
         <Route path='/user/findEmail' element={<FindEmail />} />
         <Route path='/user/findEmail/complete' element={<FIndEmailComplete />} />
