@@ -30,13 +30,6 @@ public interface ReviewMapper {
     List<Reviews> getReviewListByNo(String no);
 
     /**
-     * 리뷰 수정 Mapper
-     * @param no
-     * @return
-     */
-    int updateReview(String no);
-
-    /**
      * 리뷰 삭제 Mapper
      * @param no
      * @return

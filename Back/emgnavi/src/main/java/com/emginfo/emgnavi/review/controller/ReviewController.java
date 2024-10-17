@@ -48,18 +48,6 @@ public class ReviewController {
         return new SuccessResponse(SuccessCode.RESOURCE_FOUND, reviewList);
     }
 
-    @PatchMapping("/review/{no}")
-    public SuccessResponse updateReview(HttpSession session, @PathVariable String no, ) {
-        String id = (String) session.getAttribute("userId");
-        if (id == null) { throw new CustomException(ErrorCode.SESSION_INVALID); }
-        int result = reviewService.updateReview(no);
-        if (result > 0) {
-            return new SuccessResponse(SuccessCode.UPDATE_SUCCESS);
-        } else {
-            throw new CustomException(ErrorCode.UPDATE_FAILED);
-        }
-    }
-
     @DeleteMapping("/review/{no}")
     public SuccessResponse deleteReview(HttpSession session, @PathVariable String no) {
         String id = (String) session.getAttribute("userId");
