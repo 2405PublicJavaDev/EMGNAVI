@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Truncate from 'react-truncate';
 import parse, { domToReact } from 'html-react-parser';
 import { formatDate } from '../common/dateUtil';
+import { UserContext } from '../../UserContext';
+import { useNavigate } from 'react-router-dom';
 
 const GetNoticeList = () => {
 
@@ -13,6 +15,10 @@ const GetNoticeList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);  // 총 페이지 수
     const itemsPerPage = 10;
+
+    const { userId } = useContext(UserContext);
+
+    const navigate = useNavigate();
 
     const fetchNotices = (page = 1) => {
 
@@ -150,6 +156,35 @@ const GetNoticeList = () => {
         });
     };
 
+    // 삭제 버튼 핸들러
+    const handleDeleteBtn = (noticeId) => {
+
+        const url = `/api/notice/delete?noticeId=${noticeId}`;
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('data: ' + data);
+                if (data === 1) {
+                    //성공 처리
+                    console.log('공지사항 삭제 성공');
+                    alert('공지사항 삭제 성공');
+                    window.location.href = 'https://127.0.0.1:3000/notice/getNoticeList';
+                } else {
+                    console.log('공지사항 삭제 실패');
+                    alert('공지사항 삭제 실패');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching notice data:', error);
+            });
+    };
+
     return (
         <div className="bg-white flex flex-row justify-center w-full">
             <div className="bg-white w-[100%] h-[2143px] relative">
@@ -162,6 +197,7 @@ const GetNoticeList = () => {
                             <div className="absolute w-[100%] h-[194px] top-0 left-0 bg-[#0b2d85]">
                                 <div className="w-[145px] h-[38px] top-[38px] left-[335px] [font-family:'Inter',Helvetica] font-bold text-white text-[32px] leading-[normal] whitespace-nowrap absolute tracking-[0]">
                                     공지사항
+                                    {userId == 'admin' ? (<button onClick={() => window.location.href = 'postNotice'} className="ml-[30px] w-[100px] h-[45px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">등록</button>) : ('')}
                                 </div>
                             </div>
                             <div id='main' className="absolute w-[100%] h-[1675px] top-[119px] left-[310px] rounded-[10px_10px_0px_0px] overflow-hidden">
@@ -180,8 +216,16 @@ const GetNoticeList = () => {
                                                                 <span>&nbsp;|&nbsp;</span>
                                                                 {/* <span>{notice.noticeDate}</span> */}
                                                                 <span>{formatDate(notice.noticeDate)}</span>
+
                                                             </div>
                                                             <h2 className="text-xl font-bold mt-2 text-center" onClick={() => window.location.href = 'getNoticeDetail?noticeId=' + notice.noticeId}>{notice.noticeTitle}</h2>
+
+                                                            {userId == 'admin' ? (
+                                                                <div className="flex space-x-4">
+                                                                    <button onClick={() => window.location.href = 'putNotice?noticeId=' + notice.noticeId} className="w-[100px] h-[35px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">수정</button>
+                                                                    <button onClick={() => handleDeleteBtn(notice.noticeId)} className="w-[100px] h-[35px] bg-[#0b2d85] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#fff] text-center">삭제</button>
+                                                                </div>) : ('')}
+
                                                         </div>
                                                         <div id='div2' className='flex-grow min-w-0'>
                                                             <Truncate lines={3} ellipsis={<span>... <span className="text-gray-400 hover:underline cursor-pointer">[상세보기]</span></span>}>

@@ -1,13 +1,30 @@
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import StyledHTMLContent from '../common/StyledHTMLContent';
 import { formatDate } from '../common/dateUtil';
+import { UserContext } from '../../UserContext';
 
 const GetNoticeDetail = () => {
     const [searchParams] = useSearchParams();
     const noticeId = searchParams.get('noticeId');  // 쿼리 파라미터에서 'noticeId' 값 가져오기
     const [notice, setNotice] = useState(null);
+
+    const { userId } = useContext(UserContext);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // userId가 ''이 아닐 때에만 동작
+        if (userId !== '') {
+            console.log(userId);
+            if (userId === null || userId !== 'admin') {
+                // 경고문구 출력 후 이전 페이지로 강제이동
+                alert('관리자 계정이 아닙니다!');
+                navigate(-1);
+            }
+        }
+    }, [userId]);
 
     useEffect(() => {
         if (noticeId) {
@@ -27,6 +44,35 @@ const GetNoticeDetail = () => {
                 });
         }
     }, []);
+
+    // 삭제 버튼 핸들러
+    const handleDeleteBtn = (noticeId) => {
+
+        const url = `/api/notice/delete?noticeId=${noticeId}`;
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('data: ' + data);
+                if (data === 1) {
+                    //성공 처리
+                    console.log('공지사항 삭제 성공');
+                    alert('공지사항 삭제 성공');
+                    window.location.href = 'https://127.0.0.1:3000/notice/getNoticeList';
+                } else {
+                    console.log('공지사항 삭제 실패');
+                    alert('공지사항 삭제 실패');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching notice data:', error);
+            });
+    };
 
     useEffect(() => {
         if (notice) {
@@ -60,6 +106,7 @@ const GetNoticeDetail = () => {
                                 {notice ? (
                                     <div className="w-[145px] h-[38px] top-[38px] left-[335px] [font-family:'Inter',Helvetica] font-bold text-white text-[32px] leading-[normal] whitespace-nowrap absolute tracking-[0]">
                                         {notice.noticeTitle}
+
                                     </div>
                                 ) : (
                                     <p>공지사항을 불러오는 중입니다...</p>
@@ -81,6 +128,11 @@ const GetNoticeDetail = () => {
                                         ) : (
                                             <p>공지사항을 불러오는 중입니다...</p>
                                         )}
+                                        {userId == 'admin' ? (
+                                            <div className="flex space-x-4">
+                                                <button onClick={() => window.location.href = 'putNotice?noticeId=' + notice.noticeId} className="w-[100px] h-[35px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">수정</button>
+                                                <button onClick={() => handleDeleteBtn(notice.noticeId)} className="w-[100px] h-[35px] bg-[#0b2d85] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#fff] text-center">삭제</button>
+                                            </div>) : ('')}
                                     </div>
 
                                 </div>
