@@ -42,8 +42,8 @@ public class MapServiceImpl implements MapService {
 
         System.out.println("maxLat="+maxLat+" minLat="+minLat+" maxLon="+maxLon+" minLon="+minLon);
 
-        //해당되는 좌표의 범위 안에 있는 가맹점
-        List<Hospital>tempAroundHospitalList = mapMapper.getAroundHospitalList(maxLat, maxLon, minLat, minLon);
+        //해당되는 좌표의 범위 안에 있는 응급실이 있는 병원
+        List<Hospital>tempAroundHospitalList = mapMapper.getAroundEmgRoomList(maxLat, maxLon, minLat, minLon);
         List<Hospital>resultAroundHospitalList = new ArrayList<>();
 
         System.out.println("listSize: "+tempAroundHospitalList.size());
@@ -78,7 +78,7 @@ public class MapServiceImpl implements MapService {
 
         System.out.println("maxLat="+maxLat+" minLat="+minLat+" maxLon="+maxLon+" minLon="+minLon);
 
-        //해당되는 좌표의 범위 안에 있는 가맹점
+        //해당되는 좌표의 범위 안에 있는 AED
         List<Aed>tempAroundAedList = mapMapper.getAroundAedList(maxLat, maxLon, minLat, minLon);
         List<Aed>resultAroundAedList = new ArrayList<>();
 
@@ -114,7 +114,7 @@ public class MapServiceImpl implements MapService {
 
         System.out.println("maxLat="+maxLat+" minLat="+minLat+" maxLon="+maxLon+" minLon="+minLon);
 
-        //해당되는 좌표의 범위 안에 있는 가맹점
+        //해당되는 좌표의 범위 안에 있는 약국
         List<Pharmacy>tempAroundPharmacyList = mapMapper.getAroundPharmacyList(maxLat, maxLon, minLat, minLon);
         List<Pharmacy>resultAroundPharmacyList = new ArrayList<>();
 
@@ -128,6 +128,42 @@ public class MapServiceImpl implements MapService {
             }
         }
         return resultAroundPharmacyList;
+    }
+
+    @Override
+    public List<Hospital> getAroundHospitalList(GpsInfo gpsInfo) {
+        //현재 위도 좌표 (y 좌표)
+        double nowLatitude = gpsInfo.getLatitude();
+        //현재 경도 좌표 (x 좌표)
+        double nowLongitude = gpsInfo.getLongitude();
+
+        //m당 y 좌표 이동 값
+        double mForLatitude =(1 /(EARTH_RADIUS* 1 *(Math.PI/ 180)))/ 1000;
+        //m당 x 좌표 이동 값
+        double mForLongitude =(1 /(EARTH_RADIUS* 1 *(Math.PI/ 180)* Math.cos(Math.toRadians(nowLatitude))))/ 1000;
+
+        //현재 위치 기준 검색 거리 좌표
+        double maxLat = nowLatitude +(gpsInfo.getDistance()* mForLatitude);
+        double minLat = nowLatitude -(gpsInfo.getDistance()* mForLatitude);
+        double maxLon = nowLongitude +(gpsInfo.getDistance()* mForLongitude);
+        double minLon = nowLongitude -(gpsInfo.getDistance()* mForLongitude);
+
+        System.out.println("maxLat="+maxLat+" minLat="+minLat+" maxLon="+maxLon+" minLon="+minLon);
+
+        //해당되는 좌표의 범위 안에 있는 병원
+        List<Hospital>tempAroundHospitalList = mapMapper.getAroundHospitalList(maxLat, maxLon, minLat, minLon);
+        List<Hospital>resultAroundHospitalList = new ArrayList<>();
+
+        System.out.println("listSize: "+tempAroundHospitalList.size());
+
+        //정확한 거리 측정
+        for(Hospital aroundHospital : tempAroundHospitalList) {
+            double distance = this.getDistance(nowLatitude, nowLongitude, Double.parseDouble(aroundHospital.getWgs84Lat()), Double.parseDouble(aroundHospital.getWgs84Lon()));
+            if(distance < gpsInfo.getDistance()) {
+                resultAroundHospitalList.add(aroundHospital);
+            }
+        }
+        return resultAroundHospitalList;
     }
 
     private double getDistance(double nowLatitude, double nowLongitude, double locationLat, double locationLon){

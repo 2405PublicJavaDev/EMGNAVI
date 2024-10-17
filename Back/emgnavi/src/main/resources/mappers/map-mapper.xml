@@ -3,12 +3,18 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.emginfo.emgnavi.map.mapper.MapMapper">
-    <select id="getAroundHospitalList" resultType="Hospital">
+    <select id="getAroundEmgRoomList" resultType="Hospital">
         SELECT * FROM HOSPITAL_TBL
                  WHERE
                      WGS_84_LON BETWEEN ${minLon} AND ${maxLon} AND
                      WGS_84_LAT BETWEEN ${minLat} AND ${maxLat} AND
                      DUTY_ERYN = 1
+    </select>
+    <select id="getAroundHospitalList" resultType="Hospital">
+        SELECT * FROM HOSPITAL_TBL
+                 WHERE
+                     WGS_84_LON BETWEEN ${minLon} AND ${maxLon} AND
+                     WGS_84_LAT BETWEEN ${minLat} AND ${maxLat} AND
     </select>
     <select id="getAroundAedList" resultType="Aed">
         SELECT * FROM AED_TBL

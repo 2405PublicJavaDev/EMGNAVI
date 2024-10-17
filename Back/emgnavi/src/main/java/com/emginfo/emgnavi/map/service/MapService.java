@@ -24,4 +24,6 @@ public interface MapService {
     List<Aed> getAroundAedList(GpsInfo gpsInfo);
 
     List<Pharmacy> getAroundPharmacyList(GpsInfo gpsInfo);
+
+    List<Hospital> getAroundHospitalList(GpsInfo gpsInfo);
 }

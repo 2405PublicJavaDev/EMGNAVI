@@ -10,6 +10,8 @@ import java.util.List;
 @Mapper
 public interface MapMapper {
 
+    List<Hospital> getAroundEmgRoomList(double maxLat, double maxLon, double minLat, double minLon);
+
     List<Hospital> getAroundHospitalList(double maxLat, double maxLon, double minLat, double minLon);
 
     List<Aed> getAroundAedList(double maxLat, double maxLon, double minLat, double minLon);
