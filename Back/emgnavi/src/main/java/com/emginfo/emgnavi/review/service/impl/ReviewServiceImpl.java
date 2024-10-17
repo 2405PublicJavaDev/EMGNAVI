@@ -40,6 +40,13 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Reviews> getReviewListByNo(String no) {
+        List<Reviews> reviewList = reviewMapper.getReviewListByNo(no);
+        return reviewList;
+    }
+
+    @Override
     public int deleteReview(String no) {
         return reviewMapper.deleteReview(no);
     }

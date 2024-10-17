@@ -23,6 +23,13 @@ public interface ReviewMapper {
     List<Reviews> getReviewListByRefNo(String refNo);
 
     /**
+     * 리뷰 번호로 조회 Mapper
+     * @param no
+     * @return
+     */
+    List<Reviews> getReviewListByNo(String no);
+
+    /**
      * 리뷰 삭제 Mapper
      * @param no
      * @return

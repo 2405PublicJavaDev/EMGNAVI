@@ -23,6 +23,13 @@ public interface ReviewService {
     List<Reviews> getReviewListByRefNo(String refNo);
 
     /**
+     * 리뷰 번호로 조회 Service
+     * @param no
+     * @return
+     */
+    List<Reviews> getReviewListByNo(String no);
+
+    /**
      * 리뷰 삭제 Service
      * @param no
      * @return
