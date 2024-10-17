@@ -217,6 +217,8 @@ const GetNoticeList = () => {
                                                 조회된 결과가 없습니다.
                                             </div>
                                         )}
+                                        {/* 페이지네이션 */}
+                                        {renderPageButtons()}
                                     </div>
 
 
