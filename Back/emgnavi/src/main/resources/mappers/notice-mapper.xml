@@ -26,4 +26,8 @@
     <select id="getNoticeDetail">
         SELECT * FROM NOTICE_TBL WHERE NOTICE_ID = #{noticeId}
     </select>
+
+    <delete id="deleteNotice">
+        DELETE FROM NOTICE_TBL WHERE NOTICE_ID = #{noticeId}
+    </delete>
 </mapper>
