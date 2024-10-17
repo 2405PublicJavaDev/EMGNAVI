@@ -26,6 +26,13 @@ public class NoticeController {
         return String.valueOf(result);
     }
 
+    @PostMapping("/put")
+    public String putNotice(@RequestBody Notice notice) {
+        System.out.println(notice);
+        int result = noticeService.putNotice(notice);
+        return String.valueOf(result);
+    }
+
     @GetMapping("/list")
     public SuccessResponse getNoticeList(
             @RequestParam(defaultValue = "0") int page,

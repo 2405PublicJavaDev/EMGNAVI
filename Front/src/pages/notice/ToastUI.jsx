@@ -6,7 +6,7 @@ import { useRef, useState, useEffect, useContext } from "react";
 
 import { UserContext } from "../../UserContext";
 
-const ToastUI = ({ initialValue = "" }) => {
+const ToastUI = ({ initialValue = "", notice = null }) => {
 
     const { userId } = useContext(UserContext);
 
@@ -38,17 +38,30 @@ const ToastUI = ({ initialValue = "" }) => {
         console.log('title' + titleRef.current?.value);
         console.log('uid' + userId);
 
-        fetch(`/api/notice/post`, {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json',
-            },
-            body: JSON.stringify({
+        const url = notice ? `/api/notice/put` : `/api/notice/post`;
+
+        const body = notice
+            ? JSON.stringify({
+                noticeId: notice.noticeId, // 수정할 때 공지사항의 id 추가
                 writerId: userId,
                 noticeTitle: titleRef.current?.value,
                 noticeContents: editorRef.current?.getInstance().getHTML(),
                 noticeMarkdown: editorRef.current?.getInstance().getMarkdown(),
-            }),
+                noticeDate: notice.noticeDate, // 기존 등록일 사용
+            })
+            : JSON.stringify({
+                writerId: userId,
+                noticeTitle: titleRef.current?.value,
+                noticeContents: editorRef.current?.getInstance().getHTML(),
+                noticeMarkdown: editorRef.current?.getInstance().getMarkdown(),
+            });
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json',
+            },
+            body: body,
         })
             .then(response => response.json())
             .then(data => {
@@ -72,7 +85,8 @@ const ToastUI = ({ initialValue = "" }) => {
         <>
             <div className="mb-[16px]">
                 <div className="w-[67px] h-[25px] text-[24px] font-['Inter'] font-bold flex justify-center mb-[16px]"><span className="text-[#000]">제목 </span><span className="text-[#f00]">*</span></div>
-                <input id="noticeTitle" ref={titleRef} type="text" className="w-[1246px] h-[50px] border-[1px] border-solid border-[#d9d9d9] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#7d899c] pl-[16px]" placeholder="제목 입력" />
+                <input id="noticeTitle" ref={titleRef} type="text" className="w-[1246px] h-[50px] border-[1px] border-solid border-[#d9d9d9] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#7d899c] pl-[16px]" placeholder="제목 입력"
+                    defaultValue={notice ? notice.noticeTitle : ""} />
             </div>
 
             <Editor

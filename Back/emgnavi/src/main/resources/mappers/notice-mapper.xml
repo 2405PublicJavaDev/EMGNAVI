@@ -7,6 +7,11 @@
     <insert id="postNotice">
         INSERT INTO NOTICE_TBL VALUES (SEQ_NOTICE_NO.nextval, #{writerId}, #{noticeTitle}, #{noticeContents}, DEFAULT, #{noticeMarkdown})
     </insert>
+    <update id="putNotice">
+        UPDATE NOTICE_TBL
+        SET NOTICE_TITLE = #{noticeTitle}, NOTICE_CONTENTS = #{noticeContents}, NOTICE_MARKDOWN = #{noticeMarkdown}
+        WHERE NOTICE_ID = #{noticeId}
+    </update>
 
     <select id="getNoticeList">
         SELECT *

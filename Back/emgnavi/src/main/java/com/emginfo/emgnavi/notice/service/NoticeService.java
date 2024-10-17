@@ -18,4 +18,6 @@ public interface NoticeService {
     int getListTotalCount();
 
     Notice getNoticeDetail(int noticeId);
+
+    int putNotice(Notice notice);
 }

@@ -36,6 +36,7 @@ import MypageCheckPw from './pages/user/MypageCheckPw';
 import MypageModifyInf from './pages/user/MypageModifyInf';
 
 import PostNotice from './pages/notice/PostNotice';
+import PutNotice from './pages/notice/PutNotice';
 import GetNoticeList from './pages/notice/GetNoticeList';
 import GetNoticeDetail from './pages/notice/GetNoticeDetail';
 
@@ -106,6 +107,7 @@ function App() {
         <Route path="/user/mypage/modify" element={<MypageModifyInf />} />
 
         <Route path='/notice/postNotice' element={<PostNotice />} />
+        <Route path='/notice/putNotice' element={<PutNotice />} />
         <Route path='/notice/getNoticeList' element={<GetNoticeList />} />
         <Route path='/notice/getNoticeDetail' element={<GetNoticeDetail />} />
 

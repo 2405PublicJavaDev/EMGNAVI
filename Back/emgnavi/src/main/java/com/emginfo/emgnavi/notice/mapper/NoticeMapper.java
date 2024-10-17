@@ -15,4 +15,6 @@ public interface NoticeMapper {
     int getListTotalCount();
 
     Notice getNoticeDetail(int noticeId);
+
+    int putNotice(Notice notice);
 }
