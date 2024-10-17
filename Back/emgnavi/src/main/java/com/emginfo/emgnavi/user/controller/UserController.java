@@ -54,7 +54,7 @@ public class UserController {
 //
 //        return ResponseEntity.ok("인증 코드가 전송되었습니다");
 //    }
-
+//
 //    @PostMapping("/verify/code")
 //    public ResponseEntity<String> verifyCode(@RequestBody VerifyCodeRequest request, HttpSession session) {
 //        String storedCode = (String) session.getAttribute("verificationCode");
@@ -86,14 +86,13 @@ public class UserController {
 
     @PostMapping("/user")
     public void insertUser(@RequestBody UserInfoRequest request) {
+        System.out.println(request);
         int result = uService.insertUser(request);
-//        return new SuccessResponse(SuccessCode.REGISTER_SUCCESS);
     }
 
     @PostMapping("/id/duplicate")
     public ResponseEntity<String> checkIdDuplicate(@RequestBody UserIdRequest request) {
         int result = uService.checkIdDuplicate(request);
-
         if (result > 0) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 사용중인 아이디입니다.");
         } else {
@@ -107,10 +106,10 @@ public class UserController {
         int result = uService.checkNicknameDuplicate(request);
 
         if (result > 0) {
-            System.out.println("사용중");
+//            System.out.println("사용중");
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 사용중인 닉네임입니다.");
         } else {
-            System.out.println("사용가능");
+//            System.out.println("사용가능");
             return ResponseEntity.ok("사용 가능한 닉네임입니다.");
         }
     }
@@ -122,7 +121,7 @@ public class UserController {
 //            System.out.println(user.getUserId());
             return ResponseEntity.ok(user.getUserId());  // 조회된 유저의 아이디 반환
         } else {
-            System.out.println("정보 없음");
+//            System.out.println("정보 없음");
             return ResponseEntity.ok("해당 휴대폰 번호로 등록된 아이디가 없습니다."); // 200 OK와 함께 메시지 반환
         }
     }
@@ -153,20 +152,58 @@ public class UserController {
     @PostMapping("/kakao")
     public User kakaoCheck(@RequestBody Map<String, String> requestBody, HttpSession session) {
         System.out.println("인가코드 : " + requestBody.get("code"));
-        String accessToken = uService.getAccessToken(requestBody.get("code"));
+        String accessToken = uService.getKaKaoAccessToken(requestBody.get("code"));
         System.out.println("토큰 : " + accessToken);
-        HashMap<String, Object> kakaoInfo = uService.getUserInfo(accessToken);
+        HashMap<String, Object> kakaoInfo = uService.getKakaoUserInfo(accessToken);
         String userId = (String) kakaoInfo.get("email");
+        String phone = (String) kakaoInfo.get("phone_number");
+        String userPhone = uService.convertPhone(phone);
+        String gender = (String) kakaoInfo.get("gender");
+        String userGender = uService.convertGender(gender);
+        String userName = (String) kakaoInfo.get("name");
         User user = uService.selectUserbyId(userId);
         if(user != null) {
             System.out.println("이미 존재하는 회원");
             session.setAttribute("userId", user.getUserId());
             session.setAttribute("userNickname", user.getUserNickname());
+            System.out.println(user.getUserNickname());
             return user;
         } else {
             System.out.println("회원가입 필요");
             User newUser = new User();
             newUser.setUserId(userId);
+            newUser.setUserPhone(userPhone);
+            newUser.setUserGender(userGender);
+            newUser.setUserName(userName);
+            return newUser;
+        }
+    }
+
+    @PostMapping("/naver")
+    public User naverCheck(@RequestBody Map<String, String> requestBody, HttpSession session) {
+        System.out.println("인가코드 : " + requestBody.get("code"));
+        String accessToken = uService.getNaverAccessToken(requestBody.get("code"));
+        System.out.println("토큰 : " + accessToken);
+        HashMap<String, Object> naverInfo = uService.getNaverUserInfo(accessToken);
+        String userId = (String) naverInfo.get("email");
+        String phone = (String) naverInfo.get("phone_number");
+        String userPhone = uService.convertPhone(phone);
+        String userGender = (String) naverInfo.get("gender");
+        String userName = (String) naverInfo.get("name");
+        User user = uService.selectUserbyId(userId);
+        if (user != null) {
+            System.out.println("이미 존재하는 회원");
+            session.setAttribute("userId", user.getUserId());
+            session.setAttribute("userNickname", user.getUserNickname());
+            System.out.println(user.getUserNickname());
+            return user;
+        } else {
+            System.out.println("회원가입 필요");
+            User newUser = new User();
+            newUser.setUserId(userId);
+            newUser.setUserPhone(userPhone);
+            newUser.setUserGender(userGender);
+            newUser.setUserName(userName);
             return newUser;
         }
     }
@@ -266,14 +303,15 @@ public class UserController {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<String> deleteUser(@RequestBody UserIdRequest request) {
+    public ResponseEntity<String> deleteUser(@RequestBody UserIdRequest request, HttpSession session) {
         try {
             // 사용자 조회
             User user = uService.selectUserbyId(request);
             // 사용자 삭제
             int result = uService.deleteUser(request);
-
+            session.invalidate(); // 세션 무효화
             if (result > 0) {
+
                 return ResponseEntity.ok("성공");
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("사용자 삭제 중 오류가 발생했습니다.");

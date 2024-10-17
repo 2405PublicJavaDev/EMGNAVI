@@ -8,8 +8,6 @@ const LoginMain = () => {
 
     const { handleReload } = useContext(UserContext);
 
-
-
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     const nav = useNavigate();
@@ -72,7 +70,10 @@ const LoginMain = () => {
 
     const naverLogin = () => {
         const NAVER_CLIENT_ID = "HybacJJgFsuLnLngHigE"; // 발급 받은 Client ID 입력 
-        const NAVER_CALLBACK_URL = "http://127.0.0.1:3000/naver/callback"; // 작성했던 Callback URL 입력
+        const NAVER_CALLBACK_URL = "https://127.0.0.1:3000/naver/callback"; // 작성했던 Callback URL 입력
+        const naverUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&redirect_uri=${NAVER_CALLBACK_URL}`;
+
+        window.location.href = naverUrl;
     }
 
 

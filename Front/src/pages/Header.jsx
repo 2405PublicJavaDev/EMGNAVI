@@ -23,7 +23,7 @@ const Header = () => {
         if (isConfirmed) {
             await axios.post('/api/logout');
             handleReload(true);
-            nav("/"); // 로그아웃 후 로그인 페이지로 이동
+            nav("/user/login"); // 로그아웃 후 로그인 페이지로 이동
         } // 취소 시 아무 동작도 하지 않음
     };
     const handlerGoMypage = () => {
@@ -93,8 +93,8 @@ const Header = () => {
                         <button className="absolute left-[208px] top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap">주변병원</button>
                         <button className="absolute left-[869px] top-0 w-[147px] text-[16px] font-['Jost'] font-bold text-[#000]">자동제세동기(AED)</button>
                         <button className="absolute left-[1136px] top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap">이용안내</button>
-                        <button className="absolute left-[1329px] top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap"> 공지사항</button>
-                        <button className="absolute left-0 top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap">주변응급실</button>
+                        <button className="absolute left-[1329px] top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap" onClick={() => window.location.href = '/notice/getNoticeList'}> 공지사항</button>
+                        <button className="absolute left-0 top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap" onClick={() => window.location.href = '/map/getEmergencyMap'}>주변응급실</button>
                     </div>
                 </div>
             }

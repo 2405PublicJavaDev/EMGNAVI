@@ -13,6 +13,7 @@ public class Notice {
     private String writerId;
     private String noticeTitle;
     private String noticeContents;
+    private String noticeMarkdown;
     private String noticeDate;
 
 }

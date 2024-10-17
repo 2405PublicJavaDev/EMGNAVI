@@ -4,6 +4,7 @@ import com.emginfo.emgnavi.common.exception.CustomException;
 import com.emginfo.emgnavi.common.exception.ErrorCode;
 import com.emginfo.emgnavi.common.success.SuccessCode;
 import com.emginfo.emgnavi.common.success.SuccessResponse;
+import com.emginfo.emgnavi.review.dto.GetReviewOneByNoResponse;
 import com.emginfo.emgnavi.review.dto.PostReviewRequest;
 import com.emginfo.emgnavi.review.service.ReviewService;
 import com.emginfo.emgnavi.review.vo.Reviews;
@@ -36,10 +37,16 @@ public class ReviewController {
         }
     }
 
-    @GetMapping("/review/{refNo}")
+    @GetMapping("/reviews/{refNo}")
     public SuccessResponse getReviewListByRefNo(@PathVariable String refNo) {
         List<Reviews> reviewList = reviewService.getReviewListByRefNo(refNo);
         return new SuccessResponse(SuccessCode.RESOURCE_FOUND, reviewList);
+    }
+
+    @GetMapping("/review/{no}")
+    public SuccessResponse getReviewOneByNo(@PathVariable String no) {
+        GetReviewOneByNoResponse response = reviewService.getReviewOneByNo(no);
+        return new SuccessResponse(SuccessCode.RESOURCE_FOUND, response);
     }
 
     @DeleteMapping("/review/{no}")

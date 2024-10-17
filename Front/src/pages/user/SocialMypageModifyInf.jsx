@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { UserContext } from '../../UserContext';
 
-const MypageModifyInf = () => {
+const SocialMypageModifyInf = () => {
     const { userId } = useContext(UserContext);
 
     const [isPhoneModalOpen, setIsPhoneModalOpen] = useState(false);
@@ -58,7 +58,6 @@ const MypageModifyInf = () => {
                         userGender: response.data.userGender || '',
                         marketingAgree: response.data.marketingAgree || '',
                     });
-                    setCurrentPw(response.data.userPw);
                 } catch (err) {
                     setError(err);
                 } finally {
@@ -69,34 +68,17 @@ const MypageModifyInf = () => {
         } else {
             setLoading(false);
         }
-    }, []); // 의존성 배열을 빈 배열로 설정
+    }, []);
 
-    const handlePhoneChange = (newPhone) => {
-        setUserPhone(newPhone); // 전화번호 업데이트
-    };
-
-    // 닉네임 중복 확인
     const checkNicknameDuplicate = async (e) => {
-        e.preventDefault(); // Prevent form submission
+        e.preventDefault();
         try {
             const response = await axios.post('/api/nickname/duplicate', { userNickname: values.newNickname });
-            alert(response.data); // Show response message
+            alert(response.data);
             setIsNicknameChecked(true);
         } catch (error) {
             console.error("에러 발생:", error);
             alert(error.response.data);
-        }
-    };
-
-    // 성별 변경 핸들러
-    const handleGenderChange = (gender) => {
-        if (values.userGender !== gender) {
-            setValues(prevValues => ({
-                ...prevValues,
-                userGender: gender
-            }));
-            setIsMaleChecked(gender === 'M');
-            setIsFemaleChecked(gender === 'F');
         }
     };
 
@@ -163,13 +145,12 @@ const MypageModifyInf = () => {
                     userId: userId,
                     userNickname: values.newNickname,
                     userAddress: fullAddress,
-                    userGender: values.userGender,
                     marketingAgree: values.marketingAgree
                 }
             },
             (response) => {
                 alert('정보가 수정되었습니다.');
-                nav("/user/mypage");
+                nav("/");
             }
         )
     };
@@ -212,20 +193,11 @@ const MypageModifyInf = () => {
                 <div className="absolute left-[534px] top-[598px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">아이디 </span><span className="text-[#c2a55d]">*</span></div>
                 <div className="absolute left-[748px] top-[582px] w-[479px] h-[55px] text-[17px] font-['Inter'] text-[#000] flex flex-col justify-center">{userInfo.userId}</div>
 
-                {/* 비밀번호 */}
-                <div className="absolute left-[534px] top-[695px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">비밀번호 </span><span className="text-[#c2a55d]">*</span></div>
-                <button
-                    onClick={openPasswordModal}
-                    type='button'
-                    className="absolute left-[748px] top-[678px] w-[121px] h-[51px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[45px]">
-                    <span className="text-[17px] font-['Inter'] text-[#000] text-center flex flex-col justify-center">변경하기</span>
-                </button>
-
                 {/* 닉네임 */}
-                <div className="absolute left-[534px] top-[806px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">닉네임 </span><span className="text-[#c2a55d]">*</span></div>
-                <div className="absolute left-[748px] top-[790px] w-[506px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
+                <div className="absolute left-[534px] top-[706px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">닉네임 </span><span className="text-[#c2a55d]">*</span></div>
+                <div className="absolute left-[748px] top-[690px] w-[506px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
                 <input
-                    value={values.newNickname || userInfo.userNickname || ''}
+                    value={values.newNickname !== undefined ? values.newNickname : (userInfo.userNickname || '')}  // 우선순위에 따라 값 설정
                     type='text'
                     id='nickname'
                     onChange={(e) => {
@@ -236,35 +208,30 @@ const MypageModifyInf = () => {
                         }));
                         setIsNicknameChecked(false); // 중복 확인 상태 초기화
                     }}
-                    className="absolute left-[775px] top-[791px] w-[399px] h-[53px] text-[17px] font-['Inter'] text-[#000] flex flex-col justify-center outline-0">
+                    className="absolute left-[775px] top-[691px] w-[399px] h-[53px] text-[17px] font-['Inter'] text-[#000] flex flex-col justify-center outline-0">
                 </input>
                 <button
                     type='button'
                     onClick={checkNicknameDuplicate}
-                    className="absolute left-[1264px] top-[790px] w-[122px] h-[55px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]">
+                    className="absolute left-[1264px] top-[690px] w-[122px] h-[55px] bg-[#0b2d85] border-[1px] border-solid border-[#fff] rounded-[5px]">
                     <span className="text-[18px] font-['Inter'] font-bold text-[#fff] text-center flex flex-col justify-center">중복확인</span>
                 </button>
 
                 {/* 휴대폰번호 */}
-                <div className="absolute left-[534px] top-[905px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">휴대폰번호 </span><span className="text-[#c2a55d]">*</span></div>
-                <div className="absolute left-[748px] top-[905px] w-[214px] text-[17px] font-['Inter'] text-[#000]">{userInfo.userPhone}</div>
-                <button
-                    onClick={openPhoneModal}
-                    type='button'
-                    className="absolute left-[894px] top-[891px] w-[121px] h-[51px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[45px]">
-                    <span className="text-[17px] font-['Inter'] text-[#000] text-center flex flex-col justify-center">변경하기</span>
-                </button>
+                <div className="absolute left-[534px] top-[805px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">휴대폰번호 </span><span className="text-[#c2a55d]">*</span></div>
+                <div className="absolute left-[748px] top-[805px] w-[214px] text-[17px] font-['Inter'] text-[#000]">{userInfo.userPhone}</div>
+
 
                 {/* 이름 */}
-                <div className="absolute left-[534px] top-[1002px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">이름</div>
-                <div className="absolute left-[748px] top-[987px] w-[479px] h-[53px] text-[17px] font-['Inter'] text-[#000] flex flex-col justify-center">{userInfo.userName}</div>
+                <div className="absolute left-[534px] top-[902px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">이름</div>
+                <div className="absolute left-[748px] top-[887px] w-[479px] h-[53px] text-[17px] font-['Inter'] text-[#000] flex flex-col justify-center">{userInfo.userName}</div>
 
                 {/* 성별 */}
-                <div className="absolute left-[534px] top-[1105px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">성별</div>
+                <div className="absolute left-[534px] top-[1005px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">성별</div>
                 <button
                     type='button'
-                    onClick={() => handleGenderChange('M')} // 성별 수정 함수 호출
-                    className={`absolute left-[748px] top-[1091px] w-[96px] h-[51px] bg-[#fff] border-[1px] border-solid rounded-[45px] 
+                    disabled
+                    className={`absolute left-[748px] top-[991px] w-[96px] h-[51px] bg-[#fff] border-[1px] border-solid rounded-[45px] 
                     ${values.userGender === 'M' ? 'border-[#0b2d85]' : 'border-[#7d8597]'}`}>
                     <div className={`text-[17px] font-['Inter'] flex flex-col justify-center pl-6 
                             ${values.userGender === 'M' ? 'text-[#0b2d85] font-semibold' : 'text-[#7d8597]'}`}>
@@ -280,8 +247,8 @@ const MypageModifyInf = () => {
 
                 <button
                     type='button'
-                    onClick={() => handleGenderChange('F')} // 성별 수정 함수 호출
-                    className={`absolute left-[860px] top-[1091px] w-[96px] h-[51px] bg-[#fff] border-[1px] border-solid rounded-[45px] 
+                    disabled
+                    className={`absolute left-[860px] top-[991px] w-[96px] h-[51px] bg-[#fff] border-[1px] border-solid rounded-[45px] 
                     ${values.userGender === 'F' ? 'border-[#0b2d85]' : 'border-[#7d8597]'}`}>
                     <div className={`text-[17px] font-['Inter'] flex flex-col justify-center pl-6 
                             ${values.userGender === 'F' ? 'text-[#0b2d85] font-semibold' : 'text-[#7d8597]'}`}>
@@ -295,11 +262,11 @@ const MypageModifyInf = () => {
                     />
                 </button>
                 {/* 주소 */}
-                <div className="absolute left-[538px] top-[1210px] w-[210px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">주소</div>
+                <div className="absolute left-[538px] top-[1110px] w-[210px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">주소</div>
                 <button
                     type='button'
                     onClick={findPostCode}
-                    className="absolute left-[748px] top-[1192px] w-[169px] h-[55px] bg-[#fff] border-[2px] border-solid border-[#0b2d85] rounded-[5px]">
+                    className="absolute left-[748px] top-[1092px] w-[169px] h-[55px] bg-[#fff] border-[2px] border-solid border-[#0b2d85] rounded-[5px]">
                     <span className="text-[17px] font-['Inter'] text-[#000] text-center flex flex-col justify-center">우편번호 찾기</span>
                 </button>
                 <input
@@ -307,20 +274,20 @@ const MypageModifyInf = () => {
                     id='mainaddress'
                     value={values.mainAddress}
                     readOnly
-                    className="absolute left-[927px] top-[1192px] w-[459px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px] outline-0 pl-6"></input>
+                    className="absolute left-[927px] top-[1092px] w-[459px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px] outline-0 pl-6"></input>
                 <input
                     id='detailedAddress'
                     type='text'
                     placeholder='상세주소를 입력해주세요.'
                     value={values.detailedAddress}
                     onChange={handleInputChange}
-                    className="absolute left-[748px] top-[1260px] w-[638px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px] pl-6 outline-0"></input>
+                    className="absolute left-[748px] top-[1160px] w-[638px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px] pl-6 outline-0"></input>
 
                 {/* 마케팅활용동의 */}
-                <div className="absolute left-[534px] top-[1402px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">마케팅활용동의</div>
+                <div className="absolute left-[534px] top-[1302px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold text-[#000] flex flex-col justify-center">마케팅활용동의</div>
                 <img
                     onClick={agreeCheck}
-                    className="absolute left-[748px] top-[1401px]"
+                    className="absolute left-[748px] top-[1301px]"
                     width="24"
                     height="24"
                     src={values.marketingAgree === 'Y' ? '/img/user/button 1117_127.png' : '/img/user/rec (1) 1117_135.png'}
@@ -328,10 +295,10 @@ const MypageModifyInf = () => {
                 <button
                     type='button'
                     onClick={agreeCheck}
-                    className="absolute left-[781px] top-[1397px] w-[48px] h-[33px] text-[17px] font-['Inter'] text-[#000]">수신</button>
+                    className="absolute left-[781px] top-[1297px] w-[48px] h-[33px] text-[17px] font-['Inter'] text-[#000]">수신</button>
                 <img
                     onClick={disagreeCheck}
-                    className="absolute left-[849px] top-[1401px]"
+                    className="absolute left-[849px] top-[1301px]"
                     width="24"
                     height="24"
                     src={values.marketingAgree === 'N' ? '/img/user/button 1117_127.png' : '/img/user/rec (1) 1117_135.png'}
@@ -339,16 +306,16 @@ const MypageModifyInf = () => {
                 <button
                     type='button'
                     onClick={disagreeCheck}
-                    className="absolute left-[886px] top-[1397px] w-[49px] h-[33px] text-[17px] font-['Inter'] text-[#000]">거부</button>           </form>
+                    className="absolute left-[886px] top-[1297px] w-[49px] h-[33px] text-[17px] font-['Inter'] text-[#000]">거부</button>           </form>
 
-            <div className="absolute left-[420px] top-[1526px] w-[1080px] h-0 border-[1px] border-solid border-[#7d8597]"></div>
-            <div className="absolute left-[422px] top-[1600px] text-[17px] text-[#7d8597] whitespace-nowrap"><span className="font-['Inter']">회원을 탈퇴 하시겠습니까?   </span>
+            <div className="absolute left-[420px] top-[1426px] w-[1080px] h-0 border-[1px] border-solid border-[#7d8597]"></div>
+            <div className="absolute left-[422px] top-[1500px] text-[17px] text-[#7d8597] whitespace-nowrap"><span className="font-['Inter']">회원을 탈퇴 하시겠습니까?   </span>
                 <span
                     onClick={handlerDelete}
                     style={{ cursor: 'pointer' }}
                     className="font-['Inter'] font-semibold">회원탈퇴</span></div>
-            <div className="absolute left-[1372px] top-[1851px] text-[24px] font-['Inter'] font-semibold text-[#fff] whitespace-nowrap">내정보 변경</div>
-            <div className="absolute left-[1113px] top-[1690px] w-[387px] h-[60px] flex">
+            <div className="absolute left-[1272px] top-[1851px] text-[24px] font-['Inter'] font-semibold text-[#fff] whitespace-nowrap">내정보 변경</div>
+            <div className="absolute left-[1013px] top-[1690px] w-[387px] h-[60px] flex">
                 <div className="absolute left-0 top-0 w-[184px] h-[60px] flex">
                     <div className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[50px]"></div>
                     <div className="absolute left-0 top-0 w-[184px] h-[60px] text-[16px] font-['Inter'] text-[#0b2d85] text-center flex flex-col justify-center">취소</div>
@@ -399,4 +366,4 @@ const MypageModifyInf = () => {
     )
 }
 
-export default MypageModifyInf
+export default SocialMypageModifyInf

@@ -1,5 +1,6 @@
 package com.emginfo.emgnavi.review.service.impl;
 
+import com.emginfo.emgnavi.review.dto.GetReviewOneByNoResponse;
 import com.emginfo.emgnavi.review.dto.PostReviewRequest;
 import com.emginfo.emgnavi.review.mapper.ReviewMapper;
 import com.emginfo.emgnavi.review.service.ReviewService;
@@ -34,9 +35,19 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional(readOnly = true)
     public List<Reviews> getReviewListByRefNo(String refNo) {
-        List<Reviews> reviews = reviewMapper.getReviewListByRefNo(refNo);
-        return reviews;
+        List<Reviews> reviewList = reviewMapper.getReviewListByRefNo(refNo);
+        return reviewList;
 //        return reviewMapper.getReviewListByRefNo(refNo);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public GetReviewOneByNoResponse getReviewOneByNo(String no) {
+        Reviews review = reviewMapper.getReviewOneByNo(no);
+        GetReviewOneByNoResponse response = new GetReviewOneByNoResponse();
+        response.setWriterId(review.getWriterId());
+        response.setContent(review.getContent());
+        return response;
     }
 
     @Override

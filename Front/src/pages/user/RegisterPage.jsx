@@ -163,63 +163,34 @@ const RegisterPage = () => {
         uEmail: '',
     });
 
-    // 아이디 중복 확인
     const checkIdDuplicate = async (e) => {
         e.preventDefault();
-        setResponseType('id'); // 요청 타입 설정
-        setIdImageSrc(null); // 중복이면 공백 설정
         try {
             const response = await axios.post('/api/id/duplicate', { userId: values.uEmail });
-            handleResponse(response.data); // 응답을 처리하는 함수 호출
+            alert(response.data);
+            setIsIdChecked(true);
         } catch (error) {
-            handleError(error); // 오류 처리 함수 호출
+            setIdImageSrc(null); // 중복이면 공백 설정
+            console.error("에러 발생:", error);
+            alert(error.response.data);
         }
     };
 
-    // 닉네임 중복 확인
     const checkNicknameDuplicate = async (e) => {
         e.preventDefault();
-        setResponseType('nickname'); // 요청 타입 설정
         try {
             const response = await axios.post('/api/nickname/duplicate', { userNickname: values.uNickname });
-            handleResponse(response.data); // 응답을 처리하는 함수 호출
+            alert(response.data);
+            setIsNicknameChecked(true);
         } catch (error) {
-            handleError(error); // 오류 처리 함수 호출
-        }
-    };
-    // 응답 처리 함수
-    const handleResponse = (message) => {
-        const trimmedMessage = message.trim(); // 공백 제거
-        console.log(trimmedMessage); // 로그 추가
-    
-        if (responseType === 'id') {
-            console.log("Response Type: id", trimmedMessage); // Response Type 확인용 로그
-    
-            if (trimmedMessage.includes("사용중")) {
-                setIdImageSrc("/img/user/pink.png"); // 중복이면 공백 설정
-                alert(trimmedMessage); // 중복 메시지 표시
-                setIsIdChecked(false); // 중복이므로 false 설정
-            } else if (trimmedMessage.includes("가능한")) {
-                setIdImageSrc("/img/user/green.png"); // 사용 가능이면 그린 이미지 설정
-                alert(trimmedMessage); // 사용 가능 메시지 표시
-                setIsIdChecked(true); // 사용 가능하므로 true 설정
-            }
-        } else if (responseType === 'nickname') {
-            console.log("Response Type: nickname", trimmedMessage); // Response Type 확인용 로그
-    
-            if (trimmedMessage.includes("사용중")) {
-                alert(trimmedMessage); // 중복 메시지 표시
-                setIsNicknameChecked(false); // 중복이므로 false 설정
-            } else if (trimmedMessage.includes("가능한")) {
-                alert(trimmedMessage); // 사용 가능 메시지 표시
-                setIsNicknameChecked(true); // 사용 가능하므로 true 설정
-            }
+            console.error("에러 발생:", error);
+            alert(error.response.data);
         }
     };
 
     useEffect(() => {
-    console.log("isIdChecked 상태:", isIdChecked);
-}, [isIdChecked]);
+        console.log("isIdChecked 상태:", isIdChecked);
+    }, [isIdChecked]);
 
 
     // 오류 처리 함수
@@ -280,6 +251,7 @@ const RegisterPage = () => {
             const response = await axios.post('/api/user', {
                 userId: values.uEmail,
                 userPw: values.uPassword,
+                userNickname: values.uNickname,
                 userPhone: userPhone,
                 userName: values.uName,
                 userGender: userGender,

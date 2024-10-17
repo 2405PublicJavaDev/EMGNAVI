@@ -56,4 +56,5 @@
         SET USER_PHONE = #{userPhone}
         WHERE USER_ID = #{userId}
     </update>
+
 </mapper>

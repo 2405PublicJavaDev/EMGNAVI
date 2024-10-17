@@ -11,13 +11,13 @@ const PostNotice = () => {
 
     useEffect(() => {
         if (userId) {
-            if (userId != 'admin') {
+            if (userId && userId !== 'admin') {
                 // 경고문구 출력 후 이전 페이지로 강제이동
                 alert('관리자 계정이 아닙니다!');
                 navigate(-1);
             }
         }
-    }, []);
+    }, [userId]);
 
     return (
         <>

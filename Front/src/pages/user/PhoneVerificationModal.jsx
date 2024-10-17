@@ -110,7 +110,6 @@ const PhoneVerificationModal = ({ onClose }) => {
                         console.log(data);
                         if (data.includes('성공')) {
                             alert("휴대폰번호가 변경되었습니다");
-                            setuserPhone(userPhone);
                             onClose();
                         } else {
                             alert("휴대폰번호 변경 실패");
