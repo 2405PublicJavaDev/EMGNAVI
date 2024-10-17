@@ -46,4 +46,17 @@
         WHERE USER_ID = #{writerId}
     </select>
 
+
+<!--    검색창 자동완성 기능-->
+    <select id="searchItemNames" resultType="String">
+        SELECT item_name FROM MEDICINE_TBL
+        WHERE item_name LIKE '%' || #{query} || '%'
+    </select>
+
+    <select id="searchEntpNames" resultType="String">
+        SELECT entp_name FROM MEDICINE_TBL
+        WHERE entp_name LIKE '%' || #{query} || '%'
+    </select>
+
+
 </mapper>

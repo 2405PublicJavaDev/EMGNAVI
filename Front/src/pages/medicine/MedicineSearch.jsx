@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const MedicineSearch = () => {
@@ -7,17 +7,19 @@ const MedicineSearch = () => {
   const [searchType, setSearchType] = useState('itemName');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(0);  // 0부터 시작하는 페이지 인덱스
+  const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const [options, setOptions] = useState([]);
+  const [showAutoComplete, setShowAutoComplete] = useState(false);
   const itemsPerPage = 10;
   const nav = useNavigate();
+  const autoCompleteRef = useRef(null);
 
   const categories = [
     { value: 'itemName', label: '제품명' },
     { value: 'entpName', label: '업체명' },
   ];
 
-  // 의약품 목록 가져오기 (페이징)
   const fetchMedicines = (page = 0) => {
     setIsLoading(true);
     setError(null);
@@ -42,21 +44,47 @@ const MedicineSearch = () => {
       });
   };
 
-  // 검색 요청 처리
+  const fetchAutoCompleteOptions = (inputValue) => {
+    if (inputValue.length < 2) {
+      setOptions([]);
+      return;
+    }
+    
+    fetch(`/api/medicine/autocomplete?query=${inputValue}&searchType=${searchType}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Autocomplete data:', data);
+        const newOptions = data.map((item) => ({
+          value: item.ITEMSEQ,
+          label: searchType === 'itemName' ? item.ITEMNAME : item.ENTPNAME,
+        }));
+        setOptions(newOptions);
+        setShowAutoComplete(newOptions.length > 0);
+      })
+      .catch((error) => {
+        console.error('Error fetching autocomplete options:', error);
+        setOptions([]);
+      });
+  };
+
   const handleSearch = (page = 0) => {
-    if (!searchQuery) return;
+    if (!searchQuery) {
+      fetchMedicines(0);
+      return;
+    }
+    
     setIsLoading(true);
     setError(null);
-    
+
     const queryParams = new URLSearchParams({
       [searchType]: searchQuery,
       page: page.toString(),
-      size: itemsPerPage.toString()
+      size: itemsPerPage.toString(),
     });
-    
+
     const url = `/api/medicine/search?${queryParams}`;
     console.log(`Sending request to: ${url}`);
-    
+
     fetch(url)
       .then((response) => {
         if (!response.ok) {
@@ -78,14 +106,6 @@ const MedicineSearch = () => {
       });
   };
 
-  // 엔터키로 검색 실행
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleSearch(0);  // 엔터키를 누르면 첫 페이지부터 검색 실행
-    }
-  };
-  
-  // 페이지 변경 핸들러
   const handlePageChange = (newPage) => {
     if (searchQuery) {
       handleSearch(newPage);
@@ -94,7 +114,6 @@ const MedicineSearch = () => {
     }
   };
 
-  // 페이지네이션 렌더링
   const renderPageButtons = () => {
     const maxVisiblePages = 10;
     const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
@@ -142,14 +161,26 @@ const MedicineSearch = () => {
   };
 
   useEffect(() => {
-    fetchMedicines(0);  // 초기 페이지 로드 시 0 페이지(첫 페이지) 요청
+    fetchMedicines(0);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (autoCompleteRef.current && !autoCompleteRef.current.contains(event.target)) {
+        setShowAutoComplete(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   return (
     <>
       <div className="flex flex-col items-center justify-center min-h-[1100px] bg-white">
         <div className="w-full max-w-7xl mx-auto p-4 bg-white relative top-[90px]">
-          {/* 검색창과 문구 고정 */}
           <h1 className="text-[52px] font-bold text-center mb-8 leading-[48px] font-NotoSerifTamilSlanted">
             원하시는 의약품을 검색해 주세요
           </h1>
@@ -157,7 +188,11 @@ const MedicineSearch = () => {
           <div className="flex justify-center mb-8">
             <select
               value={searchType}
-              onChange={(e) => setSearchType(e.target.value)}
+              onChange={(e) => {
+                setSearchType(e.target.value);
+                setSearchQuery('');
+                setOptions([]);
+              }}
               className="border p-2 rounded-l-md w-[87px] h-[36px] text-[14px] leading-[20px] text-[#00000080] border-[#00000033]"
             >
               {categories.map((category) => (
@@ -166,14 +201,62 @@ const MedicineSearch = () => {
                 </option>
               ))}
             </select>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={handleKeyPress}  
-              placeholder="원하시는 제품의 이름을 검색해 주세요"
-              className="border p-2 w-[360px] h-[36px] text-[14px] leading-[20px] text-[#00000080] border-[#0000001a] rounded-l-md"
-            />
+
+            <div className="relative" style={{ zIndex: 1000 }}>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  fetchAutoCompleteOptions(e.target.value);
+                }}
+                onFocus={() => setShowAutoComplete(true)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSearch(0);
+                    setShowAutoComplete(false);
+                  }
+                }}
+                placeholder={`원하시는 ${searchType === 'itemName' ? '제품' : '업체'}의 이름을 검색해 주세요`}
+                className="border p-2 w-[360px] h-[36px] text-base leading-[20px] border-[#0000001a] text-black bg-white"
+                style={{ color: 'black', backgroundColor: 'white' }}
+              />
+ {showAutoComplete && (
+        <ul
+          ref={autoCompleteRef}
+          className="absolute z-[9999] w-full bg-white border border-gray-300 mt-1 rounded-md shadow-lg max-h-60 overflow-y-auto"
+          style={{
+            top: '100%',
+            left: 0,
+            backgroundColor: 'white',
+            color: 'black',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          }}
+        >
+          {options.length > 0 ? (
+            options.map((option) => (
+              <li
+                key={option.value}
+                className="p-2 hover:bg-gray-100 cursor-pointer text-black text-base font-normal"
+                style={{
+                  color: 'black',
+                }}
+                onClick={() => {
+                  setSearchQuery(option.label);
+                  setShowAutoComplete(false);
+                  handleSearch(0);
+                }}
+              >
+                {option.label}
+              </li>
+            ))
+          ) : (
+            <li className="p-2 text-gray-500 text-base font-normal">검색 결과가 없습니다</li>
+          )}
+        </ul>
+      )}
+            </div>
+
             <button
               onClick={() => handleSearch(0)}
               className="bg-[#0b2d85] text-white px-4 h-[36px] text-[17px] rounded-r-md"
@@ -182,7 +265,6 @@ const MedicineSearch = () => {
             </button>
           </div>
 
-          {/* 검색 결과 */}
           <div className="overflow-auto w-full text-align-center">
             {isLoading ? (
               <div className="flex justify-center items-center h-[500px] text-[70px] font-roboto text-black">
@@ -239,7 +321,6 @@ const MedicineSearch = () => {
             )}
           </div>
 
-          {/* 페이지네이션 */}
           {!isLoading && !error && medicines.length > 0 && renderPageButtons()}
         </div>
       </div>

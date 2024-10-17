@@ -4,6 +4,8 @@ import com.emginfo.emgnavi.medicine.mapper.MedicineMapper;
 import com.emginfo.emgnavi.medicine.service.MedicineService;
 import com.emginfo.emgnavi.medicine.vo.Medicine;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -18,49 +20,94 @@ public class MedicineController {
     private MedicineService medicineService;
 
     @Autowired
-    private MedicineMapper medicineMapper;  // Mapper 추가
+    private MedicineMapper medicineMapper;
 
-    // 전체 의약품 목록 가져오기 (페이징 처리 추가)
     @GetMapping("/list")
-    public Map<String, Object> getMedicineList(
+    public ResponseEntity<Map<String, Object>> getMedicineList(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        int offset = page * size;
-        List<Medicine> medicines = medicineService.getMedicineList(offset, size);
+        try {
+            int offset = page * size;
+            List<Medicine> medicines = medicineService.getMedicineList(offset, size);
+            int totalCount = medicineMapper.getTotalCount();
 
-        int totalCount = medicineMapper.getTotalCount();  // 총 데이터 개수 가져오기
+            Map<String, Object> response = new HashMap<>();
+            response.put("medicines", medicines);
+            response.put("totalPages", (int) Math.ceil((double) totalCount / size));
+            response.put("currentPage", page);
+            response.put("totalItems", totalCount);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("medicines", medicines);
-        response.put("totalPages", (int) Math.ceil((double) totalCount / size));
-
-        return response;
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to fetch medicine list");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
-    // 의약품 상세 정보 가져오기
     @GetMapping("/detail/{itemSeq}")
-    public Medicine getMedicineDetail(@PathVariable String itemSeq) {
-        return medicineService.getMedicineDetail(itemSeq);
+    public ResponseEntity<?> getMedicineDetail(@PathVariable String itemSeq) {
+        try {
+            Medicine medicine = medicineService.getMedicineDetail(itemSeq);
+            if (medicine != null) {
+                return ResponseEntity.ok(medicine);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Medicine not found");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching medicine detail");
+        }
     }
 
-    // 의약품 이름 또는 업체명으로 검색
     @GetMapping("/search")
-    public Map<String, Object> searchMedicine(
+    public ResponseEntity<Map<String, Object>> searchMedicine(
             @RequestParam(required = false) String itemName,
             @RequestParam(required = false) String entpName,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        List<Medicine> results = medicineService.searchMedicine(itemName, entpName, page, size);
-        int totalCount = medicineService.getSearchResultCount(itemName, entpName);
+        try {
+            List<Medicine> results = medicineService.searchMedicine(itemName, entpName, page, size);
+            int totalCount = medicineService.getSearchResultCount(itemName, entpName);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("medicines", results);
-        response.put("totalPages", (int) Math.ceil((double) totalCount / size));
-        response.put("currentPage", page);
-        response.put("totalItems", totalCount);
+            Map<String, Object> response = new HashMap<>();
+            response.put("medicines", results);
+            response.put("totalPages", (int) Math.ceil((double) totalCount / size));
+            response.put("currentPage", page);
+            response.put("totalItems", totalCount);
 
-        return response;
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to search medicines");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @GetMapping("/autocomplete")
+    public ResponseEntity<?> autocomplete(
+            @RequestParam String query,
+            @RequestParam String searchType
+    ) {
+        try {
+            if (query.length() < 2) {
+                return ResponseEntity.ok(List.of());
+            }
+
+            List<Map<String, Object>> suggestions = medicineService.getAutocompleteSuggestions(query, searchType);
+
+            if (suggestions.isEmpty()) {
+                Map<String, Object> noResult = new HashMap<>();
+                noResult.put("itemSeq", "no-result");
+                noResult.put("itemName", "검색 결과가 없습니다");
+                noResult.put("entpName", "");
+                return ResponseEntity.ok(List.of(noResult));
+            }
+
+            return ResponseEntity.ok(suggestions);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching autocomplete suggestions");
+        }
     }
 }
