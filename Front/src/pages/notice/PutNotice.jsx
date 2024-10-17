@@ -33,8 +33,10 @@ const PutNotice = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (userId) {
-            if (userId && userId !== 'admin') {
+        // userId가 ''이 아닐 때에만 동작
+        if (userId !== '') {
+            console.log(userId);
+            if (userId === null || userId !== 'admin') {
                 // 경고문구 출력 후 이전 페이지로 강제이동
                 alert('관리자 계정이 아닙니다!');
                 navigate(-1);
