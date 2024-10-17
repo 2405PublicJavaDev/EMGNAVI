@@ -37,7 +37,7 @@ public class ReviewController {
         }
     }
 
-    @GetMapping("/review/{refNo}")
+    @GetMapping("/reviews/{refNo}")
     public SuccessResponse getReviewListByRefNo(@PathVariable String refNo) {
         List<Reviews> reviewList = reviewService.getReviewListByRefNo(refNo);
         return new SuccessResponse(SuccessCode.RESOURCE_FOUND, reviewList);
