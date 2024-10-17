@@ -48,7 +48,6 @@ public class ReviewController {
         GetReviewOneByNoResponse response = reviewService.getReviewOneByNo(no);
         return new SuccessResponse(SuccessCode.RESOURCE_FOUND, response);
     }
-    }
 
     @DeleteMapping("/review/{no}")
     public SuccessResponse deleteReview(HttpSession session, @PathVariable String no) {
