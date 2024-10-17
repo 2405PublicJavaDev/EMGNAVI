@@ -47,11 +47,6 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public int updateReview(String no) {
-        return reviewMapper.updateReview(no);
-    }
-
-    @Override
     public int deleteReview(String no) {
         return reviewMapper.deleteReview(no);
     }
