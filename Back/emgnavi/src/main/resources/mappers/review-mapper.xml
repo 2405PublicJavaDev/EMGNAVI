@@ -5,7 +5,7 @@
 <mapper namespace="com.emginfo.emgnavi.review.mapper.ReviewMapper">
 
     <insert id="postReview">
-        INSERT INTO REVIEW_TBL VALUES (SEQ_REVIEW_NO.nextval, #{writerId}, #{refNo}, #{rating}, #{content}, DEFAULT)
+        INSERT INTO REVIEW_TBL VALUES (SEQ_REVIEW_NO.nextval, #{writerId}, #{writerNickname}, #{refNo}, #{rating}, #{content}, DEFAULT, DEFAULT)
     </insert>
 
     <select id="getReviewListByRefNo">

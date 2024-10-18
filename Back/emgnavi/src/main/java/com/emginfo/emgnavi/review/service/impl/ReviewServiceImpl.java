@@ -23,9 +23,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional()
-    public int postReview(String id, PostReviewRequest request) {
+    public int postReview(String id, String nickname, PostReviewRequest request) {
         Reviews review = Reviews.builder()
                 .writerId(id)
+                .writerNickname(nickname)
                 .refNo(request.getRefNo())
                 .rating(request.getRating())
                 .content(request.getContent())

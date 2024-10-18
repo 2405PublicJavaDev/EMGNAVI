@@ -29,8 +29,9 @@ public class ReviewController {
     @PostMapping("/review")
     public SuccessResponse postReview(HttpSession session, @Valid @RequestBody PostReviewRequest request) {
         String id = (String) session.getAttribute("userId");
+        String nickname = (String) session.getAttribute("userNickname");
         if (id == null) { throw new CustomException(ErrorCode.SESSION_INVALID); }
-        int result = reviewService.postReview(id, request);
+        int result = reviewService.postReview(id, nickname, request);
         if (result > 0) {
             return new SuccessResponse(SuccessCode.REGISTER_SUCCESS);
         } else {

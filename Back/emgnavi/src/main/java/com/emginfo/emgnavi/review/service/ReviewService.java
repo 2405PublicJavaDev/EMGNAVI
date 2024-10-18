@@ -15,7 +15,7 @@ public interface ReviewService {
      * @param request
      * @return int
      */
-    int postReview(String id, PostReviewRequest request);
+    int postReview(String id, String nickname, PostReviewRequest request);
 
     /**
      * 리뷰 참조로 조회 Service

@@ -11,8 +11,10 @@ import java.util.Date;
 public class Reviews {
   private int no;
   private String writerId;
+  private String writerNickname;
   private String refNo;
   private int rating;
   private String content;
   private Date createdDate;
+  private String status;
 }
