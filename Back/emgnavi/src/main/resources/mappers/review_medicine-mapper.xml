@@ -22,8 +22,7 @@
 
     <!-- 리뷰 작성 -->
     <insert id="insertReview" parameterType="com.emginfo.emgnavi.medicine_review.vo.MedicineReviews">
-        INSERT INTO REVIEW_TBL (NO, WRITER_ID, REF_NO, CONTENT, CREATED_DATE, RATING)
-        VALUES (SEQ_REVIEW_NO.NEXTVAL, #{writerId}, #{refNo}, #{content}, SYSDATE, #{rating})
+        INSERT INTO REVIEW_TBL VALUES (SEQ_REVIEW_NO.NEXTVAL, #{writerId}, #{refNo}, #{rating}, #{content}, DEFAULT, DEFAULT)
     </insert>
 
     <!-- 리뷰 삭제 -->
