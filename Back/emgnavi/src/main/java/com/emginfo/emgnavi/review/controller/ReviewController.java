@@ -51,7 +51,7 @@ public class ReviewController {
     }
 
     @PatchMapping("/review/{no}")
-    public SuccessResponse updateReview(HttpSession session, @PathVariable int no, @RequestBody UpdateReviewRequest request) {
+    public SuccessResponse updateReview(HttpSession session, @PathVariable int no, @Valid @RequestBody UpdateReviewRequest request) {
         String id = (String) session.getAttribute("userId");
         if (id == null) { throw new CustomException(ErrorCode.SESSION_INVALID); }
         int result = reviewService.updateReview(no, request);
