@@ -85,7 +85,7 @@ function GetHospitalMap() {
             if (hospitals) {
                 setHospitals(null);
             }
-            fetch(`http://127.0.0.1:8888/api/map/getAroundEmgRoom?latitude=${latitude}&longitude=${longitude}&distance=${searchRadius}`)
+            fetch(`http://127.0.0.1:8888/api/map/getAroundHospital?latitude=${latitude}&longitude=${longitude}&distance=${searchRadius}`)
                 .then(response => response.json())
                 .then(data => {
                     setHospitals(data.data); // 받아온 병원 데이터를 State에 저장
