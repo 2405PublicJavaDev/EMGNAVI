@@ -11,9 +11,13 @@ const MedicineSearch = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [options, setOptions] = useState([]);
   const [showAutoComplete, setShowAutoComplete] = useState(false);
+  const [focusedOptionIndex, setFocusedOptionIndex] = useState(-1);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [hoveredOption, setHoveredOption] = useState(null);
   const itemsPerPage = 10;
   const nav = useNavigate();
   const autoCompleteRef = useRef(null);
+  const inputRef = useRef(null);
 
   const categories = [
     { value: 'itemName', label: '제품명' },
@@ -177,6 +181,52 @@ const MedicineSearch = () => {
     };
   }, []);
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setFocusedOptionIndex((prevIndex) =>
+        prevIndex < options.length - 1 ? prevIndex + 1 : prevIndex
+      );
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setFocusedOptionIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (focusedOptionIndex >= 0 && focusedOptionIndex < options.length) {
+        setSelectedOption(options[focusedOptionIndex]);
+        setSearchQuery(options[focusedOptionIndex].label);
+        setShowAutoComplete(false);
+        handleSearch(0);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (focusedOptionIndex >= 0 && focusedOptionIndex < options.length) {
+      setHoveredOption(options[focusedOptionIndex]);
+      setSearchQuery(options[focusedOptionIndex].label);
+    }
+  }, [focusedOptionIndex, options]);
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    setSelectedOption(null);
+    setHoveredOption(null);
+    fetchAutoCompleteOptions(value);
+    setFocusedOptionIndex(-1);
+  };
+
+  const handleInputBlur = () => {
+    setTimeout(() => {
+      if (hoveredOption) {
+        setSearchQuery(hoveredOption.label);
+        setSelectedOption(hoveredOption);
+      }
+      setShowAutoComplete(false);
+    }, 200);
+  };
+
   return (
     <>
       <div className="flex flex-col items-center justify-center min-h-[1100px] bg-white">
@@ -204,57 +254,64 @@ const MedicineSearch = () => {
 
             <div className="relative" style={{ zIndex: 1000 }}>
               <input
+                ref={inputRef}
                 type="text"
                 value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  fetchAutoCompleteOptions(e.target.value);
-                }}
+                onChange={handleInputChange}
                 onFocus={() => setShowAutoComplete(true)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleSearch(0);
-                    setShowAutoComplete(false);
-                  }
-                }}
+                onBlur={handleInputBlur}
+                onKeyDown={handleKeyDown}
                 placeholder={`원하시는 ${searchType === 'itemName' ? '제품' : '업체'}의 이름을 검색해 주세요`}
                 className="border p-2 w-[360px] h-[36px] text-base leading-[20px] border-[#0000001a] text-black bg-white"
                 style={{ color: 'black', backgroundColor: 'white' }}
               />
- {showAutoComplete && (
-        <ul
-          ref={autoCompleteRef}
-          className="absolute z-[9999] w-full bg-white border border-gray-300 mt-1 rounded-md shadow-lg max-h-60 overflow-y-auto"
-          style={{
-            top: '100%',
-            left: 0,
-            backgroundColor: 'white',
-            color: 'black',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-          }}
-        >
-          {options.length > 0 ? (
-            options.map((option) => (
-              <li
-                key={option.value}
-                className="p-2 hover:bg-gray-100 cursor-pointer text-black text-base font-normal"
-                style={{
-                  color: 'black',
-                }}
-                onClick={() => {
-                  setSearchQuery(option.label);
-                  setShowAutoComplete(false);
-                  handleSearch(0);
-                }}
-              >
-                {option.label}
-              </li>
-            ))
-          ) : (
-            <li className="p-2 text-gray-500 text-base font-normal">검색 결과가 없습니다</li>
-          )}
-        </ul>
-      )}
+              {showAutoComplete && (
+                <ul
+                  ref={autoCompleteRef}
+                  className="absolute z-[9999] w-full bg-white border border-gray-300 mt-1 rounded-md shadow-lg max-h-60 overflow-y-auto"
+                  style={{
+                    top: '100%',
+                    left: 0,
+                    backgroundColor: 'white',
+                    color: 'black',
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                  }}
+                >
+                  {options.length > 0 ? (
+                    options.map((option, index) => (
+                      <li
+                        key={option.value}
+                        className={`p-2 hover:bg-gray-100 cursor-pointer text-black text-base font-normal ${
+                          index === focusedOptionIndex ? 'bg-gray-100' : ''
+                        }`}
+                        style={{
+                          color: 'black',
+                        }}
+                        onClick={() => {
+                          setSearchQuery(option.label);
+                          setSelectedOption(option);
+                          setShowAutoComplete(false);
+                          handleSearch(0);
+                        }}
+                        onMouseEnter={() => {
+                          setFocusedOptionIndex(index);
+                          setHoveredOption(option);
+                          setSearchQuery(option.label);
+                        }}
+                        onMouseLeave={() => {
+                          if (!selectedOption) {
+                            setSearchQuery(inputRef.current.value);
+                          }
+                        }}
+                      >
+                        {option.label}
+                      </li>
+                    ))
+                  ) : (
+                    <li className="p-2 text-gray-500 text-base font-normal">검색 결과가 없습니다</li>
+                  )}
+                </ul>
+              )}
             </div>
 
             <button

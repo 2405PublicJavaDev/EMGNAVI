@@ -48,10 +48,10 @@
     </select>
 
     <select id="searchEntpNames" resultType="java.util.Map">
-        SELECT ITEM_SEQ as itemSeq, ENTP_NAME as entpName
+        SELECT DISTINCT ENTP_NAME as entpName
         FROM MEDICINE_TBL
         WHERE ENTP_NAME LIKE '%' || #{query} || '%'
-        AND ROWNUM &lt;= 10  <!-- 최대 10개까지만 반환 -->
+          AND ROWNUM &lt;= 10
         ORDER BY ENTP_NAME
     </select>
 
