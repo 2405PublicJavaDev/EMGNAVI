@@ -9,7 +9,7 @@
     </insert>
 
     <select id="getReviewListByRefNo">
-        SELECT * FROM REVIEW_TBL WHERE REF_NO = #{refNo}
+        SELECT * FROM REVIEW_TBL WHERE REF_NO = #{refNo} AND STATUS = 0
     </select>
 
     <select id="getReviewOneByNo">
@@ -21,7 +21,7 @@
     </update>
 
     <delete id="deleteReview">
-        DELETE REVIEW_TBL WHERE NO = #{no}
+        UPDATE REVIEW_TBL SET STATUS = 1 WHERE NO = #{no}
     </delete>
 
 </mapper>
