@@ -1,9 +1,32 @@
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import ToastUI from './ToastUI';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { UserContext } from '../../UserContext';
 
-const PostNotice = () => {
+const PutNotice = () => {
+
+    const [searchParams] = useSearchParams();
+    const noticeId = searchParams.get('noticeId');  // 쿼리 파라미터에서 'noticeId' 값 가져오기
+    const [notice, setNotice] = useState(null);
+
+    useEffect(() => {
+        if (noticeId) {
+            console.log(noticeId);
+            fetch(`/api/notice/detail?noticeId=${noticeId}`)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(res => {
+                    setNotice(res.data); // 받아온 공지 데이터를 State에 저장
+                })
+                .catch(error => {
+                    console.error('Error fetching hospital data:', error);
+                });
+        }
+    }, []);
 
     const { userId } = useContext(UserContext);
 
@@ -49,7 +72,12 @@ const PostNotice = () => {
 
                     <div className="absolute left-[19px] top-[20px] w-[1246px]">
                         <div id="editor" className="absolute left-0 top-0 w-[1246px]">
-                            <ToastUI />
+                            {/* <ToastUI initialValue={'test'} /> */}
+                            {notice ? (
+                                <ToastUI initialValue={notice.noticeMarkdown} notice={notice} />
+                            ) : (
+                                <p>공지사항을 불러오는 중입니다...</p>
+                            )}
                         </div>
                     </div>
 
@@ -61,4 +89,4 @@ const PostNotice = () => {
     )
 }
 
-export default PostNotice
+export default PutNotice

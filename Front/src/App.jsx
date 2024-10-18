@@ -36,6 +36,7 @@ import MypageCheckPw from './pages/user/MypageCheckPw';
 import MypageModifyInf from './pages/user/MypageModifyInf';
 
 import PostNotice from './pages/notice/PostNotice';
+import PutNotice from './pages/notice/PutNotice';
 import GetNoticeList from './pages/notice/GetNoticeList';
 import GetNoticeDetail from './pages/notice/GetNoticeDetail';
 
@@ -53,6 +54,7 @@ import FavoriteHospital from './pages/user/Favorite/FavHospital';
 import FavPharmacy from './pages/user/Favorite/FavPharmacy'
 import GetAedMap from './pages/map/GetAedMap'
 import GetEmergencyStat from './pages/stat/GetEmergencyStat';
+import GetPharmacyMap from './pages/map/GetPharmacyMap';
 
 function App() {
 
@@ -106,6 +108,7 @@ function App() {
         <Route path="/user/mypage/modify" element={<MypageModifyInf />} />
 
         <Route path='/notice/postNotice' element={<PostNotice />} />
+        <Route path='/notice/putNotice' element={<PutNotice />} />
         <Route path='/notice/getNoticeList' element={<GetNoticeList />} />
         <Route path='/notice/getNoticeDetail' element={<GetNoticeDetail />} />
 
@@ -115,6 +118,7 @@ function App() {
 
         <Route path='/map/getHospitalMap' element={<GetHospitalMap />} />
         <Route path='/map/getEmergencyMap' element={<GetEmergencyMap />} />
+        <Route path='/map/getPharmacyMap' element={<GetPharmacyMap />} />
 
         <Route path='/medicine/MedicineSearch' element={<MedicineSearch />} />
         <Route path='/medicine/detail/:itemSeq' element={<MedicineDetail />} />

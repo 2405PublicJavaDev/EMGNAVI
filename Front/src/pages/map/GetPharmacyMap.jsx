@@ -18,17 +18,17 @@ TableComponents.Table.displayName = 'Table';
 TableComponents.TableBody.displayName = 'TableBody';
 TableComponents.TableRow.displayName = 'TableRow';
 
-function GetHospitalMap() {
+function GetPharmacyMap() {
 
     // 병원 데이터를 저장할 State 선언
-    const [hospitals, setHospitals] = useState([]);
+    const [pharmacys, setPharmacys] = useState([]);
     const [latitude, setLatitude] = useState(null);
     const [longitude, setLongitude] = useState(null);
 
     const [map, setMap] = useState(null);
     const [circle, setCircle] = useState(null);
     const [zoomControl] = useState(new kakao.maps.ZoomControl());
-    const [searchRadius, setSearchRadius] = useState(1000);     // 거리 기본 단위는 1m이며, 검색 반경 초기값은 1km로 되어있음
+    const [searchRadius, setSearchRadius] = useState(500);     // 거리 기본 단위는 1m이며, 검색 반경 초기값은 500m로 되어있음
 
     const [myPosition, setMyPosition] = useState(null);
     const [positions, setPosition] = useState([]);
@@ -82,13 +82,13 @@ function GetHospitalMap() {
 
     useEffect(() => {
         if (searchRadius && latitude && longitude) {
-            if (hospitals) {
-                setHospitals(null);
+            if (pharmacys) {
+                setPharmacys(null);
             }
-            fetch(`http://127.0.0.1:8888/api/map/getAroundHospital?latitude=${latitude}&longitude=${longitude}&distance=${searchRadius}`)
+            fetch(`http://127.0.0.1:8888/api/map/getAroundPharmacy?latitude=${latitude}&longitude=${longitude}&distance=${searchRadius}`)
                 .then(response => response.json())
                 .then(data => {
-                    setHospitals(data.data); // 받아온 병원 데이터를 State에 저장
+                    setPharmacys(data.data); // 받아온 병원 데이터를 State에 저장
                 })
                 .catch(error => {
                     console.error('Error fetching hospital data:', error);
@@ -150,14 +150,14 @@ function GetHospitalMap() {
 
     // 병원 데이터를 이용해 마커 표시하기
     useEffect(() => {
-        if (map && hospitals && hospitals.length > 0) {
-            console.log(hospitals);
+        if (map && pharmacys && pharmacys.length > 0) {
+            console.log(pharmacys);
 
             // 마커 이미지의 이미지 주소입니다
             var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
 
-            hospitals.forEach(hospital => {
-                console.log(hospital.dutyName, hospital.wgs84Lat, hospital.wgs84Lon);
+            pharmacys.forEach(pharmacy => {
+                console.log(pharmacy.dutyName, pharmacy.postCdn2, pharmacy.postCdn1);
 
                 // 마커 이미지의 이미지 크기 입니다
                 var imageSize = new kakao.maps.Size(24, 35);
@@ -168,8 +168,8 @@ function GetHospitalMap() {
                 // 마커를 생성합니다
                 var marker = new kakao.maps.Marker({
                     map: map, // 마커를 표시할 지도
-                    position: new kakao.maps.LatLng(hospital.wgs84Lat, hospital.wgs84Lon), // 마커를 표시할 위치
-                    text: hospital.hvec,
+                    position: new kakao.maps.LatLng(pharmacy.postCdn2, pharmacy.postCdn1), // 마커를 표시할 위치
+                    text: pharmacy.hvec,
                     // title: hospital.dutyName, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
                     image: markerImage, // 마커 이미지 
                 });
@@ -177,7 +177,7 @@ function GetHospitalMap() {
 
                 // 마커의 인포윈도우를 생성합니다
                 var infowindow = new kakao.maps.InfoWindow({
-                    content: hospital.dutyName
+                    content: pharmacy.dutyName
                 });
                 addInfoWindow(infowindow);
 
@@ -185,7 +185,7 @@ function GetHospitalMap() {
                 kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
             });
         }
-    }, [hospitals]);
+    }, [pharmacys]);
 
     // 인포윈도우를 표시하는 클로저를 만드는 함수입니다 
     function makeOverListener(map, marker, infowindow) {
@@ -233,7 +233,7 @@ function GetHospitalMap() {
 
     // 검색반경 확대 버튼을 누르면 호출되어 지도를 확대하는 함수
     function increaseRadius() {
-        const newRadius = searchRadius + 1000;
+        const newRadius = searchRadius + 500;
 
         // 현재 searchRadius 값과 새로운 값이 다를 때만 업데이트
         if (newRadius !== searchRadius) {
@@ -245,8 +245,8 @@ function GetHospitalMap() {
 
     // 검색반경 축소 버튼을 누르면 호출되어 지도를 축소하는 함수
     function reduceRadius() {
-        if (searchRadius > 1000) {
-            const newRadius = searchRadius - 1000;
+        if (searchRadius > 500) {
+            const newRadius = searchRadius - 500;
 
             // 현재 searchRadius 값과 새로운 값이 다를 때만 업데이트
             if (newRadius !== searchRadius) {
@@ -268,8 +268,8 @@ function GetHospitalMap() {
                             <img className="left-[24px] top-0 cursor-pointer" width="111" height="97" src="/img/header/logo.png" alt="Logo" onClick={() => window.location.href = '/'}></img>
                         </h1>
                         <div className="text-center font-bold py-3"><button onClick={() => window.location.href = 'getEmergencyMap'}>응급실</button></div>
-                        <div className="text-center font-bold bg-[#0B2D85] text-[#ffffff] py-3"><button>병원</button></div>
-                        <div className="text-center font-bold py-3"><button onClick={() => window.location.href = 'getPharmacyMap'}>약국</button></div>
+                        <div className="text-center font-bold py-3"><button onClick={() => window.location.href = 'getHospitalMap'}>병원</button></div>
+                        <div className="text-center font-bold bg-[#0B2D85] text-[#ffffff] py-3"><button>약국</button></div>
                         <div className="text-center font-bold py-3"><button onClick={() => window.location.href = 'getAedMap'}>AED</button></div>
                     </div>
                     <div className="flex flex-col w-[75%]">
@@ -292,21 +292,21 @@ function GetHospitalMap() {
                         </div>
                         {/* 반경 내 조회된 장소들 리스트 출력 */}
                         <div className="h-[calc(100vh-200px)] border-t border-solid border-[#e5e7eb]">
-                            {hospitals && hospitals.length > 0 ? (
+                            {pharmacys && pharmacys.length > 0 ? (
                                 <TableVirtuoso
                                     style={{ height: "100%", boxShadow: "none" }}
-                                    data={hospitals}
+                                    data={pharmacys}
                                     components={TableComponents}
-                                    itemContent={(index, hospital) => (
+                                    itemContent={(index, pharmacy) => (
                                         <>
                                             <TableRow key={index} className="emergency-item">
-                                                <TableCell className="aed-name font-bold text-gray-800" style={{ border: 'none', padding: '5px 10px 0px 10px', fontWeight: '900', color: '#0B2D85', fontSize: '16px' }}>{hospital.dutyName}</TableCell>
+                                                <TableCell className="aed-name font-bold text-gray-800" style={{ border: 'none', padding: '5px 10px 0px 10px', fontWeight: '900', color: '#0B2D85', fontSize: '16px' }}>{pharmacy.dutyName}</TableCell>
                                             </TableRow>
                                             <TableRow key={`${index}-tel`}>
-                                                <TableCell className="aed-tel text-sm text-gray-600" style={{ border: 'none', padding: '5px 10px' }}>{hospital.dutyTel3}</TableCell>
+                                                <TableCell className="aed-tel text-sm text-gray-600" style={{ border: 'none', padding: '5px 10px' }}>{pharmacy.dutyTel3}</TableCell>
                                             </TableRow>
                                             <TableRow key={`${index}-address`}>
-                                                <TableCell className="aed-address text-sm text-gray-500" style={{ padding: '0 10px 5px 10px' }}>{hospital.dutyAddr}</TableCell>
+                                                <TableCell className="aed-address text-sm text-gray-500" style={{ padding: '0 10px 5px 10px' }}>{pharmacy.dutyAddr}</TableCell>
                                             </TableRow>
                                         </>
                                     )}
@@ -332,4 +332,4 @@ function GetHospitalMap() {
     )
 }
 
-export default GetHospitalMap
+export default GetPharmacyMap

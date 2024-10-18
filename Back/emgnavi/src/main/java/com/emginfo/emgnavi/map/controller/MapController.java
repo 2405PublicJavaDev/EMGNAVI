@@ -8,6 +8,7 @@ import com.emginfo.emgnavi.hospital.vo.Hospital;
 import com.emginfo.emgnavi.map.service.MapService;
 import com.emginfo.emgnavi.map.vo.GpsInfo;
 import com.emginfo.emgnavi.medicine.vo.Medicine;
+import com.emginfo.emgnavi.pharmacy.vo.Pharmacy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -103,6 +104,21 @@ public class MapController {
         return new SuccessResponse(SuccessCode.RESOURCE_FOUND, hospitals);
     }
 
+    @GetMapping("/map/getAroundHospital")
+    public SuccessResponse getAroundHospitalList(double latitude, double longitude, double distance) {
+        GpsInfo gpsInfo = new GpsInfo(latitude, longitude, distance);
+
+        List<Hospital> hospitals = mapService.getAroundHospitalList(gpsInfo);
+
+
+//      ##Return값 작성 예시##
+//      SuccessResponse(
+//            SuccessCode.[RESOURCE_FOUND,REGISTER_SUCCESS],    ##SuccessCode enum 객체에서 동작에 어울리는 메시지를 선택하면 된다(현재 등록 완료, 조회 성공 2가지가 있음)
+//            hospitals   ##요청을 보낸 웹 페이지로 보낼 데이터. SuccessResponse 객체의 필드로 저장되며 SuccessResponse째로 JSON 변환되어 요청 보냈던 페이지로 리턴
+//      )
+        return new SuccessResponse(SuccessCode.RESOURCE_FOUND, hospitals);
+    }
+
     @GetMapping("/map/getAroundAed")
     public SuccessResponse getAroundAedList(double latitude, double longitude, double distance) {
         GpsInfo gpsInfo = new GpsInfo(latitude, longitude, distance);
@@ -114,6 +130,23 @@ public class MapController {
 //            hospitals   ##요청을 보낸 웹 페이지로 보낼 데이터. SuccessResponse 객체의 필드로 저장되며 SuccessResponse째로 JSON 변환되어 요청 보냈던 페이지로 리턴
 //      )
         return new SuccessResponse(SuccessCode.RESOURCE_FOUND, Aeds);
+    }
+
+    @GetMapping("/map/getAroundPharmacy")
+    public SuccessResponse getAroundPharmacyList(double latitude, double longitude, double distance) {
+        System.out.println("요청받음");
+        GpsInfo gpsInfo = new GpsInfo(latitude, longitude, distance);
+        System.out.println("GPS정보 만들었음");
+        List<Pharmacy> pharmacys = mapService.getAroundPharmacyList(gpsInfo);
+
+
+
+//      ##Return값 작성 예시##
+//      SuccessResponse(
+//            SuccessCode.[RESOURCE_FOUND,REGISTER_SUCCESS],    ##SuccessCode enum 객체에서 동작에 어울리는 메시지를 선택하면 된다(현재 등록 완료, 조회 성공 2가지가 있음)
+//            hospitals   ##요청을 보낸 웹 페이지로 보낼 데이터. SuccessResponse 객체의 필드로 저장되며 SuccessResponse째로 JSON 변환되어 요청 보냈던 페이지로 리턴
+//      )
+        return new SuccessResponse(SuccessCode.RESOURCE_FOUND, pharmacys);
     }
 
 }

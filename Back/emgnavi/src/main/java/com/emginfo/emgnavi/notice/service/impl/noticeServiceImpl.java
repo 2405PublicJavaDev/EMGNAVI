@@ -35,4 +35,14 @@ public class noticeServiceImpl implements NoticeService {
     public Notice getNoticeDetail(int noticeId) {
         return noticeMapper.getNoticeDetail(noticeId);
     }
+
+    @Override
+    public int putNotice(Notice notice) {
+        return noticeMapper.putNotice(notice);
+    }
+
+    @Override
+    public int deleteNotice(int noticeId) {
+        return noticeMapper.deleteNotice(noticeId);
+    }
 }
