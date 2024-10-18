@@ -187,23 +187,23 @@ const GetNoticeList = () => {
 
     return (
         <div className="bg-white flex flex-row justify-center w-full">
-            <div className="bg-white w-[100%] h-[2143px] relative">
+            <div className="bg-white w-[100%] relative">
 
 
 
-                <div className="absolute w-[100%] h-[1911px] top-0 left-0">
-                    <div className="absolute w-[100%] h-[1787px] top-[124px] left-0">
-                        <div className="relative h-[1787px]">
-                            <div className="absolute w-[100%] h-[194px] top-0 left-0 bg-[#0b2d85]">
+                <div className="w-[100%]">
+                    <div className="w-[100%] mt-[124px] left-0">
+                        <div className="relative">
+                            <div className="w-[100%] h-[194px] top-0 left-0 bg-[#0b2d85]">
                                 <div className="w-[145px] h-[38px] top-[38px] left-[335px] [font-family:'Inter',Helvetica] font-bold text-white text-[32px] leading-[normal] whitespace-nowrap absolute tracking-[0]">
                                     공지사항
                                     {userId == 'admin' ? (<button onClick={() => window.location.href = 'postNotice'} className="ml-[30px] w-[100px] h-[45px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">등록</button>) : ('')}
                                 </div>
                             </div>
-                            <div id='main' className="absolute w-[100%] h-[1675px] top-[119px] left-[310px] rounded-[10px_10px_0px_0px] overflow-hidden">
-                                <div className="absolute w-[1300px] h-[1505px] top-0 left-0">
+                            <div id='main' className="w-[100%] mt-[-75px]">
+                                <div className="w-[1300px] ml-[310px]">
 
-                                    <div className="h-[calc(100vh-200px)] border-t border-solid border-[#e5e7eb]">
+                                    <div className="bg-white border-t border-solid border-[#e5e7eb] p-10 rounded-[10px_10px_0px_0px]">
                                         {notices && notices.length > 0 ? (
 
                                             <div>
@@ -228,7 +228,7 @@ const GetNoticeList = () => {
 
                                                         </div>
                                                         <div id='div2' className='flex-grow min-w-0'>
-                                                            <Truncate lines={3} ellipsis={<span>... <span className="text-gray-400 hover:underline cursor-pointer">[상세보기]</span></span>}>
+                                                            <Truncate lines={3} ellipsis={<span>... <span className="text-gray-400 hover:underline cursor-pointer" onClick={() => window.location.href = 'getNoticeDetail?noticeId=' + notice.noticeId}>[상세보기]</span></span>}>
                                                                 {blockToInline(notice.noticeContents)}
                                                             </Truncate>
 
@@ -250,19 +250,31 @@ const GetNoticeList = () => {
                                 </div>
                             </div>
 
-                            <div id='footer' className="absolute left-0 top-[1911px] w-[100%] h-[232px] bg-[#000] overflow-hidden">
-                                <div className="absolute left-[136px] top-[41px] w-[117px] h-[126px] flex">
-                                    <div className="absolute left-[13px] top-[97px] text-[24px] font-['Advent_Pro'] font-black text-[#333] whitespace-nowrap">응급NAVI</div>
-                                    <img className="absolute left-0 top-0" width="117" height="100" src="/img/footer/logo.png"></img>
-                                </div>
-                                <div className="absolute left-[390px] top-[62px] w-[638px] h-[115px] flex">
-                                    <div className="absolute left-0 top-[54px] w-[638px] h-[61px] flex">
-                                        <div className="absolute left-0 top-0 w-[638px] h-[61px] text-[14px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원     |     대표자명 : 민봉식     |     대표전화 : 1544-9970<br />&nbsp;&nbsp;&nbsp;&nbsp; 2024 응급NAVI.<br /></div>
-                                        <img className="absolute left-[2px] top-[27px]" width="9" height="8" src="/img/footer/copyright.png"></img>
+                            <div className="w-full bg-black py-10">
+                                <div className="container mx-auto flex flex-col md:flex-row items-start justify-between">
+                                    <div className="mb-8 md:mb-0">
+                                        <img className="w-[117px] h-[100px]" src="/img/footer/logo.png" alt="Logo" />
+                                        <div className="mt-2 text-2xl font-black text-[#333] font-['Advent_Pro']">응급NAVI</div>
                                     </div>
-                                    <div className="absolute left-0 top-0 w-[221px] h-[21px] text-[15px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">이용약관              개인정보처리방침</div>
+
+                                    <div className="flex flex-col max-w-[638px]">
+                                        <div className="mb-4 text-sm font-bold text-[#686868] font-['Agdasima']">
+                                            이용약관              개인정보처리방침
+                                        </div>
+                                        <div className="text-sm leading-relaxed font-bold text-[#686868] font-['Agdasima']">
+                                            서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원     |     대표자명 : 민봉식     |     대표전화 : 1544-9970
+                                            <br />
+                                            <span className="flex items-center">
+                                                <img className="w-2 h-2 mr-1" src="/img/footer/copyright.png" alt="Copyright" />
+                                                2024 응급NAVI.
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-8 md:mt-0">
+                                        <img className="w-[145px] h-[34px]" src="/img/footer/group.png" alt="Group" />
+                                    </div>
                                 </div>
-                                <img className="absolute left-[1634px] top-[47px]" width="145" height="34" src="/img/footer/group.png"></img>
                             </div>
 
                         </div>

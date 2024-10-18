@@ -5,6 +5,7 @@ import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 import { useRef, useState, useEffect, useContext } from "react";
 
 import { UserContext } from "../../UserContext";
+import { useNavigate } from "react-router-dom";
 
 const ToastUI = ({ initialValue = "", notice = null }) => {
 
@@ -15,6 +16,8 @@ const ToastUI = ({ initialValue = "", notice = null }) => {
     // Editor DOM 선택용
     const editorRef = useRef(null);
     const titleRef = useRef(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (editorRef.current) {
@@ -81,6 +84,12 @@ const ToastUI = ({ initialValue = "", notice = null }) => {
             });
     };
 
+    const handleCancelBtn = () => {
+        if (window.confirm("작성을 취소하시겠습니까?")) {
+            navigate("/notice/getNoticeList");
+        }
+    }
+
     return (
         <>
             <div className="mb-[16px]">
@@ -92,7 +101,7 @@ const ToastUI = ({ initialValue = "", notice = null }) => {
             <Editor
                 placeholder="내용을 입력해주세요."
                 previewStyle="vertical" // 미리보기 스타일 지정
-                height="350px" // 에디터 창 높이
+                height="500px" // 에디터 창 높이
                 initialEditType="wysiwyg" // 초기 입력모드 설정(디폴트 markdown)
                 initialValue={initialValueState}
                 toolbarItems={[
@@ -147,7 +156,7 @@ const ToastUI = ({ initialValue = "", notice = null }) => {
             />
             <br />
             <div className="flex space-x-4">
-                <button onClick={handleRegisterBtn} className="w-[200px] h-[45px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">취소</button>
+                <button onClick={handleCancelBtn} className="w-[200px] h-[45px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">취소</button>
                 <button onClick={handleRegisterBtn} className="w-[200px] h-[45px] bg-[#0b2d85] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#fff] text-center">등록</button>
             </div>
         </>
