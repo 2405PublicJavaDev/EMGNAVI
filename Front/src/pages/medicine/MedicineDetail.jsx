@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
+import ReportPopup from '../report/ReportPopup';
+import Modal from 'react-modal';
+
+Modal.setAppElement('#root');
 
 const StarRating = ({ rating, onRatingChange, isClickable = true }) => {
     return (
@@ -18,7 +22,7 @@ const StarRating = ({ rating, onRatingChange, isClickable = true }) => {
     );
 };
 
-const 리뷰상세보기내용 = ({ review, onClose, onDelete }) => {
+const 리뷰상세보기내용 = ({ review, onClose, onDelete, handleOpenReportPopup }) => {
     const handleDeleteClick = () => {
         const confirmed = window.confirm("정말 삭제하시겠습니까?");
         if (confirmed) {
@@ -33,7 +37,8 @@ const 리뷰상세보기내용 = ({ review, onClose, onDelete }) => {
                     <StarRating rating={review.rating} onRatingChange={() => {}} isClickable={false} />
                     <span className="ml-2 text-sm text-gray-600">{review.writerNickname}님 | {review.createdDateLong}</span>
                 </div>
-                <button className="flex items-center text-red-500 hover:text-red-600">
+                <button className="flex items-center text-red-500 hover:text-red-600"
+                    onClick={() => handleOpenReportPopup(review)}>
                     <img className="w-5 h-5 mr-1" src="/img/medicine/report.png" alt="신고버튼" />
                     <span className="text-sm font-bold">신고하기</span>
                 </button>
@@ -69,6 +74,10 @@ const MedicineDetail = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 추가
     const { itemSeq } = useParams();
     const itemsPerPage = 10;
+
+    // 신고 팝업
+    const [isReportPopupOpen, setIsReportPopupOpen] = useState(false);
+    const [selectedReview, setSelectedReview] = useState(null); // 선택된 리뷰 저장
 
     const fetchReviews = useCallback(() => {
         fetch(`/api/medicine_reviews/medicine?itemSeq=${itemSeq}`)
@@ -128,6 +137,16 @@ const MedicineDetail = () => {
             alert('리뷰 삭제 중 오류가 발생했습니다.');
         }
     };
+
+    const handleOpenReportPopup = (review) => {
+        setSelectedReview(review);
+        setIsReportPopupOpen(true);
+    }
+    const handleCloseReportPopup = () => {
+        setIsReportPopupOpen(false);
+        setSelectedReview(null);
+    };
+
 
     console.log('Total reviews:', reviews.length);
     console.log('Items per page:', itemsPerPage);
@@ -329,6 +348,7 @@ const MedicineDetail = () => {
                                                             review={review}
                                                             onClose={() => setExpandedReviewId(null)}
                                                             onDelete={handleDeleteReview}
+                                                            handleOpenReportPopup={handleOpenReportPopup}
                                                         />
                                                     </div>
                                                 )}
@@ -351,6 +371,19 @@ const MedicineDetail = () => {
                                     </button>
                                 ))}
                             </div>
+                            {/* 신고하기 모달 */}
+                            <Modal 
+                                isOpen={isReportPopupOpen} 
+                                onRequestClose={handleCloseReportPopup} 
+                                contentLabel="신고 팝업"
+                                className="fixed inset-0 flex items-center justify-center z-50"
+                                overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-40"
+                            >
+                                <ReportPopup
+                                    review={selectedReview}
+                                    onClose={handleCloseReportPopup}
+                                />
+                            </Modal>
                         </div>
                     </div>
                 </div>

@@ -6,6 +6,9 @@ const AdminPage = () => {
     const handlerGoReportList = () => {
         nav("/admin/reportList");
     }
+    const handlerGoNotice = () => {
+        nav("/notice/getNoticeList");
+    }
 
     return (
         <>
@@ -23,6 +26,7 @@ const AdminPage = () => {
                     <img className="absolute left-1/2 top-[120px] transform -translate-x-1/2" width="70" height="78" src="/img/admin/Group 222.png" alt="회원 신고 관리 아이콘" />
                 </div>
                 <div
+                    onClick={handlerGoNotice}
                     style={{ cursor: 'pointer' }}
                     className="w-[455px] h-[410px] bg-[#7d85971a] rounded-[20px] relative">
                     <div className="absolute top-[232px] left-0 right-0 text-[26px] font-['Inter'] font-semibold text-[#000] text-center">공지사항 관리</div>

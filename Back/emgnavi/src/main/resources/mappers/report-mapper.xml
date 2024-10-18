@@ -3,8 +3,51 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.emginfo.emgnavi.report.model.mapper.ReportMapper">
+    <select id="reportList" resultType="com.emginfo.emgnavi.report.model.dto.ReportListDTO">
+        SELECT
+            rep.NO,
+            rep.WRITER_ID,
+            rep.REPORTER_ID,
+            rep.CONTENT,
+            rep.STATUS,
+            rep.REPORT_DATE,
+            rev.CONTENT AS reviewContent,
+            u.UNFREEZE_DATE
+        FROM REPORT_TBL rep
+        JOIN REVIEW_TBL rev ON rep.REF_NO = rev.NO
+        LEFT JOIN USER_TBL u ON rep.REPORTER_ID = u.USER_ID
+    </select>
+
+    <select id="findReportById" resultType="com.emginfo.emgnavi.report.model.dto.ReportListDTO">
+        SELECT * FROM REPORT_TBL
+        WHERE NO = #{no}
+    </select>
+
     <insert id="insertReport">
-        INSERT INTO REPORT_TBL (NO, WRITER_ID, REPORTER_ID, REF_NO, CONTENT, CREATED_DATE, STATUS)
-        VALUES (SEQ_REPORT_NO.NEXTVAL, #{writerId}, #{reporterId}, #{refNo}, #{content}, DEFAULT, #{status});
+        INSERT INTO REPORT_TBL (NO, WRITER_ID, REPORTER_ID, REF_NO, CONTENT, REPORT_DATE, STATUS)
+        VALUES (SEQ_REPORT_NO.NEXTVAL, #{writerId}, #{reporterId}, #{refNo}, #{content}, SYSDATE, DEFAULT)
     </insert>
+
+    <update id="freezeWriterId">
+        UPDATE USER_TBL
+        SET UNFREEZE_DATE = #{unfreezeDate}
+        WHERE USER_ID = #{writerId}
+    </update>
+    <update id="deleteReviewByNo">
+        UPDATE REVIEW_TBL
+        SET STATUS =#{status}
+        WHERE NO = #{no}
+    </update>
+
+    <update id="freezeReporterId">
+        UPDATE USER_TBL
+        SET UNFREEZE_DATE = #{unfreezeDate}
+        WHERE USER_ID = #{reporterId}
+    </update>
+
+    <update id="updateReportStatus">
+        UPDATE REPORT_TBL
+        SET STATUS = #{status}
+        WHERE NO = #{no}
+    </update>
 </mapper>
