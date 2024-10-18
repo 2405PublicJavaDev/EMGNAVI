@@ -15,7 +15,7 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/tui-editor")
+@RequestMapping("/api/tui-editor")
 public class FileApiController {
 
     // 파일을 업로드할 디렉터리 경로
@@ -28,6 +28,7 @@ public class FileApiController {
      */
     @PostMapping("/image-upload")
     public String postEditorImage(@RequestParam final MultipartFile image) {
+        System.out.println("업로드 로직 시작");
         if (image.isEmpty()) {
             return "";
         }
