@@ -14,7 +14,7 @@
         SELECT * FROM HOSPITAL_TBL
                  WHERE
                      WGS_84_LON BETWEEN ${minLon} AND ${maxLon} AND
-                     WGS_84_LAT BETWEEN ${minLat} AND ${maxLat} AND
+                     WGS_84_LAT BETWEEN ${minLat} AND ${maxLat}
     </select>
     <select id="getAroundAedList" resultType="Aed">
         SELECT * FROM AED_TBL
