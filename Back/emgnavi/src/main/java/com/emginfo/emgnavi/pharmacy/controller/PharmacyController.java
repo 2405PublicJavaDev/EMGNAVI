@@ -1,6 +1,5 @@
 package com.emginfo.emgnavi.pharmacy.controller;
 
-import com.emginfo.emgnavi.medicine.vo.Medicine;
 import com.emginfo.emgnavi.pharmacy.mapper.PharmacyMapper;
 import com.emginfo.emgnavi.pharmacy.service.PharmacyService;
 import com.emginfo.emgnavi.pharmacy.vo.Pharmacy;
@@ -34,7 +33,7 @@ public class PharmacyController {
             int totalCount = pharmacyMapper.getTotalCount();
 
             Map<String, Object> response = new HashMap<>();
-            response.put("medicines", pharmacies);
+            response.put("pharmacies", pharmacies);
             response.put("totalPages", (int) Math.ceil((double) totalCount / size));
             response.put("currentPage", page);
             response.put("totalItems", totalCount);
@@ -42,7 +41,7 @@ public class PharmacyController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Failed to fetch medicine list");
+            errorResponse.put("error", "Failed to fetch pharmacy list");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
@@ -54,26 +53,26 @@ public class PharmacyController {
             if (pharmacy != null) {
                 return ResponseEntity.ok(pharmacy);
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Medicine not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pharmacy not found");
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching medicine detail");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching pharmacy detail");
         }
     }
 
     @GetMapping("/search")
     public ResponseEntity<Map<String, Object>> searchPharmacy(
             @RequestParam(required = false) String dutyName,
-            @RequestParam(required = false) String entpName,
+            @RequestParam(required = false) String dutyAddr,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         try {
-            List<Pharmacy> results = pharmacyService.searchPharmacy(dutyName, entpName, page, size);
-            int totalCount = pharmacyService.getSearchResultCount(dutyName, entpName);
+            List<Pharmacy> results = pharmacyService.searchPharmacy(dutyName, dutyAddr, page, size);
+            int totalCount = pharmacyService.getSearchResultCount(dutyName, dutyAddr);
 
             Map<String, Object> response = new HashMap<>();
-            response.put("medicines", results);
+            response.put("pharmacies", results);
             response.put("totalPages", (int) Math.ceil((double) totalCount / size));
             response.put("currentPage", page);
             response.put("totalItems", totalCount);
@@ -81,7 +80,7 @@ public class PharmacyController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Failed to search medicines");
+            errorResponse.put("error", "Failed to search pharmacies");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
@@ -100,9 +99,9 @@ public class PharmacyController {
 
             if (suggestions.isEmpty()) {
                 Map<String, Object> noResult = new HashMap<>();
-                noResult.put("itemSeq", "no-result");
-                noResult.put("itemName", "검색 결과가 없습니다");
-                noResult.put("entpName", "");
+                noResult.put("hpid", "no-result");
+                noResult.put("dutyName", "검색 결과가 없습니다");
+                noResult.put("dutyAddr", "");
                 return ResponseEntity.ok(List.of(noResult));
             }
 

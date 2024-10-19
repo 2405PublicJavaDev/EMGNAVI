@@ -7,6 +7,8 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,17 +30,37 @@ public class PharmacyServiceImpl implements PharmacyService {
     }
 
     @Override
-    public List<Pharmacy> searchPharmacy(String itemName, String entpName, int page, int size) {
-        return List.of();
+    public List<Pharmacy> searchPharmacy(String dutyName, String dutyAddr, int page, int size) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("dutyName", dutyName);
+        params.put("dutyAddr", dutyAddr);
+
+        int offset = page * size;
+        RowBounds rowBounds = new RowBounds(offset, size);
+
+        return pharmacyMapper.searchPharmacy(params, rowBounds);
     }
 
     @Override
-    public int getSearchResultCount(String itemName, String entpName) {
-        return 0;
+    public int getSearchResultCount(String dutyName, String dutyAddr) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("dutyName", dutyName);
+        params.put("dutyAddr", dutyAddr);
+        return pharmacyMapper.getSearchResultCount(params);
     }
 
     @Override
     public List<Map<String, Object>> getAutocompleteSuggestions(String query, String searchType) {
-        return List.of();
+        if (searchType.equals("dutyName")) {
+            return pharmacyMapper.searchDutyNames(query);
+        } else if (searchType.equals("dutyAddr")) {
+            return pharmacyMapper.searchDutyAddrs(query);
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public int getTotalCount() {
+        return pharmacyMapper.getTotalCount();
     }
 }
