@@ -19,41 +19,40 @@
     <select id="searchPharmacy" resultType="com.emginfo.emgnavi.pharmacy.vo.Pharmacy">
         SELECT * FROM PHARMACY_TBL
         WHERE 1=1
-        <if test="itemName != null and itemName != ''">
-            AND ITEM_NAME LIKE '%' || #{itemName} || '%'
+        <if test="dutyName != null and dutyName != ''">
+            AND DUTY_NAME LIKE '%' || #{dutyName} || '%'
         </if>
-        <if test="entpName != null and entpName != ''">
-            AND ENTP_NAME LIKE '%' || #{entpName} || '%'
+        <if test="dutyAddr != null and dutyAddr != ''">
+            AND DUTY_ADDR LIKE '%' || #{dutyAddr} || '%'
         </if>
-        ORDER BY ITEM_SEQ
+        ORDER BY HPID
     </select>
 
     <select id="getSearchResultCount" resultType="int">
         SELECT COUNT(*) FROM PHARMACY_TBL
         WHERE 1=1
-        <if test="itemName != null and itemName != ''">
-            AND ITEM_NAME LIKE '%' || #{itemName} || '%'
+        <if test="dutyName != null and dutyName != ''">
+            AND DUTY_NAME LIKE '%' || #{dutyName} || '%'
         </if>
-        <if test="entpName != null and entpName != ''">
-            AND ENTP_NAME LIKE '%' || #{entpName} || '%'
+        <if test="dutyAddr != null and dutyAddr != ''">
+            AND DUTY_ADDR LIKE '%' || #{dutyAddr} || '%'
         </if>
     </select>
 
     <select id="searchItemNames" resultType="java.util.Map">
-        SELECT ITEM_SEQ as itemSeq, ITEM_NAME as itemName
+        SELECT HPID as hpid, DUTY_NAME as dutyName
         FROM PHARMACY_TBL
-        WHERE ITEM_NAME LIKE '%' || #{query} || '%'
+        WHERE DUTY_NAME LIKE '%' || #{query} || '%'
         AND ROWNUM &lt;= 10  <!-- 최대 10개까지만 반환 -->
-        ORDER BY ITEM_NAME
+        ORDER BY DUTY_NAME
     </select>
 
     <select id="searchEntpNames" resultType="java.util.Map">
-        SELECT DISTINCT ENTP_NAME as entpName
+        SELECT DISTINCT DUTY_ADDR as dutyAddr
         FROM PHARMACY_TBL
-        WHERE ENTP_NAME LIKE '%' || #{query} || '%'
+        WHERE DUTY_ADDR LIKE '%' || #{query} || '%'
           AND ROWNUM &lt;= 10
-        ORDER BY ENTP_NAME
+        ORDER BY DUTY_ADDR
     </select>
-
 
 </mapper>

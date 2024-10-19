@@ -27,7 +27,7 @@ const 리뷰상세보기내용 = ({ review, onClose, onDelete, handleOpenReportP
     const handleDeleteClick = () => {
         const confirmed = window.confirm("정말 삭제하시겠습니까?");
         if (confirmed) {
-            onDelete(review.no); // 리뷰 삭제 로직 실행
+            onDelete(review.no);
         }
     };
 
@@ -72,19 +72,18 @@ const PharmacyDetail = () => {
     const [review, setReview] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [expandedReviewId, setExpandedReviewId] = useState(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 추가
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const { hpid } = useParams();
     const itemsPerPage = 10;
 
-    // 신고 팝업
     const [isReportPopupOpen, setIsReportPopupOpen] = useState(false);
-    const [selectedReview, setSelectedReview] = useState(null); // 선택된 리뷰 저장
+    const [selectedReview, setSelectedReview] = useState(null);
 
     const fetchReviews = useCallback(() => {
-        fetch(`/api/medicine_reviews/medicine?itemSeq=${hpid}`)
+        fetch(`/api/pharmacy_reviews/pharmacy?hpid=${hpid}`)
             .then((response) => response.json())
             .then((data) => {
-                console.log('Received review data:', data); // 추가된 로그
+                console.log('Received review data:', data);
                 if (Array.isArray(data)) {
                     setReviews(data);
                 } else {
@@ -99,7 +98,6 @@ const PharmacyDetail = () => {
     }, [hpid]);
 
     useEffect(() => {
-        // 로그인 상태 확인 로직
         const checkLoginStatus = async () => {
             try {
                 const response = await fetch('/api/user/checkLogin', { credentials: 'include' });
@@ -115,14 +113,14 @@ const PharmacyDetail = () => {
         fetch(`/api/pharmacy/detail/${hpid}`)
             .then((response) => response.json())
             .then((data) => setPharmacy(data))
-            .catch((error) => console.error('Error fetching medicine details:', error));
+            .catch((error) => console.error('Error fetching pharmacy details:', error));
 
         fetchReviews();
     }, [hpid, fetchReviews]);
 
     const handleDeleteReview = async (reviewId) => {
         try {
-            const response = await fetch(`/api/medicine_reviews/medicine/${reviewId}`, {
+            const response = await fetch(`/api/pharmacy_reviews/pharmacy/${reviewId}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -132,7 +130,7 @@ const PharmacyDetail = () => {
             }
 
             alert('리뷰가 성공적으로 삭제되었습니다.');
-            fetchReviews(); // 리뷰 목록 새로고침
+            fetchReviews();
         } catch (error) {
             console.error('리뷰 삭제 중 오류 발생:', error);
             alert('리뷰 삭제 중 오류가 발생했습니다.');
@@ -147,7 +145,6 @@ const PharmacyDetail = () => {
         setIsReportPopupOpen(false);
         setSelectedReview(null);
     };
-
 
     console.log('Total reviews:', reviews.length);
     console.log('Items per page:', itemsPerPage);
@@ -175,33 +172,28 @@ const PharmacyDetail = () => {
         }
 
         try {
-            const response = await fetch('/api/medicine_reviews/medicine', {
+            const response = await fetch('/api/pharmacy_reviews/pharmacy', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    refNo: hpid,
+                    hpid: hpid,
                     content: review,
                     rating: rating
                 }),
-                credentials: 'include' // 세션 쿠키를 포함시키기 위해
+                credentials: 'include'
             });
 
             if (!response.ok) {
-                throw new Error('로그인후 작성가능합니다.');
+                throw new Error('리뷰 작성에 실패했습니다.');
             }
 
             const data = await response.json();
             console.log('리뷰가 성공적으로 작성되었습니다:', data);
 
-            // 알림 창 표시
             alert('리뷰가 성공적으로 작성되었습니다!');
-
-            // 리뷰 작성 후 리뷰 목록 새로고침
             fetchReviews();
-
-            // 입력 필드 초기화
             setReview('');
             setRating(0);
         } catch (error) {
@@ -227,19 +219,20 @@ const PharmacyDetail = () => {
             <div className="flex flex-col min-h-screen">
                 <div className="flex-grow">
                     <div className="container mx-auto px-4 py-64">
-                        {/* 제품 상세 정보 섹션 */}
+                        {/* 약국 상세 정보 섹션 */}
                         <div className="mb-12">
-                            <h1 className="text-3xl font-bold mb-6">제품 상세 정보</h1>
+                            <h1 className="text-3xl font-bold mb-6">약국 상세 정보</h1>
                             <div className="bg-white p-6 rounded-lg shadow-md">
                                 <div className="flex mb-4">
-                                    <GetSketchMap  latitude={pharmacy.wgs84Lat} longitude={pharmacy.wgs84Lon} placeName={pharmacy.dutyName}/>
+                                    <GetSketchMap latitude={pharmacy.wgs84Lat} longitude={pharmacy.wgs84Lon} placeName={pharmacy.dutyName}/>
                                     <div className='max-w-[700px] ml-[50px]'>
-                                        <h2 className="text-2xl font-semibold mb-2">{pharmacy.dutyName}/{pharmacy.itemName}</h2>
-                                        <p className="text-gray-600 mb-2">주소: {pharmacy.dutyAddr} | {pharmacy.dutyMapping}</p>
-                                        <p className="font-bold mb-2">정보: {pharmacy.dutyInf}</p>
+                                        <h2 className="text-2xl font-semibold mb-2">{pharmacy.dutyName}</h2>
+                                        <p className="text-gray-600 mb-2">주소: {pharmacy.dutyAddr}</p>
+                                        <p className="font-bold mb-2">전화번호: {pharmacy.dutyTel1}</p>
                                         <p className="mb-2">우편번호: {pharmacy.postCdn1}-{pharmacy.postCdn2}</p>
-                                        <p className="mb-2">임시: {pharmacy.dutyName}</p>
-                                        <p>임시2: {pharmacy.dutyName}</p>
+                                        <p className="mb-2">운영 정보: {pharmacy.dutyInf}</p>
+                                        <p className="mb-2">위도: {pharmacy.wgs84Lat}</p>
+                                        <p>경도: {pharmacy.wgs84Lon}</p>
                                     </div>
                                 </div>
                             </div>
@@ -306,7 +299,6 @@ const PharmacyDetail = () => {
                             <h2 className="text-4xl font-bold mb-28 text-center">리뷰 목록</h2>
                             <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-300 w-full">
                                 <div className="px-6 py-4 bg-gray-100 flex font-bold text-lg">
-                                    {/* <div className="w-14 text-center">번호</div> */}
                                     <div className="w-28 text-center ml-16">평점</div>
                                     <div className="flex-1 text-center">리뷰</div>
                                     <div className="w-36 text-center">작성일자</div>
@@ -317,11 +309,10 @@ const PharmacyDetail = () => {
                                     <div className="px-6 py-4 text-center">리뷰가 없습니다.</div>
                                 ) : (
                                     <>
-                                        {console.log('Rendering reviews:', currentReviews)} {/* 추가된 로그 */}
+                                        {console.log('Rendering reviews:', currentReviews)}
                                         {currentReviews.map((review) => (
                                             <React.Fragment key={review.no}>
                                                 <div className="px-6 py-4 flex items-center border-t border-gray-200">
-                                                    {/* <div className="w-14 text-center">{review.no}</div> */}
                                                     <div className="w-28 text-center ml-16">
                                                         <StarRating rating={review.rating} onRatingChange={() => { }} isClickable={false} />
                                                     </div>
