@@ -16,7 +16,7 @@
             rep.TARGET_ID
         FROM REPORT_TBL rep
         JOIN REVIEW_TBL rev ON rep.REF_NO = rev.NO
-        LEFT JOIN USER_TBL u ON rep.REPORTER_ID = u.USER_ID
+        LEFT JOIN USER_TBL u ON rep.TARGET_ID = u.USER_ID
     </select>
 
     <select id="findReportById" resultType="com.emginfo.emgnavi.report.model.dto.ReportListDTO">
