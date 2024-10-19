@@ -139,6 +139,10 @@ public class MapController {
         System.out.println("GPS정보 만들었음");
         List<Pharmacy> pharmacys = mapService.getAroundPharmacyList(gpsInfo);
 
+        for (Pharmacy pharmacy : pharmacys) {
+            System.out.println("조회결과:"+pharmacy.toString());
+        }
+
 
 
 //      ##Return값 작성 예시##

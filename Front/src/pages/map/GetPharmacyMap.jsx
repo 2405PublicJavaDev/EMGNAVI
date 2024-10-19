@@ -44,7 +44,7 @@ function GetPharmacyMap() {
 
         // 현재 위치를 받아오는 함수
         function onGeoOkay(position) {
-            // console.log(position);
+            console.log(position);
 
             // 위도 경도를 받아오는 부분
             let lat = position.coords.latitude;
@@ -157,7 +157,7 @@ function GetPharmacyMap() {
             var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
 
             pharmacys.forEach(pharmacy => {
-                console.log(pharmacy.dutyName, pharmacy.postCdn2, pharmacy.postCdn1);
+                console.log(pharmacy.dutyName, pharmacy.wgs84Lat, pharmacy.wgs84Lon);
 
                 // 마커 이미지의 이미지 크기 입니다
                 var imageSize = new kakao.maps.Size(24, 35);
@@ -168,7 +168,7 @@ function GetPharmacyMap() {
                 // 마커를 생성합니다
                 var marker = new kakao.maps.Marker({
                     map: map, // 마커를 표시할 지도
-                    position: new kakao.maps.LatLng(pharmacy.postCdn2, pharmacy.postCdn1), // 마커를 표시할 위치
+                    position: new kakao.maps.LatLng(pharmacy.wgs84Lat, pharmacy.wgs84Lon), // 마커를 표시할 위치
                     text: pharmacy.hvec,
                     // title: hospital.dutyName, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
                     image: markerImage, // 마커 이미지 

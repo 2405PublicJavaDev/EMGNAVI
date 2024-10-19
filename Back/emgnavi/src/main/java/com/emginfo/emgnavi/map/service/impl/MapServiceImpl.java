@@ -122,7 +122,7 @@ public class MapServiceImpl implements MapService {
 
         //정확한 거리 측정
         for(Pharmacy aroundPharmacy : tempAroundPharmacyList) {
-            double distance = this.getDistance(nowLatitude, nowLongitude, Double.parseDouble(aroundPharmacy.getPostCdn2()), Double.parseDouble(aroundPharmacy.getPostCdn1()));
+            double distance = this.getDistance(nowLatitude, nowLongitude, Double.parseDouble(aroundPharmacy.getWgs84Lat()), Double.parseDouble(aroundPharmacy.getWgs84Lon()));
             if(distance < gpsInfo.getDistance()) {
                 resultAroundPharmacyList.add(aroundPharmacy);
             }
