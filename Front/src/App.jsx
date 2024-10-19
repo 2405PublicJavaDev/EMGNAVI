@@ -57,6 +57,7 @@ import GetEmergencyStat from './pages/stat/GetEmergencyStat';
 import GetPharmacyMap from './pages/map/GetPharmacyMap';
 import PharmacyDetail from './pages/pharmacy/PharmacyDetail';
 import HospitalDetail from './pages/hospital/HospitalDetail';
+import HospitalSearch from './pages/hospital/HospitalSearch';
 
 function App() {
 
@@ -129,6 +130,7 @@ function App() {
         <Route path='/pharmacy/PharmacySearch' element={<PharmacySearch />} />
         <Route path='/pharmacy/detail/:hpid' element={<PharmacyDetail />} />
 
+        <Route path='/hospital/HospitalSearch' element={<HospitalSearch />} />
         <Route path='/hospital/detail/:hpid' element={<HospitalDetail />} />
 
         <Route path='/user/mypage/favorite/hospital' element={<FavoriteHospital />} />

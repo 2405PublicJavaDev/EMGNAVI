@@ -3,7 +3,6 @@ package com.emginfo.emgnavi.hospital.controller;
 import com.emginfo.emgnavi.hospital.mapper.HospitalMapper;
 import com.emginfo.emgnavi.hospital.service.HospitalService;
 import com.emginfo.emgnavi.hospital.vo.Hospital;
-import com.emginfo.emgnavi.pharmacy.vo.Pharmacy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +33,7 @@ public class HospitalController {
             int totalCount = hospitalMapper.getTotalCount();
 
             Map<String, Object> response = new HashMap<>();
-            response.put("medicines", hospitals);
+            response.put("hospitals", hospitals);
             response.put("totalPages", (int) Math.ceil((double) totalCount / size));
             response.put("currentPage", page);
             response.put("totalItems", totalCount);
@@ -64,16 +63,16 @@ public class HospitalController {
     @GetMapping("/search")
     public ResponseEntity<Map<String, Object>> searchHospital(
             @RequestParam(required = false) String dutyName,
-            @RequestParam(required = false) String entpName,
+            @RequestParam(required = false) String dutyAddr,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         try {
-            List<Hospital> results = hospitalService.searchHospital(dutyName, entpName, page, size);
-            int totalCount = hospitalService.getSearchResultCount(dutyName, entpName);
+            List<Hospital> results = hospitalService.searchHospital(dutyName, dutyAddr, page, size);
+            int totalCount = hospitalService.getSearchResultCount(dutyName, dutyAddr);
 
             Map<String, Object> response = new HashMap<>();
-            response.put("medicines", results);
+            response.put("hospitals", results);
             response.put("totalPages", (int) Math.ceil((double) totalCount / size));
             response.put("currentPage", page);
             response.put("totalItems", totalCount);
@@ -81,7 +80,7 @@ public class HospitalController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Failed to search medicines");
+            errorResponse.put("error", "Failed to search hospitals");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
@@ -98,11 +97,17 @@ public class HospitalController {
 
             List<Map<String, Object>> suggestions = hospitalService.getAutocompleteSuggestions(query, searchType);
 
+            for(Map<String, Object> suggestion : suggestions) {
+                System.out.println(suggestion.keySet());
+                System.out.println("hpid:"+suggestion.get("HPID"));
+                System.out.println("dutyName:"+suggestion.get("DUTYNAME"));
+            }
+
             if (suggestions.isEmpty()) {
                 Map<String, Object> noResult = new HashMap<>();
-                noResult.put("itemSeq", "no-result");
-                noResult.put("itemName", "검색 결과가 없습니다");
-                noResult.put("entpName", "");
+                noResult.put("hpid", "no-result");
+                noResult.put("dutyName", "검색 결과가 없습니다");
+                noResult.put("dutyAddr", "");
                 return ResponseEntity.ok(List.of(noResult));
             }
 

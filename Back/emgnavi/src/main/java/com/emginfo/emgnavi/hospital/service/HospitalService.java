@@ -11,9 +11,9 @@ public interface HospitalService {
 
     Hospital getHospitalDetail(String hpid);
 
-    List<Hospital> searchHospital(String dutyName, String entpName, int page, int size);
+    List<Hospital> searchHospital(String dutyName, String dutyAddr, int page, int size);
 
-    int getSearchResultCount(String dutyName, String entpName);
+    int getSearchResultCount(String dutyName, String dutyAddr);
 
     List<Map<String, Object>> getAutocompleteSuggestions(String query, String searchType);
 }
