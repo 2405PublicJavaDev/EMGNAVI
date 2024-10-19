@@ -2,6 +2,7 @@ package com.emginfo.emgnavi.report.model.mapper;
 
 import com.emginfo.emgnavi.report.model.dto.ReportListDTO;
 import com.emginfo.emgnavi.report.model.vo.Report;
+import jakarta.validation.constraints.NotNull;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.sql.Date;
@@ -28,5 +29,5 @@ public interface ReportMapper {
     void freezeReporterId(String reporterId, Date unfreezeDate);
 
     // 신고 상태 업데이트
-    void updateReportStatus(int no, int status);
+    void updateReportStatus(int no, int status, String targetId);
 }

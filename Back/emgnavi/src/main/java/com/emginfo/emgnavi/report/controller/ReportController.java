@@ -25,22 +25,23 @@ public class ReportController {
 
     // 회원 신고 하기
     @PostMapping("/report/{refNo}")
-    public SuccessResponse reportUser(@PathVariable String refNo, @RequestBody ReportListDTO reportListDTO, HttpSession session) {
-        // 신고한 ID = 로그인한 ID
+    public SuccessResponse reportUser(@PathVariable String refNo, @RequestBody Report report, HttpSession session) {
         String reporterId = (String) session.getAttribute("userId");
-        if(reporterId == null) {
+        if (reporterId == null) {
             throw new CustomException(ErrorCode.RESOURCE_NOT_FOUND);
         }
 
-        reportListDTO.setReporterId(reporterId);
-        reportListDTO.setRefNo(Integer.parseInt(refNo));
+        report.setReporterId(reporterId);
+        report.setRefNo(Integer.parseInt(refNo));
 
-        if(reportListDTO.getReporterId() == null || reportListDTO.getRefNo() <= 0) {
+        if (report.getReporterId() == null || report.getRefNo() <= 0) {
             throw new CustomException(ErrorCode.RESOURCE_NOT_FOUND);
         }
-        Report report = reportService.requestReport(reportListDTO);
-        return new SuccessResponse(SuccessCode.REGISTER_SUCCESS, report);
+
+        Report savedReport = reportService.requestReport(report);
+        return new SuccessResponse(SuccessCode.REGISTER_SUCCESS, savedReport);
     }
+
 
     // 회원 신고 리스트 조회
     @GetMapping("admin/reportList")
@@ -52,8 +53,9 @@ public class ReportController {
     // 회원 신고 조치
     @PostMapping("/reports/{no}")
     public SuccessResponse reportAction(@PathVariable int no, @RequestBody ReportActionDTO reportActionDTO) {
+        System.out.println("targetId: " + reportActionDTO.getTargetId());
         System.out.println("unfreezeDate: " + reportActionDTO.getUnfreezeDate());
-        reportService.processReportAction(no, reportActionDTO);
-        return new SuccessResponse(SuccessCode.UPDATE_SUCCESS);
+        ReportActionDTO processReport = reportService.processReportAction(no, reportActionDTO);
+        return new SuccessResponse(SuccessCode.UPDATE_SUCCESS, processReport);
     }
 }

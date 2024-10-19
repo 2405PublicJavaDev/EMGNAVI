@@ -17,35 +17,33 @@ const ReportPopup = ({ review, onClose }) => {
 
     // 신고 제출 핸들러
     const handleSubmit = async () => {
-        // '기타'가 선택되었으나 입력된 내용이 없을 경우 경고 메시지 출력
         if (reportReason === '기타' && !reportContent) {
             alert('기타 사유를 입력해 주세요.');
             return;
         }
-
+    
         // 서버에 보낼 신고 데이터 준비
         const reportData = {
-            writerId: review.writerId, // 리뷰 작성자 ID
-            reporterId: userId, // 신고자 ID (로그인한 사용자)
-            reviewContent: review.content, // 신고 대상이 되는 리뷰 내용
-            reportReason: reportReason === '기타' ? reportContent : reportReason, // 신고 이유 (기타 사유일 경우 입력된 내용 사용)
+            writerId: review.writerId,  // 리뷰 작성자 ID
+            reporterId: userId,         // 신고자 ID
+            reviewContent: review.content,  // 리뷰 내용
+            content: reportReason === '기타' ? reportContent : reportReason,  // 신고 내용: '기타'일 경우 reportContent 사용
         };
-
+    
         try {
-            // 서버로 신고 데이터를 전송
             const response = await axios.post(`/api/report/${review.no}`, reportData);
-
+    
             if (response.status !== 200) {
                 throw new Error('신고 처리에 실패했습니다.');
             }
-
-            alert('신고가 성공적으로 접수되었습니다.'); // 성공 메시지
-            onClose(); // 팝업 닫기
+    
+            alert('신고가 성공적으로 접수되었습니다.');
+            onClose();  // 팝업 닫기
         } catch (error) {
             console.error('신고 처리 중 오류 발생:', error);
-            alert('신고 처리 중 오류가 발생했습니다.'); // 오류 처리
+            alert('신고 처리 중 오류가 발생했습니다.');
         }
-    };
+    };     
 
     return (
         <div className="bg-white w-[35rem] max-h-[90vh] p-8 rounded-lg shadow-lg flex flex-col overflow-auto">

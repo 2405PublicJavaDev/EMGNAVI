@@ -16,7 +16,7 @@
             R.RATING
         FROM REVIEW_TBL R
                  JOIN USER_TBL U ON R.WRITER_ID = U.USER_ID
-        WHERE R.REF_NO = #{itemSeq}
+        WHERE R.REF_NO = #{itemSeq} AND R.STATUS = 0
         ORDER BY R.CREATED_DATE DESC, R.NO DESC
     </select>
 
@@ -26,10 +26,11 @@
     </insert>
 
     <!-- 리뷰 삭제 -->
-    <delete id="deleteReview" parameterType="long">
-        DELETE FROM REVIEW_TBL
+    <update id="deleteReview" parameterType="long">
+        UPDATE REVIEW_TBL
+        SET STATUS = 1
         WHERE NO = #{reviewId}
-    </delete>
+    </update>
 
     <!-- 리뷰 작성자 ID 조회 -->
     <select id="selectWriterIdByReviewId" resultType="String">
