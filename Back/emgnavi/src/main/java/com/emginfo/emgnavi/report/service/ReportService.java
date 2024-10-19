@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface ReportService {
 
-    Report requestReport(ReportListDTO reportListDTO);
+    Report requestReport(Report reportListDTO);
 
     List<ReportListDTO> getReportList();
 
-    void processReportAction(int no, ReportActionDTO reportActionDTO);
+    ReportActionDTO processReportAction(int no, ReportActionDTO reportActionDTO);
 }

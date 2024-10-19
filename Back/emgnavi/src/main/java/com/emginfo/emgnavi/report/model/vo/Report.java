@@ -23,4 +23,5 @@ public class Report {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private LocalDate reportDate;     // 신고일
   private int status;        // 상태
+  private String targetId; // 정지 처리 아이디
 }
