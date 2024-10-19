@@ -16,7 +16,7 @@
             R.RATING
         FROM REVIEW_TBL R
                  JOIN USER_TBL U ON R.WRITER_ID = U.USER_ID
-        WHERE R.REF_NO = #{itemSeq}
+        WHERE R.REF_NO = #{itemSeq} AND R.STATUS = 0
         ORDER BY R.CREATED_DATE DESC, R.NO DESC
     </select>
 
