@@ -34,16 +34,22 @@
         SET UNFREEZE_DATE = #{unfreezeDate}
         WHERE USER_ID = #{writerId}
     </update>
-    <update id="updateReportStatus">
-        UPDATE REPORT_TBL
-        SET STATUS = #{status},
-            TARGET_ID = #{targetId}
-        WHERE NO = #{no}
+    <update id="deleteReviewByNo">
+        UPDATE REVIEW_TBL
+        SET STATUS = 1
+        WHERE NO = ${no}
     </update>
 
     <update id="freezeReporterId">
         UPDATE USER_TBL
         SET UNFREEZE_DATE = #{unfreezeDate}
         WHERE USER_ID = #{reporterId}
+    </update>
+
+    <update id="updateReportStatus">
+        UPDATE REPORT_TBL
+        SET STATUS = #{status},
+            TARGET_ID = #{targetId}
+        WHERE NO = #{no}
     </update>
 </mapper>

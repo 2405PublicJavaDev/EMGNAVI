@@ -316,9 +316,9 @@ function GetAedMap() {
                 <div className="flex flex-col w-[25%]">
                     <h1>
                         <img className="left-[24px] top-0" width="111" height="97" src="/img/header/logo.png" alt="Logo"></img>
-                    </h1>
-                    <div className="text-center font-bold py-3"><button>병원</button></div>
-                    <div className="text-center font-bold py-3"><button>약국</button></div>
+                    </h1><div className="text-center font-bold py-3" onClick={() => window.location.href = 'getEmergencyMap'}><button>응급실</button></div>
+                    <div className="text-center font-bold py-3" onClick={() => window.location.href = 'getHospitalMap'}><button>병원</button></div>
+                    <div className="text-center font-bold py-3" onClick={() => window.location.href = 'getPharmacyMap'}><button>약국</button></div>
                     <div className="text-center font-bold bg-[#0B2D85] text-[#ffffff] py-3"><button>AED</button></div>
                 </div>
                 <div className="flex flex-col w-[75%]">
