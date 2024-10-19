@@ -56,6 +56,7 @@ public class MedicineReviewController {
     public ResponseEntity<MedicineReviews> createMedicineReview(@RequestBody MedicineReviews review, HttpSession session) {
         // 세션에서 writerId(로그인된 사용자 ID)를 확인
         String writerId = (String) session.getAttribute("userId");
+        String writerNickname = (String) session.getAttribute("userNickname");
 
         // writerId가 없으면 로그인되지 않은 상태이므로 401 Unauthorized 반환
         if (writerId == null) {
@@ -64,6 +65,7 @@ public class MedicineReviewController {
 
         // 로그인된 사용자라면 writerId를 리뷰 객체에 설정
         review.setWriterId(writerId);
+        review.setWriterNickname(writerNickname);
 
         // 리뷰 작성 비즈니스 로직 호출
         MedicineReviews createdReview = medicineReviewService.createMedicineReview(review);
