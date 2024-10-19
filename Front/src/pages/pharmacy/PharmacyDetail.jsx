@@ -233,7 +233,7 @@ const PharmacyDetail = () => {
                             <div className="bg-white p-6 rounded-lg shadow-md">
                                 <div className="flex mb-4">
                                     <GetSketchMap  latitude={pharmacy.wgs84Lat} longitude={pharmacy.wgs84Lon} placeName={pharmacy.dutyName}/>
-                                    <div>
+                                    <div className='max-w-[700px] ml-[50px]'>
                                         <h2 className="text-2xl font-semibold mb-2">{pharmacy.dutyName}/{pharmacy.itemName}</h2>
                                         <p className="text-gray-600 mb-2">주소: {pharmacy.dutyAddr} | {pharmacy.dutyMapping}</p>
                                         <p className="font-bold mb-2">정보: {pharmacy.dutyInf}</p>

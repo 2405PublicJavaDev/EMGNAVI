@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import ReportPopup from '../report/ReportPopup';
 import Modal from 'react-modal';
 import GetSketchMap from '../map/GetSketchMap';
+import Chart from '../stat/Chart';
 
 Modal.setAppElement('#root');
 
@@ -233,13 +234,23 @@ const HospitalDetail = () => {
                             <div className="bg-white p-6 rounded-lg shadow-md">
                                 <div className="flex mb-4">
                                     <GetSketchMap  latitude={hospital.wgs84Lat} longitude={hospital.wgs84Lon} placeName={hospital.dutyName}/>
-                                    <div>
+                                    <div className='max-w-[700px] ml-[50px]'>
                                         <h2 className="text-2xl font-semibold mb-2">{hospital.dutyName}</h2>
                                         <p className="text-gray-600 mb-2">주소: {hospital.dutyAddr}</p>
                                         <p className="font-bold mb-2">진료과목: {hospital.dgidIdName}</p>
                                         <p className="mb-2">전화번호: {hospital.dutyTel1}</p>
-                                        <p className="mb-2">응급실번호: {hospital.dutyTel3}</p>
-                                        <p>임시2: {hospital.dutyName}</p>
+                                        {hospital.dutyHayn == 1 ?
+                                        (
+                                            <>
+                                                <p className="mb-2">응급실번호: {hospital.dutyTel3}</p>
+                                                <p>응급병상 요일별 평균</p>
+                                                <div className="w-[95%]">
+                                                    <Chart statType="DOW" hpid={hospital.hpid} />
+                                                </div>
+                                            </>
+                                        ) :
+                                        ('')
+                                        }
                                     </div>
                                 </div>
                             </div>
