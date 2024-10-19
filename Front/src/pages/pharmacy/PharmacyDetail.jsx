@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import ReportPopup from '../report/ReportPopup';
 import Modal from 'react-modal';
+import GetSketchMap from '../map/GetSketchMap';
 
 Modal.setAppElement('#root');
 
@@ -231,11 +232,7 @@ const PharmacyDetail = () => {
                             <h1 className="text-3xl font-bold mb-6">제품 상세 정보</h1>
                             <div className="bg-white p-6 rounded-lg shadow-md">
                                 <div className="flex mb-4">
-                                    {pharmacy.dutyImg ? (
-                                        <img className="w-1/3 mr-6" src={pharmacy.dutyImg || "/img/no-image.png"} alt="Product" />
-                                    ) : (
-                                        <div className="w-1/3 mr-6 flex items-center justify-center text-gray-500">이미지 준비 중</div>
-                                    )}
+                                    <GetSketchMap  latitude={pharmacy.wgs84Lat} longitude={pharmacy.wgs84Lon} placeName={pharmacy.dutyName}/>
                                     <div>
                                         <h2 className="text-2xl font-semibold mb-2">{pharmacy.dutyName}/{pharmacy.itemName}</h2>
                                         <p className="text-gray-600 mb-2">주소: {pharmacy.dutyAddr} | {pharmacy.dutyMapping}</p>
