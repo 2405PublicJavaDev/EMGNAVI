@@ -300,7 +300,7 @@ function GetEmergencyMap() {
                                     itemContent={(index, hospital) => (
                                         <>
                                             <TableRow key={index} className="emergency-item">
-                                                <TableCell className="aed-name font-bold text-gray-800" style={{ border: 'none', padding: '5px 10px 0px 10px', fontWeight: '900', color: '#0B2D85', fontSize: '16px' }}>{hospital.dutyName}</TableCell>
+                                                <TableCell className="aed-name font-bold text-gray-800 cursor-pointer" style={{ border: 'none', padding: '5px 10px 0px 10px', fontWeight: '900', color: '#0B2D85', fontSize: '16px'}} onClick={() => window.location.href = '/hospital/detail/'+hospital.hpid}>{hospital.dutyName}</TableCell>
                                             </TableRow>
                                             <TableRow key={`${index}-hvec`}>
                                                 <TableCell className="aed-tel text-sm text-gray-600" style={{ border: 'none', padding: '5px 10px' }}><b>{'응급병상 : ' + hospital.hvec + ' 🛏️'}</b></TableCell>
