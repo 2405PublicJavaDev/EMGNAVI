@@ -40,24 +40,28 @@ export const ReportList = () => {
   const selectedReport = openModalId !== null ? reportList[openModalId] : null;
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const currentUserId = localStorage.getItem('userId');
-        if (currentUserId !== 'admin') {
-          alert('접근 권한이 없습니다.');
-          navigate('/');
-          return;
-        }
-        const res = await axios.get('/api/admin/reportList');
-        setReportList(res.data.data);
-        console.log("Fetched report list:", res.data.data);
-      } catch (err) {
-        console.error("Report list fetch error:", err.response?.data || err.message);
-        throw err;
+    // userId가 ''이 아닐 때에만 동작
+    if (userId !== '') {
+      console.log(userId);
+      if (userId === null || userId !== 'admin') {
+          // 경고문구 출력 후 이전 페이지로 강제이동
+          alert('관리자 계정이 아닙니다!');
+          navigate(-1);
+      }else {
+        const fetchData = async () => {
+          try {
+            const res = await axios.get('/api/admin/reportList');
+            setReportList(res.data.data);
+            console.log("Fetched report list:", res.data.data);
+          } catch (err) {
+            console.error("Report list fetch error:", err.response?.data || err.message);
+            throw err;
+          }
+        };
+        fetchData();
       }
-    };
-    fetchData();
-  }, [userId, navigate]);
+  }
+  }, [userId]);
 
   const reportAction = async (no, targetId, unfreezeDate) => {
     try {
