@@ -20,6 +20,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -122,12 +125,20 @@ public class UserController {
             return ResponseEntity.badRequest().body("아이디와 비밀번호는 필수입니다.");
         }
         User user = uService.checkLogin(request);
-        if (user != null) {
+        if (user != null && (user.getUnfreezeDate() == null || user.getUnfreezeDate().toInstant()
+                .atZone(ZoneId.systemDefault()).toLocalDate().isBefore(LocalDate.now()))) {
+            System.out.println("login success");
             // 세션에 사용자 아이디 저장
             session.setAttribute("userId", user.getUserId());
             session.setAttribute("userNickname", user.getUserNickname());
             return ResponseEntity.ok("로그인 성공");
-        } else {
+        }
+        else if (user != null) {
+            System.out.println("freeze");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("정지된 계정입니다.");
+        }
+        else {
+            System.out.println("fail");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("아이디 또는 비밀번호가 잘못되었습니다.");
         }
     }
