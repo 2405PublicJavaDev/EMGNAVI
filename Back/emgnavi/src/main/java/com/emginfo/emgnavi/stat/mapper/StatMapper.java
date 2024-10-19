@@ -8,10 +8,11 @@ import java.util.List;
 @Mapper
 public interface StatMapper {
 
-    List<Stat> getDOWStatInfo(String hpid);
+    List<Stat> getStatInfo(String searchType, String statType, String keyword);
+//    List<Stat> getDOWStatInfo(String searchType, String statType, String keyword);
 
-    List<Stat> getHODStatInfo(String hpid);
-
-    List<Stat> getAPDWStatInfo(String hpid);
+//    List<Stat> getHODStatInfo(String searchType, String keyword);
+//
+//    List<Stat> getAPDWStatInfo(String searchType, String keyword);
 
 }

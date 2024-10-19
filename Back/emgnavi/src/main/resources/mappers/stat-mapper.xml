@@ -3,38 +3,59 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.emginfo.emgnavi.stat.mapper.StatMapper">
-    <select id="getDOWStatInfo" resultType="Stat">
-        SELECT TO_CHAR(SAVE_TIME, 'DAY', 'NLS_DATE_LANGUAGE = ''KOREAN''') AS x, ROUND(AVG(HVEC), 2) AS y
+    <select id="getStatInfo" resultType="Stat">
+        SELECT TO_CHAR(SAVE_TIME, 'DAY', 'NLS_DATE_LANGUAGE = ''KOREAN''') AS x,
+        <if test="searchType == 'hospital'">
+            ROUND(AVG(HVEC), 2) AS y
+        </if>
+        <if test="searchType == 'legion'">
+            SUM(HVEC) AS y
+        </if>
         FROM EMERGENCY_DATA_TBL
         <where>
-            <if test="hpid != null and hpid != ''">
-                HPID = '${hpid}'
+            <if test="searchType == 'hospital' and keyword != null and keyword != ''">
+                HPID = '${keyword}'
+            </if>
+            <if test="searchType == 'legion' and keyword != null and keyword != ''">
+                DUTY_ADDR LIKE '${keyword}%'
             </if>
         </where>
-        GROUP BY TO_CHAR(SAVE_TIME, 'DAY', 'NLS_DATE_LANGUAGE = ''KOREAN'''), TO_CHAR(SAVE_TIME, 'D')
-        ORDER BY TO_NUMBER(TO_CHAR(SAVE_TIME, 'D'))
+        <if test="statType == 'DOW'">
+            GROUP BY TO_CHAR(SAVE_TIME, 'DAY', 'NLS_DATE_LANGUAGE = ''KOREAN'''), TO_CHAR(SAVE_TIME, 'D')
+            ORDER BY TO_NUMBER(TO_CHAR(SAVE_TIME, 'D'))
+        </if>
+        <if test="statType == 'HOD'">
+            GROUP BY TO_CHAR(SAVE_TIME, 'HH24')
+            ORDER BY TO_NUMBER(TO_CHAR(SAVE_TIME, 'HH24'))
+        </if>
+        <if test="statType == 'APDW'">
+            GROUP BY TO_CHAR(SAVE_TIME, 'DAY', 'NLS_DATE_LANGUAGE = ''KOREAN'''), TO_CHAR(SAVE_TIME, 'D'), TO_CHAR(SAVE_TIME, 'AM')
+            ORDER BY TO_NUMBER(TO_CHAR(SAVE_TIME, 'D')), TO_CHAR(SAVE_TIME, 'AM')
+        </if>
     </select>
-    <select id="getHODStatInfo" resultType="Stat">
-        SELECT TO_CHAR(SAVE_TIME, 'HH24') AS x, ROUND(AVG(HVEC), 2) AS y
-        FROM EMERGENCY_DATA_TBL
-        <where>
-            <if test="hpid != null and hpid != ''">
-                HPID = '${hpid}'
-            </if>
-        </where>
-        GROUP BY TO_CHAR(SAVE_TIME, 'HH24')
-        ORDER BY TO_NUMBER(TO_CHAR(SAVE_TIME, 'HH24'))
-    </select>
-    <select id="getAPDWStatInfo" resultType="Stat">
-        SELECT TO_CHAR(SAVE_TIME, 'DAY', 'NLS_DATE_LANGUAGE = ''KOREAN''') || ' ' || TO_CHAR(SAVE_TIME, 'AM') AS x, ROUND(AVG(HVEC), 2) AS y
-        FROM EMERGENCY_DATA_TBL
-        <where>
-            <if test="hpid != null and hpid != ''">
-                HPID = '${hpid}'
-            </if>
-        </where>
-        GROUP BY TO_CHAR(SAVE_TIME, 'DAY', 'NLS_DATE_LANGUAGE = ''KOREAN'''), TO_CHAR(SAVE_TIME, 'D'), TO_CHAR(SAVE_TIME, 'AM')
-        ORDER BY TO_NUMBER(TO_CHAR(SAVE_TIME, 'D')),
-                 TO_CHAR(SAVE_TIME, 'AM')
-    </select>
+
+
+<!--    <select id="getHODStatInfo" resultType="Stat">-->
+<!--        SELECT TO_CHAR(SAVE_TIME, 'HH24') AS x, ROUND(AVG(HVEC), 2) AS y-->
+<!--        FROM EMERGENCY_DATA_TBL-->
+<!--        <where>-->
+<!--            <if test="hpid != null and hpid != ''">-->
+<!--                HPID = '${hpid}'-->
+<!--            </if>-->
+<!--        </where>-->
+<!--        GROUP BY TO_CHAR(SAVE_TIME, 'HH24')-->
+<!--        ORDER BY TO_NUMBER(TO_CHAR(SAVE_TIME, 'HH24'))-->
+<!--    </select>-->
+<!--    <select id="getAPDWStatInfo" resultType="Stat">-->
+<!--        SELECT TO_CHAR(SAVE_TIME, 'DAY', 'NLS_DATE_LANGUAGE = ''KOREAN''') || ' ' || TO_CHAR(SAVE_TIME, 'AM') AS x, ROUND(AVG(HVEC), 2) AS y-->
+<!--        FROM EMERGENCY_DATA_TBL-->
+<!--        <where>-->
+<!--            <if test="hpid != null and hpid != ''">-->
+<!--                HPID = '${hpid}'-->
+<!--            </if>-->
+<!--        </where>-->
+<!--        GROUP BY TO_CHAR(SAVE_TIME, 'DAY', 'NLS_DATE_LANGUAGE = ''KOREAN'''), TO_CHAR(SAVE_TIME, 'D'), TO_CHAR(SAVE_TIME, 'AM')-->
+<!--        ORDER BY TO_NUMBER(TO_CHAR(SAVE_TIME, 'D')),-->
+<!--                 TO_CHAR(SAVE_TIME, 'AM')-->
+<!--    </select>-->
 </mapper>

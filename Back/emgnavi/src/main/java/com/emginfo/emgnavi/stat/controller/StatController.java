@@ -23,29 +23,15 @@ public class StatController {
     private StatService statService;
 
     @GetMapping("/getEmergencyStat")
-    public SuccessResponse getEmergencyStat(String statType, String hpid) {
+    public SuccessResponse getEmergencyStat(String searchType, String statType, String keyword) {
 
-//        statType = "DOW";
-//        hpid =
-        System.out.println("statType : " + statType + " hpid : " + hpid);
+        System.out.println("searchType"+ searchType +"statType : " + statType + " keyword : " + keyword);
 
         List<Stat> StatInfo = null;
-        switch (statType){
+        StatInfo = statService.getStatInfo(searchType, statType, keyword);
             //Day Of the Week
-            case "DOW":
-                StatInfo = statService.getDOWStatInfo(hpid);
-                break;
-
             //Hour Of the Day
-            case "HOD":
-                StatInfo = statService.getHODStatInfo(hpid);
-                break;
-
             //AM PM by Day of the Week
-            case "APDW":
-                StatInfo = statService.getAPDWStatInfo(hpid);
-                break;
-        }
         //      ##Return값 작성 예시##
         //      SuccessResponse(
         //            SuccessCode.[RESOURCE_FOUND,REGISTER_SUCCESS],    ##SuccessCode enum 객체에서 동작에 어울리는 메시지를 선택하면 된다(현재 등록 완료, 조회 성공 2가지가 있음)

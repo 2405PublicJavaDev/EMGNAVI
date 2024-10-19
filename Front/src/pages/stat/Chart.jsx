@@ -21,7 +21,7 @@ ChartJS.register(
     Legend
 );
 
-function Chart({ statType, hpid }) {
+function Chart({ searchType, statType, keyword }) {
 
     const rootUrl = "http://127.0.0.1:8888";
 
@@ -40,7 +40,7 @@ function Chart({ statType, hpid }) {
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `${rootUrl}/api/stat/getEmergencyStat?statType=${statType}${hpid ? `&hpid=${hpid}` : ""}`
+                    `${rootUrl}/api/stat/getEmergencyStat?searchType=${searchType}&statType=${statType}${keyword ? `&keyword=${keyword}` : ""}`
                 );
                 // `http://127.0.0.1:8888/api/stat/getEmergencyStat?statType=APDW&hpid=A1100001`
                 const json = await response.json();

@@ -15,18 +15,17 @@ public class StatServiceImpl implements StatService {
     private StatMapper statMapper;
 
     @Override
-    public List<Stat> getDOWStatInfo(String hpid) {
-        System.out.println(hpid);
-        return statMapper.getDOWStatInfo(hpid);
+    public List<Stat> getStatInfo(String searchType, String statType, String keyword) {
+        return statMapper.getStatInfo(searchType, statType, keyword);
     }
 
-    @Override
-    public List<Stat> getHODStatInfo(String hpid) {
-        return statMapper.getHODStatInfo(hpid);
-    }
-
-    @Override
-    public List<Stat> getAPDWStatInfo(String hpid) {
-        return statMapper.getAPDWStatInfo(hpid);
-    }
+//    @Override
+//    public List<Stat> getHODStatInfo(String searchType, String keyword) {
+//        return statMapper.getHODStatInfo(searchType, keyword);
+//    }
+//
+//    @Override
+//    public List<Stat> getAPDWStatInfo(String searchType, String keyword) {
+//        return statMapper.getAPDWStatInfo(searchType, keyword);
+//    }
 }
