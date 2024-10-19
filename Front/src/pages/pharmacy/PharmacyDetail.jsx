@@ -72,7 +72,7 @@ const PharmacyDetail = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [expandedReviewId, setExpandedReviewId] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 추가
-    const { itemSeq } = useParams();
+    const { hpid } = useParams();
     const itemsPerPage = 10;
 
     // 신고 팝업
@@ -80,7 +80,7 @@ const PharmacyDetail = () => {
     const [selectedReview, setSelectedReview] = useState(null); // 선택된 리뷰 저장
 
     const fetchReviews = useCallback(() => {
-        fetch(`/api/pharmacy_reviews/pharmacy?itemSeq=${itemSeq}`)
+        fetch(`/api/medicine_reviews/medicine?itemSeq=${hpid}`)
             .then((response) => response.json())
             .then((data) => {
                 console.log('Received review data:', data); // 추가된 로그
@@ -95,7 +95,7 @@ const PharmacyDetail = () => {
                 console.error('리뷰 데이터를 가져오는 중 오류 발생:', error);
                 setReviews([]);
             });
-    }, [itemSeq]);
+    }, [hpid]);
 
     useEffect(() => {
         // 로그인 상태 확인 로직
@@ -111,17 +111,17 @@ const PharmacyDetail = () => {
 
         checkLoginStatus();
 
-        fetch(`/api/pharmacy/detail/${itemSeq}`)
+        fetch(`/api/pharmacy/detail/${hpid}`)
             .then((response) => response.json())
             .then((data) => setPharmacy(data))
             .catch((error) => console.error('Error fetching medicine details:', error));
 
         fetchReviews();
-    }, [itemSeq, fetchReviews]);
+    }, [hpid, fetchReviews]);
 
     const handleDeleteReview = async (reviewId) => {
         try {
-            const response = await fetch(`/api/pharmacy_reviews/pharmacy/${reviewId}`, {
+            const response = await fetch(`/api/medicine_reviews/medicine/${reviewId}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -174,13 +174,13 @@ const PharmacyDetail = () => {
         }
 
         try {
-            const response = await fetch('/api/pharmacy_reviews/pharmacy', {
+            const response = await fetch('/api/medicine_reviews/medicine', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    refNo: itemSeq,
+                    refNo: hpid,
                     content: review,
                     rating: rating
                 }),

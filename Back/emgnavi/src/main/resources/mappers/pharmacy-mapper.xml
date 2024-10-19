@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.emginfo.emgnavi.pharmacy.mapper.PharmacyMapper">
+
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*) FROM PHARMACY_TBL
+    </select>
+
+    <select id="selectPharmacyList" resultType="com.emginfo.emgnavi.pharmacy.vo.Pharmacy">
+        SELECT * FROM PHARMACY_TBL
+        ORDER BY HPID
+    </select>
+
+    <select id="selectPharmacyDetail" resultType="com.emginfo.emgnavi.pharmacy.vo.Pharmacy">
+        SELECT * FROM PHARMACY_TBL
+        WHERE HPID = #{hpid}
+    </select>
+
+    <select id="searchPharmacy" resultType="com.emginfo.emgnavi.pharmacy.vo.Pharmacy">
+        SELECT * FROM PHARMACY_TBL
+        WHERE 1=1
+        <if test="itemName != null and itemName != ''">
+            AND ITEM_NAME LIKE '%' || #{itemName} || '%'
+        </if>
+        <if test="entpName != null and entpName != ''">
+            AND ENTP_NAME LIKE '%' || #{entpName} || '%'
+        </if>
+        ORDER BY ITEM_SEQ
+    </select>
+
+    <select id="getSearchResultCount" resultType="int">
+        SELECT COUNT(*) FROM PHARMACY_TBL
+        WHERE 1=1
+        <if test="itemName != null and itemName != ''">
+            AND ITEM_NAME LIKE '%' || #{itemName} || '%'
+        </if>
+        <if test="entpName != null and entpName != ''">
+            AND ENTP_NAME LIKE '%' || #{entpName} || '%'
+        </if>
+    </select>
+
+    <select id="searchItemNames" resultType="java.util.Map">
+        SELECT ITEM_SEQ as itemSeq, ITEM_NAME as itemName
+        FROM PHARMACY_TBL
+        WHERE ITEM_NAME LIKE '%' || #{query} || '%'
+        AND ROWNUM &lt;= 10  <!-- 최대 10개까지만 반환 -->
+        ORDER BY ITEM_NAME
+    </select>
+
+    <select id="searchEntpNames" resultType="java.util.Map">
+        SELECT DISTINCT ENTP_NAME as entpName
+        FROM PHARMACY_TBL
+        WHERE ENTP_NAME LIKE '%' || #{query} || '%'
+          AND ROWNUM &lt;= 10
+        ORDER BY ENTP_NAME
+    </select>
+
+
+</mapper>

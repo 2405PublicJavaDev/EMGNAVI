@@ -126,7 +126,7 @@ function App() {
 
 
         <Route path='/pharmacy/PharmacySearch' element={<PharmacySearch />} />
-        <Route path='/pharmacy/PharmacyDetail' element={<PharmacyDetail />} />
+        <Route path='/pharmacy/detail/:hpid' element={<PharmacyDetail />} />
 
         <Route path='/user/mypage/favorite/hospital' element={<FavoriteHospital />} />
         <Route path='/user/mypage/favorite/pharmacy' element={<FavPharmacy />} />
