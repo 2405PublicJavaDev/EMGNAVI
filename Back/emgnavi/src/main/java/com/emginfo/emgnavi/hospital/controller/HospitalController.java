@@ -68,8 +68,11 @@ public class HospitalController {
             @RequestParam(defaultValue = "10") int size
     ) {
         try {
+            System.out.println("ck01 dName:"+dutyName);
             List<Hospital> results = hospitalService.searchHospital(dutyName, dutyAddr, page, size);
+            System.out.println("ck02");
             int totalCount = hospitalService.getSearchResultCount(dutyName, dutyAddr);
+            System.out.println("ck03");
 
             Map<String, Object> response = new HashMap<>();
             response.put("hospitals", results);
@@ -96,12 +99,6 @@ public class HospitalController {
             }
 
             List<Map<String, Object>> suggestions = hospitalService.getAutocompleteSuggestions(query, searchType);
-
-            for(Map<String, Object> suggestion : suggestions) {
-                System.out.println(suggestion.keySet());
-                System.out.println("hpid:"+suggestion.get("HPID"));
-                System.out.println("dutyName:"+suggestion.get("DUTYNAME"));
-            }
 
             if (suggestions.isEmpty()) {
                 Map<String, Object> noResult = new HashMap<>();

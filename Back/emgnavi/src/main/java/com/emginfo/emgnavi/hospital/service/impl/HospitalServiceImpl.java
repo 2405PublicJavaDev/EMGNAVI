@@ -39,7 +39,11 @@ public class HospitalServiceImpl implements HospitalService {
         int offset = page * size;
         RowBounds rowBounds = new RowBounds(offset, size);
 
-        return hospitalMapper.searchHospital(params, rowBounds);
+        System.out.println("ck02");
+        List<Hospital> hospitalList = hospitalMapper.searchHospital(params, rowBounds);
+        System.out.println("listSize:"+hospitalList.size());
+
+        return hospitalList;
     }
 
     @Override
