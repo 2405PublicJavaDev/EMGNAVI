@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const PharmacySearch = () => {
     const [pharmacies, setPharmacies] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchType, setSearchType] = useState('dutyName'); // 제품명 대신 기관명(dutyName)으로 변경
+    const [searchType, setSearchType] = useState('dutyName');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
@@ -14,15 +14,18 @@ const PharmacySearch = () => {
     const [focusedOptionIndex, setFocusedOptionIndex] = useState(-1);
     const [selectedOption, setSelectedOption] = useState(null);
     const [hoveredOption, setHoveredOption] = useState(null);
+    const [favorites, setFavorites] = useState({});
     const itemsPerPage = 10;
     const nav = useNavigate();
     const autoCompleteRef = useRef(null);
     const inputRef = useRef(null);
 
+    // 로그인 상태 관리
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태를 관리할 상태 변수
+
     const categories = [
         { value: 'dutyName', label: '기관명' },
         { value: 'dutyAddr', label: '주소' },
-        { value: 'dutyTel1', label: '전화번호' },
     ];
 
     const fetchPharmacies = (page = 0) => {
@@ -58,9 +61,10 @@ const PharmacySearch = () => {
         fetch(`/api/pharmacy/autocomplete?query=${inputValue}&searchType=${searchType}`)
             .then((response) => response.json())
             .then((data) => {
+                console.log('Autocomplete data:', data);
                 const newOptions = data.map((item) => ({
                     value: item.hpid,
-                    label: searchType === 'dutyName' ? item.dutyName : searchType === 'dutyAddr' ? item.dutyAddr : item.dutyTel1,
+                    label: searchType === 'dutyName' ? item.dutyName : item.dutyAddr,
                 }));
                 setOptions(newOptions);
                 setShowAutoComplete(newOptions.length > 0);
@@ -87,6 +91,8 @@ const PharmacySearch = () => {
         });
 
         const url = `/api/pharmacy/search?${queryParams}`;
+        console.log(`Sending request to: ${url}`);
+
         fetch(url)
             .then((response) => {
                 if (!response.ok) {
@@ -95,13 +101,14 @@ const PharmacySearch = () => {
                 return response.json();
             })
             .then((data) => {
+                console.log('Received data:', data);
                 setPharmacies(data.pharmacies || []);
                 setTotalPages(data.totalPages || 1);
                 setCurrentPage(page);
                 setIsLoading(false);
             })
             .catch((error) => {
-                console.error('Error searching for pharmacies:', error);
+                console.error('Error searching for pharmacy:', error);
                 setError('Failed to search pharmacies');
                 setIsLoading(false);
             });
@@ -160,6 +167,18 @@ const PharmacySearch = () => {
         );
     };
 
+    const toggleFavorite = (hpid) => {
+        if (!isLoggedIn) {
+            alert("로그인 후 즐겨찾기 기능을 사용할 수 있습니다.");
+            return;
+        }
+
+        setFavorites((prevFavorites) => ({
+            ...prevFavorites,
+            [hpid]: !prevFavorites[hpid],
+        }));
+    };
+
     useEffect(() => {
         fetchPharmacies(0);
     }, []);
@@ -171,14 +190,21 @@ const PharmacySearch = () => {
             }
         };
 
-        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener('mousedown', handleClickOutside);
         return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
 
     const handleKeyDown = (e) => {
-        if (e.key === 'ArrowDown') {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (!searchQuery) {
+                window.location.reload(); // 새로고침
+            } else {
+                handleSearch(0);
+            }
+        } else if (e.key === 'ArrowDown') {
             e.preventDefault();
             setFocusedOptionIndex((prevIndex) =>
                 prevIndex < options.length - 1 ? prevIndex + 1 : prevIndex
@@ -186,16 +212,15 @@ const PharmacySearch = () => {
         } else if (e.key === 'ArrowUp') {
             e.preventDefault();
             setFocusedOptionIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
-        } else if (e.key === 'Enter') {
-            e.preventDefault();
-            if (focusedOptionIndex >= 0 && focusedOptionIndex < options.length) {
-                setSelectedOption(options[focusedOptionIndex]);
-                setSearchQuery(options[focusedOptionIndex].label);
-                setShowAutoComplete(false);
-                handleSearch(0);
-            }
         }
     };
+
+    useEffect(() => {
+        if (focusedOptionIndex >= 0 && focusedOptionIndex < options.length) {
+            setHoveredOption(options[focusedOptionIndex]);
+            setSearchQuery(options[focusedOptionIndex].label);
+        }
+    }, [focusedOptionIndex, options]);
 
     const handleInputChange = (e) => {
         const value = e.target.value;
@@ -250,7 +275,7 @@ const PharmacySearch = () => {
                                 onFocus={() => setShowAutoComplete(true)}
                                 onBlur={handleInputBlur}
                                 onKeyDown={handleKeyDown}
-                                placeholder={`원하시는 ${searchType === 'dutyName' ? '기관명' : searchType === 'dutyAddr' ? '주소' : '전화번호'}을 검색해 주세요`}
+                                placeholder={`원하시는 ${searchType === 'dutyName' ? '기관' : '주소'}의 이름을 검색해 주세요`}
                                 className="border p-2 w-[360px] h-[36px] text-base leading-[20px] border-[#0000001a] text-black bg-white"
                                 style={{ color: 'black', backgroundColor: 'white' }}
                             />
@@ -285,6 +310,11 @@ const PharmacySearch = () => {
                                                     setFocusedOptionIndex(index);
                                                     setHoveredOption(option);
                                                     setSearchQuery(option.label);
+                                                }}
+                                                onMouseLeave={() => {
+                                                    if (!selectedOption) {
+                                                        setSearchQuery(inputRef.current.value);
+                                                    }
                                                 }}
                                             >
                                                 {option.label}
@@ -322,6 +352,7 @@ const PharmacySearch = () => {
                             <table className="table-auto w-full border-collapse text-center shadow-lg rounded-lg border-color">
                                 <thead className="bg-[#cccccc1a]">
                                     <tr>
+                                        <th className="py-4">즐겨찾기</th>
                                         <th className="py-4">기관명</th>
                                         <th className="py-4">주소</th>
                                         <th className="py-4">전화번호</th>
@@ -329,14 +360,32 @@ const PharmacySearch = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white">
-                                    {pharmacies.map((item, index) => (
-                                        <tr key={item.hpid} className="border-b">
-                                            <td className="py-4 font-roboto text-base text-black">{item.dutyName}</td>
-                                            <td className="py-4 font-roboto text-base text-black">{item.dutyAddr}</td>
-                                            <td className="py-4 font-roboto text-base text-black">{item.dutyTel1}</td>
+                                    {pharmacies.map((pharmacy) => (
+                                        <tr key={pharmacy.hpid} className="border-b">
+                                            <td className="py-4 font-roboto text-base text-black">
+                                                <button onClick={() => toggleFavorite(pharmacy.hpid)}>
+                                                    <img
+                                                        src={favorites[pharmacy.hpid]
+                                                            ? '/img/medicine/goldonestar.png'
+                                                            : '/img/medicine/greyonestar.png'
+                                                        }
+                                                        alt="즐겨찾기"
+                                                        className="w-6 h-6 mx-auto"
+                                                    />
+                                                </button>
+                                            </td>
+                                            <td className="py-4 font-roboto text-base text-black">
+                                                {pharmacy.dutyName}
+                                            </td>
+                                            <td className="py-4 font-roboto text-base text-black">
+                                                {pharmacy.dutyAddr}
+                                            </td>
+                                            <td className="py-4 font-roboto text-base text-black">
+                                                {pharmacy.dutyTel1}
+                                            </td>
                                             <td className="py-4">
                                                 <button
-                                                    onClick={() => nav(`/pharmacy/detail/${item.hpid}`)}
+                                                    onClick={() => nav(`/pharmacy/detail/${pharmacy.hpid}`)}
                                                     className="bg-[#0b2d85] text-white px-4 py-1 rounded-lg text-[14px] font-bold"
                                                 >
                                                     상세 정보
@@ -356,17 +405,11 @@ const PharmacySearch = () => {
             <footer className="w-full bg-black text-white py-8 mt-10">
                 <div className="flex justify-between items-center container mx-auto px-6">
                     <div className="flex items-center">
-                        <img
-                            src="/img/footer/logo.png"
-                            alt="응급NAVI"
-                            width="117"
-                            height="100"
-                        />
+                        <img src="/img/footer/logo.png" alt="응급NAVI" width="117" height="100" />
                         <div className="ml-4 text-xl font-bold">응급NAVI</div>
                     </div>
                     <div className="text-gray-400 text-sm">
-                        서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원 | 대표전화:
-                        1544-9970
+                        서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원 | 대표전화: 1544-9970
                         <br />
                         © 2024 응급NAVI. All Rights Reserved.
                     </div>
