@@ -30,32 +30,51 @@ const PharmacySearch = () => {
 
     useEffect(() => {
         if (userId) {
-            fetchFavorites();
+            fetchFavorites();  // 로그인된 경우에만 즐겨찾기 데이터 불러오기
         }
     }, [userId]);
 
     useEffect(() => {
-        fetchPharmacies(0);
+        if (userId || Object.keys(favorites).length > 0) {
+            fetchPharmacies(0); // 즐겨찾기 불러온 후 약국 데이터 불러오기
+        } else {
+            fetchPharmacies(0); // 로그인하지 않은 경우에도 약국 데이터를 불러옴
+        }
     }, [favorites]);
 
     const fetchFavorites = async () => {
         try {
+            console.log("fetchFavorites 호출됨!"); // 함수 호출 여부 확인
+    
             const response = await fetch(`/api/pharmacy/favorites?userId=${userId}`);
+            console.log("API 요청 전송 완료"); // API 요청 전송 로그
+    
             const data = await response.json();
+            console.log("API 응답 데이터:", data); // 응답 데이터 로그
+    
             const favoritesMap = {};
             data.forEach(favorite => {
-                favoritesMap[favorite.refNo] = true;
+                favoritesMap[favorite.REFNO] = true;  // Adjusted to use REFNO (or appropriate key)
             });
+    
+            console.log("favoritesMap:", favoritesMap); // favoritesMap 로그
             setFavorites(favoritesMap);
         } catch (error) {
             console.error('Failed to fetch favorites:', error);
         }
     };
 
+    useEffect(() => {
+        if (userId) {
+            console.log("useEffect: userId 변경 감지됨", userId); // userId 변화 확인
+            fetchFavorites();  // 로그인된 경우에만 즐겨찾기 데이터 불러오기
+        }
+    }, [userId]);
+
     const fetchPharmacies = (page = 0) => {
         setIsLoading(true);
         setError(null);
-
+    
         fetch(`/api/pharmacy/list?page=${page}&size=${itemsPerPage}`)
             .then((response) => {
                 if (!response.ok) {
@@ -64,10 +83,14 @@ const PharmacySearch = () => {
                 return response.json();
             })
             .then((data) => {
+                console.log("약국 리스트:", data.pharmacies); // 추가: 약국 리스트 로그
+                console.log("favorites 상태:", favorites); // 추가: favorites 상태 로그
+    
                 const updatedPharmacies = data.pharmacies.map(pharmacy => ({
                     ...pharmacy,
-                    favorite: favorites[pharmacy.hpid] || false
+                    favorite: favorites[pharmacy.hpid] || false  // favorites 상태 반영
                 }));
+    
                 setPharmacies(updatedPharmacies);
                 setTotalPages(data.totalPages || 1);
                 setCurrentPage(page);
@@ -162,7 +185,7 @@ const PharmacySearch = () => {
             .then((data) => {
                 const updatedPharmacies = data.pharmacies.map(pharmacy => ({
                     ...pharmacy,
-                    favorite: favorites[pharmacy.hpid] || false
+                    favorite: userId ? (favorites[pharmacy.hpid] || false) : false  // 로그인한 경우만 즐겨찾기 반영
                 }));
                 setPharmacies(updatedPharmacies);
                 setTotalPages(data.totalPages || 1);

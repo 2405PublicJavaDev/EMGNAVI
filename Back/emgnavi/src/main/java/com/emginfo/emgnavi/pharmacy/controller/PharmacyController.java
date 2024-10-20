@@ -18,14 +18,32 @@ public class PharmacyController {
     @Autowired
     private PharmacyService pharmacyService;
 
+    // 약국 리스트 조회 (로그인 여부에 따라 즐겨찾기 반영)
     @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> getPharmacyList(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String userId // 로그인된 사용자 ID (선택적)
     ) {
         try {
             int offset = page * size;
             List<Pharmacy> pharmacies = pharmacyService.getPharmacyList(offset, size);
+
+            // 로그인된 경우 사용자의 즐겨찾기 상태 반영
+            if (userId != null && !userId.isEmpty()) {
+                List<Map<String, Object>> favorites = pharmacyService.getFavorites(userId);
+                Map<String, Boolean> favoriteMap = new HashMap<>();
+                for (Map<String, Object> favorite : favorites) {
+                    String refNo = (String) favorite.get("refNo");
+                    favoriteMap.put(refNo, true);
+                }
+
+                // 각 약국에 즐겨찾기 여부 추가
+                for (Pharmacy pharmacy : pharmacies) {
+                    pharmacy.setFavorite(favoriteMap.getOrDefault(pharmacy.getHpid(), false));
+                }
+            }
+
             int totalCount = pharmacyService.getTotalCount();
 
             Map<String, Object> response = new HashMap<>();
@@ -42,6 +60,7 @@ public class PharmacyController {
         }
     }
 
+    // 약국 상세 조회
     @GetMapping("/detail/{hpid}")
     public ResponseEntity<?> getPharmacyDetail(@PathVariable String hpid) {
         try {
@@ -56,15 +75,32 @@ public class PharmacyController {
         }
     }
 
+    // 약국 검색 (즐겨찾기 반영)
     @GetMapping("/search")
     public ResponseEntity<Map<String, Object>> searchPharmacy(
             @RequestParam(required = false) String dutyName,
             @RequestParam(required = false) String dutyAddr,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String userId // 로그인된 사용자 ID (선택적)
     ) {
         try {
             List<Pharmacy> results = pharmacyService.searchPharmacy(dutyName, dutyAddr, page, size);
+
+            // 로그인된 경우 즐겨찾기 상태 반영
+            if (userId != null && !userId.isEmpty()) {
+                List<Map<String, Object>> favorites = pharmacyService.getFavorites(userId);
+                Map<String, Boolean> favoriteMap = new HashMap<>();
+                for (Map<String, Object> favorite : favorites) {
+                    String refNo = (String) favorite.get("refNo");
+                    favoriteMap.put(refNo, true);
+                }
+
+                for (Pharmacy pharmacy : results) {
+                    pharmacy.setFavorite(favoriteMap.getOrDefault(pharmacy.getHpid(), false));
+                }
+            }
+
             int totalCount = pharmacyService.getSearchResultCount(dutyName, dutyAddr);
 
             Map<String, Object> response = new HashMap<>();
@@ -81,6 +117,7 @@ public class PharmacyController {
         }
     }
 
+    // 자동 완성 (기존과 동일)
     @GetMapping("/autocomplete")
     public ResponseEntity<?> autocomplete(
             @RequestParam String query,
@@ -106,6 +143,7 @@ public class PharmacyController {
         }
     }
 
+    // 즐겨찾기 추가
     @PostMapping("/favorite")
     public ResponseEntity<?> addFavorite(
             @RequestParam String userId,
@@ -122,6 +160,7 @@ public class PharmacyController {
         }
     }
 
+    // 즐겨찾기 삭제
     @DeleteMapping("/favorite")
     public ResponseEntity<?> removeFavorite(
             @RequestParam String userId,
@@ -135,6 +174,7 @@ public class PharmacyController {
         }
     }
 
+    // 사용자의 즐겨찾기 목록 조회
     @GetMapping("/favorites")
     public ResponseEntity<?> getFavorites(@RequestParam String userId) {
         try {
@@ -145,6 +185,7 @@ public class PharmacyController {
         }
     }
 
+    // 특정 약국이 즐겨찾기에 있는지 확인
     @GetMapping("/is-favorite")
     public ResponseEntity<?> isFavorite(
             @RequestParam String userId,

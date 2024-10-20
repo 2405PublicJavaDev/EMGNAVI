@@ -38,4 +38,7 @@ public class Pharmacy {
   private String wgs84Lat;
   private String postCdn1;
   private String postCdn2;
+
+  // 추가된 필드
+  private boolean favorite; // 사용자의 즐겨찾기 여부를 나타냄
 }

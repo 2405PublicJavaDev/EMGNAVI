@@ -58,6 +58,7 @@ public class PharmacyServiceImpl implements PharmacyService {
         return pharmacyMapper.getTotalCount();
     }
 
+    // 즐겨찾기 추가 메서드 구현
     @Override
     public void addFavorite(String userId, String refNo, String dutyName, String dutyAddr, String dutyTel1) {
         Map<String, Object> params = new HashMap<>();
@@ -69,6 +70,7 @@ public class PharmacyServiceImpl implements PharmacyService {
         pharmacyMapper.addFavorite(params);
     }
 
+    // 즐겨찾기 삭제 메서드 구현
     @Override
     public void removeFavorite(String userId, String refNo) {
         Map<String, Object> params = new HashMap<>();
@@ -77,11 +79,13 @@ public class PharmacyServiceImpl implements PharmacyService {
         pharmacyMapper.removeFavorite(params);
     }
 
+    // 특정 사용자의 즐겨찾기 목록 가져오기
     @Override
     public List<Map<String, Object>> getFavorites(String userId) {
         return pharmacyMapper.getFavorites(userId);
     }
 
+    // 특정 약국이 즐겨찾기인지 확인하는 메서드
     @Override
     public boolean isFavorite(String userId, String refNo) {
         Map<String, Object> params = new HashMap<>();
