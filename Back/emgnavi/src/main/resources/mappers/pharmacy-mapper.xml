@@ -17,11 +17,7 @@
     </select>
 
     <select id="selectPharmacyDetail" resultType="com.emginfo.emgnavi.pharmacy.vo.Pharmacy">
-        SELECT
-            HPID as hpid,
-            DUTY_NAME as dutyName,
-            DUTY_ADDR as dutyAddr,
-            DUTY_TEL1 as dutyTel1
+        SELECT *
         FROM PHARMACY_TBL
         WHERE HPID = #{hpid}
     </select>
