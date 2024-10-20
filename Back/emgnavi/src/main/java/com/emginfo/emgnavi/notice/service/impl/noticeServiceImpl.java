@@ -90,4 +90,9 @@ public class noticeServiceImpl implements NoticeService {
         }
         return suggestions;
     }
+
+    @Override
+    public Map<String, Object> getBetweenNotice(int noticeId) {
+        return noticeMapper.getBetweenNotice(noticeId);
+    }
 }

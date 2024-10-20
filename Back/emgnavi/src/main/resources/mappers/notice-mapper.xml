@@ -71,4 +71,17 @@
         GROUP BY WRITER_ID
 --         ORDER BY NOTICE_DATE DESC
     </select>
+
+    <select id="getBetweenNotice" resultType="java.util.Map">
+        WITH LAG_LEAD_NOTICE AS (
+            SELECT
+                NOTICE_ID,
+                LAG(NOTICE_ID, 1, NULL) OVER (ORDER BY NOTICE_ID) AS prev,
+                    LEAD(NOTICE_ID, 1, NULL) OVER (ORDER BY NOTICE_ID) AS next
+            FROM NOTICE_TBL
+        )
+        SELECT *
+        FROM LAG_LEAD_NOTICE
+        WHERE NOTICE_ID = #{noticeId}
+    </select>
 </mapper>

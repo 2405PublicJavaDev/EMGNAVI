@@ -29,4 +29,6 @@ public interface NoticeService {
     int getSearchResultCount(String title, String writer);
 
     List<Map<String, Object>> getAutocompleteSuggestions(String query, String searchType);
+
+    Map<String, Object> getBetweenNotice(int noticeId);
 }

@@ -9,6 +9,8 @@ const GetNoticeDetail = () => {
     const [searchParams] = useSearchParams();
     const noticeId = searchParams.get('noticeId');  // 쿼리 파라미터에서 'noticeId' 값 가져오기
     const [notice, setNotice] = useState(null);
+    const [prevNotice, setPrevNotice] = useState(null);
+    const [nextNotice, setNextNotice] = useState(null);
 
     const { userId } = useContext(UserContext);
 
@@ -26,8 +28,22 @@ const GetNoticeDetail = () => {
                     setNotice(res.data); // 받아온 공지 데이터를 State에 저장
                 })
                 .catch(error => {
-                    console.error('Error fetching hospital data:', error);
+                    console.error('Error fetching notice data:', error);
                 });
+            fetch(`/api/notice/getBetweenId?noticeId=${noticeId}`)
+                .then((response) => {
+                    if(!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(res => {
+                    setPrevNotice(res.PREV);
+                    setNextNotice(res.NEXT);
+                })
+                .catch(error => {
+                    console.error('Error fetching between notice id:', error);
+            });;
         }
     }, []);
 
@@ -103,6 +119,22 @@ const GetNoticeDetail = () => {
                                             ) : (
                                                 <p>공지사항을 불러오는 중입니다...</p>
                                             )}
+                                            <div className="flex items-center justify-between w-full max-w-2xl mx-auto border border-gray-200 rounded-lg">
+                                                <button className="flex items-center px-4 py-2 text-sm text-gray-500 hover:text-gray-700"
+                                                onClick={() => prevNotice ? window.location.href = 'getNoticeDetail?noticeId='+prevNotice : alert('현재 위치가 마지막 공지입니다!')}>
+                                                    {/* <ChevronLeft className="w-4 h-4 mr-1" /> */}
+                                                    Prev Notice
+                                                </button>
+                                                <button className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700"
+                                                onClick={() => window.location.href = 'getNoticeList'}>
+                                                    All Notice
+                                                </button>
+                                                <button className="flex items-center px-4 py-2 text-sm text-gray-500 hover:text-gray-700"
+                                                onClick={() => nextNotice ? window.location.href = 'getNoticeDetail?noticeId='+nextNotice : alert('현재 위치가 최신 공지입니다!')}>
+                                                    Next Notice
+                                                    {/* <ChevronRight className="w-4 h-4 ml-1" /> */}
+                                                </button>
+                                            </div>
                                             {userId == 'admin' ? (
                                                 <div className="flex space-x-4">
                                                     <button onClick={() => window.location.href = 'putNotice?noticeId=' + notice.noticeId} className="w-[100px] h-[35px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">수정</button>

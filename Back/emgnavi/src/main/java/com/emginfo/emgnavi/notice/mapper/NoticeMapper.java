@@ -28,4 +28,6 @@ public interface NoticeMapper {
     List<Map<String, Object>> searchTitle(String query);
 
     List<Map<String, Object>> searchWriter(String query);
+
+    Map<String, Object> getBetweenNotice(int noticeId);
 }

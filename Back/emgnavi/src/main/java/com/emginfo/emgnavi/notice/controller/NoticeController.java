@@ -117,6 +117,18 @@ public class NoticeController {
         }
     }
 
+    @GetMapping("/getBetweenId")
+    public ResponseEntity<Map<String, Object>> getBetweenNotice(int noticeId) {
+        try {
+            Map<String, Object> response = noticeService.getBetweenNotice(noticeId);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Failed to search hospitals");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
     @GetMapping("/autocomplete")
     public ResponseEntity<?> autocomplete(
             @RequestParam String query,
