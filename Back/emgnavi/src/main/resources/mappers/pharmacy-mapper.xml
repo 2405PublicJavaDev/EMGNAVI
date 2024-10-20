@@ -4,15 +4,17 @@
 
     <select id="getTotalCount" resultType="int">
         SELECT COUNT(*) FROM PHARMACY_TBL
+        WHERE HPID LIKE 'C%'  <!-- HPID가 'C'로 시작하는 항목만 포함 -->
     </select>
 
     <select id="selectPharmacyList" resultType="com.emginfo.emgnavi.pharmacy.vo.Pharmacy">
         SELECT
-            HPID as hpid,
-            DUTY_NAME as dutyName,
-            DUTY_ADDR as dutyAddr,
-            DUTY_TEL1 as dutyTel1
+        HPID as hpid,
+        DUTY_NAME as dutyName,
+        DUTY_ADDR as dutyAddr,
+        DUTY_TEL1 as dutyTel1
         FROM PHARMACY_TBL
+        WHERE HPID LIKE 'C%'  <!-- HPID가 'C'로 시작하는 항목만 포함 -->
         ORDER BY HPID
     </select>
 
@@ -29,7 +31,7 @@
         DUTY_ADDR as dutyAddr,
         DUTY_TEL1 as dutyTel1
         FROM PHARMACY_TBL
-        WHERE 1=1
+        WHERE HPID LIKE 'C%'  <!-- HPID가 'C'로 시작하는 항목만 포함 -->
         <if test="dutyName != null and dutyName != ''">
             AND DUTY_NAME LIKE '%' || #{dutyName} || '%'
         </if>
@@ -41,7 +43,7 @@
 
     <select id="getSearchResultCount" resultType="int">
         SELECT COUNT(*) FROM PHARMACY_TBL
-        WHERE 1=1
+        WHERE HPID LIKE 'C%'  <!-- HPID가 'C'로 시작하는 항목만 포함 -->
         <if test="dutyName != null and dutyName != ''">
             AND DUTY_NAME LIKE '%' || #{dutyName} || '%'
         </if>
@@ -55,14 +57,16 @@
             <when test="searchType == 'dutyName'">
                 SELECT HPID as value, DUTY_NAME as label
                 FROM PHARMACY_TBL
-                WHERE DUTY_NAME LIKE '%' || #{query} || '%'
+                WHERE HPID LIKE 'C%'  <!-- HPID가 'C'로 시작하는 항목만 포함 -->
+                AND DUTY_NAME LIKE '%' || #{query} || '%'
                 AND ROWNUM &lt;= 10
                 ORDER BY DUTY_NAME
             </when>
             <when test="searchType == 'dutyAddr'">
                 SELECT DISTINCT HPID as value, DUTY_ADDR as label
                 FROM PHARMACY_TBL
-                WHERE DUTY_ADDR LIKE '%' || #{query} || '%'
+                WHERE HPID LIKE 'C%'  <!-- HPID가 'C'로 시작하는 항목만 포함 -->
+                AND DUTY_ADDR LIKE '%' || #{query} || '%'
                 AND ROWNUM &lt;= 10
                 ORDER BY DUTY_ADDR
             </when>

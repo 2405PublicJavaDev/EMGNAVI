@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/pharmacy")
@@ -18,21 +19,27 @@ public class PharmacyController {
     @Autowired
     private PharmacyService pharmacyService;
 
-    // 약국 리스트 조회 (로그인 여부에 따라 즐겨찾기 반영)
+    // 약국 리스트 조회 (로그인 여부에 따라 즐겨찾기 반영, HPID가 'C'로 시작하는 항목만 조회)
     @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> getPharmacyList(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String userId // 로그인된 사용자 ID (선택적)
+            @RequestParam(required = false) String userId
     ) {
         try {
             int offset = page * size;
-            List<Pharmacy> pharmacies = pharmacyService.getPharmacyList(offset, size);
+
+            // HPID가 'C'로 시작하는 약국만 필터링
+            List<Pharmacy> pharmacies = pharmacyService.getPharmacyList(offset, size)
+                    .stream()
+                    .filter(pharmacy -> pharmacy.getHpid().startsWith("C"))
+                    .collect(Collectors.toList());
 
             // 로그인된 경우 사용자의 즐겨찾기 상태 반영
             if (userId != null && !userId.isEmpty()) {
                 List<Map<String, Object>> favorites = pharmacyService.getFavorites(userId);
                 Map<String, Boolean> favoriteMap = new HashMap<>();
+
                 for (Map<String, Object> favorite : favorites) {
                     String refNo = (String) favorite.get("refNo");
                     favoriteMap.put(refNo, true);
@@ -82,10 +89,13 @@ public class PharmacyController {
             @RequestParam(required = false) String dutyAddr,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String userId // 로그인된 사용자 ID (선택적)
+            @RequestParam(required = false) String userId
     ) {
         try {
-            List<Pharmacy> results = pharmacyService.searchPharmacy(dutyName, dutyAddr, page, size);
+            List<Pharmacy> results = pharmacyService.searchPharmacy(dutyName, dutyAddr, page, size)
+                    .stream()
+                    .filter(pharmacy -> pharmacy.getHpid().startsWith("C"))
+                    .collect(Collectors.toList());
 
             // 로그인된 경우 즐겨찾기 상태 반영
             if (userId != null && !userId.isEmpty()) {

@@ -71,41 +71,41 @@ const PharmacySearch = () => {
         }
     }, [userId]);
 
-    const fetchPharmacies = (page = 0) => {
-        setIsLoading(true);
-        setError(null);
-    
-        fetch(`/api/pharmacy/list?page=${page}&size=${itemsPerPage}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log("약국 리스트:", data.pharmacies); // 약국 리스트 로그
-                console.log("favorites 상태:", favorites); // favorites 상태 로그
-    
-                // 즐겨찾기된 항목과 그렇지 않은 항목으로 나눠 정렬
-                const updatedPharmacies = data.pharmacies
-                    .map(pharmacy => ({
-                        ...pharmacy,
-                        favorite: favorites[pharmacy.hpid] || false  // 즐겨찾기 여부 반영
-                    }))
-                    .sort((a, b) => b.favorite - a.favorite); // 즐겨찾기된 항목을 상단에 배치
-    
-                setPharmacies(updatedPharmacies);
-                setTotalPages(data.totalPages || 1);
-                setCurrentPage(page);
-                setIsLoading(false);
-            })
-            .catch((error) => {
-                console.error('There was an error fetching the pharmacy list!', error);
-                setError('Failed to fetch pharmacies');
-                setIsLoading(false);
-            });
-    };
-    
+  const fetchPharmacies = (page = 0) => {
+    setIsLoading(true);
+    setError(null);
+
+    fetch(`/api/pharmacy/list?page=${page}&size=${itemsPerPage}`)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then((data) => {
+            console.log("약국 리스트:", data.pharmacies); // 약국 리스트 로그
+            console.log("favorites 상태:", favorites); // favorites 상태 로그
+
+            // 즐겨찾기된 항목과 그렇지 않은 항목으로 나눠 정렬
+            const updatedPharmacies = data.pharmacies
+                .map(pharmacy => ({
+                    ...pharmacy,
+                    favorite: favorites[pharmacy.hpid] || false  // 즐겨찾기 여부 반영
+                }))
+                .sort((a, b) => b.favorite - a.favorite); // 즐겨찾기된 항목을 상단에 배치
+
+            setPharmacies(updatedPharmacies);
+            setTotalPages(data.totalPages || 1);
+            setCurrentPage(page);
+            setIsLoading(false);
+        })
+        .catch((error) => {
+            console.error('There was an error fetching the pharmacy list!', error);
+            setError('Failed to fetch pharmacies');
+            setIsLoading(false);
+        });
+};
+
 
     const fetchAutoCompleteOptions = (inputValue) => {
         if (inputValue.length < 2) {
