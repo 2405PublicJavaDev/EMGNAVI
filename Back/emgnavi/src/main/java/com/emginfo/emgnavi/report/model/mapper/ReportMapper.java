@@ -15,7 +15,7 @@ public interface ReportMapper {
     void insertReport(Report report);
 
     // 신고 리스트 조회
-    List<ReportListDTO> reportList();
+    List<ReportListDTO> reportList(int startRow, int endRow);
 
     // 신고 정보 조회
     ReportListDTO findReportById(int no);
@@ -30,4 +30,7 @@ public interface ReportMapper {
 
     // 신고 상태 업데이트
     void updateReportStatus(int no, int status, String targetId);
+
+    // 신고 리스트 전체 개수 조회
+    int getAllCount();
 }

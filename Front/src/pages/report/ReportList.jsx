@@ -11,7 +11,12 @@ export const ReportList = () => {
   const navigate = useNavigate();
   const [targetId, setTargetId] = useState("");
   const [unfreezeDate, setUnfreezeDate] = useState("");
-  const [processedReports, setProcessedReports] = useState({}); // 
+  const [processedReports, setProcessedReports] = useState({});
+  // 페이지네이션
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [itemsPerPage] = useState(6);
+  const [paginationInfo, setPaginationInfo] = useState({});
 
   const openModal = (index) => {
     setOpenModalId(index);
@@ -39,6 +44,32 @@ export const ReportList = () => {
 
   const selectedReport = openModalId !== null ? reportList[openModalId] : null;
 
+  const fetchData = async (page = 1) => {
+    try {
+      const res = await axios.get('/api/admin/reportList', {
+        params: {
+          page: page,
+          size: itemsPerPage
+        }
+      });
+      const { reportList, paginationInfo } = res.data.data;
+      
+      setReportList(reportList || []);
+      setPaginationInfo(paginationInfo);
+      setCurrentPage(page);  // URL에서 가져온 page를 currentPage로
+      setTotalPages(paginationInfo.totPageCnt || 1);
+
+      navigate(`?page=${page}`, { replace: true });
+
+      console.log("Fetched report list:", reportList);
+      console.log("Pagination info:", paginationInfo);
+    } catch (err) {
+      console.error("Report list fetch error:", err.response?.data || err.message);
+      throw err;
+    }
+  };
+
+  // 관리자 계정 확인 여부
   useEffect(() => {
     // userId가 ''이 아닐 때에만 동작
     if (userId !== '') {
@@ -48,21 +79,12 @@ export const ReportList = () => {
           alert('관리자 계정이 아닙니다!');
           navigate(-1);
       }else {
-        const fetchData = async () => {
-          try {
-            const res = await axios.get('/api/admin/reportList');
-            setReportList(res.data.data);
-            console.log("Fetched report list:", res.data.data);
-          } catch (err) {
-            console.error("Report list fetch error:", err.response?.data || err.message);
-            throw err;
-          }
-        };
-        fetchData();
+        fetchData(currentPage);
       }
-  }
-  }, [userId]);
+    }
+  }, [userId, currentPage]);
 
+  // 신고 처리
   const reportAction = async (no, targetId, unfreezeDate) => {
     try {
       const response = await axios.post(`/api/reports/${no}`, {
@@ -77,6 +99,7 @@ export const ReportList = () => {
     }
   };
 
+  // 신고 처리 팝업
   const handleConfirm = async () => {
     if (!unfreezeDate) {
       alert('정지 날짜를 선택해주세요');
@@ -112,7 +135,7 @@ export const ReportList = () => {
             unfreezeDate: result.unfreezeDate || unfreezeDate
           }
         }));
-  
+        fetchData(currentPage);
         console.log("업데이트된 리포트:", updatedReport);
         closeModal();
       } catch (error) {
@@ -130,11 +153,13 @@ export const ReportList = () => {
     return text;
   };
 
+  // TargetId 변경
   const handleTargetIdChange = (e) => {
     setTargetId(e.target.value);
     console.log(`TargetId changed to: ${e.target.value}`);
   };
 
+  // UnfreezeDate 변경
   const handleUnfreezeDate = (e) => {
     setUnfreezeDate(e.target.value);
     console.log(`UnfreezeDate changed to: ${e.target.value}`);
@@ -153,6 +178,62 @@ useEffect(() => {
   }
 }, []);
 
+// 페이지네이션
+const Pagination = ({ pagenationInfo, currentPage, onPageChange }) => {
+  if (!pagenationInfo || typeof pagenationInfo.totPageCnt === 'undefined') {
+    return null;
+  }
+
+  const pageNumbers = [];
+  for (let i = 1; i <= pagenationInfo.totPageCnt; i++) {
+    pageNumbers.push(i);
+  }
+
+  return (
+    <div className="flex justify-center mt-8">
+      {currentPage > 1 && (
+        <button
+          onClick={() => onPageChange(currentPage - 1)}
+          className="mx-1 w-8 h-8 border border-[#CA1738] text-[#CA1738] rounded"
+        >
+          ◀
+        </button>
+      )}
+
+      {pageNumbers.map(number => (
+        <button
+          key={number}
+          onClick={() => onPageChange(number)}
+          className={`mx-1 w-8 h-8 ${
+            currentPage === number
+              ? "bg-[#CA1738] text-white"
+              : "border border-[#CA1738] text-[#CA1738]"
+          } rounded`}
+        >
+          {number}
+        </button>
+      ))}
+
+      {currentPage < pagenationInfo.totPageCnt && (
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          className="mx-1 w-8 h-8 border border-[#CA1738] text-[#CA1738] rounded"
+        >
+          ▶
+        </button>
+      )}
+    </div>
+  );
+};
+
+const handlePageChange = (newPage) => {
+  if (newPage !== currentPage) {
+    setCurrentPage(newPage);
+    fetchData(newPage);
+    navigate(`?page=${newPage}`, { replace: true });
+  }
+};
+
   return (
     <div className="w-full min-h-screen bg-white flex flex-col">
       <main className="flex-grow bg-white py-10">
@@ -163,24 +244,48 @@ useEffect(() => {
                 <div className="relative w-full left-[30px] top-[50px] h-[80px] text-white text-3xl font-bold mb-8 flex">
                     회원 신고 리스트
                 </div>
-                <table className="relative w-full p-3 top-[2px] bg-white rounded-tr-lg rounded-tl-lg overflow-hidden">
+                <table className="relative w-full p-3 top-[2px] bg-white rounded-tr-lg rounded-tl-lg overflow-hidden table-fixed">
                     <thead className="p-3">
                       <tr className="bg-[#FFF5F6]">
-                          <th className="p-3 font-bold"></th>
-                          <th className="p-3 font-bold">작성자 아이디</th>
-                          <th className="p-3 font-bold">리뷰 내용</th>
-                          <th className="p-3 font-bold">신고자 아이디</th>
-                          <th className="p-3 font-bold">신고 날짜</th>
-                          <th className="p-3 font-bold">신고 내용</th>
-                          <th className="p-3 font-bold">신고 상태</th>
-                          <th className="p-3 font-bold">정지 해제 날짜</th>
-                          <th className="p-3 font-bold"></th>
+                          <th className="w-[5%]  py-3 font-bold"></th>
+                          <th className="w-[16%] py-3 font-bold">작성자 아이디</th>
+                          <th className="w-[23%] py-3 font-bold">리뷰 내용</th>
+                          <th className="w-[16%] py-3 font-bold">신고자 아이디</th>
+                          <th className="w-[10%] py-3 font-bold">신고 날짜</th>
+                          <th className="w-[15%] py-3 font-bold">신고 내용</th>
+                          <th className="w-[8%]  py-3 font-bold">신고 상태</th>
+                          <th className="w-[10%] py-3 font-bold">정지 해제 날짜</th>
+                          <th className="w-[7%]  py-3 font-bold"></th>
                       </tr>
                     </thead>
                     <tbody>
                     {
-                      reportList.length === 0 ? 
-                      (
+                      reportList && reportList.length > 0 ? (
+                        reportList.map((item, index) => (
+                          <tr key={index}>
+                            <td className="w-[5%] border-b p-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">{item.no}</td>
+                          <td className="w-[16%] border-b p-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">{item.writerId}</td>
+                          <td className="w-[23%] border-b p-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">{truncateText(item.reviewContent, 20)}</td>
+                          <td className="w-[16%] border-b p-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">{item.reporterId}</td>
+                          <td className="w-[10%] border-b p-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">{item.reportDate}</td>
+                          <td className="w-[15%] border-b p-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">{truncateText(item.content, 15)}</td>
+                          <td className="w-[8%] border-b p-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">
+                            {item.status === 0 ? "신고 접수" : "처리 완료"}
+                          </td>
+                          <td className="w-[10%] border-b p-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">
+                            {item.unfreezeDate === null ? "-" : item.unfreezeDate}
+                          </td>
+                          <td className="w-[7%] border-b p-3 text-center">
+                            <button 
+                              onClick={() => openModal(index)}
+                              className="bg-[#CA1738] text-white px-4 py-1 rounded whitespace-nowrap"
+                            >
+                              관리
+                            </button>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
                         <tr className="h-[300px]">
                           <td colSpan="9" className="text-center">
                             <div className="flex items-center justify-center h-full">
@@ -189,52 +294,42 @@ useEffect(() => {
                           </td>
                         </tr>
                       )
-                      :
-                      (reportList.map((item, index) => (
-                        <tr key={index}>
-                            <td className="w-[3%] border-b p-3 text-center">{item.no}</td>
-                            <td className="w-[12%] border-b p-3 text-center">{item.writerId}</td>
-                            <td className="w-[23%] border-b p-3 text-center">{truncateText(item.reviewContent, 18)}</td>
-                            <td className="w-[12%] border-b p-3 text-center">{item.reporterId}</td>
-                            <td className="w-[10%] border-b p-3 text-center">{item.reportDate}</td>
-                            <td className="w-[15%] border-b p-3 text-center">{truncateText(item.content, 10)}</td>
-                            <td className="w-[8%] border-b p-3 text-center">
-                              {item.status === 0 ? "신고 접수" : "처리 완료"}</td>
-                            <td className="w-[10%] border-b p-3 text-center">{item.unfreezeDate === null ? "-" : item.unfreezeDate}</td>
-                            <td className="w-[10%] border-b p-3 text-center">
-                                <button 
-                                onClick={() => openModal(index)}
-                                className="bg-[#CA1738] text-white px-4 py-1 rounded"
-                                >
-                                관리
-                                </button>
-                            </td>
-                        </tr>
-                      )))
                     }
-                    </tbody>
+                  </tbody>
                 </table>
             </div>
           </div>
-          <div className="flex justify-center mt-8">
-            <button className="mx-1 w-8 h-8 bg-[#CA1738] text-white rounded">1</button>
-            <button className="mx-1 w-8 h-8 border border-[#CA1738] text-[#CA1738] rounded">2</button>
-            <button className="mx-1 w-8 h-8 border border-[#CA1738] text-[#CA1738] rounded">3</button>
-            <button className="mx-1 w-8 h-8 border border-[#CA1738] text-[#CA1738] rounded">4</button>
+          <div className="flex justify-center">
+                <Pagination
+                  pagenationInfo={paginationInfo}
+                  currentPage={currentPage}
+                  onPageChange={handlePageChange}
+                />
           </div>
         </div>
       </main>
 
       <footer className="bg-black text-white py-8">
         <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
-          <div className="flex items-center">
-            <img src="/img/logo_white.png" alt="응급NAVI 로고" className="h-12" />
-            <span className="ml-2 font-bold text-2xl">응급NAVI</span>
+          <div className="flex items-center mb-8 md:mb-0">
+            <img className="w-[117px] h-[100px]" src="/img/footer/logo.png" alt="Logo" />
+            <div className="mt-2 text-2xl font-black text-[#333] font-['Advent_Pro']">응급NAVI</div>
           </div>
-          <div className="text-sm">
-            <p>서울 중구 남대문로 120 대일빌딩 2,3층 KH정보교육원 종로지원</p>
-            <p>대표자명 : 민용식 | 대표전화 : 1544-9970</p>
-            <p>© 2024 응급NAVI.</p>
+          <div className="flex flex-col max-w-[638px]">
+            <div className="mb-4 text-sm font-bold text-[#686868] font-['Agdasima']">
+                이용약관              개인정보처리방침
+            </div>
+            <div className="text-sm leading-relaxed font-bold text-[#686868] font-['Agdasima']">
+                서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원     |     대표자명 : 민봉식     |     대표전화 : 1544-9970
+                <br />
+                <span className="flex items-center">
+                    <img className="w-2 h-2 mr-1" src="/img/footer/copyright.png" alt="Copyright" />
+                    2024 응급NAVI.
+                </span>
+            </div>
+          </div>
+          <div className="mt-8 md:mt-0">
+              <img className="w-[145px] h-[34px]" src="/img/footer/group.png" alt="Group" />
           </div>
         </div>
       </footer>

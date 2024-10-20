@@ -2,8 +2,11 @@ package com.emginfo.emgnavi.report.service.impl;
 
 import com.emginfo.emgnavi.common.exception.CustomException;
 import com.emginfo.emgnavi.common.exception.ErrorCode;
+import com.emginfo.emgnavi.common.pagenation.Criteria;
+import com.emginfo.emgnavi.common.pagenation.PaginationInfo;
 import com.emginfo.emgnavi.report.model.dto.ReportActionDTO;
 import com.emginfo.emgnavi.report.model.dto.ReportListDTO;
+import com.emginfo.emgnavi.report.model.dto.ReportPageDTO;
 import com.emginfo.emgnavi.report.model.mapper.ReportMapper;
 import com.emginfo.emgnavi.report.model.vo.Report;
 import com.emginfo.emgnavi.report.service.ReportService;
@@ -55,8 +58,20 @@ public class ReportServiceImpl implements ReportService {
 
     // 회원 신고 리스트 조회
     @Override
-    public List<ReportListDTO> getReportList() {
-        return reportMapper.reportList();
+    public ReportPageDTO getReportList(int prsnPageNo, int cntntPerPage) {
+        Criteria criteria = new Criteria();
+        criteria.setPrsnPageNo(prsnPageNo);
+        criteria.setCntntPerPage(cntntPerPage);
+        int totCnt = reportMapper.getAllCount();
+
+        PaginationInfo paginationInfo = new PaginationInfo(criteria);
+        paginationInfo.setTotCnt(totCnt);
+
+        int startRow = (prsnPageNo - 1) * cntntPerPage;
+        int endRow = startRow + cntntPerPage;
+
+        List<ReportListDTO> reportList = reportMapper.reportList(startRow, endRow);
+        return new ReportPageDTO(reportList, paginationInfo);
     }
 
     // 신고 처리

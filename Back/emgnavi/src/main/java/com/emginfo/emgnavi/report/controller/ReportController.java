@@ -5,7 +5,7 @@ import com.emginfo.emgnavi.common.exception.ErrorCode;
 import com.emginfo.emgnavi.common.success.SuccessCode;
 import com.emginfo.emgnavi.common.success.SuccessResponse;
 import com.emginfo.emgnavi.report.model.dto.ReportActionDTO;
-import com.emginfo.emgnavi.report.model.dto.ReportListDTO;
+import com.emginfo.emgnavi.report.model.dto.ReportPageDTO;
 import com.emginfo.emgnavi.report.model.vo.Report;
 import com.emginfo.emgnavi.report.service.ReportService;
 import jakarta.servlet.http.HttpSession;
@@ -45,9 +45,12 @@ public class ReportController {
 
     // 회원 신고 리스트 조회
     @GetMapping("admin/reportList")
-    public SuccessResponse listReport(HttpSession session) {
-        List<ReportListDTO> reportListDTO = reportService.getReportList();
-        return new SuccessResponse(SuccessCode.RESOURCE_FOUND, reportListDTO);
+    public SuccessResponse listReport(
+            @RequestParam(value = "page", defaultValue = "1") int prsnPageNo,
+            @RequestParam(value = "size", defaultValue = "6") int cntntPerPage,
+            HttpSession session) {
+        ReportPageDTO reportPageDTO = reportService.getReportList(prsnPageNo, cntntPerPage);
+        return new SuccessResponse(SuccessCode.RESOURCE_FOUND, reportPageDTO);
     }
 
     // 회원 신고 조치
@@ -55,7 +58,7 @@ public class ReportController {
     public SuccessResponse reportAction(@PathVariable int no, @RequestBody ReportActionDTO reportActionDTO) {
         System.out.println("targetId: " + reportActionDTO.getTargetId());
         System.out.println("unfreezeDate: " + reportActionDTO.getUnfreezeDate());
-        ReportActionDTO processReport = reportService.processReportAction(no, reportActionDTO);
-        return new SuccessResponse(SuccessCode.UPDATE_SUCCESS, processReport);
+        reportService.processReportAction(no, reportActionDTO);
+        return new SuccessResponse(SuccessCode.UPDATE_SUCCESS);
     }
 }

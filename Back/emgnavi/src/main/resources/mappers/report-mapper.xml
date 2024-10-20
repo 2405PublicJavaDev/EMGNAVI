@@ -4,24 +4,38 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.emginfo.emgnavi.report.model.mapper.ReportMapper">
     <select id="reportList" resultType="com.emginfo.emgnavi.report.model.dto.ReportListDTO">
-        SELECT
-            rep.NO,
-            rep.WRITER_ID,
-            rep.REPORTER_ID,
-            rep.CONTENT,
-            rep.STATUS,
-            rep.REPORT_DATE,
-            rev.CONTENT AS reviewContent,
-            u.UNFREEZE_DATE,
-            rep.TARGET_ID
-        FROM REPORT_TBL rep
-        JOIN REVIEW_TBL rev ON rep.REF_NO = rev.NO
-        LEFT JOIN USER_TBL u ON rep.TARGET_ID = u.USER_ID
+        SELECT *
+            FROM (
+                SELECT ROWNUM AS RNUM, A.*
+                FROM (
+                    SELECT
+                        rep.NO,
+                        rep.WRITER_ID,
+                        rep.REPORTER_ID,
+                        rep.CONTENT,
+                        rep.STATUS,
+                        rep.REPORT_DATE,
+                        rev.CONTENT AS reviewContent,
+                        u.UNFREEZE_DATE,
+                        rep.TARGET_ID
+                    FROM REPORT_TBL rep
+                    JOIN REVIEW_TBL rev ON rep.REF_NO = rev.NO
+                    LEFT JOIN USER_TBL u ON rep.TARGET_ID = u.USER_ID
+                    ORDER BY rep.REPORT_DATE DESC  -- 최신순으로 정렬
+                ) A
+            WHERE ROWNUM &lt;= #{endRow}  -- 페이지의 끝 행 번호까지
+            )
+        WHERE RNUM &gt;= #{startRow}  -- 페이지의 시작 행 번호부터
+
     </select>
 
     <select id="findReportById" resultType="com.emginfo.emgnavi.report.model.dto.ReportListDTO">
         SELECT * FROM REPORT_TBL
         WHERE NO = #{no}
+    </select>
+
+    <select id="getAllCount" resultType="int">
+        SELECT COUNT(*) FROM REPORT_TBL
     </select>
 
     <insert id="insertReport">
