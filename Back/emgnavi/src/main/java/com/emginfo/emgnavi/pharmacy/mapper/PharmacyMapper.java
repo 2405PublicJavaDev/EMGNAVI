@@ -2,6 +2,7 @@ package com.emginfo.emgnavi.pharmacy.mapper;
 
 import com.emginfo.emgnavi.pharmacy.vo.Pharmacy;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
@@ -17,16 +18,15 @@ public interface PharmacyMapper {
 
     int getTotalCount();
 
-    // 기존 검색 관련 메서드들
+    // 검색 관련 메서드들
     List<Pharmacy> searchPharmacy(Map<String, Object> params, RowBounds rowBounds);
 
     int getSearchResultCount(Map<String, Object> params);
 
-    List<Map<String, Object>> searchDutyNames(String query);
+    // 자동완성을 위한 메서드 (수정됨)
+    List<Map<String, Object>> getAutocompleteSuggestions(@Param("query") String query, @Param("searchType") String searchType);
 
-    List<Map<String, Object>> searchDutyAddrs(String query);
-
-    // 새로 추가된 즐겨찾기 관련 메서드들
+    // 즐겨찾기 관련 메서드들
     void addFavorite(Map<String, Object> params);
 
     void removeFavorite(Map<String, Object> params);

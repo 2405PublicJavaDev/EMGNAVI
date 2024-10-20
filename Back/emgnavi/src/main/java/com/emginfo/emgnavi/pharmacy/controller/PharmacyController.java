@@ -1,6 +1,5 @@
 package com.emginfo.emgnavi.pharmacy.controller;
 
-import com.emginfo.emgnavi.pharmacy.mapper.PharmacyMapper;
 import com.emginfo.emgnavi.pharmacy.service.PharmacyService;
 import com.emginfo.emgnavi.pharmacy.vo.Pharmacy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +18,6 @@ public class PharmacyController {
     @Autowired
     private PharmacyService pharmacyService;
 
-    @Autowired
-    private PharmacyMapper pharmacyMapper;
-
     @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> getPharmacyList(
             @RequestParam(defaultValue = "0") int page,
@@ -30,7 +26,7 @@ public class PharmacyController {
         try {
             int offset = page * size;
             List<Pharmacy> pharmacies = pharmacyService.getPharmacyList(offset, size);
-            int totalCount = pharmacyMapper.getTotalCount();
+            int totalCount = pharmacyService.getTotalCount();
 
             Map<String, Object> response = new HashMap<>();
             response.put("pharmacies", pharmacies);
@@ -99,9 +95,8 @@ public class PharmacyController {
 
             if (suggestions.isEmpty()) {
                 Map<String, Object> noResult = new HashMap<>();
-                noResult.put("hpid", "no-result");
-                noResult.put("dutyName", "검색 결과가 없습니다");
-                noResult.put("dutyAddr", "");
+                noResult.put("value", "no-result");
+                noResult.put("label", "검색 결과가 없습니다");
                 return ResponseEntity.ok(List.of(noResult));
             }
 
@@ -111,7 +106,6 @@ public class PharmacyController {
         }
     }
 
-    // 새로 추가된 즐겨찾기 관련 엔드포인트
     @PostMapping("/favorite")
     public ResponseEntity<?> addFavorite(
             @RequestParam String userId,

@@ -186,7 +186,7 @@ const PharmacyDetail = () => {
             });
 
             if (!response.ok) {
-                throw new Error('리뷰 작성에 실패했습니다.');
+                throw new Error('로그인후 작성가능합니다.');
             }
 
             const data = await response.json();

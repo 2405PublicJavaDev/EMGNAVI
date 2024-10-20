@@ -7,7 +7,6 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,12 +50,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 
     @Override
     public List<Map<String, Object>> getAutocompleteSuggestions(String query, String searchType) {
-        if (searchType.equals("dutyName")) {
-            return pharmacyMapper.searchDutyNames(query);
-        } else if (searchType.equals("dutyAddr")) {
-            return pharmacyMapper.searchDutyAddrs(query);
-        }
-        return new ArrayList<>();
+        return pharmacyMapper.getAutocompleteSuggestions(query, searchType);
     }
 
     @Override
@@ -64,7 +58,6 @@ public class PharmacyServiceImpl implements PharmacyService {
         return pharmacyMapper.getTotalCount();
     }
 
-    // 새로 추가된 즐겨찾기 관련 메서드 구현
     @Override
     public void addFavorite(String userId, String refNo, String dutyName, String dutyAddr, String dutyTel1) {
         Map<String, Object> params = new HashMap<>();

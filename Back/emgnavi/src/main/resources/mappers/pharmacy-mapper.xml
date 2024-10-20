@@ -7,17 +7,32 @@
     </select>
 
     <select id="selectPharmacyList" resultType="com.emginfo.emgnavi.pharmacy.vo.Pharmacy">
-        SELECT * FROM PHARMACY_TBL
+        SELECT
+            HPID as hpid,
+            DUTY_NAME as dutyName,
+            DUTY_ADDR as dutyAddr,
+            DUTY_TEL1 as dutyTel1
+        FROM PHARMACY_TBL
         ORDER BY HPID
     </select>
 
     <select id="selectPharmacyDetail" resultType="com.emginfo.emgnavi.pharmacy.vo.Pharmacy">
-        SELECT * FROM PHARMACY_TBL
+        SELECT
+            HPID as hpid,
+            DUTY_NAME as dutyName,
+            DUTY_ADDR as dutyAddr,
+            DUTY_TEL1 as dutyTel1
+        FROM PHARMACY_TBL
         WHERE HPID = #{hpid}
     </select>
 
     <select id="searchPharmacy" resultType="com.emginfo.emgnavi.pharmacy.vo.Pharmacy">
-        SELECT * FROM PHARMACY_TBL
+        SELECT
+        HPID as hpid,
+        DUTY_NAME as dutyName,
+        DUTY_ADDR as dutyAddr,
+        DUTY_TEL1 as dutyTel1
+        FROM PHARMACY_TBL
         WHERE 1=1
         <if test="dutyName != null and dutyName != ''">
             AND DUTY_NAME LIKE '%' || #{dutyName} || '%'
@@ -39,20 +54,23 @@
         </if>
     </select>
 
-    <select id="searchItemNames" resultType="java.util.Map">
-        SELECT HPID as hpid, DUTY_NAME as dutyName
-        FROM PHARMACY_TBL
-        WHERE DUTY_NAME LIKE '%' || #{query} || '%'
-        AND ROWNUM &lt;= 10  <!-- 최대 10개까지만 반환 -->
-        ORDER BY DUTY_NAME
-    </select>
-
-    <select id="searchEntpNames" resultType="java.util.Map">
-        SELECT DISTINCT DUTY_ADDR as dutyAddr
-        FROM PHARMACY_TBL
-        WHERE DUTY_ADDR LIKE '%' || #{query} || '%'
-          AND ROWNUM &lt;= 10
-        ORDER BY DUTY_ADDR
+    <select id="getAutocompleteSuggestions" resultType="java.util.Map">
+        <choose>
+            <when test="searchType == 'dutyName'">
+                SELECT HPID as value, DUTY_NAME as label
+                FROM PHARMACY_TBL
+                WHERE DUTY_NAME LIKE '%' || #{query} || '%'
+                AND ROWNUM &lt;= 10
+                ORDER BY DUTY_NAME
+            </when>
+            <when test="searchType == 'dutyAddr'">
+                SELECT DISTINCT HPID as value, DUTY_ADDR as label
+                FROM PHARMACY_TBL
+                WHERE DUTY_ADDR LIKE '%' || #{query} || '%'
+                AND ROWNUM &lt;= 10
+                ORDER BY DUTY_ADDR
+            </when>
+        </choose>
     </select>
 
     <!-- 즐겨찾기 추가 -->
@@ -69,7 +87,7 @@
 
     <!-- 사용자의 즐겨찾기 목록 조회 -->
     <select id="getFavorites" parameterType="string" resultType="map">
-        SELECT REF_NO, DUTY_NAME, DUTY_ADDR, DUTY_TEL1
+        SELECT REF_NO as refNo, DUTY_NAME as dutyName, DUTY_ADDR as dutyAddr, DUTY_TEL1 as dutyTel1
         FROM FAVORITE_TBL
         WHERE USER_ID = #{userId}
     </select>
