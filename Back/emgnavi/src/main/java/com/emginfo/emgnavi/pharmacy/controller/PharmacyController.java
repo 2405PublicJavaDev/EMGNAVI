@@ -110,4 +110,59 @@ public class PharmacyController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching autocomplete suggestions");
         }
     }
+
+    // 새로 추가된 즐겨찾기 관련 엔드포인트
+    @PostMapping("/favorite")
+    public ResponseEntity<?> addFavorite(
+            @RequestParam String userId,
+            @RequestParam String refNo,
+            @RequestParam String dutyName,
+            @RequestParam String dutyAddr,
+            @RequestParam String dutyTel1
+    ) {
+        try {
+            pharmacyService.addFavorite(userId, refNo, dutyName, dutyAddr, dutyTel1);
+            return ResponseEntity.ok("Favorite added successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding favorite");
+        }
+    }
+
+    @DeleteMapping("/favorite")
+    public ResponseEntity<?> removeFavorite(
+            @RequestParam String userId,
+            @RequestParam String refNo
+    ) {
+        try {
+            pharmacyService.removeFavorite(userId, refNo);
+            return ResponseEntity.ok("Favorite removed successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error removing favorite");
+        }
+    }
+
+    @GetMapping("/favorites")
+    public ResponseEntity<?> getFavorites(@RequestParam String userId) {
+        try {
+            List<Map<String, Object>> favorites = pharmacyService.getFavorites(userId);
+            return ResponseEntity.ok(favorites);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching favorites");
+        }
+    }
+
+    @GetMapping("/is-favorite")
+    public ResponseEntity<?> isFavorite(
+            @RequestParam String userId,
+            @RequestParam String refNo
+    ) {
+        try {
+            boolean isFavorite = pharmacyService.isFavorite(userId, refNo);
+            Map<String, Object> response = new HashMap<>();
+            response.put("isFavorite", isFavorite);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error checking favorite status");
+        }
+    }
 }

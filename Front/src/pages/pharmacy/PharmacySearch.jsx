@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../UserContext";
 
 const PharmacySearch = () => {
     const [pharmacies, setPharmacies] = useState([]);
@@ -20,13 +21,36 @@ const PharmacySearch = () => {
     const autoCompleteRef = useRef(null);
     const inputRef = useRef(null);
 
-    // 로그인 상태 관리
-    const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태를 관리할 상태 변수
+    const { userId } = useContext(UserContext);
 
     const categories = [
         { value: 'dutyName', label: '기관명' },
         { value: 'dutyAddr', label: '주소' },
     ];
+
+    useEffect(() => {
+        fetchPharmacies(0);
+    }, []);
+
+    useEffect(() => {
+        if (userId) {
+            fetchFavorites();
+        }
+    }, [userId]);
+
+    const fetchFavorites = async () => {
+        try {
+            const response = await fetch(`/api/pharmacy/favorites?userId=${userId}`);
+            const data = await response.json();
+            const favoritesMap = {};
+            data.forEach(favorite => {
+                favoritesMap[favorite.refNo] = true;
+            });
+            setFavorites(favoritesMap);
+        } catch (error) {
+            console.error('Failed to fetch favorites:', error);
+        }
+    };
 
     const fetchPharmacies = (page = 0) => {
         setIsLoading(true);
@@ -167,21 +191,31 @@ const PharmacySearch = () => {
         );
     };
 
-    const toggleFavorite = (hpid) => {
-        if (!isLoggedIn) {
+    const toggleFavorite = async (hpid, dutyName, dutyAddr, dutyTel1) => {
+        if (!userId) {
             alert("로그인 후 즐겨찾기 기능을 사용할 수 있습니다.");
             return;
         }
 
-        setFavorites((prevFavorites) => ({
-            ...prevFavorites,
-            [hpid]: !prevFavorites[hpid],
-        }));
+        try {
+            if (favorites[hpid]) {
+                await fetch(`/api/pharmacy/favorite?userId=${userId}&refNo=${hpid}`, { method: 'DELETE' });
+            } else {
+                await fetch('/api/pharmacy/favorite', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ userId, refNo: hpid, dutyName, dutyAddr, dutyTel1 })
+                });
+            }
+            setFavorites(prevFavorites => ({
+                ...prevFavorites,
+                [hpid]: !prevFavorites[hpid]
+            }));
+        } catch (error) {
+            console.error('Failed to toggle favorite:', error);
+            alert('즐겨찾기 처리 중 오류가 발생했습니다.');
+        }
     };
-
-    useEffect(() => {
-        fetchPharmacies(0);
-    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -200,7 +234,7 @@ const PharmacySearch = () => {
         if (e.key === 'Enter') {
             e.preventDefault();
             if (!searchQuery) {
-                window.location.reload(); // 새로고침
+                window.location.reload();
             } else {
                 handleSearch(0);
             }
@@ -363,7 +397,7 @@ const PharmacySearch = () => {
                                     {pharmacies.map((pharmacy) => (
                                         <tr key={pharmacy.hpid} className="border-b">
                                             <td className="py-4 font-roboto text-base text-black">
-                                                <button onClick={() => toggleFavorite(pharmacy.hpid)}>
+                                                <button onClick={() => toggleFavorite(pharmacy.hpid, pharmacy.dutyName, pharmacy.dutyAddr, pharmacy.dutyTel1)}>
                                                     <img
                                                         src={favorites[pharmacy.hpid]
                                                             ? '/img/medicine/goldonestar.png'

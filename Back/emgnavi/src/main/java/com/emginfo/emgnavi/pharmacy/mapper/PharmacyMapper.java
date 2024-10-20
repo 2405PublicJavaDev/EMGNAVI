@@ -17,7 +17,7 @@ public interface PharmacyMapper {
 
     int getTotalCount();
 
-    // 새로 추가된 메서드들
+    // 기존 검색 관련 메서드들
     List<Pharmacy> searchPharmacy(Map<String, Object> params, RowBounds rowBounds);
 
     int getSearchResultCount(Map<String, Object> params);
@@ -25,4 +25,13 @@ public interface PharmacyMapper {
     List<Map<String, Object>> searchDutyNames(String query);
 
     List<Map<String, Object>> searchDutyAddrs(String query);
+
+    // 새로 추가된 즐겨찾기 관련 메서드들
+    void addFavorite(Map<String, Object> params);
+
+    void removeFavorite(Map<String, Object> params);
+
+    List<Map<String, Object>> getFavorites(String userId);
+
+    int isFavorite(Map<String, Object> params);
 }

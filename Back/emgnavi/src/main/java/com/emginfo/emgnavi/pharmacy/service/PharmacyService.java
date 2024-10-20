@@ -17,4 +17,13 @@ public interface PharmacyService {
     List<Map<String, Object>> getAutocompleteSuggestions(String query, String searchType);
 
     int getTotalCount();
+
+    // 새로 추가된 즐겨찾기 관련 메서드
+    void addFavorite(String userId, String refNo, String dutyName, String dutyAddr, String dutyTel1);
+
+    void removeFavorite(String userId, String refNo);
+
+    List<Map<String, Object>> getFavorites(String userId);
+
+    boolean isFavorite(String userId, String refNo);
 }

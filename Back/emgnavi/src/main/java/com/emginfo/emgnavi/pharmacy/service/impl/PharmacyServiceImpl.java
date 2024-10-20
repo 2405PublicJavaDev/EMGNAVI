@@ -63,4 +63,37 @@ public class PharmacyServiceImpl implements PharmacyService {
     public int getTotalCount() {
         return pharmacyMapper.getTotalCount();
     }
+
+    // 새로 추가된 즐겨찾기 관련 메서드 구현
+    @Override
+    public void addFavorite(String userId, String refNo, String dutyName, String dutyAddr, String dutyTel1) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("refNo", refNo);
+        params.put("dutyName", dutyName);
+        params.put("dutyAddr", dutyAddr);
+        params.put("dutyTel1", dutyTel1);
+        pharmacyMapper.addFavorite(params);
+    }
+
+    @Override
+    public void removeFavorite(String userId, String refNo) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("refNo", refNo);
+        pharmacyMapper.removeFavorite(params);
+    }
+
+    @Override
+    public List<Map<String, Object>> getFavorites(String userId) {
+        return pharmacyMapper.getFavorites(userId);
+    }
+
+    @Override
+    public boolean isFavorite(String userId, String refNo) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("refNo", refNo);
+        return pharmacyMapper.isFavorite(params) > 0;
+    }
 }
