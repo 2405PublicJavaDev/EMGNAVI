@@ -40,14 +40,20 @@ const Mypage = () => {
         nav("/user/mypage/check");
     }
 
+    const handlerGoFavoriteHospital = () => {
+        nav("/user/mypage/favorite/hospital");
+    }
+
+    const handlerGoFavoritePharmacy = () => {
+        nav("/user/mypage/favorite/pharmacy");
+    }
+
     return (
         <>
             <div className="absolute left-0 top-[161px] w-[1920px] h-[908px]">
-                <div className="absolute left-[733px] top-[264px] w-[455px] h-[410px] bg-[#7d85971a] rounded-[20px]"></div>
                 <div className="absolute left-0 top-[84px] w-[1920px] h-[47px] text-[40px] font-['Inter'] font-bold text-[#000] text-center">마이페이지</div>
                 <div className="absolute left-0 top-[163px] w-[1920px] text-[15px] font-['Inter'] text-[#7d8597] text-center">당신의 건강을 위한 최적의 길을 안내하는 응급NAVI입니다.</div>
             </div>
-            <div className="absolute left-[1255px] top-[425px] w-[455px] h-[410px] bg-[#7d85971a] rounded-[20px]"></div>
             <div
                 onClick={handlerGoMypage}
                 style={{ cursor: 'pointer' }}
@@ -55,10 +61,16 @@ const Mypage = () => {
                 <div className="relative top-[232px] text-[26px] font-['Inter'] font-semibold text-[#000] text-center">내정보 관리</div>
                 <div className="relative top-[248px] text-[16px] font-['Inter'] text-[#7d8597] text-center">회원정보 수정</div>
             </div>
-            <div className="absolute left-[733px] top-[656px] w-[455px] h-[30px] text-[26px] font-['Inter'] font-semibold text-[#000] text-center">즐겨찾는 병원</div>
-            <div className="absolute left-[733px] top-[709px] w-[455px] h-[19px] text-[16px] font-['Inter'] text-[#7d8597] text-center">즐겨찾는 병원</div>
-            <div className="absolute left-[1255px] top-[656px] w-[455px] h-[30px] text-[26px] font-['Inter'] font-semibold text-[#000] text-center">즐겨찾는 약국</div>
-            <div className="absolute left-[1255px] top-[709px] w-[455px] h-[19px] text-[16px] font-['Inter'] text-[#7d8597] text-center">즐겨찾는 약국</div>
+            <div onClick={handlerGoFavoriteHospital} style={{ cursor: 'pointer' }}
+                className="absolute left-[733px] top-[425px] w-[455px] h-[410px] bg-[#7d85971a] rounded-[20px]">
+                <div className="relative top-[232px] text-[26px] font-['Inter'] font-semibold text-[#000] text-center">즐겨찾는 병원</div>
+                <div className="relative top-[248px] text-[16px] font-['Inter'] text-[#7d8597] text-center">즐겨찾는 병원</div>
+            </div>
+            <div onClick={handlerGoFavoritePharmacy} style={{ cursor: 'pointer' }}
+                className="absolute left-[1255px] top-[425px] w-[455px] h-[410px] bg-[#7d85971a] rounded-[20px]">
+                <div className="relative top-[232px] text-[26px] font-['Inter'] font-semibold text-[#000] text-center">즐겨찾는 약국</div>
+                <div className="relative top-[248px] text-[16px] font-['Inter'] text-[#7d8597] text-center">즐겨찾는 약국</div>
+            </div>
             <img className="absolute left-[926px] top-[537px]" width="94" height="89" src="/img/user/Group 221397_73.png"></img>
             <img className="absolute left-[1447px] top-[537px]" width="89" height="87" src="/img/user/Group 200397_50.png"></img>
             <img className="absolute left-[412px] top-[545px]" width="70" height="78" src="/img/user/Group 199397_54.png"></img>
