@@ -219,6 +219,30 @@ const HospitalDetail = () => {
         setExpandedReviewId(expandedReviewId === reviewId ? null : reviewId);
     };
 
+    const handleFavorite = async (refNo) => {
+        if(!isLoggedIn){
+            alert('로그인이 필요합니다.');
+            return;
+        }
+        try {
+            const response = await fetch(`/api/favorite/hospital?refNo=${refNo}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // JSON 데이터를 보낸다고 명시
+                },
+                body: JSON.stringify({ refNo: refNo }) // refNo를 JSON 형태로 전송
+            });
+
+            if (!response.ok) {
+                throw new Error('즐겨찾기 등록에 실패했습니다.');
+            }
+            alert('즐겨찾기 등록 되었습니다.');
+        } catch (error) {
+            console.error('즐겨찾기 등록 중 오류 발생:', error);
+            alert('즐겨찾기 등록 중 오류가 발생했습니다.');
+        }
+    }
+
     if (!hospital) {
         return <div>Loading...</div>;
     }
@@ -235,7 +259,12 @@ const HospitalDetail = () => {
                                 <div className="flex mb-4">
                                     <GetSketchMap  latitude={hospital.wgs84Lat} longitude={hospital.wgs84Lon} placeName={hospital.dutyName}/>
                                     <div className='max-w-[700px] ml-[50px]'>
-                                        <h2 className="text-2xl font-semibold mb-2">{hospital.dutyName}</h2>
+                                        <div className='flex'>
+                                            <h2 className="text-2xl font-semibold mb-2">{hospital.dutyName}</h2>
+                                            <button class="w-[40px] h-[35px]" onClick={() => handleFavorite(hospital.hpid)}>
+                                                <img src="/img/medicine/goldonestar.png" alt="button image" class="w-full h-full"/>
+                                            </button>
+                                        </div>
                                         <p className="text-gray-600 mb-2">주소: {hospital.dutyAddr}</p>
                                         <p className="font-bold mb-2">진료과목: {hospital.dgidIdName}</p>
                                         <p className="mb-2">전화번호: {hospital.dutyTel1}</p>
