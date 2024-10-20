@@ -339,11 +339,7 @@ const GetNoticeList = () => {
                                                             </div>
                                                             <h2 className="text-xl font-bold mt-2 text-center" onClick={() => window.location.href = 'getNoticeDetail?noticeId=' + notice.noticeId}>{notice.noticeTitle}</h2>
 
-                                                            {userId == 'admin' ? (
-                                                                <div className="flex space-x-4">
-                                                                    <button onClick={() => window.location.href = 'putNotice?noticeId=' + notice.noticeId} className="w-[100px] h-[35px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">수정</button>
-                                                                    <button onClick={() => handleDeleteBtn(notice.noticeId)} className="w-[100px] h-[35px] bg-[#0b2d85] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#fff] text-center">삭제</button>
-                                                                </div>) : ('')}
+                                                            
 
                                                         </div>
                                                         <div id='div2' className='flex-grow min-w-0'>
@@ -352,6 +348,11 @@ const GetNoticeList = () => {
                                                             </Truncate>
 
                                                         </div>
+                                                        {userId == 'admin' ? (
+                                                                <div className="flex space-x-4 my-[auto]">
+                                                                    <button onClick={() => window.location.href = 'putNotice?noticeId=' + notice.noticeId} className="w-[100px] h-[35px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">수정</button>
+                                                                    <button onClick={() => handleDeleteBtn(notice.noticeId)} className="w-[100px] h-[35px] bg-[#0b2d85] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#fff] text-center">삭제</button>
+                                                                </div>) : ('')}
                                                     </div>
                                                 ))}
                                             </div>
