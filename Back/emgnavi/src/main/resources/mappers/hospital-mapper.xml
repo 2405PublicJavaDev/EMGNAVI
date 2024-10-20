@@ -55,5 +55,30 @@
         ORDER BY DUTY_ADDR
     </select>
 
+    <!-- 즐겨찾기 추가 -->
+    <insert id="addFavorite" parameterType="map">
+        INSERT INTO FAVORITE_TBL (USER_ID, REF_NO, DUTY_NAME, DUTY_ADDR, DUTY_TEL1)
+        VALUES (#{userId}, #{refNo}, #{dutyName}, #{dutyAddr}, #{dutyTel1})
+    </insert>
+
+    <!-- 즐겨찾기 삭제 -->
+    <delete id="removeFavorite" parameterType="map">
+        DELETE FROM FAVORITE_TBL
+        WHERE USER_ID = #{userId} AND REF_NO = #{refNo}
+    </delete>
+
+    <!-- 사용자의 즐겨찾기 목록 조회 -->
+    <select id="getFavorites" parameterType="string" resultType="map">
+        SELECT REF_NO as refNo, DUTY_NAME as dutyName, DUTY_ADDR as dutyAddr, DUTY_TEL1 as dutyTel1
+        FROM FAVORITE_TBL
+        WHERE USER_ID = #{userId}
+    </select>
+
+    <!-- 특정 병원이 즐겨찾기에 있는지 확인 -->
+    <select id="isFavorite" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+        FROM FAVORITE_TBL
+        WHERE USER_ID = #{userId} AND REF_NO = #{refNo}
+    </select>
 
 </mapper>

@@ -72,4 +72,37 @@ public class HospitalServiceImpl implements HospitalService {
 
         return suggestions;
     }
+
+    @Override
+    public void addFavorite(String userId, String refNo, String dutyName, String dutyAddr, String dutyTel1) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("refNo", refNo);
+        params.put("dutyName", dutyName);
+        params.put("dutyAddr", dutyAddr);
+        params.put("dutyTel1", dutyTel1);
+        hospitalMapper.addFavorite(params);
+    }
+
+    @Override
+    public void removeFavorite(String userId, String refNo) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("refNo", refNo);
+        hospitalMapper.removeFavorite(params);
+    }
+
+    @Override
+    public List<Map<String, Object>> getFavorites(String userId) {
+        return hospitalMapper.getFavorites(userId);
+    }
+
+    @Override
+    public boolean isFavorite(String userId, String refNo) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("refNo", refNo);
+        return hospitalMapper.isFavorite(params) > 0;
+    }
+
 }

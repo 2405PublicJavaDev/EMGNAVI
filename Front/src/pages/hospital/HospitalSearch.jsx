@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from "../../UserContext";
 
 const HospitalSearch = () => {
   const [hospitals, setHospitals] = useState([]);
@@ -14,15 +15,43 @@ const HospitalSearch = () => {
   const [focusedOptionIndex, setFocusedOptionIndex] = useState(-1);
   const [selectedOption, setSelectedOption] = useState(null);
   const [hoveredOption, setHoveredOption] = useState(null);
+  const [favorites, setFavorites] = useState({}); // 즐겨찾기 상태 추가
   const itemsPerPage = 10;
   const nav = useNavigate();
   const autoCompleteRef = useRef(null);
   const inputRef = useRef(null);
 
+  const { userId } = useContext(UserContext);
+
   const categories = [
     { value: 'dutyName', label: '병원명' },
     { value: 'dutyAddr', label: '병원주소' },
   ];
+
+  useEffect(() => {
+    fetchHospitals(0);
+  }, []);
+
+  useEffect(() => {
+    if (userId) {
+        fetchFavorites();
+    }
+  }, [userId]);
+
+  // 즐겨찾기 목록 불러오기
+  const fetchFavorites = async () => {
+    try {
+        const response = await fetch(`/api/hospital/favorites?userId=${userId}`);
+        const data = await response.json();
+        const favoritesMap = {};
+        data.forEach(favorite => {
+            favoritesMap[favorite.refNo] = true;
+        });
+        setFavorites(favoritesMap);
+    } catch (error) {
+        console.error('Failed to fetch favorites:', error);
+    }
+  };
 
   const fetchHospitals = (page = 0) => {
     setIsLoading(true);
@@ -69,6 +98,35 @@ const HospitalSearch = () => {
         console.error('Error fetching autocomplete options:', error);
         setOptions([]);
       });
+  };
+
+    // 즐겨찾기 추가/삭제 기능 구현
+    const toggleFavorite = async (hpid, dutyName, dutyAddr, dutyTel1) => {
+      if (!userId) {
+          alert("로그인 후 즐겨찾기 기능을 사용할 수 있습니다.");
+          return;
+      }
+
+      try {
+          if (favorites[hpid]) {
+              // 즐겨찾기에서 삭제
+              await fetch(`/api/pharmacy/favorite?userId=${userId}&refNo=${hpid}`, { method: 'DELETE' });
+          } else {
+              // 즐겨찾기 추가
+              await fetch('/api/pharmacy/favorite', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                  body: new URLSearchParams({ userId, refNo: hpid, dutyName, dutyAddr, dutyTel1 })
+              });
+          }
+          setFavorites(prevFavorites => ({
+              ...prevFavorites,
+              [hpid]: !prevFavorites[hpid]
+          }));
+      } catch (error) {
+          console.error('Failed to toggle favorite:', error);
+          alert('즐겨찾기 처리 중 오류가 발생했습니다.');
+      }
   };
 
   const handleSearch = (page = 0) => {
@@ -339,7 +397,7 @@ const HospitalSearch = () => {
               <table className="table-auto w-full border-collapse text-center shadow-lg rounded-lg border-color">
                 <thead className="bg-[#cccccc1a]">
                   <tr>
-                    <th className="py-4">번호</th>
+                    <th className="py-4">즐겨찾기</th>
                     <th className="py-4">병원명</th>
                     <th className="py-4">주소</th>
                     <th className="py-4">응급실여부</th>
@@ -350,7 +408,16 @@ const HospitalSearch = () => {
                   {hospitals.map((item, index) => (
                     <tr key={item.hpid} className="border-b">
                       <td className="py-4 font-roboto text-base text-black">
-                        {currentPage * itemsPerPage + index + 1}
+                        <button onClick={() => toggleFavorite(item.hpid, item.dutyName, item.dutyAddr, item.dutyTel1)}>
+                            <img
+                                src={favorites[item.hpid]
+                                    ? '/img/medicine/goldonestar.png'
+                                    : '/img/medicine/greyonestar.png'
+                                }
+                                alt="즐겨찾기"
+                                className="w-6 h-6 mx-auto"
+                            />
+                        </button>
                       </td>
                       <td className="py-4 font-roboto text-base text-black">
                         {item.dutyName.length > 20

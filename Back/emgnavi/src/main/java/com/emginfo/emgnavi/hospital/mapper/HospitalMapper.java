@@ -23,4 +23,12 @@ public interface HospitalMapper {
     List<Map<String, Object>> searchDutyNames(String query);
 
     List<Map<String, Object>> searchDutyAddr(String query);
+
+    void addFavorite(Map<String, Object> params);
+
+    void removeFavorite(Map<String, Object> params);
+
+    List<Map<String, Object>> getFavorites(String userId);
+
+    int isFavorite(Map<String, Object> params);
 }

@@ -16,4 +16,12 @@ public interface HospitalService {
     int getSearchResultCount(String dutyName, String dutyAddr);
 
     List<Map<String, Object>> getAutocompleteSuggestions(String query, String searchType);
+
+    void removeFavorite(String userId, String refNo);
+
+    List<Map<String, Object>> getFavorites(String userId);
+
+    boolean isFavorite(String userId, String refNo);
+
+    void addFavorite(String userId, String refNo, String dutyName, String dutyAddr, String dutyTel1);
 }
