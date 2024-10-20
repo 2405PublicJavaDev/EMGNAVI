@@ -16,13 +16,12 @@ const PharmacySearch = () => {
     const [selectedOption, setSelectedOption] = useState(null);
     const [hoveredOption, setHoveredOption] = useState(null);
     const [favorites, setFavorites] = useState({});
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const itemsPerPage = 10;
     const nav = useNavigate();
     const autoCompleteRef = useRef(null);
     const inputRef = useRef(null);
 
-    const { userId, setUserId } = useContext(UserContext);
+    const { userId } = useContext(UserContext);
 
     const categories = [
         { value: 'dutyName', label: '기관명' },
@@ -30,37 +29,16 @@ const PharmacySearch = () => {
     ];
 
     useEffect(() => {
-        const checkLoginStatus = async () => {
-            try {
-                const response = await fetch('/api/user/checkLogin', { credentials: 'include' });
-                if (response.ok) {
-                    const data = await response.json();
-                    setIsLoggedIn(true);
-                    setUserId(data.userId);
-                } else {
-                    setIsLoggedIn(false);
-                    setUserId(null);
-                }
-            } catch (error) {
-                console.error('로그인 상태 확인 실패:', error);
-                setIsLoggedIn(false);
-                setUserId(null);
-            }
-        };
-
-        checkLoginStatus();
-    }, [setUserId]);
+        if (userId) {
+            fetchFavorites();
+        }
+    }, [userId]);
 
     useEffect(() => {
-        if (isLoggedIn && userId) {
-            fetchFavorites().then(() => fetchPharmacies(0));
-        } else {
-            fetchPharmacies(0);
-        }
-    }, [isLoggedIn, userId]);
+        fetchPharmacies(0);
+    }, [favorites]);
 
     const fetchFavorites = async () => {
-        if (!isLoggedIn || !userId) return;
         try {
             const response = await fetch(`/api/pharmacy/favorites?userId=${userId}`);
             const data = await response.json();
@@ -125,14 +103,13 @@ const PharmacySearch = () => {
     };
 
     const toggleFavorite = async (hpid, dutyName, dutyAddr, dutyTel1) => {
-        if (!isLoggedIn) {
+        if (!userId) {
             alert("로그인 후 즐겨찾기 기능을 사용할 수 있습니다.");
             return;
         }
 
         try {
-            const isFavorite = favorites[hpid];
-            if (isFavorite) {
+            if (favorites[hpid]) {
                 await fetch(`/api/pharmacy/favorite?userId=${userId}&refNo=${hpid}`, { method: 'DELETE' });
             } else {
                 await fetch('/api/pharmacy/favorite', {
@@ -143,12 +120,12 @@ const PharmacySearch = () => {
             }
             setFavorites(prevFavorites => ({
                 ...prevFavorites,
-                [hpid]: !isFavorite
+                [hpid]: !prevFavorites[hpid]
             }));
             setPharmacies(prevPharmacies => 
                 prevPharmacies.map(pharmacy => 
                     pharmacy.hpid === hpid 
-                        ? { ...pharmacy, favorite: !isFavorite }
+                        ? { ...pharmacy, favorite: !pharmacy.favorite }
                         : pharmacy
                 )
             );
@@ -358,7 +335,8 @@ const PharmacySearch = () => {
                                         backgroundColor: 'white',
                                         color: 'black',
                                         boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                                    }}>
+                                    }}
+                                >
                                     {options.length > 0 ? (
                                         options.map((option, index) => (
                                             <li
