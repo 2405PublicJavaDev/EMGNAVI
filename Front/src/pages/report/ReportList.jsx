@@ -12,6 +12,7 @@ export const ReportList = () => {
   const [targetId, setTargetId] = useState("");
   const [unfreezeDate, setUnfreezeDate] = useState("");
   const [processedReports, setProcessedReports] = useState({});
+  
   // 페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -179,13 +180,13 @@ useEffect(() => {
 }, []);
 
 // 페이지네이션
-const Pagination = ({ pagenationInfo, currentPage, onPageChange }) => {
-  if (!pagenationInfo || typeof pagenationInfo.totPageCnt === 'undefined') {
+const Pagination = ({ paginationInfo, currentPage, onPageChange }) => {
+  if (!paginationInfo || typeof paginationInfo.totPageCnt === 'undefined') {
     return null;
   }
 
   const pageNumbers = [];
-  for (let i = 1; i <= pagenationInfo.totPageCnt; i++) {
+  for (let i = 1; i <= paginationInfo.totPageCnt; i++) {
     pageNumbers.push(i);
   }
 
@@ -214,7 +215,7 @@ const Pagination = ({ pagenationInfo, currentPage, onPageChange }) => {
         </button>
       ))}
 
-      {currentPage < pagenationInfo.totPageCnt && (
+      {currentPage < paginationInfo.totPageCnt && (
         <button
           onClick={() => onPageChange(currentPage + 1)}
           className="mx-1 w-8 h-8 border border-[#CA1738] text-[#CA1738] rounded"
@@ -301,7 +302,7 @@ const handlePageChange = (newPage) => {
           </div>
           <div className="flex justify-center">
                 <Pagination
-                  pagenationInfo={paginationInfo}
+                  paginationInfo={paginationInfo}
                   currentPage={currentPage}
                   onPageChange={handlePageChange}
                 />

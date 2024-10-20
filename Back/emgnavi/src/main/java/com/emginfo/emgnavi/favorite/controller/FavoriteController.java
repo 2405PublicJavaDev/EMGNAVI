@@ -5,11 +5,11 @@ import com.emginfo.emgnavi.common.exception.ErrorCode;
 import com.emginfo.emgnavi.common.success.SuccessCode;
 import com.emginfo.emgnavi.common.success.SuccessResponse;
 import com.emginfo.emgnavi.favorite.model.dto.FavoriteDTO;
+import com.emginfo.emgnavi.favorite.model.dto.FavoritePageDTO;
 import com.emginfo.emgnavi.favorite.model.vo.Favorite;
 import com.emginfo.emgnavi.favorite.service.FavoriteService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -68,28 +68,34 @@ public class FavoriteController {
 
     // 병원 즐겨찾기 조회
     @GetMapping("/favorite/hospital/list")
-    public SuccessResponse listFavHospital(HttpSession session) {
+    public SuccessResponse listFavHospital(
+            @RequestParam(value = "page", defaultValue = "1") int prsnPageNo,
+            @RequestParam(value = "size", defaultValue = "6") int cntntPerPage,
+            HttpSession session) {
         // 로그인된 사용자 정보 가져오기
         String userId = (String) session.getAttribute("userId");
         if (userId == null) {
             throw new CustomException(ErrorCode.RESOURCE_NOT_FOUND);  // 로그인이 필요할 경우
         }
         // 즐겨찾기 목록 조회
-        List<Favorite> favorites = favoriteService.selectHospitalByUserId(userId);
-        return new SuccessResponse(SuccessCode.RESOURCE_FOUND, favorites); // list null 일 때 빈리스트 반환
+        FavoritePageDTO favoritePageDTO = favoriteService.selectHospitalByUserId(userId, prsnPageNo, cntntPerPage);
+        return new SuccessResponse(SuccessCode.RESOURCE_FOUND, favoritePageDTO); // list null 일 때 빈리스트 반환
     }
 
     // 약국 즐겨찾기 조회
     @GetMapping("/favorite/pharmacy/list")
-    public SuccessResponse listFavPharmacy(HttpSession session) {
+    public SuccessResponse listFavPharmacy(
+            @RequestParam(value = "page", defaultValue = "1") int prsnPageNo,
+            @RequestParam(value = "size", defaultValue = "6") int cntntPerPage,
+            HttpSession session) {
         // 로그인된 사용자 정보 가져오기
         String userId = (String) session.getAttribute("userId");
         if (userId == null) {
             throw new CustomException(ErrorCode.RESOURCE_NOT_FOUND);  // 로그인이 필요할 경우
         }
         // 즐겨찾기 목록 조회
-        List<Favorite> favorites = favoriteService.selectPharmacyByUserId(userId);
-        return new SuccessResponse(SuccessCode.RESOURCE_FOUND, favorites); // list null 일 때 빈리스트 반환
+        FavoritePageDTO favoritePageDTO = favoriteService.selectPharmacyByUserId(userId, prsnPageNo, cntntPerPage);
+        return new SuccessResponse(SuccessCode.RESOURCE_FOUND, favoritePageDTO); // list null 일 때 빈리스트 반환
     }
 
     // 즐겨찾기 단일 삭제

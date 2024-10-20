@@ -24,10 +24,13 @@ public interface FavoriteMapper {
     void addFavPharmacy(Favorite favorite);
 
     // 병원, 약국 즐겨찾기 조회
-    List<Favorite> getHospitalFavoriteListByUserId(String userId);
-    List<Favorite> getPharmacyFavoriteListByUserId(String userId);
+    List<Favorite> getHospitalFavoriteListByUserId(String userId, int startRow, int endRow);
+    List<Favorite> getPharmacyFavoriteListByUserId(String userId, int startRow, int endRow);
 
     // 즐겨찾기 삭제 - 단일
     int deleteFavorite(Favorite favorite);
 
+    // 페이지네이션
+    int getHospitalAllCount(String userId);
+    int getPharmacyAllCount(String userId);
 }

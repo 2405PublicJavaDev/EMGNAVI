@@ -1,41 +1,70 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Modal from "react-modal";
+import { useNavigate } from "react-router-dom";
 
 import { UserContext } from '../../../UserContext';
 
 Modal.setAppElement('#root');
 
-// 약국 리스트 가져오기 함수
-const getPharmacyList = async () => {
-    try {
-        const res = await axios.get(`/api/favorite/pharmacy/list`);  //  포함
-        return res.data;
-    } catch (err) {
-        console.error(err);
-        return [];
-    }
-};
 
 export const FavPharmacy = () => {
     const { userId } = useContext(UserContext);
-
+    const navigate = useNavigate();
+    
     const [pharmacyList, setpharmacyList] = useState([]);
     const [openSingleModalId, setOpenSingleModalId] = useState(null); // 모달 열기 상태 관리
     const [openMultiModalId, setOpenMultiModalId] = useState(false); // 다중 삭제 모달 상태 관리
 
+    // 페이지네이션
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [itemsPerPage] = useState(5);
+    const [paginationInfo, setPaginationInfo] = useState({});
+    const [totalCount, setTotalCount] = useState(0); // 총 개수
+
+    // 약국 리스트 가져오기 함수
+    const fetchData = async (page = 1) => {
+        try {
+            const res = await axios.get(`/api/favorite/pharmacy/list`, {
+                params: {
+                    page: page,
+                    size: itemsPerPage
+                }
+            });
+            console.log("Full server response:", res);
+
+            const responseData = res.data.data;
+            console.log("Response data:", responseData);
+
+            // responseData의 구조에 따라 pharmacyList와 paginationInfo를 설정
+            const pharmacyList = responseData.favoriteList || [];
+            const paginationInfo = responseData.paginationInfo || {};
+
+            setpharmacyList(pharmacyList);
+            setPaginationInfo(paginationInfo);
+            setCurrentPage(page);
+            setTotalPages(paginationInfo.totPageCnt || 1);
+            setTotalCount(paginationInfo.totCnt || 0);
+
+            navigate(`?page=${page}`, { replace: true });
+
+            console.log("Fetched pharmacy list:", pharmacyList);
+            console.log("Pagination info:", paginationInfo);
+        } catch (err) {
+            console.error("Pharmacy list fetch error:", err.response?.data || err.message);
+            setpharmacyList([]);
+            setPaginationInfo({}); 
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            if (userId) {
-                const data = await getPharmacyList(userId);  // 를 사용하여 병원 리스트 가져오기
-                console.log("Fetched data:", data.data);
-                setpharmacyList(data.data); // 약국 리스트 업데이트
-            } else {
-                console.log('User is not logged in');
-            }
-        };
-        fetchData();
-    }, [userId]);
+        if (userId) {
+            fetchData(currentPage);
+        } else {
+            console.log('User is not logged in');
+        }
+    }, [userId, currentPage]);
 
     // 즐겨찾기 단일 삭제
     const deleteFavorite = async (refNo) => {
@@ -109,7 +138,64 @@ export const FavPharmacy = () => {
     const selectPharmacy = openSingleModalId !== null ? pharmacyList[openSingleModalId] : null;
 
     // 상세 페이지로 이동
-    const detailPage = () => { };
+    const detailPage = (hpid) => { 
+        navigate(`/pharmacy/detail/${hpid}`);
+    };
+
+    // 페이지네이션
+    const Pagination = ({ paginationInfo, currentPage, onPageChange }) => {
+        if (!paginationInfo || typeof paginationInfo.totPageCnt === 'undefined') {
+          return null;
+        }
+      
+        const pageNumbers = [];
+        for (let i = 1; i <= paginationInfo.totPageCnt; i++) {
+          pageNumbers.push(i);
+        }
+      
+        return (
+          <div className="flex justify-center mt-8">
+            {currentPage > 1 && (
+              <button
+                onClick={() => onPageChange(currentPage - 1)}
+                className="mx-1 w-8 h-8 border border-[#0B2D85] text-[#0B2D85] rounded"
+              >
+                ◀
+              </button>
+            )}
+      
+            {pageNumbers.map(number => (
+              <button
+                key={number}
+                onClick={() => onPageChange(number)}
+                className={`mx-1 w-8 h-8 ${
+                  currentPage === number
+                    ? "bg-[#0B2D85] text-white"
+                    : "border border-[#0B2D85] text-[#0B2D85]"
+                } rounded`}
+              >
+                {number}
+              </button>
+            ))}
+      
+            {currentPage < paginationInfo.totPageCnt && (
+              <button
+                onClick={() => onPageChange(currentPage + 1)}
+                className="mx-1 w-8 h-8 border border-[#0B2D85] text-[#0B2D85] rounded"
+              >
+                ▶
+              </button>
+            )}
+          </div>
+        );
+      };
+    const handlePageChange = (newPage) => {
+        if (newPage !== currentPage) {
+            setCurrentPage(newPage);
+            fetchData(newPage);
+            navigate(`?page=${newPage}`, { replace: true });
+        }
+    };
 
     return (
         <div className="w-full min-h-screen bg-white flex flex-col">
@@ -122,23 +208,23 @@ export const FavPharmacy = () => {
                                 즐겨찾는 약국
                             </div>
                             <div className="relative w-full px-3 pt-2 pb-1 flex justify-end items-center bg-white rounded-tl-lg rounded-tr-lg overflow-hidden">
-                                <span className="px-3 font-bold">총 {pharmacyList.length}개</span>
+                                <span className="px-3 font-bold">총 {totalCount}개</span>
                                 <button className="text-[#333] bg-white border border-[#0B2D85] rounded py-2 px-5 text-sm font-bold hover:bg-[#f5f5f5] font-bbold"
-                                    onClick={() => pharmacyList.length > 0 && openMultiModal()}>즐겨찾기 삭제</button>
+                                    onClick={() => totalCount > 0 && openMultiModal()}>즐겨찾기 삭제</button>
                             </div>
-                            <table className="relative w-full bg-white overflow-hidden">
+                            <table className="relative w-full bg-white overflow-hidden table-fixed">
                                 <thead>
                                     <tr className="bg-gray-100">
-                                        <th className="p-3">
+                                        <th className="w-[4%] p-3">
                                             <input type="checkbox" className="form-checkbox h-4 w-4 text-[#0B2D85]" 
                                                 onChange={(e) => allSelect(e.target.checked)}
                                                 checked={checkItems.length === pharmacyList.length} />
                                         </th>
-                                        <th className="p-3 font-bold">약국명</th>
-                                        <th className="p-3 font-bold">주소</th>
-                                        <th className="p-3 font-bold">대표 전화</th>
-                                        <th className="p-3 font-bold"></th>
-                                        <th className="p-3 font-bold"></th>
+                                        <th className="w-[25%] p-3 font-bold">약국명</th>
+                                        <th className="w-[40%] p-3 font-bold">주소</th>
+                                        <th className="w-[15%] p-3 font-bold">대표 전화</th>
+                                        <th className="w-[11%] p-3 font-bold"></th>
+                                        <th className="w-[5%]  p-3 font-bold"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -155,25 +241,25 @@ export const FavPharmacy = () => {
                                         :
                                         (pharmacyList.map((item, index) => (
                                             <tr key={index}>
-                                                <td className="p-3 border-b">
+                                                <td className="w-[4%] p-3 border-b whitespace-nowrap overflow-hidden text-ellipsis">
                                                     <div className="flex justify-center items-center h-full">
                                                         <input type="checkbox" className="form-checkbox h-4 w-4 text-[#0B2D85]"
                                                             onChange={(e) => singleSelect(e.target.checked, item.refNo)}
                                                             checked={checkItems.includes(item.refNo)} />
                                                     </div>
                                                 </td>
-                                                <td className="w-[20%] border-b p-3 text-center">{item.dutyName}</td>
-                                                <td className="w-[43%] border-b p-3 text-center">{item.dutyAddr}</td>
-                                                <td className="w-[15%] border-b p-3 text-center">{item.dutyTel1}</td>
-                                                <td className="w-[12%] border-b p-3 items-center">
+                                                <td className="w-[25%] border-b p-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">{item.dutyName}</td>
+                                                <td className="w-[40%] border-b p-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">{item.dutyAddr}</td>
+                                                <td className="w-[15%] border-b p-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">{item.dutyTel1}</td>
+                                                <td className="w-[11%] p-3 items-cente whitespace-nowrap overflow-hidden text-ellipsisr">
                                                     <button
-                                                        onClick={() => detailPage()}
+                                                        onClick={() => detailPage(item.refNo)}
                                                         className="bg-[#0B2D85] text-white px-4 py-1 rounded"
                                                     >
                                                         상세 정보 보기
                                                     </button>
                                                 </td>
-                                                <td className="w-[3%] border-b p-3 items-center">
+                                                <td className="w-[5%] items-center whitespace-nowrap overflow-hidden text-ellipsis">
                                                     <button onClick={() => openSingleModal(index)} className="px-4 py-1">⭐</button>
                                                 </td>
                                             </tr>
@@ -183,27 +269,38 @@ export const FavPharmacy = () => {
                             </table>
                         </div>
                     </div>
-                    <div className="flex justify-center mt-8">
-                        <button className="mx-1 w-8 h-8 bg-[#0B2D85] text-white rounded">1</button>
-                        <button className="mx-1 w-8 h-8 border border-[#0B2D85] text-[#0B2D85] rounded">2</button>
-                        <button className="mx-1 w-8 h-8 border border-[#0B2D85] text-[#0B2D85] rounded">3</button>
-                        <button className="mx-1 w-8 h-8 border border-[#0B2D85] text-[#0B2D85] rounded">4</button>
+                    <div className="flex justify-center">
+                        <Pagination
+                            paginationInfo={paginationInfo}
+                            currentPage={currentPage}
+                            onPageChange={handlePageChange}
+                        />
                     </div>
                 </div>
             </main>
 
-            {/* {footer} */}
             <footer className="bg-black text-white py-8">
                 <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
-                    <div className="flex items-center">
-                        <img src="/img/logo_white.png" alt="응급NAVI 로고" className="h-12" />
-                        <span className="ml-2 font-bold text-2xl">응급NAVI</span>
+                <div className="flex items-center mb-8 md:mb-0">
+                    <img className="w-[117px] h-[100px]" src="/img/footer/logo.png" alt="Logo" />
+                    <div className="mt-2 text-2xl font-black text-[#333] font-['Advent_Pro']">응급NAVI</div>
+                </div>
+                <div className="flex flex-col max-w-[638px]">
+                    <div className="mb-4 text-sm font-bold text-[#686868] font-['Agdasima']">
+                        이용약관              개인정보처리방침
                     </div>
-                    <div className="text-sm">
-                        <p>서울 중구 남대문로 120 대일빌딩 2,3층 KH정보교육원 종로지원</p>
-                        <p>대표자명 : 민용식 | 대표전화 : 1544-9970</p>
-                        <p>© 2024 응급NAVI.</p>
+                    <div className="text-sm leading-relaxed font-bold text-[#686868] font-['Agdasima']">
+                        서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원     |     대표자명 : 민봉식     |     대표전화 : 1544-9970
+                        <br />
+                        <span className="flex items-center">
+                            <img className="w-2 h-2 mr-1" src="/img/footer/copyright.png" alt="Copyright" />
+                            2024 응급NAVI.
+                        </span>
                     </div>
+                </div>
+                <div className="mt-8 md:mt-0">
+                    <img className="w-[145px] h-[34px]" src="/img/footer/group.png" alt="Group" />
+                </div>
                 </div>
             </footer>
 

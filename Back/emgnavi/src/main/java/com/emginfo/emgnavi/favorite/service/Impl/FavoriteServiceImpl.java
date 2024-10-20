@@ -2,7 +2,10 @@ package com.emginfo.emgnavi.favorite.service.Impl;
 
 import com.emginfo.emgnavi.common.exception.CustomException;
 import com.emginfo.emgnavi.common.exception.ErrorCode;
+import com.emginfo.emgnavi.common.pagenation.Criteria;
+import com.emginfo.emgnavi.common.pagenation.PaginationInfo;
 import com.emginfo.emgnavi.favorite.model.dto.FavoriteDTO;
+import com.emginfo.emgnavi.favorite.model.dto.FavoritePageDTO;
 import com.emginfo.emgnavi.favorite.model.mapper.FavoriteMapper;
 import com.emginfo.emgnavi.favorite.model.vo.Favorite;
 import com.emginfo.emgnavi.favorite.service.FavoriteService;
@@ -91,16 +94,40 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     // 병원 즐겨찾기 조회
     @Override
-    public List<Favorite> selectHospitalByUserId(String userId) {
-        List<Favorite> favorites = favoriteMapper.getHospitalFavoriteListByUserId(userId);
-        return favorites != null ? favorites : Collections.emptyList();
+    public FavoritePageDTO selectHospitalByUserId(String userId, int prsnPageNo, int cntntPerPage) {
+        Criteria criteria = new Criteria();
+        criteria.setPrsnPageNo(prsnPageNo);
+        criteria.setCntntPerPage(cntntPerPage);
+        int totCnt = favoriteMapper.getHospitalAllCount(userId);
+
+        PaginationInfo paginationInfo = new PaginationInfo(criteria);
+        paginationInfo.setTotCnt(totCnt);
+
+        int startRow = (prsnPageNo - 1) * cntntPerPage;
+        int endRow = startRow + cntntPerPage;
+
+        List<Favorite> favorites = favoriteMapper.getHospitalFavoriteListByUserId(userId, startRow, endRow);
+//        return favorites != null ? favorites : Collections.emptyList();
+        return new FavoritePageDTO(favorites, paginationInfo);
     }
 
     // 약국 즐겨찾기 조회
     @Override
-    public List<Favorite> selectPharmacyByUserId(String userId) {
-        List<Favorite> favorites = favoriteMapper.getPharmacyFavoriteListByUserId(userId);
-        return favorites != null ? favorites : Collections.emptyList();
+    public FavoritePageDTO selectPharmacyByUserId(String userId, int prsnPageNo, int cntntPerPage) {
+        Criteria criteria = new Criteria();
+        criteria.setPrsnPageNo(prsnPageNo);
+        criteria.setCntntPerPage(cntntPerPage);
+        int totCnt = favoriteMapper.getPharmacyAllCount(userId);
+
+        PaginationInfo paginationInfo = new PaginationInfo(criteria);
+        paginationInfo.setTotCnt(totCnt);
+
+        int startRow = (prsnPageNo - 1) * cntntPerPage;
+        int endRow = startRow + cntntPerPage;
+
+        List<Favorite> favorites = favoriteMapper.getPharmacyFavoriteListByUserId(userId, startRow, endRow);
+//        return favorites != null ? favorites : Collections.emptyList();
+        return new FavoritePageDTO(favorites, paginationInfo);
     }
 
     // 즐겨찾기 단일 삭제

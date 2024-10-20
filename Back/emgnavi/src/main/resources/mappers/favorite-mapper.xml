@@ -3,11 +3,6 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.emginfo.emgnavi.favorite.model.mapper.FavoriteMapper">
-
-<!--    <select id="findFavoriteByIdAndRefNo" resultType="com.emginfo.emgnavi.favorite.model.vo.Favorite">-->
-<!--        SELECT * FROM FAVORITE_TBL WHERE USER_ID = #{userId} AND REF_NO = #{refNo}-->
-<!--    </select>-->
-
     <!-- 병원 조회 -->
     <select id="findHospitalById" resultType="com.emginfo.emgnavi.hospital.vo.Hospital">
         SELECT HPID, DUTY_NAME, DUTY_ADDR, DUTY_TEL1
@@ -27,14 +22,47 @@
         WHERE USER_ID = #{userId} AND REF_NO = #{refNo}
     </select>
 
+    <!-- 병원 즐겨찾기 개수 조회   -->
+    <select id="getHospitalAllCount">
+        SELECT COUNT(*) FROM FAVORITE_TBL WHERE USER_ID = #{userId} AND REF_NO LIKE 'A%'
+    </select>
+    <!-- 약국 즐겨찾기 개수 조회   -->
+    <select id="getPharmacyAllCount" >
+        SELECT COUNT(*) FROM FAVORITE_TBL WHERE USER_ID = #{userId} AND REF_NO LIKE 'C%'
+    </select>
 
     <!-- 병원 즐겨찾기 조회   -->
     <select id="getHospitalFavoriteListByUserId">
-        SELECT * FROM FAVORITE_TBL WHERE USER_ID = #{userId} AND REF_NO LIKE 'A%'
+        SELECT *
+        FROM (
+            SELECT A.*, ROWNUM AS RNUM
+            FROM (
+                SELECT *
+                FROM FAVORITE_TBL
+                WHERE USER_ID = #{userId}
+                AND REF_NO LIKE 'A%'
+                ORDER BY REF_NO DESC
+            ) A
+            WHERE ROWNUM &lt;= #{endRow}  -- endRow까지 데이터를 자르기
+        )
+        WHERE RNUM &gt; #{startRow}      -- startRow 이후의 데이터만 선택
+
     </select>
     <!-- 약국 즐겨찾기 조회   -->
     <select id="getPharmacyFavoriteListByUserId">
-        SELECT * FROM FAVORITE_TBL WHERE USER_ID = #{userId} AND REF_NO LIKE 'C%'
+        SELECT *
+        FROM (
+             SELECT A.*, ROWNUM AS RNUM
+             FROM (
+                      SELECT *
+                      FROM FAVORITE_TBL
+                      WHERE USER_ID = #{userId}
+                        AND REF_NO LIKE 'C%'
+                      ORDER BY REF_NO DESC
+                  ) A
+             WHERE ROWNUM &lt;= #{endRow}  -- endRow까지 데이터를 자르기
+             )
+        WHERE RNUM &gt; #{startRow}      -- startRow 이후의 데이터만 선택
     </select>
 
     <!-- 병원 즐겨찾기 추가-->

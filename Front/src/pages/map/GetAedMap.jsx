@@ -40,7 +40,7 @@ function GetAedMap() {
     const [modalImage, setModalImage] = useState(null);
     const [downloadFileName, setDownloadFileName] = useState("");
 
-    const openModal = (imagePath, fileName) => {
+    const openModal = (imagePath, fileName) => { 
         setModalImage(imagePath);
         setDownloadFileName(fileName);
         setOpenModalId(true);
@@ -312,13 +312,14 @@ function GetAedMap() {
 
     return (
         <div className="flex">
-            <div className="flex w-[20%] h-[100vh] bg-white p-4">
+            <div className="flex w-[25%] h-[100vh] bg-white p-4">
                 <div className="flex flex-col w-[25%]">
                     <h1>
-                        <img className="left-[24px] top-0" width="111" height="97" src="/img/header/logo.png" alt="Logo"></img>
-                    </h1><div className="text-center font-bold py-3" onClick={() => window.location.href = 'getEmergencyMap'}><button>응급실</button></div>
-                    <div className="text-center font-bold py-3" onClick={() => window.location.href = 'getHospitalMap'}><button>병원</button></div>
-                    <div className="text-center font-bold py-3" onClick={() => window.location.href = 'getPharmacyMap'}><button>약국</button></div>
+                        <img className="left-[24px] top-0 cursor-pointer" width="111" height="97" src="/img/header/logo.png" alt="Logo" onClick={() => window.location.href = '/'}></img>
+                    </h1>
+                    <div className="text-center font-bold py-3"><button onClick={() => window.location.href = 'getEmergencyMap'}>응급실</button></div>
+                    <div className="text-center font-bold py-3"><button onClick={() => window.location.href = 'getHospitalMap'}>병원</button></div>
+                    <div className="text-center font-bold py-3"><button onClick={() => window.location.href = 'getPharmacyMap'}>약국</button></div>
                     <div className="text-center font-bold bg-[#0B2D85] text-[#ffffff] py-3"><button>AED</button></div>
                 </div>
                 <div className="flex flex-col w-[75%]">
@@ -377,35 +378,11 @@ function GetAedMap() {
                     </div>
                 </div>
             </div>
-            <div className="w-[80%] h-[100vh] relative">
-                <div id='map' className="w-full h-full absolute"></div>
-                {/* <div style={{
-                    position: 'absolute',
-                    top: '10px',
-                    right: '10px',
-                    overflow: 'hidden',
-                    height: '30px',
-                    margin: '0',
-                    padding: '0',
-                    zIndex: 100,
-                    fontSize: '12px',
-                    fontFamily: "'Malgun Gothic', '맑은 고딕', sans-serif",
-                    border: '1px solid #919191',
-                    borderRadius: '5px',
-                    backgroundColor: 'lightGray'
-                }}>
-                    <button onClick={() => reduceRadius()} >
-                        반경 감소
-                    </button>
-                    <span style={{
-                        paddingLeft: '10px',
-                        paddingRight: '10px'
-                    }}>{("검색반경(" + searchRadius / 100) + "Km)"}</span>
-                    <button onClick={() => increaseRadius()} >
-                        반경 증가
-                    </button>
-                </div> */}
-            </div>
+            <div id="map" style={{
+                    width: '75%',
+                    height: '950px',
+                    // zIndex: 1
+            }}></div>
             <Modal
                 isOpen={openModalId !== null}
                 onRequestClose={closeModal}
