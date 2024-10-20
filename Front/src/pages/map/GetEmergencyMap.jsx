@@ -312,7 +312,7 @@ function GetEmergencyMap() {
                                                 <TableCell className="aed-address text-sm text-gray-500" style={{ padding: '0 10px 5px 10px' }}>{hospital.dutyAddr}</TableCell>
                                             </TableRow>
                                             <div className="w-[95%]">
-                                                <Chart searchType="hospital" statType="DOW" keyword={hospital.hpid} />
+                                                <Chart searchType="dutyName" statType="DOW" keyword={hospital.hpid} />
                                             </div>
                                         </>
                                     )}

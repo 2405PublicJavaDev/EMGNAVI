@@ -245,7 +245,7 @@ const HospitalDetail = () => {
                                                 <p className="mb-2">응급실번호: {hospital.dutyTel3}</p>
                                                 <p>응급병상 요일별 평균</p>
                                                 <div className="w-[95%]">
-                                                    <Chart searchType="hospital" statType="DOW" keyword={hospital.hpid} />
+                                                    <Chart searchType="dutyName" statType="DOW" keyword={hospital.hpid} />
                                                 </div>
                                             </>
                                         ) :

@@ -272,7 +272,7 @@ const GetEmergencyStat = () => {
 
                         {/* 현재의 검색 타입 및 검색대상 표시 섹션 */}
                         <h1 className="text-[36px] font-bold text-center mb-8 leading-[48px] font-NotoSerifTamilSlanted">
-                            검색조건 : {searchType === 'dutyAddr' ? ('지역') : ('병원')} 검색범위 : {searchQuery !== '' ? (searchQuery) : searchType === 'dutyAddr' ? ('전국') : ('없음')}
+                            검색조건 : {searchType === 'dutyAddr' ? ('지역') : ('병원')} | 검색범위 : {searchQuery !== '' ? (searchQuery) : searchType === 'dutyAddr' ? ('전국') : ('없음')}
                         </h1>
 
                         {/* 병원 상세 정보 섹션 */}
@@ -308,7 +308,7 @@ const GetEmergencyStat = () => {
                             </p>
                             <Chart key={`HOD-${chartKey}`} searchType={searchType} statType="HOD" keyword={keyValue} />
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
