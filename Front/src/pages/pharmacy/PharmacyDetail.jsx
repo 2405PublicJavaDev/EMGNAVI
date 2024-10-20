@@ -80,7 +80,7 @@ const PharmacyDetail = () => {
     const [selectedReview, setSelectedReview] = useState(null);
 
     const fetchReviews = useCallback(() => {
-        fetch(`/api/pharmacy_reviews/pharmacy?hpid=${hpid}`)
+        fetch(`/api/medicine_reviews/medicine?itemSeq=${hpid}`)
             .then((response) => response.json())
             .then((data) => {
                 console.log('Received review data:', data);
@@ -120,7 +120,7 @@ const PharmacyDetail = () => {
 
     const handleDeleteReview = async (reviewId) => {
         try {
-            const response = await fetch(`/api/pharmacy_reviews/pharmacy/${reviewId}`, {
+            const response = await fetch(`/api/medicine_reviews/medicine/${reviewId}`, {
                 method: 'DELETE',
                 credentials: 'include',
             });
@@ -172,13 +172,13 @@ const PharmacyDetail = () => {
         }
 
         try {
-            const response = await fetch('/api/pharmacy_reviews/pharmacy', {
+            const response = await fetch('/api/medicine_reviews/medicine', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    hpid: hpid,
+                    refNo: hpid,
                     content: review,
                     rating: rating
                 }),
