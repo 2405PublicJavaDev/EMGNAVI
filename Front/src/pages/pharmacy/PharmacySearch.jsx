@@ -83,13 +83,16 @@ const PharmacySearch = () => {
                 return response.json();
             })
             .then((data) => {
-                console.log("약국 리스트:", data.pharmacies); // 추가: 약국 리스트 로그
-                console.log("favorites 상태:", favorites); // 추가: favorites 상태 로그
+                console.log("약국 리스트:", data.pharmacies); // 약국 리스트 로그
+                console.log("favorites 상태:", favorites); // favorites 상태 로그
     
-                const updatedPharmacies = data.pharmacies.map(pharmacy => ({
-                    ...pharmacy,
-                    favorite: favorites[pharmacy.hpid] || false  // favorites 상태 반영
-                }));
+                // 즐겨찾기된 항목과 그렇지 않은 항목으로 나눠 정렬
+                const updatedPharmacies = data.pharmacies
+                    .map(pharmacy => ({
+                        ...pharmacy,
+                        favorite: favorites[pharmacy.hpid] || false  // 즐겨찾기 여부 반영
+                    }))
+                    .sort((a, b) => b.favorite - a.favorite); // 즐겨찾기된 항목을 상단에 배치
     
                 setPharmacies(updatedPharmacies);
                 setTotalPages(data.totalPages || 1);
@@ -102,6 +105,7 @@ const PharmacySearch = () => {
                 setIsLoading(false);
             });
     };
+    
 
     const fetchAutoCompleteOptions = (inputValue) => {
         if (inputValue.length < 2) {
