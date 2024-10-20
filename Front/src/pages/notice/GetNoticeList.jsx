@@ -293,7 +293,7 @@ const GetNoticeList = () => {
                     //성공 처리
                     console.log('공지사항 삭제 성공');
                     alert('공지사항 삭제 성공');
-                    window.location.href = 'https://127.0.0.1:3000/notice/getNoticeList';
+                    window.location.href = '/notice/getNoticeList';
                 } else {
                     console.log('공지사항 삭제 실패');
                     alert('공지사항 삭제 실패');

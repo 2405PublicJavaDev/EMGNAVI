@@ -23,15 +23,13 @@ ChartJS.register(
 
 function Chart({ searchType, statType, keyword }) {
 
-    const rootUrl = "http://127.0.0.1:8888";
-
     const [chartData, setChartData] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `${rootUrl}/api/stat/getEmergencyStat?searchType=${searchType}&statType=${statType}${keyword ? `&keyword=${keyword}` : ""}`
+                    `/api/stat/getEmergencyStat?searchType=${searchType}&statType=${statType}${keyword ? `&keyword=${keyword}` : ""}`
                 );
                 const json = await response.json();
                 setChartData(json.data);

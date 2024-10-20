@@ -73,7 +73,7 @@ const ToastUI = ({ initialValue = "", notice = null }) => {
                     //성공 처리
                     console.log('DB입력 성공');
                     alert('공지사항 등록 성공');
-                    window.location.href = 'https://127.0.0.1:3000/notice/getNoticeList';
+                    window.location.href = '/notice/getNoticeList';
                 } else {
                     console.log('DB입력 실패');
                     alert('공지사항 등록 실패');

@@ -85,7 +85,7 @@ function GetPharmacyMap() {
             if (pharmacys) {
                 setPharmacys(null);
             }
-            fetch(`http://127.0.0.1:8888/api/map/getAroundPharmacy?latitude=${latitude}&longitude=${longitude}&distance=${searchRadius}`)
+            fetch(`/api/map/getAroundPharmacy?latitude=${latitude}&longitude=${longitude}&distance=${searchRadius}`)
                 .then(response => response.json())
                 .then(data => {
                     setPharmacys(data.data); // 받아온 병원 데이터를 State에 저장
