@@ -192,14 +192,19 @@ const MedicineSearch = () => {
       setFocusedOptionIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
     } else if (e.key === 'Enter') {
       e.preventDefault();
-      if (focusedOptionIndex >= 0 && focusedOptionIndex < options.length) {
+      if (searchQuery.trim() === '') {
+        fetchMedicines(0); // 검색어가 없으면 기본 데이터 호출
+      } else if (focusedOptionIndex >= 0 && focusedOptionIndex < options.length) {
         setSelectedOption(options[focusedOptionIndex]);
         setSearchQuery(options[focusedOptionIndex].label);
         setShowAutoComplete(false);
         handleSearch(0);
+      } else {
+        handleSearch(0);
       }
     }
   };
+  
 
   useEffect(() => {
     if (focusedOptionIndex >= 0 && focusedOptionIndex < options.length) {
