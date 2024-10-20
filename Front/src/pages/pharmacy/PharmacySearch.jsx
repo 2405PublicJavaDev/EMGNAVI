@@ -29,14 +29,14 @@ const PharmacySearch = () => {
     ];
 
     useEffect(() => {
-        fetchPharmacies(0); // 페이지 로딩 시 약국 리스트 로드
-    }, []);
-
-    useEffect(() => {
         if (userId) {
-            fetchFavorites(); // userId가 존재할 때 즐겨찾기 목록을 가져옴
+            fetchFavorites();
         }
     }, [userId]);
+
+    useEffect(() => {
+        fetchPharmacies(0);
+    }, [favorites]);
 
     const fetchFavorites = async () => {
         try {
@@ -44,9 +44,9 @@ const PharmacySearch = () => {
             const data = await response.json();
             const favoritesMap = {};
             data.forEach(favorite => {
-                favoritesMap[favorite.refNo] = true; // 즐겨찾기 항목들을 true로 저장
+                favoritesMap[favorite.refNo] = true;
             });
-            setFavorites(favoritesMap); // 즐겨찾기 상태를 로컬 상태로 설정
+            setFavorites(favoritesMap);
         } catch (error) {
             console.error('Failed to fetch favorites:', error);
         }
@@ -56,7 +56,7 @@ const PharmacySearch = () => {
         setIsLoading(true);
         setError(null);
 
-        fetch(`/api/pharmacy/list?page=${page}&size=${itemsPerPage}&userId=${userId}`)
+        fetch(`/api/pharmacy/list?page=${page}&size=${itemsPerPage}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -64,7 +64,11 @@ const PharmacySearch = () => {
                 return response.json();
             })
             .then((data) => {
-                setPharmacies(data.pharmacies || []);
+                const updatedPharmacies = data.pharmacies.map(pharmacy => ({
+                    ...pharmacy,
+                    favorite: favorites[pharmacy.hpid] || false
+                }));
+                setPharmacies(updatedPharmacies);
                 setTotalPages(data.totalPages || 1);
                 setCurrentPage(page);
                 setIsLoading(false);
@@ -116,8 +120,15 @@ const PharmacySearch = () => {
             }
             setFavorites(prevFavorites => ({
                 ...prevFavorites,
-                [hpid]: !prevFavorites[hpid] // 즐겨찾기 상태를 토글
+                [hpid]: !prevFavorites[hpid]
             }));
+            setPharmacies(prevPharmacies => 
+                prevPharmacies.map(pharmacy => 
+                    pharmacy.hpid === hpid 
+                        ? { ...pharmacy, favorite: !pharmacy.favorite }
+                        : pharmacy
+                )
+            );
         } catch (error) {
             console.error('Failed to toggle favorite:', error);
             alert('즐겨찾기 처리 중 오류가 발생했습니다.');
@@ -149,7 +160,11 @@ const PharmacySearch = () => {
                 return response.json();
             })
             .then((data) => {
-                setPharmacies(data.pharmacies || []);
+                const updatedPharmacies = data.pharmacies.map(pharmacy => ({
+                    ...pharmacy,
+                    favorite: favorites[pharmacy.hpid] || false
+                }));
+                setPharmacies(updatedPharmacies);
                 setTotalPages(data.totalPages || 1);
                 setCurrentPage(page);
                 setIsLoading(false);
@@ -173,10 +188,14 @@ const PharmacySearch = () => {
         const maxVisiblePages = 10;
         const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
 
-        const visiblePages = pageNumbers.slice(
-            Math.floor(currentPage / maxVisiblePages) * maxVisiblePages,
-            Math.floor(currentPage / maxVisiblePages) * maxVisiblePages + maxVisiblePages
-        );
+        let startPage = Math.max(0, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 1);
+
+        if (endPage - startPage + 1 < maxVisiblePages) {
+            startPage = Math.max(0, endPage - maxVisiblePages + 1);
+        }
+
+        const visiblePages = pageNumbers.slice(startPage, endPage + 1);
 
         return (
             <div className="mr-[5px] flex justify-center mt-8 space-x-2">
@@ -216,10 +235,6 @@ const PharmacySearch = () => {
     };
 
     useEffect(() => {
-        fetchPharmacies(0);
-    }, []);
-
-    useEffect(() => {
         const handleClickOutside = (event) => {
             if (autoCompleteRef.current && !autoCompleteRef.current.contains(event.target)) {
                 setShowAutoComplete(false);
@@ -234,7 +249,7 @@ const PharmacySearch = () => {
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
-            handleSearch(0); // 엔터키 눌렀을 때 검색 실행
+            handleSearch(0);
         } else if (e.key === 'ArrowDown') {
             e.preventDefault();
             setFocusedOptionIndex((prevIndex) =>
@@ -305,7 +320,7 @@ const PharmacySearch = () => {
                                 onChange={handleInputChange}
                                 onFocus={() => setShowAutoComplete(true)}
                                 onBlur={handleInputBlur}
-                                onKeyDown={handleKeyDown}  // 엔터 키와 키보드 네비게이션 처리
+                                onKeyDown={handleKeyDown}
                                 placeholder={`원하시는 ${searchType === 'dutyName' ? '기관' : '주소'}의 이름을 검색해 주세요`}
                                 className="border p-2 w-[360px] h-[36px] text-base leading-[20px] border-[#0000001a] text-black bg-white"
                                 style={{ color: 'black', backgroundColor: 'white' }}
@@ -396,9 +411,9 @@ const PharmacySearch = () => {
                                             <td className="py-4 font-roboto text-base text-black">
                                                 <button onClick={() => toggleFavorite(pharmacy.hpid, pharmacy.dutyName, pharmacy.dutyAddr, pharmacy.dutyTel1)}>
                                                     <img
-                                                        src={favorites[pharmacy.hpid]
-                                                            ? '/img/medicine/goldonestar.png'  // 즐겨찾기 된 항목은 금색 별
-                                                            : '/img/medicine/greyonestar.png'  // 즐겨찾기 되지 않은 항목은 회색 별
+                                                        src={pharmacy.favorite
+                                                            ? '/img/medicine/goldonestar.png'
+                                                            : '/img/medicine/greyonestar.png'
                                                         }
                                                         alt="즐겨찾기"
                                                         className="w-6 h-6 mx-auto"

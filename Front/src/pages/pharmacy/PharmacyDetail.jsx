@@ -1,428 +1,491 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
-import ReportPopup from '../report/ReportPopup';
-import Modal from 'react-modal';
-import GetSketchMap from '../map/GetSketchMap';
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../UserContext";
 
-Modal.setAppElement('#root');
-
-const StarRating = ({ rating, onRatingChange, isClickable = true }) => {
-    return (
-        <div className="flex">
-            {[1, 2, 3, 4, 5].map((star) => (
-                <img
-                    key={star}
-                    src={star <= rating ? "/img/medicine/goldonestar.png" : "/img/medicine/greyonestar.png"}
-                    alt={`Star ${star}`}
-                    className="w-6 h-6"
-                    onClick={isClickable ? () => onRatingChange(star) : null}
-                    style={{ cursor: isClickable ? 'pointer' : 'default' }}
-                />
-            ))}
-        </div>
-    );
-};
-
-const 리뷰상세보기내용 = ({ review, onClose, onDelete, handleOpenReportPopup }) => {
-    const handleDeleteClick = () => {
-        const confirmed = window.confirm("정말 삭제하시겠습니까?");
-        if (confirmed) {
-            onDelete(review.no);
-        }
-    };
-
-    return (
-        <div className="w-full bg-white border border-gray-200 rounded-lg shadow-sm p-4">
-            <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center">
-                    <StarRating rating={review.rating} onRatingChange={() => {}} isClickable={false} />
-                    <span className="ml-2 text-sm text-gray-600">{review.writerNickname}님 | {review.createdDateLong}</span>
-                </div>
-                <button className="flex items-center text-red-500 hover:text-red-600"
-                    onClick={() => handleOpenReportPopup(review)}>
-                    <img className="w-5 h-5 mr-1" src="/img/medicine/report.png" alt="신고버튼" />
-                    <span className="text-sm font-bold">신고하기</span>
-                </button>
-            </div>
-            <p className="text-base mb-4">{review.content}</p>
-            <div className="flex justify-end">
-                {review.isOwner && (
-                    <button
-                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm mr-2"
-                        onClick={handleDeleteClick}
-                    >
-                        삭제
-                    </button>
-                )}
-                <button
-                    className="px-4 py-2 bg-[#0B2D85] text-white rounded hover:bg-[#0939AD] transition text-sm"
-                    onClick={onClose}
-                >
-                    닫기
-                </button>
-            </div>
-        </div>
-    );
-};
-
-const PharmacyDetail = () => {
-    const [pharmacy, setPharmacy] = useState(null);
-    const [reviews, setReviews] = useState([]);
-    const [rating, setRating] = useState(0);
-    const [review, setReview] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-    const [expandedReviewId, setExpandedReviewId] = useState(null);
+const PharmacySearch = () => {
+    const [pharmacies, setPharmacies] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchType, setSearchType] = useState('dutyName');
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
+    const [options, setOptions] = useState([]);
+    const [showAutoComplete, setShowAutoComplete] = useState(false);
+    const [focusedOptionIndex, setFocusedOptionIndex] = useState(-1);
+    const [selectedOption, setSelectedOption] = useState(null);
+    const [hoveredOption, setHoveredOption] = useState(null);
+    const [favorites, setFavorites] = useState({});
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const { hpid } = useParams();
     const itemsPerPage = 10;
+    const nav = useNavigate();
+    const autoCompleteRef = useRef(null);
+    const inputRef = useRef(null);
 
-    const [isReportPopupOpen, setIsReportPopupOpen] = useState(false);
-    const [selectedReview, setSelectedReview] = useState(null);
+    const { userId, setUserId } = useContext(UserContext);
 
-    const fetchReviews = useCallback(() => {
-        fetch(`/api/medicine_reviews/medicine?itemSeq=${hpid}`)
-            .then((response) => response.json())
-            .then((data) => {
-                console.log('Received review data:', data);
-                if (Array.isArray(data)) {
-                    setReviews(data);
-                } else {
-                    console.error('리뷰 데이터가 배열이 아닙니다:', data);
-                    setReviews([]);
-                }
-            })
-            .catch((error) => {
-                console.error('리뷰 데이터를 가져오는 중 오류 발생:', error);
-                setReviews([]);
-            });
-    }, [hpid]);
+    const categories = [
+        { value: 'dutyName', label: '기관명' },
+        { value: 'dutyAddr', label: '주소' },
+    ];
 
     useEffect(() => {
         const checkLoginStatus = async () => {
             try {
                 const response = await fetch('/api/user/checkLogin', { credentials: 'include' });
-                setIsLoggedIn(response.ok);
+                if (response.ok) {
+                    const data = await response.json();
+                    setIsLoggedIn(true);
+                    setUserId(data.userId);
+                } else {
+                    setIsLoggedIn(false);
+                    setUserId(null);
+                }
             } catch (error) {
                 console.error('로그인 상태 확인 실패:', error);
                 setIsLoggedIn(false);
+                setUserId(null);
             }
         };
 
         checkLoginStatus();
+    }, [setUserId]);
 
-        fetch(`/api/pharmacy/detail/${hpid}`)
-            .then((response) => response.json())
-            .then((data) => setPharmacy(data))
-            .catch((error) => console.error('Error fetching pharmacy details:', error));
-
-        fetchReviews();
-    }, [hpid, fetchReviews]);
-
-    const handleDeleteReview = async (reviewId) => {
-        try {
-            const response = await fetch(`/api/medicine_reviews/medicine/${reviewId}`, {
-                method: 'DELETE',
-                credentials: 'include',
-            });
-
-            if (!response.ok) {
-                throw new Error('리뷰 삭제에 실패했습니다.');
-            }
-
-            alert('리뷰가 성공적으로 삭제되었습니다.');
-            fetchReviews();
-        } catch (error) {
-            console.error('리뷰 삭제 중 오류 발생:', error);
-            alert('리뷰 삭제 중 오류가 발생했습니다.');
+    useEffect(() => {
+        if (isLoggedIn && userId) {
+            fetchFavorites();
         }
-    };
+    }, [isLoggedIn, userId]);
 
-    const handleOpenReportPopup = (review) => {
-        setSelectedReview(review);
-        setIsReportPopupOpen(true);
-    }
-    const handleCloseReportPopup = () => {
-        setIsReportPopupOpen(false);
-        setSelectedReview(null);
-    };
+    useEffect(() => {
+        fetchPharmacies(0);
+    }, [favorites]);
 
-    console.log('Total reviews:', reviews.length);
-    console.log('Items per page:', itemsPerPage);
-    console.log('Current page:', currentPage);
-    const indexOfLastReview = currentPage * itemsPerPage;
-    const indexOfFirstReview = indexOfLastReview - itemsPerPage;
-    console.log('Index range:', indexOfFirstReview, '-', indexOfLastReview);
-    const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
-    console.log('Current reviews:', currentReviews);
-
-    const totalPages = Math.ceil(reviews.length / itemsPerPage);
-
-    const handleReviewChange = (e) => {
-        setReview(e.target.value);
-    };
-
-    const handleRatingChange = (newRating) => {
-        setRating(newRating);
-    };
-
-    const handleSubmit = async () => {
-        if (!isLoggedIn) {
-            alert('로그인 후 리뷰를 작성할 수 있습니다.');
-            return;
-        }
-
+    const fetchFavorites = async () => {
         try {
-            const response = await fetch('/api/medicine_reviews/medicine', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    refNo: hpid,
-                    content: review,
-                    rating: rating
-                }),
-                credentials: 'include'
-            });
-
-            if (!response.ok) {
-                throw new Error('로그인후 작성가능합니다.');
-            }
-
+            const response = await fetch(`/api/pharmacy/favorites?userId=${userId}`);
             const data = await response.json();
-            console.log('리뷰가 성공적으로 작성되었습니다:', data);
-
-            alert('리뷰가 성공적으로 작성되었습니다!');
-            fetchReviews();
-            setReview('');
-            setRating(0);
+            const favoritesMap = {};
+            data.forEach(favorite => {
+                favoritesMap[favorite.refNo] = true;
+            });
+            setFavorites(favoritesMap);
         } catch (error) {
-            console.error('Error:', error);
-            alert(error.message);
+            console.error('Failed to fetch favorites:', error);
         }
     };
 
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
+    const fetchPharmacies = (page = 0) => {
+        setIsLoading(true);
+        setError(null);
+
+        fetch(`/api/pharmacy/list?page=${page}&size=${itemsPerPage}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                const updatedPharmacies = data.pharmacies.map(pharmacy => ({
+                    ...pharmacy,
+                    favorite: favorites[pharmacy.hpid] || false
+                }));
+                setPharmacies(updatedPharmacies);
+                setTotalPages(data.totalPages || 1);
+                setCurrentPage(page);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error('There was an error fetching the pharmacy list!', error);
+                setError('Failed to fetch pharmacies');
+                setIsLoading(false);
+            });
     };
 
-    const toggleReviewDetail = (reviewId) => {
-        setExpandedReviewId(expandedReviewId === reviewId ? null : reviewId);
-    };
-
-    const handleFavorite = async (refNo) => {
-        if(!isLoggedIn){
-            alert('로그인이 필요합니다.');
+    const fetchAutoCompleteOptions = (inputValue) => {
+        if (inputValue.length < 2) {
+            setOptions([]);
             return;
         }
-        try {
-            const response = await fetch(`/api/favorite/pharmacy?refNo=${refNo}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json', // JSON 데이터를 보낸다고 명시
-                },
-                body: JSON.stringify({ refNo: refNo }) // refNo를 JSON 형태로 전송
+
+        fetch(`/api/pharmacy/autocomplete?query=${inputValue}&searchType=${searchType}`)
+            .then((response) => response.json())
+            .then((data) => {
+                const newOptions = data.map((item) => ({
+                    value: item.VALUE,
+                    label: searchType === 'dutyName' ? item.LABEL : item.LABEL,
+                }));
+                setOptions(newOptions);
+                setShowAutoComplete(newOptions.length > 0);
+            })
+            .catch((error) => {
+                console.error('Error fetching autocomplete options:', error);
+                setOptions([]);
             });
+    };
 
-            if (!response.ok) {
-                throw new Error('즐겨찾기 등록에 실패했습니다.');
-            }
-            alert('즐겨찾기 등록 되었습니다.');
-        } catch (error) {
-            console.error('즐겨찾기 등록 중 오류 발생:', error);
-            alert('즐겨찾기 등록 중 오류가 발생했습니다.');
+    const toggleFavorite = async (hpid, dutyName, dutyAddr, dutyTel1) => {
+        if (!isLoggedIn) {
+            alert("로그인 후 즐겨찾기 기능을 사용할 수 있습니다.");
+            return;
         }
-    }
 
-    if (!pharmacy) {
-        return <div>Loading...</div>;
-    }else{
-        console.log('GPS lat:'+pharmacy.wgs84Lat+' lon'+pharmacy.wgs84Lon)
-    }
+        try {
+            if (favorites[hpid]) {
+                await fetch(`/api/pharmacy/favorite?userId=${userId}&refNo=${hpid}`, { method: 'DELETE' });
+            } else {
+                await fetch('/api/pharmacy/favorite', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ userId, refNo: hpid, dutyName, dutyAddr, dutyTel1 })
+                });
+            }
+            setFavorites(prevFavorites => ({
+                ...prevFavorites,
+                [hpid]: !prevFavorites[hpid]
+            }));
+            setPharmacies(prevPharmacies => 
+                prevPharmacies.map(pharmacy => 
+                    pharmacy.hpid === hpid 
+                        ? { ...pharmacy, favorite: !pharmacy.favorite }
+                        : pharmacy
+                )
+            );
+        } catch (error) {
+            console.error('Failed to toggle favorite:', error);
+            alert('즐겨찾기 처리 중 오류가 발생했습니다.');
+        }
+    };
+
+    const handleSearch = (page = 0) => {
+        if (!searchQuery) {
+            fetchPharmacies(0);
+            return;
+        }
+
+        setIsLoading(true);
+        setError(null);
+
+        const queryParams = new URLSearchParams({
+            [searchType]: searchQuery,
+            page: page.toString(),
+            size: itemsPerPage.toString(),
+        });
+
+        const url = `/api/pharmacy/search?${queryParams}`;
+
+        fetch(url)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                const updatedPharmacies = data.pharmacies.map(pharmacy => ({
+                    ...pharmacy,
+                    favorite: favorites[pharmacy.hpid] || false
+                }));
+                setPharmacies(updatedPharmacies);
+                setTotalPages(data.totalPages || 1);
+                setCurrentPage(page);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error('Error searching for pharmacy:', error);
+                setError('Failed to search pharmacies');
+                setIsLoading(false);
+            });
+    };
+
+    const handlePageChange = (newPage) => {
+        if (searchQuery) {
+            handleSearch(newPage);
+        } else {
+            fetchPharmacies(newPage);
+        }
+    };
+
+    const renderPageButtons = () => {
+        const maxVisiblePages = 10;
+        const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
+
+        let startPage = Math.max(0, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 1);
+
+        if (endPage - startPage + 1 < maxVisiblePages) {
+            startPage = Math.max(0, endPage - maxVisiblePages + 1);
+        }
+
+        const visiblePages = pageNumbers.slice(startPage, endPage + 1);
+
+        return (
+            <div className="mr-[5px] flex justify-center mt-8 space-x-2">
+                {currentPage > 0 && (
+                    <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        className="bg-[#0b2d85] text-white px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold"
+                    >
+                        {'<'}
+                    </button>
+                )}
+
+                {visiblePages.map((page) => (
+                    <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`${
+                            page === currentPage
+                                ? 'bg-white text-[#0b2d85] border-2 border-[#0b2d85]'
+                                : 'bg-[#0b2d85] text-white'
+                        } px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold`}
+                    >
+                        {page + 1}
+                    </button>
+                ))}
+
+                {currentPage < totalPages - 1 && (
+                    <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        className="bg-[#0b2d85] text-white px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold"
+                    >
+                        {'>'}
+                    </button>
+                )}
+            </div>
+        );
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (autoCompleteRef.current && !autoCompleteRef.current.contains(event.target)) {
+                setShowAutoComplete(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleSearch(0);
+        } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setFocusedOptionIndex((prevIndex) =>
+                prevIndex < options.length - 1 ? prevIndex + 1 : prevIndex
+            );
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setFocusedOptionIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
+        }
+    };
+
+    useEffect(() => {
+        if (focusedOptionIndex >= 0 && focusedOptionIndex < options.length) {
+            setHoveredOption(options[focusedOptionIndex]);
+            setSearchQuery(options[focusedOptionIndex].label);
+        }
+    }, [focusedOptionIndex, options]);
+
+    const handleInputChange = (e) => {
+        const value = e.target.value;
+        setSearchQuery(value);
+        setSelectedOption(null);
+        setHoveredOption(null);
+        fetchAutoCompleteOptions(value);
+        setFocusedOptionIndex(-1);
+    };
+
+    const handleInputBlur = () => {
+        setTimeout(() => {
+            if (hoveredOption) {
+                setSearchQuery(hoveredOption.label);
+                setSelectedOption(hoveredOption);
+            }
+            setShowAutoComplete(false);
+        }, 200);
+    };
 
     return (
         <>
-            <div className="flex flex-col min-h-screen">
-                <div className="flex-grow">
-                    <div className="container mx-auto px-4 py-64">
-                        {/* 약국 상세 정보 섹션 */}
-                        <div className="mb-12">
-                            <h1 className="text-3xl font-bold mb-6">약국 상세 정보</h1>
-                            <div className="bg-white p-6 rounded-lg shadow-md">
-                                <div className="flex mb-4">
-                                    <GetSketchMap latitude={pharmacy.wgs84Lat} longitude={pharmacy.wgs84Lon} placeName={pharmacy.dutyName}/>
-                                    <div className='max-w-[700px] ml-[50px]'>
-                                        <div className='flex'>
-                                            <h2 className="text-2xl font-semibold mb-2">{pharmacy.dutyName}</h2>
-                                            <button className="w-[40px] h-[35px]" onClick={() => handleFavorite(pharmacy.hpid)}>
-                                                <img src="/img/medicine/goldonestar.png" alt="button image" className="w-full h-full"/>
-                                            </button>
-                                        </div>
-                                        <p className="text-gray-600 mb-2">주소: {pharmacy.dutyAddr}</p>
-                                        <p className="font-bold mb-2">전화번호: {pharmacy.dutyTel1}</p>
-                                        <p className="mb-2">우편번호: {pharmacy.postCdn1}-{pharmacy.postCdn2}</p>
-                                        <p className="mb-2">운영 정보: {pharmacy.dutyInf}</p>
-                                        <p className="mb-2">위도: {pharmacy.wgs84Lat}</p>
-                                        <p>경도: {pharmacy.wgs84Lon}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <div className="flex flex-col items-center justify-center min-h-[1100px] bg-white">
+                <div className="w-full max-w-7xl mx-auto p-4 bg-white relative top-[90px]">
+                    <h1 className="text-[52px] font-bold text-center mb-8 leading-[48px] font-NotoSerifTamilSlanted">
+                        원하시는 약국을 검색해 주세요
+                    </h1>
 
-                        {/* 리뷰 작성 섹션 */}
-                        <div className="mb-12 flex space-x-6">
-                            <div className="w-2/3">
-                                <h2 className="text-2xl font-bold mb-4">리뷰 작성</h2>
-                                <div className="bg-white p-6 rounded-lg shadow-md">
-                                    <textarea
-                                        className="w-full h-32 p-2 border rounded-md mb-4"
-                                        placeholder="의견을 자유롭게 작성해 주세요."
-                                        value={review}
-                                        onChange={handleReviewChange}
-                                        disabled={!isLoggedIn}
-                                    />
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center">
-                                            <span className="mr-2">평점:</span>
-                                            <StarRating rating={rating} onRatingChange={handleRatingChange} isClickable={isLoggedIn} />
-                                        </div>
-                                        <div className="flex items-center">
-                                            {!isLoggedIn && (
-                                                <div className="flex items-center mr-4 text-red-500">
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        className="h-5 w-5 mr-1"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor"
-                                                    >
-                                                        <path
-                                                            fillRule="evenodd"
-                                                            d="M18 8a8 8 0 11-16 0 8 8 0 0116 0zm-8 3a1 1 0 10-2 0 1 1 0 002 0zm-1-5a1 1 0 00-1 1v2a1 1 0 102 0V7a1 1 0 00-1-1z"
-                                                            clipRule="evenodd"
-                                                        />
-                                                    </svg>
-                                                    <span>로그인 후 작성 가능합니다.</span>
-                                                </div>
-                                            )}
-                                            <button
-                                                className={`px-4 py-2 rounded transition ${
-                                                    isLoggedIn 
-                                                        ? "bg-[#0B2D85] text-white hover:bg-[#0939AD]" 
-                                                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                                                }`}
-                                                onClick={handleSubmit}
-                                                disabled={!isLoggedIn}
-                                            >
-                                                작성 완료
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div className="flex justify-center mb-8">
+                        <select
+                            value={searchType}
+                            onChange={(e) => {
+                                setSearchType(e.target.value);
+                                setSearchQuery('');
+                                setOptions([]);
+                            }}
+                            className="border p-2 rounded-l-md w-[87px] h-[36px] text-[14px] leading-[20px] text-[#00000080] border-[#00000033]"
+                        >
+                            {categories.map((category) => (
+                                <option key={category.value} value={category.value}>
+                                    {category.label}
+                                </option>
+                            ))}
+                        </select>
 
-                            <div className="w-1/3">
-                                <img className="w-full h-auto object-cover" src="/img/medicine/review.png" alt="리뷰 작성 이미지" />
-                            </div>
-                        </div>
-
-                        {/* 리뷰 목록 섹션 */}
-                        <div className="mt-36">
-                            <h2 className="text-4xl font-bold mb-28 text-center">리뷰 목록</h2>
-                            <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-300 w-full">
-                                <div className="px-6 py-4 bg-gray-100 flex font-bold text-lg">
-                                    <div className="w-28 text-center ml-16">평점</div>
-                                    <div className="flex-1 text-center">리뷰</div>
-                                    <div className="w-36 text-center">작성일자</div>
-                                    <div className="w-40 text-center">작성자</div>
-                                    <div className="w-32 text-center">상세정보</div>
-                                </div>
-                                {currentReviews.length === 0 ? (
-                                    <div className="px-6 py-4 text-center">리뷰가 없습니다.</div>
-                                ) : (
-                                    <>
-                                        {console.log('Rendering reviews:', currentReviews)}
-                                        {currentReviews.map((review) => (
-                                            <React.Fragment key={review.no}>
-                                                <div className="px-6 py-4 flex items-center border-t border-gray-200">
-                                                    <div className="w-28 text-center ml-16">
-                                                        <StarRating rating={review.rating} onRatingChange={() => { }} isClickable={false} />
-                                                    </div>
-                                                    <div className="flex-1 text-center truncate">
-                                                        {review.content.length > 15 ? review.content.slice(0, 15) + '...' : review.content}
-                                                    </div>
-                                                    <div className="w-36 text-center">{review.createdDateShort}</div>
-                                                    <div className="w-40 text-center">{review.writerNickname}</div>
-                                                    <div className="w-32 text-center">
-                                                        <button
-                                                            className="px-4 py-2 bg-[#0B2D85] text-white rounded-full hover:bg-[#0939AD] transition"
-                                                            onClick={() => toggleReviewDetail(review.no)}
-                                                        >
-                                                            자세히 보기
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                {expandedReviewId === review.no && (
-                                                    <div className="px-6 py-4">
-                                                        <리뷰상세보기내용
-                                                            review={review}
-                                                            onClose={() => setExpandedReviewId(null)}
-                                                            onDelete={handleDeleteReview}
-                                                            handleOpenReportPopup={handleOpenReportPopup}
-                                                        />
-                                                    </div>
-                                                )}
-                                            </React.Fragment>
-                                        ))}
-                                    </>
+                        <div className="relative" style={{ zIndex: 1000 }}>
+                            <input
+                                ref={inputRef}
+                                type="text"
+                                value={searchQuery}
+                                onChange={handleInputChange}
+                                onFocus={() => setShowAutoComplete(true)}
+                                onBlur={handleInputBlur}
+                                onKeyDown={handleKeyDown}
+                                placeholder={`원하시는 ${searchType === 'dutyName' ? '기관' : '주소'}의 이름을 검색해 주세요`}
+                                className="border p-2 w-[360px] h-[36px] text-base leading-[20px] border-[#0000001a] text-black bg-white"
+                                style={{ color: 'black', backgroundColor: 'white' }}
+                            />
+                            {showAutoComplete && (
+                                <ul
+                                    ref={autoCompleteRef}
+                                    className="absolute z-[9999] w-full bg-white border border-gray-300 mt-1 rounded-md shadow-lg max-h-60 overflow-y-auto"
+                                    style={{
+                                        top: '100%',
+                                        left: 0,
+                                        backgroundColor: 'white',
+                                        color: 'black',
+                                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                                    }}
+                                >
+                                    {options.length > 0 ? (
+                                        options.map((option, index) => (
+                                            <li
+                                                key={option.value}
+                                                className={`p-2 hover:bg-gray-100 cursor-pointer text-black text-base font-normal ${index === focusedOptionIndex ? 'bg-gray-100' : ''
+                                                    }`}
+                                                style={{
+                                                    color: 'black',}}
+                                                    onClick={() => {
+                                                        setSearchQuery(option.label);
+                                                        setSelectedOption(option);
+                                                        setShowAutoComplete(false);
+                                                        handleSearch(0);
+                                                    }}
+                                                    onMouseEnter={() => {
+                                                        setFocusedOptionIndex(index);
+                                                        setHoveredOption(option);
+                                                        setSearchQuery(option.label);
+                                                    }}
+                                                    onMouseLeave={() => {
+                                                        if (!selectedOption) {
+                                                            setSearchQuery(inputRef.current.value);
+                                                        }
+                                                    }}
+                                                >
+                                                    {option.label}
+                                                </li>
+                                            ))
+                                        ) : (
+                                            <li className="p-2 text-gray-500 text-base font-normal">검색 결과가 없습니다</li>
+                                        )}
+                                    </ul>
                                 )}
                             </div>
-
-                            {/* 페이지네이션 */}
-                            <div className="mt-14 flex justify-center space-x-2">
-                                {[...Array(totalPages).keys()].map((page) => (
-                                    <button
-                                        key={page}
-                                        onClick={() => handlePageChange(page + 1)}
-                                        className={`px-4 py-2 rounded-lg border border-[#0939AD] ${currentPage === page + 1 ? 'bg-[#0B2D85] text-white' : 'bg-white text-[#0B2D85] hover:bg-gray-200'
-                                        }`}
-                                    >
-                                        {page + 1}
-                                    </button>
-                                ))}
-                            </div>
-                            {/* 신고하기 모달 */}
-                            <Modal 
-                                isOpen={isReportPopupOpen} 
-                                onRequestClose={handleCloseReportPopup} 
-                                contentLabel="신고 팝업"
-                                className="fixed inset-0 flex items-center justify-center z-50"
-                                overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-40"
+    
+                            <button
+                                onClick={() => handleSearch(0)}
+                                className="bg-[#0b2d85] text-white px-4 h-[36px] text-[17px] rounded-r-md"
                             >
-                                <ReportPopup
-                                    review={selectedReview}
-                                    onClose={handleCloseReportPopup}
-                                />
-                            </Modal>
+                                검색
+                            </button>
                         </div>
+    
+                        <div className="overflow-auto w-full text-align-center">
+                            {isLoading ? (
+                                <div className="flex justify-center items-center h-[500px] text-[70px] font-roboto text-black">
+                                    <p>약국 정보 불러오는 중...</p>
+                                </div>
+                            ) : error ? (
+                                <div className="flex justify-center items-center h-[500px]">
+                                    <p className="text-4xl">에러 발생: {error}</p>
+                                </div>
+                            ) : pharmacies.length === 0 ? (
+                                <div className="flex justify-center items-center h-[500px]">
+                                    <p className="text-4xl">검색 결과가 없습니다.</p>
+                                </div>
+                            ) : (
+                                <table className="table-auto w-full border-collapse text-center shadow-lg rounded-lg border-color">
+                                    <thead className="bg-[#cccccc1a]">
+                                        <tr>
+                                            <th className="py-4">즐겨찾기</th>
+                                            <th className="py-4">기관명</th>
+                                            <th className="py-4">주소</th>
+                                            <th className="py-4">전화번호</th>
+                                            <th className="py-4">상세 정보</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white">
+                                        {pharmacies.map((pharmacy) => (
+                                            <tr key={pharmacy.hpid} className="border-b">
+                                                <td className="py-4 font-roboto text-base text-black">
+                                                    <button onClick={() => toggleFavorite(pharmacy.hpid, pharmacy.dutyName, pharmacy.dutyAddr, pharmacy.dutyTel1)}>
+                                                        <img
+                                                            src={pharmacy.favorite
+                                                                ? '/img/medicine/goldonestar.png'
+                                                                : '/img/medicine/greyonestar.png'
+                                                            }
+                                                            alt="즐겨찾기"
+                                                            className="w-6 h-6 mx-auto"
+                                                        />
+                                                    </button>
+                                                </td>
+                                                <td className="py-4 font-roboto text-base text-black">
+                                                    {pharmacy.dutyName || '정보 없음'}
+                                                </td>
+                                                <td className="py-4 font-roboto text-base text-black">
+                                                    {pharmacy.dutyAddr || '정보 없음'}
+                                                </td>
+                                                <td className="py-4 font-roboto text-base text-black">
+                                                    {pharmacy.dutyTel1 || '정보 없음'}
+                                                </td>
+                                                <td className="py-4">
+                                                    <button
+                                                        onClick={() => nav(`/pharmacy/detail/${pharmacy.hpid}`)}
+                                                        className="bg-[#0b2d85] text-white px-4 py-1 rounded-lg text-[14px] font-bold"
+                                                    >
+                                                        상세 정보
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            )}
+                        </div>
+    
+                        {!isLoading && !error && pharmacies.length > 0 && renderPageButtons()}
                     </div>
                 </div>
-            </div>
-            <footer className="w-full bg-black text-white py-8 mt-auto">
-                <div className="container mx-auto px-6 flex justify-between items-center">
-                    <div className="flex items-center">
-                        <img src="/img/footer/logo.png" alt="응급NAVI" width="117" height="100" />
-                        <div className="ml-4 text-xl font-bold">응급NAVI</div>
+    
+                <footer className="w-full bg-black text-white py-8 mt-10">
+                    <div className="flex justify-between items-center container mx-auto px-6">
+                        <div className="flex items-center">
+                            <img src="/img/footer/logo.png" alt="응급NAVI" width="117" height="100" />
+                            <div className="ml-4 text-xl font-bold">응급NAVI</div>
+                        </div>
+                        <div className="text-gray-400 text-sm">
+                            서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원 | 대표전화: 1544-9970
+                            <br />
+                            © 2024 응급NAVI. All Rights Reserved.
+                        </div>
+                        <img src="/img/footer/group.png" alt="Group" width="145" height="34" />
                     </div>
-                    <div className="text-gray-400 text-sm">
-                        서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원 | 대표전화: 1544-9970
-                        <br />
-                        © 2024 응급NAVI. All Rights Reserved.
-                    </div>
-                    <img src="/img/footer/group.png" alt="Group" width="145" height="34" />
-                </div>
-            </footer>
-        </>
-    );
-};
-
-export default PharmacyDetail;
+                </footer>
+            </>
+        );
+    };
+    
+    export default PharmacySearch;
