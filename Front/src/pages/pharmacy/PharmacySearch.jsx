@@ -15,7 +15,7 @@ const PharmacySearch = () => {
     const [focusedOptionIndex, setFocusedOptionIndex] = useState(-1);
     const [selectedOption, setSelectedOption] = useState(null);
     const [hoveredOption, setHoveredOption] = useState(null);
-    const [favorites, setFavorites] = useState({}); // 즐겨찾기 상태 추가
+    const [favorites, setFavorites] = useState({});
     const itemsPerPage = 10;
     const nav = useNavigate();
     const autoCompleteRef = useRef(null);
@@ -29,25 +29,24 @@ const PharmacySearch = () => {
     ];
 
     useEffect(() => {
-        fetchPharmacies(0);
+        fetchPharmacies(0); // 페이지 로딩 시 약국 리스트 로드
     }, []);
 
     useEffect(() => {
         if (userId) {
-            fetchFavorites();
+            fetchFavorites(); // userId가 존재할 때 즐겨찾기 목록을 가져옴
         }
     }, [userId]);
 
-    // 즐겨찾기 목록 불러오기
     const fetchFavorites = async () => {
         try {
             const response = await fetch(`/api/pharmacy/favorites?userId=${userId}`);
             const data = await response.json();
             const favoritesMap = {};
             data.forEach(favorite => {
-                favoritesMap[favorite.refNo] = true;
+                favoritesMap[favorite.refNo] = true; // 즐겨찾기 항목들을 true로 저장
             });
-            setFavorites(favoritesMap);
+            setFavorites(favoritesMap); // 즐겨찾기 상태를 로컬 상태로 설정
         } catch (error) {
             console.error('Failed to fetch favorites:', error);
         }
@@ -57,7 +56,7 @@ const PharmacySearch = () => {
         setIsLoading(true);
         setError(null);
 
-        fetch(`/api/pharmacy/list?page=${page}&size=${itemsPerPage}`)
+        fetch(`/api/pharmacy/list?page=${page}&size=${itemsPerPage}&userId=${userId}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -99,7 +98,6 @@ const PharmacySearch = () => {
             });
     };
 
-    // 즐겨찾기 추가/삭제 기능 구현
     const toggleFavorite = async (hpid, dutyName, dutyAddr, dutyTel1) => {
         if (!userId) {
             alert("로그인 후 즐겨찾기 기능을 사용할 수 있습니다.");
@@ -108,10 +106,8 @@ const PharmacySearch = () => {
 
         try {
             if (favorites[hpid]) {
-                // 즐겨찾기에서 삭제
                 await fetch(`/api/pharmacy/favorite?userId=${userId}&refNo=${hpid}`, { method: 'DELETE' });
             } else {
-                // 즐겨찾기 추가
                 await fetch('/api/pharmacy/favorite', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -120,7 +116,7 @@ const PharmacySearch = () => {
             }
             setFavorites(prevFavorites => ({
                 ...prevFavorites,
-                [hpid]: !prevFavorites[hpid]
+                [hpid]: !prevFavorites[hpid] // 즐겨찾기 상태를 토글
             }));
         } catch (error) {
             console.error('Failed to toggle favorite:', error);
@@ -144,7 +140,6 @@ const PharmacySearch = () => {
         });
 
         const url = `/api/pharmacy/search?${queryParams}`;
-        console.log(`Sending request to: ${url}`);
 
         fetch(url)
             .then((response) => {
@@ -238,7 +233,9 @@ const PharmacySearch = () => {
     }, []);
 
     const handleKeyDown = (e) => {
-        if (e.key === 'ArrowDown') {
+        if (e.key === 'Enter') {
+            handleSearch(0); // 엔터키 눌렀을 때 검색 실행
+        } else if (e.key === 'ArrowDown') {
             e.preventDefault();
             setFocusedOptionIndex((prevIndex) =>
                 prevIndex < options.length - 1 ? prevIndex + 1 : prevIndex
@@ -246,14 +243,6 @@ const PharmacySearch = () => {
         } else if (e.key === 'ArrowUp') {
             e.preventDefault();
             setFocusedOptionIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
-        } else if (e.key === 'Enter') {
-            e.preventDefault();
-            if (focusedOptionIndex >= 0 && focusedOptionIndex < options.length) {
-                setSelectedOption(options[focusedOptionIndex]);
-                setSearchQuery(options[focusedOptionIndex].label);
-                setShowAutoComplete(false);
-                handleSearch(0);
-            }
         }
     };
 
@@ -316,7 +305,7 @@ const PharmacySearch = () => {
                                 onChange={handleInputChange}
                                 onFocus={() => setShowAutoComplete(true)}
                                 onBlur={handleInputBlur}
-                                onKeyDown={handleKeyDown}
+                                onKeyDown={handleKeyDown}  // 엔터 키와 키보드 네비게이션 처리
                                 placeholder={`원하시는 ${searchType === 'dutyName' ? '기관' : '주소'}의 이름을 검색해 주세요`}
                                 className="border p-2 w-[360px] h-[36px] text-base leading-[20px] border-[#0000001a] text-black bg-white"
                                 style={{ color: 'black', backgroundColor: 'white' }}
@@ -390,52 +379,53 @@ const PharmacySearch = () => {
                             <div className="flex justify-center items-center h-[500px]">
                                 <p className="text-4xl">검색 결과가 없습니다.</p>
                             </div>
-                        ) : (<table className="table-auto w-full border-collapse text-center shadow-lg rounded-lg border-color">
-                            <thead className="bg-[#cccccc1a]">
-                                <tr>
-                                    <th className="py-4">즐겨찾기</th>
-                                    <th className="py-4">기관명</th>
-                                    <th className="py-4">주소</th>
-                                    <th className="py-4">전화번호</th>
-                                    <th className="py-4">상세 정보</th>
-                                </tr>
-                            </thead>
-                            <tbody className="bg-white">
-                                {pharmacies.map((pharmacy) => (
-                                    <tr key={pharmacy.hpid} className="border-b">
-                                        <td className="py-4 font-roboto text-base text-black">
-                                            <button onClick={() => toggleFavorite(pharmacy.hpid, pharmacy.dutyName, pharmacy.dutyAddr, pharmacy.dutyTel1)}>
-                                                <img
-                                                    src={favorites[pharmacy.hpid]
-                                                        ? '/img/medicine/goldonestar.png'
-                                                        : '/img/medicine/greyonestar.png'
-                                                    }
-                                                    alt="즐겨찾기"
-                                                    className="w-6 h-6 mx-auto"
-                                                />
-                                            </button>
-                                        </td>
-                                        <td className="py-4 font-roboto text-base text-black">
-                                            {pharmacy.dutyName || '정보 없음'}
-                                        </td>
-                                        <td className="py-4 font-roboto text-base text-black">
-                                            {pharmacy.dutyAddr || '정보 없음'}
-                                        </td>
-                                        <td className="py-4 font-roboto text-base text-black">
-                                            {pharmacy.dutyTel1 || '정보 없음'}
-                                        </td>
-                                        <td className="py-4">
-                                            <button
-                                                onClick={() => nav(`/pharmacy/detail/${pharmacy.hpid}`)}
-                                                className="bg-[#0b2d85] text-white px-4 py-1 rounded-lg text-[14px] font-bold"
-                                            >
-                                                상세 정보
-                                            </button>
-                                        </td>
+                        ) : (
+                            <table className="table-auto w-full border-collapse text-center shadow-lg rounded-lg border-color">
+                                <thead className="bg-[#cccccc1a]">
+                                    <tr>
+                                        <th className="py-4">즐겨찾기</th>
+                                        <th className="py-4">기관명</th>
+                                        <th className="py-4">주소</th>
+                                        <th className="py-4">전화번호</th>
+                                        <th className="py-4">상세 정보</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody className="bg-white">
+                                    {pharmacies.map((pharmacy) => (
+                                        <tr key={pharmacy.hpid} className="border-b">
+                                            <td className="py-4 font-roboto text-base text-black">
+                                                <button onClick={() => toggleFavorite(pharmacy.hpid, pharmacy.dutyName, pharmacy.dutyAddr, pharmacy.dutyTel1)}>
+                                                    <img
+                                                        src={favorites[pharmacy.hpid]
+                                                            ? '/img/medicine/goldonestar.png'  // 즐겨찾기 된 항목은 금색 별
+                                                            : '/img/medicine/greyonestar.png'  // 즐겨찾기 되지 않은 항목은 회색 별
+                                                        }
+                                                        alt="즐겨찾기"
+                                                        className="w-6 h-6 mx-auto"
+                                                    />
+                                                </button>
+                                            </td>
+                                            <td className="py-4 font-roboto text-base text-black">
+                                                {pharmacy.dutyName || '정보 없음'}
+                                            </td>
+                                            <td className="py-4 font-roboto text-base text-black">
+                                                {pharmacy.dutyAddr || '정보 없음'}
+                                            </td>
+                                            <td className="py-4 font-roboto text-base text-black">
+                                                {pharmacy.dutyTel1 || '정보 없음'}
+                                            </td>
+                                            <td className="py-4">
+                                                <button
+                                                    onClick={() => nav(`/pharmacy/detail/${pharmacy.hpid}`)}
+                                                    className="bg-[#0b2d85] text-white px-4 py-1 rounded-lg text-[14px] font-bold"
+                                                >
+                                                    상세 정보
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         )}
                     </div>
 
