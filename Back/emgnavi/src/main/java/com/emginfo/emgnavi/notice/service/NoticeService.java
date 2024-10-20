@@ -3,6 +3,7 @@ package com.emginfo.emgnavi.notice.service;
 import com.emginfo.emgnavi.notice.vo.Notice;
 
 import java.util.List;
+import java.util.Map;
 
 public interface NoticeService {
 
@@ -22,4 +23,10 @@ public interface NoticeService {
     int putNotice(Notice notice);
 
     int deleteNotice(int noticeId);
+
+    List<Notice> searchNotice(String title, String writer, int page, int size);
+
+    int getSearchResultCount(String title, String writer);
+
+    List<Map<String, Object>> getAutocompleteSuggestions(String query, String searchType);
 }

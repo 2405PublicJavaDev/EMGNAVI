@@ -30,4 +30,45 @@
     <delete id="deleteNotice">
         DELETE FROM NOTICE_TBL WHERE NOTICE_ID = #{noticeId}
     </delete>
+
+    <select id="searchNotice" resultType="com.emginfo.emgnavi.notice.vo.Notice">
+        SELECT * FROM NOTICE_TBL
+        WHERE 1=1
+        <if test="title != null and title != ''">
+            AND NOTICE_TITLE LIKE '%' || #{title} || '%'
+        </if>
+        <if test="writer != null and writer != ''">
+            AND WRITER_ID LIKE '%' || #{writer} || '%'
+        </if>
+        ORDER BY NOTICE_DATE DESC
+    </select>
+
+    <select id="getSearchResultCount" resultType="int">
+        SELECT COUNT(*) FROM NOTICE_TBL
+        WHERE 1=1
+        <if test="title != null and title != ''">
+            AND NOTICE_TITLE LIKE '%' || #{title} || '%'
+        </if>
+        <if test="writer != null and writer != ''">
+            AND WRITER_ID LIKE '%' || #{writer} || '%'
+        </if>
+    </select>
+
+    <select id="searchTitle" resultType="java.util.Map">
+        SELECT NOTICE_TITLE as noticeTitle
+        FROM NOTICE_TBL
+        WHERE NOTICE_TITLE LIKE '%' || #{query} || '%'
+        AND ROWNUM &lt;= 10  <!-- 최대 10개까지만 반환 -->
+        GROUP BY NOTICE_TITLE
+--         ORDER BY NOTICE_DATE DESC
+    </select>
+
+    <select id="searchWriter" resultType="java.util.Map">
+        SELECT DISTINCT WRITER_ID as writerId
+        FROM NOTICE_TBL
+        WHERE WRITER_ID LIKE '%' || #{query} || '%'
+          AND ROWNUM &lt;= 10
+        GROUP BY WRITER_ID
+--         ORDER BY NOTICE_DATE DESC
+    </select>
 </mapper>

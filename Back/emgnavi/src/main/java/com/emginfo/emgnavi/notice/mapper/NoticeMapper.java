@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface NoticeMapper {
@@ -19,4 +20,12 @@ public interface NoticeMapper {
     int putNotice(Notice notice);
 
     int deleteNotice(int noticeId);
+
+    List<Notice> searchNotice(Map<String, Object> params, RowBounds rowBounds);
+
+    int getSearchResultCount(Map<String, Object> params);
+
+    List<Map<String, Object>> searchTitle(String query);
+
+    List<Map<String, Object>> searchWriter(String query);
 }

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState, useRef } from 'react'
 import Truncate from 'react-truncate';
 import parse, { domToReact } from 'html-react-parser';
 import { formatDate } from '../common/dateUtil';
@@ -9,133 +9,186 @@ const GetNoticeList = () => {
 
     const [notices, setNotices] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchType, setSearchType] = useState('itemName'); // 'itemName' 또는 'entpName'
+    const [searchType, setSearchType] = useState('title'); // 'title' 또는 'writer'
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);  // 총 페이지 수
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
+    const [options, setOptions] = useState([]);
+    const [showAutoComplete, setShowAutoComplete] = useState(false);
+    const [focusedOptionIndex, setFocusedOptionIndex] = useState(-1);
+    const [selectedOption, setSelectedOption] = useState(null);
+    const [hoveredOption, setHoveredOption] = useState(null);
     const itemsPerPage = 10;
+    const nav = useNavigate();
+    const autoCompleteRef = useRef(null);
+    const inputRef = useRef(null);
+
+    const categories = [
+        { value: 'title', label: '제목' },
+        { value: 'writer', label: '작성자' },
+      ];
 
     const { userId } = useContext(UserContext);
 
     const navigate = useNavigate();
 
-    const fetchNotices = (page = 1) => {
+    const fetchNotices = (page = 0) => {
 
         setIsLoading(true);
         setError(null);
 
         // 페이지와 검색어 기반으로 데이터 요청
-        fetch(`/api/notice/list?page=${page - 1}&size=${itemsPerPage}`)
+        fetch(`/api/notice/list?page=${page}&size=${itemsPerPage}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
+                // console.log(response.json().notices);
                 return response.json();
             })
-            .then(data => {
-                console.log(data.data);
-                setNotices(data.data.notices); // 받아온 공지 데이터를 State에 저장
-                setTotalPages(data.data.totalPages);
+            .then((data) => {
+                setNotices(data.notices || []);
+                setTotalPages(data.totalPages || 1);
+                setCurrentPage(page);
+                setIsLoading(false);
             })
-            .catch(error => {
-                console.error('Error fetching hospital data:', error);
+            .catch((error) => {
+                console.error('There was an error fetching the notice list!', error);
+                setError('Failed to fetch notices');
+                setIsLoading(false);
             });
-
-        // .then((data) => {
-        //     setNotices(data.notices);  // 백엔드에서 받은 의약품 데이터
-        //     setTotalPages(data.totalPages);  // 백엔드에서 받은 총 페이지 수
-        //     setIsLoading(false);
-        // })
-        // .catch((error) => {
-        //     console.error('There was an error fetching the medicine list!', error);
-        //     setError('Failed to fetch medicines');
-        //     setIsLoading(false);
-        // });
     };
+
+    const fetchAutoCompleteOptions = (inputValue) => {
+        if (inputValue.length < 2) {
+          setOptions([]);
+          return;
+        }
+        
+        fetch(`/api/notice/autocomplete?query=${inputValue}&searchType=${searchType}`)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log('Autocomplete data:', data);
+            const newOptions = data.map((item) => ({
+              value: item.NOTICEID,
+              label: searchType === 'title' ? item.NOTICETITLE : item.WRITERID,
+            }));
+            setOptions(newOptions);
+            setShowAutoComplete(newOptions.length > 0);
+          })
+          .catch((error) => {
+            console.error('Error fetching autocomplete options:', error);
+            setOptions([]);
+          });
+      };
+
+    useEffect(() => {
+        if(options.length > 0){
+            console.log('자동완성 리스트');
+            console.log(options);
+        }
+    }, [options]);
 
     useEffect(() => {
         fetchNotices(currentPage);
     }, [currentPage]);
 
-    const handleSearch = () => {
-        if (!searchQuery) return;
+    const handleSearch = (page = 0) => {
+        if (!searchQuery) {
+            fetchNotices(0);
+            return;
+        }
+
         setIsLoading(true);
         setError(null);
 
-        // 검색 쿼리를 바탕으로 API 요청
-        fetch(`/api/notice/search?${searchType}=${searchQuery}`)
+        const queryParams = new URLSearchParams({
+            [searchType]: searchQuery,
+            page: page.toString(),
+            size: itemsPerPage.toString(),
+          });
+      
+          const url = `/api/notice/search?${queryParams}`;
+          console.log(`Sending request to: ${url}`);
+      
+          fetch(url)
             .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                console.log(response);
-                return response.json();
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.json();
             })
             .then((data) => {
-                setNotices(data.notices);  // 검색된 데이터 설정
-                setTotalPages(data.totalPages);  // 검색된 데이터에 대한 총 페이지 수 설정
-                setIsLoading(false);
+              console.log('Received data:', data);
+              setNotices(data.notices || []);
+              setTotalPages(data.totalPages || 1);
+              setCurrentPage(page);
+              setIsLoading(false);
             })
             .catch((error) => {
-                console.error('Error searching for medicine:', error);
-                setError('Failed to search medicines');
-                setIsLoading(false);
+              console.error('Error searching for notice:', error);
+              setError('Failed to search notices');
+              setIsLoading(false);
             });
     };
 
-    useEffect(() => {
 
-    }, [notices]);
 
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
+
+    const handlePageChange = (newPage) => {
+        if (searchQuery) {
+          handleSearch(newPage);
+        } else {
+          fetchNotices(newPage);
+        }
     };
 
     const renderPageButtons = () => {
         const maxVisiblePages = 10;
-        const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
-
+        const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
+    
         const visiblePages = pageNumbers.slice(
-            Math.floor((currentPage - 1) / maxVisiblePages) * maxVisiblePages,
-            Math.floor((currentPage - 1) / maxVisiblePages) * maxVisiblePages + maxVisiblePages
+          Math.floor(currentPage / maxVisiblePages) * maxVisiblePages,
+          Math.floor(currentPage / maxVisiblePages) * maxVisiblePages + maxVisiblePages
         );
-
+    
         return (
-            <div className="mr-[5px] flex justify-center mt-8 space-x-2">
-                {currentPage > maxVisiblePages && (
-                    <button
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        className="bg-[#0b2d85] text-white px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold"
-                    >
-                        {'<'}
-                    </button>
-                )}
-
-                {visiblePages.map((page) => (
-                    <button
-                        key={page}
-                        onClick={() => handlePageChange(page)}
-                        className={`${page === currentPage
-                            ? 'bg-white text-[#0b2d85] border-2 border-[#0b2d85]'
-                            : 'bg-[#0b2d85] text-white'
-                            } px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold`}
-                    >
-                        {page}
-                    </button>
-                ))}
-
-                {currentPage < totalPages - maxVisiblePages + 1 && (
-                    <button
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        className="bg-[#0b2d85] text-white px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold"
-                    >
-                        {'>'}
-                    </button>
-                )}
-            </div>
+          <div className="mr-[5px] flex justify-center mt-8 space-x-2">
+            {currentPage > 0 && (
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                className="bg-[#0b2d85] text-white px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold"
+              >
+                {'<'}
+              </button>
+            )}
+    
+            {visiblePages.map((page) => (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                className={`${
+                  page === currentPage
+                    ? 'bg-white text-[#0b2d85] border-2 border-[#0b2d85]'
+                    : 'bg-[#0b2d85] text-white'
+                } px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold`}
+              >
+                {page + 1} 
+              </button>
+            ))}
+    
+            {currentPage < totalPages - 1 && (
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                className="bg-[#0b2d85] text-white px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold"
+              >
+                {'>'}
+              </button>
+            )}
+          </div>
         );
-    };
+      };
 
     // 블록 요소 제거 함수
     const blockToInline = (html) => {
@@ -155,6 +208,72 @@ const GetNoticeList = () => {
             }
         });
     };
+
+
+//////////////////////////////
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+          if (autoCompleteRef.current && !autoCompleteRef.current.contains(event.target)) {
+            setShowAutoComplete(false);
+          }
+        };
+    
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }, []);
+    
+      const handleKeyDown = (e) => {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          setFocusedOptionIndex((prevIndex) =>
+            prevIndex < options.length - 1 ? prevIndex + 1 : prevIndex
+          );
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          setFocusedOptionIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (focusedOptionIndex >= 0 && focusedOptionIndex < options.length) {
+            setSelectedOption(options[focusedOptionIndex]);
+            setSearchQuery(options[focusedOptionIndex].label);
+            setShowAutoComplete(false);
+            handleSearch(0);
+          }
+        }
+      };
+    
+      useEffect(() => {
+        if (focusedOptionIndex >= 0 && focusedOptionIndex < options.length) {
+          setHoveredOption(options[focusedOptionIndex]);
+          setSearchQuery(options[focusedOptionIndex].label);
+        }
+      }, [focusedOptionIndex, options]);
+    
+      const handleInputChange = (e) => {
+        const value = e.target.value;
+        setSearchQuery(value);
+        setSelectedOption(null);
+        setHoveredOption(null);
+        fetchAutoCompleteOptions(value);
+        setFocusedOptionIndex(-1);
+      };
+    
+      const handleInputBlur = () => {
+        setTimeout(() => {
+          if (hoveredOption) {
+            setSearchQuery(hoveredOption.label);
+            setSelectedOption(hoveredOption);
+          }
+          setShowAutoComplete(false);
+        }, 200);
+      };
+
+////////////////////////////////////////////
+
+
 
     // 삭제 버튼 핸들러
     const handleDeleteBtn = (noticeId) => {
@@ -203,7 +322,7 @@ const GetNoticeList = () => {
                             <div id='main' className="w-[100%] mt-[-75px]">
                                 <div className="w-[1300px] ml-[310px]">
 
-                                    <div className="bg-white border-t border-solid border-[#e5e7eb] p-10 rounded-[10px_10px_0px_0px]">
+                                    <div className="bg-white border-t border-solid border-[#e5e7eb] p-10 rounded-[10px_10px_0px_0px] min-h-[700px]">
                                         {notices && notices.length > 0 ? (
 
                                             <div>
@@ -245,6 +364,96 @@ const GetNoticeList = () => {
                                         )}
                                         {/* 페이지네이션 */}
                                         {renderPageButtons()}
+
+                                        {/* 검색창 */}
+                                        <div className="mt-[50px] flex justify-center mb-8">
+                                            <select
+                                            value={searchType}
+                                            onChange={(e) => {
+                                                setSearchType(e.target.value);
+                                                setSearchQuery('');
+                                                setOptions([]);
+                                            }}
+                                            className="border p-2 rounded-l-md w-[87px] h-[36px] text-[14px] leading-[20px] text-[#00000080] border-[#00000033]"
+                                            >
+                                            {categories.map((category) => (
+                                                <option key={category.value} value={category.value}>
+                                                {category.label}
+                                                </option>
+                                            ))}
+                                            </select>
+
+                                            <div className="relative" style={{ zIndex: 1000 }}>
+                                                <input
+                                                    ref={inputRef}
+                                                    type="text"
+                                                    value={searchQuery}
+                                                    onChange={handleInputChange}
+                                                    onFocus={() => setShowAutoComplete(true)}
+                                                    onBlur={handleInputBlur}
+                                                    onKeyDown={handleKeyDown}
+                                                    placeholder={`공지사항의 ${searchType === 'title' ? '제목' : '내용'}으로 검색`}
+                                                    className="border p-2 w-[360px] h-[36px] text-base leading-[20px] border-[#0000001a] text-black bg-white"
+                                                    style={{ color: 'black', backgroundColor: 'white' }}
+                                                />
+                                                {showAutoComplete && (
+                                                    <ul
+                                                    ref={autoCompleteRef}
+                                                    className="absolute z-[9999] w-full bg-white border border-gray-300 mt-1 rounded-md shadow-lg max-h-60 overflow-y-auto"
+                                                    style={{
+                                                        top: '100%',
+                                                        left: 0,
+                                                        backgroundColor: 'white',
+                                                        color: 'black',
+                                                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                                                    }}
+                                                    >
+                                                    {options.length > 0 ? (
+                                                        options.map((option, index) => (
+                                                        <li
+                                                            // key={option.value}
+                                                            key={`option-${index}`}
+                                                            className={`p-2 hover:bg-gray-100 cursor-pointer text-black text-base font-normal ${
+                                                            index === focusedOptionIndex ? 'bg-gray-100' : ''
+                                                            }`}
+                                                            style={{
+                                                            color: 'black',
+                                                            }}
+                                                            onClick={() => {
+                                                            setSearchQuery(option.label);
+                                                            setSelectedOption(option);
+                                                            setShowAutoComplete(false);
+                                                            handleSearch(0);
+                                                            }}
+                                                            onMouseEnter={() => {
+                                                            setFocusedOptionIndex(index);
+                                                            setHoveredOption(option);
+                                                            setSearchQuery(option.label);
+                                                            }}
+                                                            onMouseLeave={() => {
+                                                            if (!selectedOption) {
+                                                                setSearchQuery(inputRef.current.value);
+                                                            }
+                                                            }}
+                                                        >
+                                                            {option.label}
+                                                        </li>
+                                                        ))
+                                                    ) : (
+                                                        <li className="p-2 text-gray-500 text-base font-normal">검색 결과가 없습니다</li>
+                                                    )}
+                                                    </ul>
+                                                )}
+                                            </div>
+
+                                            <button
+                                            onClick={() => handleSearch(0)}
+                                            className="bg-[#0b2d85] text-white px-4 h-[36px] text-[17px] rounded-r-md"
+                                            >
+                                            검색
+                                            </button>
+                                        </div>
+
                                     </div>
 
                                 </div>
