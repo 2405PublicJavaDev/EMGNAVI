@@ -26,15 +26,6 @@ function Chart({ searchType, statType, keyword }) {
     const rootUrl = "http://127.0.0.1:8888";
 
     const [chartData, setChartData] = useState([]);
-    // const [chartData, setChartData] = useState([
-    //     { "x": "2024-10-01", "y": 45 },
-    //     { "x": "2024-10-02", "y": 38 },
-    //     { "x": "2024-10-03", "y": 50 },
-    //     { "x": "2024-10-04", "y": 60 },
-    //     { "x": "2024-10-05", "y": 47 },
-    //     { "x": "2024-10-06", "y": 42 },
-    //     { "x": "2024-10-07", "y": 55 }
-    // ]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,7 +33,6 @@ function Chart({ searchType, statType, keyword }) {
                 const response = await fetch(
                     `${rootUrl}/api/stat/getEmergencyStat?searchType=${searchType}&statType=${statType}${keyword ? `&keyword=${keyword}` : ""}`
                 );
-                // `http://127.0.0.1:8888/api/stat/getEmergencyStat?statType=APDW&hpid=A1100001`
                 const json = await response.json();
                 setChartData(json.data);
             } catch (error) {
@@ -61,7 +51,7 @@ function Chart({ searchType, statType, keyword }) {
             },
             title: {
                 display: true,
-                text: "잔여 응급병상 요일별 평균",
+                text: (searchType === 'dutyName' ? "" : "지역 ") + "잔여 응급병상 "+ (statType === 'DOW' ? "요일별" : statType === 'HOD' ? "시간별" : "요일 오전/오후별") + (searchType === 'dutyName' ? " 평균" : " 합계"),
             },
         },
     };
@@ -75,7 +65,7 @@ function Chart({ searchType, statType, keyword }) {
         labels,
         datasets: [
             {
-                label: "잔여 응급병상 평균",
+                label: searchType === 'dutyName' ? "잔여 응급병상 평균" : "지역 응급병상 합계",
                 data: chartData.map((data) => data.y),
                 borderColor: "rgb(255, 99, 132)",
                 backgroundColor: "rgba(255, 99, 132, 0.5)",

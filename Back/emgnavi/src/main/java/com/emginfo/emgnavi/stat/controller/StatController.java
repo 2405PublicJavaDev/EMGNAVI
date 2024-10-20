@@ -25,7 +25,7 @@ public class StatController {
     @GetMapping("/getEmergencyStat")
     public SuccessResponse getEmergencyStat(String searchType, String statType, String keyword) {
 
-        System.out.println("searchType"+ searchType +"statType : " + statType + " keyword : " + keyword);
+        System.out.println("searchType: "+ searchType +" statType : " + statType + " keyword : " + keyword);
 
         List<Stat> StatInfo = null;
         StatInfo = statService.getStatInfo(searchType, statType, keyword);

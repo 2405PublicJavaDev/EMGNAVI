@@ -4,19 +4,29 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.emginfo.emgnavi.stat.mapper.StatMapper">
     <select id="getStatInfo" resultType="Stat">
-        SELECT TO_CHAR(SAVE_TIME, 'DAY', 'NLS_DATE_LANGUAGE = ''KOREAN''') AS x,
-        <if test="searchType == 'hospital'">
+        SELECT
+        <if test="statType == 'HOD'">
+            TO_CHAR(SAVE_TIME, 'HH24') AS x,
+        </if>
+        <if test="statType != 'HOD'">
+            TO_CHAR(SAVE_TIME, 'DAY', 'NLS_DATE_LANGUAGE = ''KOREAN''') AS x,
+        </if>
+        <if test="searchType == 'dutyName'">
             ROUND(AVG(HVEC), 2) AS y
         </if>
-        <if test="searchType == 'legion'">
-            SUM(HVEC) AS y
+        <if test="searchType == 'dutyAddr'">
+            SUM(EMERGENCY_DATA_TBL.HVEC) AS y
         </if>
         FROM EMERGENCY_DATA_TBL
+        <if test="searchType == 'dutyAddr'">
+            JOIN HOSPITAL_TBL
+            USING (HPID)
+        </if>
         <where>
-            <if test="searchType == 'hospital' and keyword != null and keyword != ''">
+            <if test="searchType == 'dutyName' and keyword != null and keyword != ''">
                 HPID = '${keyword}'
             </if>
-            <if test="searchType == 'legion' and keyword != null and keyword != ''">
+            <if test="searchType == 'dutyAddr' and keyword != null and keyword != ''">
                 DUTY_ADDR LIKE '${keyword}%'
             </if>
         </where>
