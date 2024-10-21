@@ -121,6 +121,31 @@ const PharmacyDetail = () => {
         fetchReviews();
     }, [hpid, userId, fetchReviews]);
 
+    const handleDeleteReview = async (reviewId) => {
+        try {
+            const response = await fetch(`/api/medicine_reviews/medicine/${reviewId}`, {
+                method: 'DELETE',
+                credentials: 'include',
+            });
+
+            // 서버 응답 상태 및 내용 확인
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                console.error('리뷰 삭제 실패:', errorMessage);
+                alert(`리뷰 삭제 실패: ${errorMessage}`);
+                return;
+            }
+
+            alert('리뷰가 성공적으로 삭제되었습니다.');
+            
+            // 삭제 후 즉시 UI에서 해당 리뷰 제거
+            setReviews(prevReviews => prevReviews.filter(review => review.no !== reviewId));
+        } catch (error) {
+            console.error('리뷰 삭제 중 오류 발생:', error);
+            alert('리뷰 삭제 중 오류가 발생했습니다.');
+        }
+    };
+
     const handleSubmit = async () => {
         if (!userId) {
             alert('로그인 후 리뷰를 작성할 수 있습니다.');
@@ -348,7 +373,7 @@ const PharmacyDetail = () => {
                                                         <리뷰상세보기내용
                                                             review={review}
                                                             onClose={() => setExpandedReviewId(null)}
-                                                            onDelete={() => console.log('Delete function')}
+                                                            onDelete={() => handleDeleteReview(review.no)}
                                                             handleOpenReportPopup={handleOpenReportPopup}
                                                         />
                                                     </div>
