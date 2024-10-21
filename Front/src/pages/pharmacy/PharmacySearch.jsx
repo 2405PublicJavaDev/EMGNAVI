@@ -24,7 +24,7 @@ const PharmacySearch = () => {
     const { userId } = useContext(UserContext);
 
     const categories = [
-        { value: 'dutyName', label: '기관명' },
+        { value: 'dutyName', label: '약국명' },
         { value: 'dutyAddr', label: '주소' },
     ];
 
@@ -226,7 +226,7 @@ const PharmacySearch = () => {
 
         return (
             <div className="flex justify-center mt-8">
-                {currentPage > 1 && (
+                {currentPage > 0 && (
                     <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         className="mx-1 w-8 h-8 border border-[#0b2d85] text-[#0b2d85] rounded transition duration-300 hover:bg-[#0b2d85] hover:text-white"
@@ -347,7 +347,7 @@ const PharmacySearch = () => {
                                 onFocus={() => setShowAutoComplete(true)}
                                 onBlur={handleInputBlur}
                                 onKeyDown={handleKeyDown}
-                                placeholder={`원하시는 ${searchType === 'dutyName' ? '기관' : '주소'}의 이름을 검색해 주세요`}
+                                placeholder={`원하시는 ${searchType === 'dutyName' ? '약국' : '주소'}의 이름을 검색해 주세요`}
                                 className="border p-2 w-[360px] h-[36px] text-sm leading-[20px] border-[#0000001a] text-black bg-white outline-0"
                                 style={{ color: 'black', backgroundColor: 'white' }}
                             />
@@ -428,10 +428,9 @@ const PharmacySearch = () => {
                                             <table className="w-full">
                                                 <thead className="bg-[#0b2d85] from-blue-600 to-blue-800">
                                                     <tr>
-                                                        <th className="py-4 pl-[87px] text-left text-sm font-semibold text-white uppercase tracking-wider">기관명</th>
-                                                        <th className="py-4 pl-[365px] text-left text-sm font-semibold text-white uppercase tracking-wider">위치</th>
-                                                        <th className="py-4 pl-[40px] text-left text-sm font-semibold text-white uppercase tracking-wider">전화번호</th>
-                                                        <th className="py-4"></th>
+                                                        <th className="py-4 pl-[87px] text-left text-sm font-semibold text-white uppercase tracking-wider w-1/4">기관명</th>
+                                                        <th className="py-4 pr-[130px] text-sm text-sm font-semibold text-white uppercase tracking-wider w-1/2">위치</th>
+                                                        <th className="py-4 pr-[100px] text-center text-sm font-semibold text-white uppercase tracking-wider  w-1/6">전화번호</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody className="divide-y divide-gray-200">
@@ -441,12 +440,11 @@ const PharmacySearch = () => {
                                                             onClick={() => nav(`/pharmacy/detail/${pharmacy.hpid}`)}
                                                             style={{ cursor: 'pointer' }}>
                                                             <td className="py-4 px-6">
-
                                                                 <div className="flex items-center space-x-3">
                                                                     <button
                                                                         onClick={(e) => {
                                                                             e.stopPropagation(); // 이벤트 전파 방지
-                                                                            toggleFavorite(pharmacy.hpid, pharmacy.dutyName, pharmacy.dutyAddr, pharmacy.dutyTel1)
+                                                                            toggleFavorite(pharmacy.hpid, pharmacy.dutyName, pharmacy.dutyAddr, pharmacy.dutyTel1);
                                                                         }}
                                                                         className="flex-shrink-0 group"
                                                                     >
@@ -461,24 +459,21 @@ const PharmacySearch = () => {
                                                                     <p className="text-sm font-medium text-gray-900 truncate">{pharmacy.dutyName || '정보 없음'}</p>
                                                                 </div>
                                                             </td>
-                                                            <td className="py-5 px-6 text-center">
-                                                                <span className="text-sm text-gray-600 truncate max-w-xs">{pharmacy.dutyAddr || '정보 없음'}</span>
+                                                            <td className="py-4 px-6 pl-[100px] max-w-xl">
+                                                                <span className="text-sm text-gray-600 truncate max-w-xs">
+                                                                    {pharmacy.dutyAddr.length > 50
+                                                                        ? pharmacy.dutyAddr.slice(0, 50) + '...'
+                                                                        : pharmacy.dutyAddr}
+                                                                </span>
                                                             </td>
-                                                            <td className="py-4 px-6">
-                                                                <span className="text-sm text-gray-600 truncate max-w-xs">{pharmacy.dutyTel1 || '정보 없음'}</span>
-                                                            </td>
-                                                            <td className="py-4">
-                                                                {/* <button
-                                                    onClick={() => nav(`/pharmacy/detail/${pharmacy.hpid}`)}
-                                                    className="bg-[#0b2d85] text-white px-4 py-1 rounded-lg text-[14px] font-bold"
-                                                >
-                                                    상세 정보
-                                                </button> */}
+                                                            <td className="py-4 pr-[100px]">
+                                                                <span className="pl-[20px] py-1 inline-flex text-sm text-gray-600 truncate max-w-xs">{pharmacy.dutyTel1 || '정보 없음'}</span>
                                                             </td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
                                             </table>
+
                                         </div>
                                     </div>
                                 </div>

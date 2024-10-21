@@ -53,7 +53,7 @@ const MedicineSearch = () => {
       setOptions([]);
       return;
     }
-    
+
     fetch(`/api/medicine/autocomplete?query=${inputValue}&searchType=${searchType}`)
       .then((response) => response.json())
       .then((data) => {
@@ -76,7 +76,7 @@ const MedicineSearch = () => {
       fetchMedicines(0);
       return;
     }
-    
+
     setIsLoading(true);
     setError(null);
 
@@ -129,7 +129,7 @@ const MedicineSearch = () => {
 
     return (
       <div className="flex justify-center mt-8">
-        {currentPage > 1 && (
+        {currentPage > 0 && (
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             className="mx-1 w-8 h-8 border border-[#0b2d85] text-[#0b2d85] rounded transition duration-300 hover:bg-[#0b2d85] hover:text-white"
@@ -203,7 +203,7 @@ const MedicineSearch = () => {
       }
     }
   };
-  
+
 
   useEffect(() => {
     if (focusedOptionIndex >= 0 && focusedOptionIndex < options.length) {
@@ -233,13 +233,9 @@ const MedicineSearch = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center min-h-[1100px] bg-white">
-        <div className="w-full max-w-7xl mx-auto p-4 bg-white relative top-[90px]">
-          <h1 className="text-[52px] font-bold text-center mb-8 leading-[48px] font-NotoSerifTamilSlanted">
-            원하시는 의약품을 검색해 주세요
-          </h1>
-
-          <div className="flex justify-center mb-8">
+      <div className="flex flex-col mt-[83px] items-center justify-center flex-grow bg-white">
+        <div className="w-full max-w-7xl mx-auto p-4 bg-white relative top-[50px]">
+          <div className="flex justify-end mb-8 mt-7">
             <select
               value={searchType}
               onChange={(e) => {
@@ -247,7 +243,7 @@ const MedicineSearch = () => {
                 setSearchQuery('');
                 setOptions([]);
               }}
-              className="border p-2 rounded-l-md w-[87px] h-[36px] text-[14px] leading-[20px] text-[#00000080] border-[#00000033]"
+              className="border p-2 rounded-l-md w-[95px] h-[36px] text-[14px] leading-[20px] text-[#00000080] border-[#00000033] outline-0"
             >
               {categories.map((category) => (
                 <option key={category.value} value={category.value}>
@@ -266,7 +262,7 @@ const MedicineSearch = () => {
                 onBlur={handleInputBlur}
                 onKeyDown={handleKeyDown}
                 placeholder={`원하시는 ${searchType === 'itemName' ? '제품' : '업체'}의 이름을 검색해 주세요`}
-                className="border p-2 w-[360px] h-[36px] text-base leading-[20px] border-[#0000001a] text-black bg-white"
+                className="border p-2 w-[360px] h-[36px] text-sm leading-[20px] border-[#0000001a] text-black bg-white"
                 style={{ color: 'black', backgroundColor: 'white' }}
               />
               {showAutoComplete && (
@@ -285,9 +281,8 @@ const MedicineSearch = () => {
                     options.map((option, index) => (
                       <li
                         key={option.value}
-                        className={`p-2 hover:bg-gray-100 cursor-pointer text-black text-base font-normal ${
-                          index === focusedOptionIndex ? 'bg-gray-100' : ''
-                        }`}
+                        className={`p-2 hover:bg-gray-100 cursor-pointer text-black text-sm font-normal ${index === focusedOptionIndex ? 'bg-gray-100' : ''
+                          }`}
                         style={{
                           color: 'black',
                         }}
@@ -312,7 +307,7 @@ const MedicineSearch = () => {
                       </li>
                     ))
                   ) : (
-                    <li className="p-2 text-gray-500 text-base font-normal">검색 결과가 없습니다</li>
+                    <li className="p-2 text-gray-500 text-sm font-normal">검색 결과가 없습니다</li>
                   )}
                 </ul>
               )}
@@ -329,7 +324,7 @@ const MedicineSearch = () => {
           <div className="overflow-auto w-full text-align-center">
             {isLoading ? (
               <div className="flex justify-center items-center h-[500px] text-[70px] font-roboto text-black">
-                <p>의약품 정보 불러오는 중...</p>
+                {/* <p>의약품 정보 불러오는 중...</p> */}
               </div>
             ) : error ? (
               <div className="flex justify-center items-center h-[500px]">
@@ -340,45 +335,49 @@ const MedicineSearch = () => {
                 <p className="text-4xl">검색 결과가 없습니다.</p>
               </div>
             ) : (
-              <table className="table-auto w-full border-collapse text-center shadow-lg rounded-lg border-color">
-                <thead className="bg-[#cccccc1a]">
-                  <tr>
-                    <th className="py-4">번호</th>
-                    <th className="py-4">업체명</th>
-                    <th className="py-4">제품명</th>
-                    <th className="py-4">공개일자</th>
-                    <th className="py-4">상세 정보</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white">
-                  {medicines.map((item, index) => (
-                    <tr key={item.itemSeq} className="border-b">
-                      <td className="py-4 font-roboto text-base text-black">
-                        {currentPage * itemsPerPage + index + 1}
-                      </td>
-                      <td className="py-4 font-roboto text-base text-black">
-                        {item.entpName}
-                      </td>
-                      <td className="py-4 font-roboto text-base text-black">
-                        {item.itemName.length > 8
-                          ? item.itemName.slice(0, 8) + '...'
-                          : item.itemName}
-                      </td>
-                      <td className="py-4 font-roboto text-base text-black">
-                        {item.openDe.split(' ')[0]}
-                      </td>
-                      <td className="py-4">
-                        <button
-                          onClick={() => nav(`/medicine/detail/${item.itemSeq}`)}
-                          className="bg-[#0b2d85] text-white px-4 py-1 rounded-lg text-[14px] font-bold"
-                        >
-                          상세 정보
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <div className="w-full bg-white shadow-2xl rounded-2xl overflow-hidden">
+                <div className="overflow-x-auto">
+                  <div className="w-full bg-white shadow-2xl rounded-2xl overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead className="bg-[#0b2d85] from-blue-600 to-blue-800">
+                          <tr>
+                            <th className="py-4 pl-[87px] text-left text-sm font-semibold text-white uppercase tracking-wider">업체명</th>
+                            <th className="py-4 pl-[302px] text-left text-sm font-semibold text-white uppercase tracking-wider">제품명</th>
+                            <th className="py-4 pl-[33px] text-left text-sm font-semibold text-white uppercase tracking-wider">공개일자</th>
+                            <th className="py-4"></th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {medicines.map((item, index) => (
+                            <tr key={item.itemSeq}
+                              className="hover:bg-gray-50 transition-colors duration-200"
+                              onClick={() => nav(`/medicine/detail/${item.itemSeq}`)}
+                              style={{ cursor: 'pointer' }}>
+                              {/* <td className="py-4 font-roboto text-base text-black">
+                                {currentPage * itemsPerPage + index + 1}
+                              </td> */}
+                              <td className="py-4 px-6">
+                                <span className="text-sm text-gray-600 truncate max-w-xs ml-[40px]">{item.entpName}</span>
+                              </td>
+                              <td className="py-4 pr-[120px] text-center">
+                                <span className="text-sm text-gray-600 truncate max-w-xs ml-[40px]">
+                                  {item.itemName.length > 20
+                                    ? item.itemName.slice(0, 20) + '...'
+                                    : item.itemName}
+                                </span>
+                              </td>
+                              <td className="py-4 px-6">
+                                <span className="text-sm text-gray-600 truncate max-w-xs">{item.openDe.split(' ')[0]}</span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
 
@@ -386,26 +385,21 @@ const MedicineSearch = () => {
         </div>
       </div>
 
-      <footer className="w-full bg-black text-white py-8 mt-10">
-        <div className="flex justify-between items-center container mx-auto px-6">
-          <div className="flex items-center">
-            <img
-              src="/img/footer/logo.png"
-              alt="응급NAVI"
-              width="117"
-              height="100"
-            />
-            <div className="ml-4 text-xl font-bold">응급NAVI</div>
-          </div>
-          <div className="text-gray-400 text-sm">
-            서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원 | 대표전화:
-            1544-9970
-            <br />
-            © 2024 응급NAVI. All Rights Reserved.
-          </div>
-          <img src="/img/footer/group.png" alt="Group" width="145" height="34" />
+      <div className="absolute left-0 top-[1155px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">
+        <div className="absolute left-[136px] top-[41px] w-[117px] h-[126px] flex">
+          <div className="absolute left-[13px] top-[97px] text-[24px] font-['Advent_Pro'] font-black text-[#333] whitespace-nowrap">응급NAVI</div>
+          <img className="absolute left-0 top-0" width="117" height="100" src="/img/footer/logo.png"></img>
         </div>
-      </footer>
+        <img className="absolute left-[1634px] top-[47px]" width="145" height="34" src="/img/footer/group.png"></img>
+        <div className="absolute left-[404px] top-[137px] w-[621px] h-[16px] text-[14px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">2024 응급NAVI.</div>
+        <div className="absolute left-[390px] top-[62px] w-[742px] h-[90px] flex">
+          <div className="absolute left-0 top-[54px] w-[742px] h-[36px] flex">
+            <div className="absolute left-0 top-0 w-[742px] h-[16px] text-[14px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원     |     대표자명 : 민봉식     |     대표전화 : 1544-997<br /></div>
+            <img className="absolute left-[2px] top-[27px]" width="9" height="8" src="/img/footer/copyright.png"></img>
+          </div>
+          <div className="absolute left-0 top-0 w-[221px] h-[21px] text-[15px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">이용약관              개인정보처리방침</div>
+        </div>
+      </div>
     </>
   );
 };

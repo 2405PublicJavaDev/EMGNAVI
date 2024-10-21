@@ -187,7 +187,7 @@ const HospitalSearch = () => {
 
     return (
       <div className="flex justify-center mt-8">
-        {currentPage > 1 && (
+        {currentPage > 0 && (
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             className="mx-1 w-8 h-8 border border-[#0b2d85] text-[#0b2d85] rounded transition duration-300 hover:bg-[#0b2d85] hover:text-white"
@@ -390,70 +390,70 @@ const HospitalSearch = () => {
             ) : (
               <div className="w-full bg-white shadow-2xl rounded-2xl overflow-hidden">
                 <div className="overflow-x-auto">
-                  <div className="w-full bg-white shadow-2xl rounded-2xl overflow-hidden">
-                    <div className="overflow-x-auto">
-                      <table className="w-full">
-                        <thead className="bg-[#0b2d85] from-blue-600 to-blue-800">
-                          <tr>
-                            <th className="py-4 pl-[87px] text-left text-sm font-semibold text-white uppercase tracking-wider">기관명</th>
-                            <th className="py-4 pl-[133px] text-left text-sm font-semibold text-white uppercase tracking-wider">위치</th>
-                            <th className="py-4 px-6 text-center text-sm font-semibold text-white uppercase tracking-wider">응급실</th>
-                            <th className="py-4 px-6 text-center text-sm font-semibold text-white uppercase tracking-wider"></th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                          {hospitals.map((hospital) => (
-                            <tr key={hospital.hpid}
-                              className="hover:bg-gray-50 transition-colors duration-200"
-                              onClick={() => nav(`/hospital/detail/${hospital.hpid}`)}
-                              style={{ cursor: 'pointer' }}>
-                              <td className="py-4 px-6">
-                                <div className="flex items-center space-x-3">
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation(); // 이벤트 전파 방지
-                                      toggleFavorite(hospital.hpid, hospital.dutyName, hospital.dutyAddr, hospital.dutyTel1);
-                                    }}
-                                    className="flex-shrink-0 group"
-                                  >
-                                    <img
-                                      src={favorites[hospital.hpid] ? '/img/medicine/goldonestar.png' : '/img/medicine/greyonestar.png'}
-                                      alt="즐겨찾기"
-                                      className="w-6 h-6 transition-transform duration-200 transform hover:scale-110"
-                                    />
-                                  </button>
-                                  <div className="flex-grow min-w-0">
-                                    <p className="text-sm font-medium text-gray-900 truncate">{hospital.dutyName}</p>
-                                    <p className="text-sm text-gray-500 truncate">{hospital.dutyTel1}</p>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="py-4 px-6">
-                                <span className="text-sm text-gray-600 truncate max-w-xs">{hospital.dutyAddr}</span>
-                              </td>
-                              <td className="py-4 px-6">
-                                <div className="flex justify-center">
-                                  {hospital.dutyHayn === '1' ? (
-                                    <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                      응급실 이용가능
-                                    </span>
-                                  ) : (
-                                    <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                      이용불가
-                                    </span>
-                                  )}
-                                </div>
-                              </td>
-                              <td className="py-4 px-6 text-center">
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+                  <table className="w-full table-fixed">
+                    <thead className="bg-[#0b2d85] from-blue-600 to-blue-800">
+                      <tr>
+                        <th className="py-4 pl-[87px] text-left text-sm font-semibold text-white uppercase tracking-wider w-1/4">기관명</th>
+                        <th className="py-4 pr-[130px] text-sm font-semibold text-white uppercase tracking-wider w-1/2">위치</th>
+                        <th className="py-4 pr-[100px] text-center text-sm font-semibold text-white uppercase tracking-wider w-1/6">응급실</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {hospitals.map((hospital) => (
+                        <tr
+                          key={hospital.hpid}
+                          className="hover:bg-gray-50 transition-colors duration-200"
+                          onClick={() => nav(`/hospital/detail/${hospital.hpid}`)}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <td className="py-4 px-6">
+                            <div className="flex items-center space-x-3">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation(); // 이벤트 전파 방지
+                                  toggleFavorite(hospital.hpid, hospital.dutyName, hospital.dutyAddr, hospital.dutyTel1);
+                                }}
+                                className="flex-shrink-0 group"
+                              >
+                                <img
+                                  src={favorites[hospital.hpid] ? '/img/medicine/goldonestar.png' : '/img/medicine/greyonestar.png'}
+                                  alt="즐겨찾기"
+                                  className="w-6 h-6 transition-transform duration-200 transform hover:scale-110"
+                                />
+                              </button>
+                              <div className="flex-grow min-w-0">
+                                <p className="text-sm font-medium text-gray-900 truncate">{hospital.dutyName}</p>
+                                <p className="text-sm text-gray-500 truncate">{hospital.dutyTel1}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="py-4 px-6 pl-[100px] max-w-xl">
+                            <span className="text-sm text-gray-600 truncate">
+                              {hospital.dutyAddr.length > 50
+                                    ? hospital.dutyAddr.slice(0, 50) + '...'
+                                    :hospital.dutyAddr}
+                            </span>
+                          </td>
+                          <td className="py-4 pr-[100px]">
+                            <div className="flex justify-center">
+                              {hospital.dutyHayn === '1' ? (
+                                <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                  응급실 이용가능
+                                </span>
+                              ) : (
+                                <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                  이용불가
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
+
 
 
             )}
