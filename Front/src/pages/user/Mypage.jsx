@@ -58,22 +58,22 @@ const Mypage = () => {
                 onClick={handlerGoMypage}
                 style={{ cursor: 'pointer' }}
                 className="absolute left-[210px] top-[425px] w-[455px] h-[410px] bg-[#7d85971a] rounded-[20px]">
+            <img className="absolute left-[201px] top-[117px]" width="70" height="78" src="/img/user/Group 199397_54.png"></img>
                 <div className="relative top-[232px] text-[26px] font-['Inter'] font-semibold text-[#000] text-center">내정보 관리</div>
                 <div className="relative top-[248px] text-[16px] font-['Inter'] text-[#7d8597] text-center">회원정보 수정</div>
             </div>
             <div onClick={handlerGoFavoriteHospital} style={{ cursor: 'pointer' }}
                 className="absolute left-[733px] top-[425px] w-[455px] h-[410px] bg-[#7d85971a] rounded-[20px]">
+            <img className="absolute left-[201px] top-[117px]" width="94" height="89" src="/img/user/Group 221397_73.png"></img>
                 <div className="relative top-[232px] text-[26px] font-['Inter'] font-semibold text-[#000] text-center">즐겨찾는 병원</div>
                 <div className="relative top-[248px] text-[16px] font-['Inter'] text-[#7d8597] text-center">즐겨찾는 병원</div>
             </div>
             <div onClick={handlerGoFavoritePharmacy} style={{ cursor: 'pointer' }}
                 className="absolute left-[1255px] top-[425px] w-[455px] h-[410px] bg-[#7d85971a] rounded-[20px]">
+            <img className="absolute left-[201px] top-[117px]" width="89" height="87" src="/img/user/Group 200397_50.png"></img>
                 <div className="relative top-[232px] text-[26px] font-['Inter'] font-semibold text-[#000] text-center">즐겨찾는 약국</div>
                 <div className="relative top-[248px] text-[16px] font-['Inter'] text-[#7d8597] text-center">즐겨찾는 약국</div>
             </div>
-            <img className="absolute left-[926px] top-[537px]" width="94" height="89" src="/img/user/Group 221397_73.png"></img>
-            <img className="absolute left-[1447px] top-[537px]" width="89" height="87" src="/img/user/Group 200397_50.png"></img>
-            <img className="absolute left-[412px] top-[545px]" width="70" height="78" src="/img/user/Group 199397_54.png"></img>
             <div className="absolute left-0 top-[1069px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">
                 <div className="absolute left-[136px] top-[41px] w-[117px] h-[126px] flex">
                     <div className="absolute left-[13px] top-[97px] text-[24px] font-['Advent_Pro'] font-black text-[#333] whitespace-nowrap">응급NAVI</div>
