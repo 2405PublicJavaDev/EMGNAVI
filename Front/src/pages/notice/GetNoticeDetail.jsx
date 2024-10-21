@@ -19,7 +19,6 @@ const GetNoticeDetail = () => {
 
     useEffect(() => {
         if (noticeId) {
-            console.log(noticeId);
             fetch(`/api/notice/detail?noticeId=${noticeId}`)
                 .then((response) => {
                     if (!response.ok) {
@@ -48,7 +47,7 @@ const GetNoticeDetail = () => {
                     console.error('Error fetching between notice id:', error);
                 });;
         }
-    }, []);
+    }, [noticeId]);
 
     // 삭제 버튼 핸들러
     const handleDeleteBtn = (noticeId) => {
@@ -63,14 +62,11 @@ const GetNoticeDetail = () => {
         })
             .then(response => response.json())
             .then(data => {
-                console.log('data: ' + data);
                 if (data === 1) {
                     //성공 처리
-                    console.log('공지사항 삭제 성공');
                     alert('공지사항 삭제 성공');
                     nav('/notice/getNoticeList');
                 } else {
-                    console.log('공지사항 삭제 실패');
                     alert('공지사항 삭제 실패');
                 }
             })
@@ -78,12 +74,6 @@ const GetNoticeDetail = () => {
                 console.error('Error fetching notice data:', error);
             });
     };
-
-    useEffect(() => {
-        if (notice) {
-            console.log(notice);
-        }
-    }, [notice])
 
     return (
         <div className="bg-white flex flex-row justify-center w-full">
