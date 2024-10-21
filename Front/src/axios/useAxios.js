@@ -16,6 +16,7 @@ const useAxios = () => {
                 alert(`${res.data.status} | ${res.data.error}\n${res.data.message}\n에러코드 ${res.data.code}`);
             }
         } catch (err) {
+            console.log(err);
             alert('[망함] 서버가 터졌다!');
         } finally {
             setLoading(false);
