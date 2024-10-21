@@ -149,6 +149,8 @@ const GetEmergencyStat = () => {
             setKeyValue(searchQuery);
         }
 
+        console.log(searchType+'&&'+queryParams);
+
         // reloadChart 상태를 변경하여 차트가 다시 로드되도록 설정
         // setReloadChart(prev => !prev);
         setChartKey(prevKey => prevKey + 1);
