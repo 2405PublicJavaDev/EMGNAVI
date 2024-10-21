@@ -159,13 +159,25 @@ const PharmacySearch = () => {
                 [hpid]: !prevFavorites[hpid]
             }));
     
-            setPharmacies(prevPharmacies =>
-                prevPharmacies.map(pharmacy =>
-                    pharmacy.hpid === hpid
-                        ? { ...pharmacy, favorite: !pharmacy.favorite }
-                        : pharmacy
-                )
-            );
+            if (isSearchActive) {
+                // 검색 모드일 경우, 현재 목록 내에서만 업데이트
+                setPharmacies(prevPharmacies =>
+                    prevPharmacies.map(pharmacy =>
+                        pharmacy.hpid === hpid
+                            ? { ...pharmacy, favorite: !pharmacy.favorite }
+                            : pharmacy
+                    )
+                );
+            } else {
+                // 일반 목록 모드일 경우, 정렬을 포함한 업데이트 수행
+                setPharmacies(prevPharmacies =>
+                    prevPharmacies.map(pharmacy =>
+                        pharmacy.hpid === hpid
+                            ? { ...pharmacy, favorite: !pharmacy.favorite }
+                            : pharmacy
+                    ).sort((a, b) => b.favorite - a.favorite)
+                );
+            }
         } catch (error) {
             console.error('Failed to toggle favorite:', error);
             alert('즐겨찾기 처리 중 오류가 발생했습니다.');
@@ -369,38 +381,39 @@ const PharmacySearch = () => {
                                         boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                                     }}
                                 >
-                                    {options.length > 0 ? (
-                                        options.map((option, index) => (
-                                            <li
-                                                key={option.value}
-                                                className={`p-2 hover:bg-gray-100 cursor-pointer text-black text-sm font-normal ${index === focusedOptionIndex ? 'bg-gray-100' : ''
-                                                    }`}
-                                                style={{
-                                                    color: 'black',
-                                                }}
-                                                onClick={() => {
-                                                    setSearchQuery(option.label);
-                                                    setSelectedOption(option);
-                                                    setShowAutoComplete(false);
-                                                    handleSearch(0);
-                                                }}
-                                                onMouseEnter={() => {
-                                                    setFocusedOptionIndex(index);
-                                                    setHoveredOption(option);
-                                                    setSearchQuery(option.label);
-                                                }}
-                                                onMouseLeave={() => {
-                                                    if (!selectedOption) {
-                                                        setSearchQuery(inputRef.current.value);
-                                                    }
-                                                }}
-                                            >
-                                                {option.label}
-                                            </li>
-                                        ))
-                                    ) : (
-                                        <li className="p-2 text-gray-500 text-sm font-normal">검색 결과가 없습니다</li>
-                                    )}
+{options.length > 0 ? (
+    options.map((option, index) => (
+        <li
+            key={option.value} // 여기에 고유한 key를 추가
+            className={`p-2 hover:bg-gray-100 cursor-pointer text-black text-sm font-normal ${
+                index === focusedOptionIndex ? 'bg-gray-100' : ''
+            }`}
+            style={{
+                color: 'black',
+            }}
+            onClick={() => {
+                setSearchQuery(option.label);
+                setSelectedOption(option);
+                setShowAutoComplete(false);
+                handleSearch(0);
+            }}
+            onMouseEnter={() => {
+                setFocusedOptionIndex(index);
+                setHoveredOption(option);
+                setSearchQuery(option.label);
+            }}
+            onMouseLeave={() => {
+                if (!selectedOption) {
+                    setSearchQuery(inputRef.current.value);
+                }
+            }}
+        >
+            {option.label}
+        </li>
+    ))
+) : (
+    <li key="no-results" className="p-2 text-gray-500 text-sm font-normal">검색 결과가 없습니다</li>
+)}
                                 </ul>
                             )}
                         </div>
