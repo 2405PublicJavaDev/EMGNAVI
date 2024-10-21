@@ -51,6 +51,16 @@ const HospitalSearch = () => {
     }
   }, [location]);
 
+  useEffect(() => {
+    if(!location.state){
+        if (userId || Object.keys(favorites).length > 0) {
+            fetchHospitals(0); // 즐겨찾기 불러온 후 약국 데이터 불러오기
+        } else {
+          fetchHospitals(0); // 로그인하지 않은 경우에도 약국 데이터를 불러옴
+        }
+    }
+}, [favorites]);
+
   // 즐겨찾기 목록 불러오기
   const fetchFavorites = async () => {
     try {
@@ -58,13 +68,20 @@ const HospitalSearch = () => {
       const data = await response.json();
       const favoritesMap = {};
       data.forEach(favorite => {
-        favoritesMap[favorite.refNo] = true;
+        favoritesMap[favorite.REFNO] = true;
       });
       setFavorites(favoritesMap);
     } catch (error) {
       console.error('Failed to fetch favorites:', error);
     }
   };
+
+  useEffect(() => {
+    if (userId) {
+        console.log("useEffect: userId 변경 감지됨", userId); // userId 변화 확인
+        fetchFavorites();  // 로그인된 경우에만 즐겨찾기 데이터 불러오기
+    }
+}, [userId]);
 
   const fetchHospitals = (page = 0) => {
     setIsLoading(true);
@@ -119,26 +136,40 @@ const HospitalSearch = () => {
       alert("로그인 후 즐겨찾기 기능을 사용할 수 있습니다.");
       return;
     }
-
     try {
-      if (favorites[hpid]) {
-        // 즐겨찾기에서 삭제
-        await fetch(`/api/pharmacy/favorite?userId=${userId}&refNo=${hpid}`, { method: 'DELETE' });
-      } else {
-        // 즐겨찾기 추가
-        await fetch('/api/pharmacy/favorite', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({ userId, refNo: hpid, dutyName, dutyAddr, dutyTel1 })
-        });
+      let method = favorites[hpid] ? 'DELETE' : 'POST';
+      let body = new URLSearchParams({ userId, refNo: hpid });
+
+      if (method === 'POST') {
+          body.append('dutyName', dutyName);
+          body.append('dutyAddr', dutyAddr);
+          body.append('dutyTel1', dutyTel1);
       }
+
+      // 즐겨찾기 업데이트 API 호출
+      await fetch(`/api/pharmacy/favorite`, {
+          method,
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: body.toString(),
+      });
+
+      // 즐겨찾기 상태 업데이트 (전체 페이지 리로드 없이)
       setFavorites(prevFavorites => ({
-        ...prevFavorites,
-        [hpid]: !prevFavorites[hpid]
+          ...prevFavorites,
+          [hpid]: !prevFavorites[hpid]  // 해당 약국의 즐겨찾기 상태 토글
       }));
+
+      // 현재 페이지의 약국 리스트에서 즐겨찾기 상태만 변경
+      setHospitals(prevHospitals =>
+        prevHospitals.map(hospital =>
+          hospital.hpid === hpid
+                  ? { ...hospital, favorite: !hospital.favorite }
+                  : hospital
+          )
+      );
     } catch (error) {
-      console.error('Failed to toggle favorite:', error);
-      alert('즐겨찾기 처리 중 오류가 발생했습니다.');
+        console.error('Failed to toggle favorite:', error);
+        alert('즐겨찾기 처리 중 오류가 발생했습니다.');
     }
   };
 
