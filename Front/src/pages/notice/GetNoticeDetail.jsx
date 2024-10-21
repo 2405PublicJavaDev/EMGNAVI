@@ -6,6 +6,9 @@ import { formatDate } from '../common/dateUtil';
 import { UserContext } from '../../UserContext';
 
 const GetNoticeDetail = () => {
+
+    const nav = useNavigate();
+
     const [searchParams] = useSearchParams();
     const noticeId = searchParams.get('noticeId');  // 쿼리 파라미터에서 'noticeId' 값 가져오기
     const [notice, setNotice] = useState(null);
