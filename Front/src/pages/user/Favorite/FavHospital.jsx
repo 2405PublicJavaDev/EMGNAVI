@@ -265,15 +265,15 @@ export const FavHospital = () => {
                             </table>
                         </div>
                     </div>
-                    <div className="flex justify-center">
-                        <Pagination
-                            paginationInfo={paginationInfo}
-                            currentPage={currentPage}
-                            onPageChange={handlePageChange}
-                        />
-                    </div>
                 </div>
             </main>
+            <div className="flex justify-center pb-[30px]">
+                <Pagination
+                    paginationInfo={paginationInfo}
+                    currentPage={currentPage}
+                    onPageChange={handlePageChange}
+                />
+            </div>
 
             <footer className="bg-black text-white py-8">
                 <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
