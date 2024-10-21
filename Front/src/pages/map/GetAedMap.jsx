@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { TableVirtuoso } from "react-virtuoso";
 import { TableContainer, Table, TableBody, TableCell, TableRow, Paper } from '@mui/material';  // Material-UI import
 import Modal from "react-modal";
+import { useNavigate } from "react-router-dom";
 
 const { kakao } = window;
 
@@ -34,6 +35,7 @@ function GetAedMap() {
     const addInfoWindow = (newInfoWindow) => {
         setInfoWindow(prev => [...prev, newInfoWindow]);
     };
+    const nav = useNavigate();
 
     // 이미지 표시 및 다운로드 Modal
     const [openModalId, setOpenModalId] = useState(null);

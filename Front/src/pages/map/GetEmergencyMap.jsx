@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TableVirtuoso } from "react-virtuoso";
 import { TableContainer, Table, TableBody, TableCell, TableRow, Paper } from '@mui/material';  // Material-UI import
 import Chart from "../stat/Chart";
+import { useNavigate } from "react-router-dom";
 
 const { kakao } = window;
 
@@ -19,6 +20,8 @@ TableComponents.TableBody.displayName = 'TableBody';
 TableComponents.TableRow.displayName = 'TableRow';
 
 function GetEmergencyMap() {
+    const nav = useNavigate();
+
 
     // 병원 데이터를 저장할 State 선언
     const [hospitals, setHospitals] = useState([]);

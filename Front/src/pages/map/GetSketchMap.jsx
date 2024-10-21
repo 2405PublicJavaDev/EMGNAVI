@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const { kakao } = window;
 
 
 function GetSketchMap({ latitude, longitude, placeName }) {
+    const nav = useNavigate();
 
     const [map, setMap] = useState(null);
 
