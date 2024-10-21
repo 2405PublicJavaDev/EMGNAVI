@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import ReportPopup from '../report/ReportPopup';
 import Modal from 'react-modal';
 import GetSketchMap from '../map/GetSketchMap';
+import { UserContext } from '../../UserContext';
 
 Modal.setAppElement('#root');
 
@@ -35,7 +36,7 @@ const 리뷰상세보기내용 = ({ review, onClose, onDelete, handleOpenReportP
         <div className="w-full bg-white border border-gray-200 rounded-lg shadow-sm p-4">
             <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center">
-                    <StarRating rating={review.rating} onRatingChange={() => {}} isClickable={false} />
+                    <StarRating rating={review.rating} onRatingChange={() => { }} isClickable={false} />
                     <span className="ml-2 text-sm text-gray-600">{review.writerNickname}님 | {review.createdDateLong}</span>
                 </div>
                 <button className="flex items-center text-red-500 hover:text-red-600"
@@ -72,10 +73,10 @@ const PharmacyDetail = () => {
     const [review, setReview] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [expandedReviewId, setExpandedReviewId] = useState(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const { hpid } = useParams();
+    const { userId } = useContext(UserContext);
     const itemsPerPage = 10;
-
+    const [isFavorite, setIsFavorite] = useState(false);
     const [isReportPopupOpen, setIsReportPopupOpen] = useState(false);
     const [selectedReview, setSelectedReview] = useState(null);
 
@@ -83,90 +84,45 @@ const PharmacyDetail = () => {
         fetch(`/api/medicine_reviews/medicine?itemSeq=${hpid}`)
             .then((response) => response.json())
             .then((data) => {
-                console.log('Received review data:', data);
                 if (Array.isArray(data)) {
                     setReviews(data);
                 } else {
-                    console.error('리뷰 데이터가 배열이 아닙니다:', data);
                     setReviews([]);
                 }
             })
-            .catch((error) => {
-                console.error('리뷰 데이터를 가져오는 중 오류 발생:', error);
-                setReviews([]);
-            });
+            .catch(() => setReviews([]));
     }, [hpid]);
 
     useEffect(() => {
-        const checkLoginStatus = async () => {
+        const fetchPharmacyDetail = async () => {
             try {
-                const response = await fetch('/api/user/checkLogin', { credentials: 'include' });
-                setIsLoggedIn(response.ok);
-            } catch (error) {
-                console.error('로그인 상태 확인 실패:', error);
-                setIsLoggedIn(false);
+                const response = await fetch(`/api/pharmacy/detail/${hpid}`);
+                const data = await response.json();
+                setPharmacy(data);
+            } catch {
+                setPharmacy(null);
             }
         };
 
-        checkLoginStatus();
-
-        fetch(`/api/pharmacy/detail/${hpid}`)
-            .then((response) => response.json())
-            .then((data) => setPharmacy(data))
-            .catch((error) => console.error('Error fetching pharmacy details:', error));
-
-        fetchReviews();
-    }, [hpid, fetchReviews]);
-
-    const handleDeleteReview = async (reviewId) => {
-        try {
-            const response = await fetch(`/api/medicine_reviews/medicine/${reviewId}`, {
-                method: 'DELETE',
-                credentials: 'include',
-            });
-
-            if (!response.ok) {
-                throw new Error('리뷰 삭제에 실패했습니다.');
+        const fetchFavoriteStatus = async () => {
+            if (userId) {
+                try {
+                    const response = await fetch(`/api/pharmacy/is-favorite?userId=${userId}&refNo=${hpid}`);
+                    const data = await response.json();
+                    setIsFavorite(data.isFavorite);
+                } catch {
+                    setIsFavorite(false);
+                }
             }
+        };
 
-            alert('리뷰가 성공적으로 삭제되었습니다.');
-            fetchReviews();
-        } catch (error) {
-            console.error('리뷰 삭제 중 오류 발생:', error);
-            alert('리뷰 삭제 중 오류가 발생했습니다.');
-        }
-    };
-
-    const handleOpenReportPopup = (review) => {
-        setSelectedReview(review);
-        setIsReportPopupOpen(true);
-    }
-    const handleCloseReportPopup = () => {
-        setIsReportPopupOpen(false);
-        setSelectedReview(null);
-    };
-
-    console.log('Total reviews:', reviews.length);
-    console.log('Items per page:', itemsPerPage);
-    console.log('Current page:', currentPage);
-    const indexOfLastReview = currentPage * itemsPerPage;
-    const indexOfFirstReview = indexOfLastReview - itemsPerPage;
-    console.log('Index range:', indexOfFirstReview, '-', indexOfLastReview);
-    const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
-    console.log('Current reviews:', currentReviews);
-
-    const totalPages = Math.ceil(reviews.length / itemsPerPage);
-
-    const handleReviewChange = (e) => {
-        setReview(e.target.value);
-    };
-
-    const handleRatingChange = (newRating) => {
-        setRating(newRating);
-    };
+        fetchPharmacyDetail();
+        fetchFavoriteStatus();
+        fetchReviews();
+    }, [hpid, userId, fetchReviews]);
 
     const handleSubmit = async () => {
-        if (!isLoggedIn) {
+        if (!userId) {
             alert('로그인 후 리뷰를 작성할 수 있습니다.');
             return;
         }
@@ -180,65 +136,104 @@ const PharmacyDetail = () => {
                 body: JSON.stringify({
                     refNo: hpid,
                     content: review,
-                    rating: rating
+                    rating: rating,
+                    userId: userId
                 }),
                 credentials: 'include'
             });
 
             if (!response.ok) {
-                throw new Error('로그인후 작성가능합니다.');
+                throw new Error('리뷰 작성에 실패했습니다.');
             }
 
             const data = await response.json();
-            console.log('리뷰가 성공적으로 작성되었습니다:', data);
-
-            alert('리뷰가 성공적으로 작성되었습니다!');
+            alert('리뷰가 성공적으로 작성되었습니다.');
             fetchReviews();
             setReview('');
             setRating(0);
         } catch (error) {
-            console.error('Error:', error);
-            alert(error.message);
+            alert('리뷰 작성 중 오류가 발생했습니다.');
         }
     };
 
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
-
-    const toggleReviewDetail = (reviewId) => {
-        setExpandedReviewId(expandedReviewId === reviewId ? null : reviewId);
-    };
-
-    const handleFavorite = async (refNo) => {
-        if(!isLoggedIn){
+    const handleFavorite = async () => {
+        if (!userId) {
             alert('로그인이 필요합니다.');
             return;
         }
+
+        // 즉시 UI 업데이트
+        setIsFavorite(prev => !prev);
+
         try {
-            const response = await fetch(`/api/favorite/pharmacy?refNo=${refNo}`, {
-                method: 'POST',
+            const method = isFavorite ? 'DELETE' : 'POST';
+            const url = '/api/pharmacy/favorite';
+            const body = new URLSearchParams({
+                userId,
+                refNo: hpid
+            });
+
+            if (method === 'POST') {
+                body.append('dutyName', pharmacy.dutyName);
+                body.append('dutyAddr', pharmacy.dutyAddr);
+                body.append('dutyTel1', pharmacy.dutyTel1);
+            }
+
+            const response = await fetch(url, {
+                method,
                 headers: {
-                    'Content-Type': 'application/json', // JSON 데이터를 보낸다고 명시
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: JSON.stringify({ refNo: refNo }) // refNo를 JSON 형태로 전송
+                body: body.toString(),
             });
 
             if (!response.ok) {
-                throw new Error('즐겨찾기 등록에 실패했습니다.');
+                throw new Error('즐겨찾기 처리에 실패했습니다.');
             }
-            alert('즐겨찾기 등록 되었습니다.');
+
+            const text = await response.text();
+            console.log('Server response:', text);  // 서버 응답 로깅
+
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch (e) {
+                // JSON 파싱 실패 시, 텍스트 응답을 성공으로 간주
+                result = { success: text.includes('successfully') };
+            }
+
+            if (result.success) {
+                alert(isFavorite ? '즐겨찾기에서 삭제되었습니다.' : '즐겨찾기에 등록되었습니다.');
+            } else {
+                throw new Error(result.message || '즐겨찾기 처리에 실패했습니다.');
+            }
         } catch (error) {
-            console.error('즐겨찾기 등록 중 오류 발생:', error);
-            alert('즐겨찾기 등록 중 오류가 발생했습니다.');
+            console.error('즐겨찾기 처리 중 오류:', error);
+            alert('즐겨찾기 처리 중 오류가 발생했습니다.');
+            // 오류 발생 시 UI 원상복구
+            setIsFavorite(prev => !prev);
         }
-    }
+    };
+
+    const handleOpenReportPopup = (review) => {
+        setSelectedReview(review);
+        setIsReportPopupOpen(true);
+    };
+
+    const handleCloseReportPopup = () => {
+        setIsReportPopupOpen(false);
+        setSelectedReview(null);
+    };
 
     if (!pharmacy) {
         return <div>Loading...</div>;
-    }else{
-        console.log('GPS lat:'+pharmacy.wgs84Lat+' lon'+pharmacy.wgs84Lon)
     }
+
+    console.log('Total reviews:', reviews.length);
+    const indexOfLastReview = currentPage * itemsPerPage;
+    const indexOfFirstReview = indexOfLastReview - itemsPerPage;
+    const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
+    const totalPages = Math.ceil(reviews.length / itemsPerPage);
 
     return (
         <>
@@ -250,17 +245,22 @@ const PharmacyDetail = () => {
                             <h1 className="text-3xl font-bold mb-6">약국 상세 정보</h1>
                             <div className="bg-white p-6 rounded-lg shadow-md">
                                 <div className="flex mb-4">
-                                    <GetSketchMap latitude={pharmacy.wgs84Lat} longitude={pharmacy.wgs84Lon} placeName={pharmacy.dutyName}/>
+                                    <GetSketchMap latitude={pharmacy.wgs84Lat} longitude={pharmacy.wgs84Lon} placeName={pharmacy.dutyName} />
                                     <div className='max-w-[700px] ml-[50px]'>
                                         <div className='flex'>
                                             <h2 className="text-2xl font-semibold mb-2">{pharmacy.dutyName}</h2>
-                                            <button className="w-[40px] h-[35px]" onClick={() => handleFavorite(pharmacy.hpid)}>
-                                                <img src="/img/medicine/goldonestar.png" alt="button image" className="w-full h-full"/>
+                                            <button className="w-[40px] h-[35px]" onClick={handleFavorite}>
+                                                <img
+                                                    src={isFavorite ? "/img/medicine/goldonestar.png" : "/img/medicine/greyonestar.png"}
+                                                    alt="Favorite Star"
+                                                    className="w-full h-full"
+                                                />
                                             </button>
                                         </div>
                                         <p className="text-gray-600 mb-2">주소: {pharmacy.dutyAddr}</p>
                                         <p className="font-bold mb-2">전화번호: {pharmacy.dutyTel1}</p>
                                         <p className="mb-2">우편번호: {pharmacy.postCdn1}-{pharmacy.postCdn2}</p>
+                                        <p className="mb-2">약도: {pharmacy.dutyMapping}</p>
                                         <p className="mb-2">운영 정보: {pharmacy.dutyInf}</p>
                                         <p className="mb-2">위도: {pharmacy.wgs84Lat}</p>
                                         <p>경도: {pharmacy.wgs84Lon}</p>
@@ -278,40 +278,24 @@ const PharmacyDetail = () => {
                                         className="w-full h-32 p-2 border rounded-md mb-4"
                                         placeholder="의견을 자유롭게 작성해 주세요."
                                         value={review}
-                                        onChange={handleReviewChange}
-                                        disabled={!isLoggedIn}
+                                        onChange={(e) => setReview(e.target.value)}
+                                        disabled={!userId}
                                     />
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center">
                                             <span className="mr-2">평점:</span>
-                                            <StarRating rating={rating} onRatingChange={handleRatingChange} isClickable={isLoggedIn} />
+                                            <StarRating rating={rating} onRatingChange={setRating} isClickable={!!userId} />
                                         </div>
                                         <div className="flex items-center">
-                                            {!isLoggedIn && (
+                                            {!userId && (
                                                 <div className="flex items-center mr-4 text-red-500">
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        className="h-5 w-5 mr-1"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor"
-                                                    >
-                                                        <path
-                                                            fillRule="evenodd"
-                                                            d="M18 8a8 8 0 11-16 0 8 8 0 0116 0zm-8 3a1 1 0 10-2 0 1 1 0 002 0zm-1-5a1 1 0 00-1 1v2a1 1 0 102 0V7a1 1 0 00-1-1z"
-                                                            clipRule="evenodd"
-                                                        />
-                                                    </svg>
                                                     <span>로그인 후 작성 가능합니다.</span>
                                                 </div>
                                             )}
                                             <button
-                                                className={`px-4 py-2 rounded transition ${
-                                                    isLoggedIn 
-                                                        ? "bg-[#0B2D85] text-white hover:bg-[#0939AD]" 
-                                                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                                                }`}
+                                                className={`px-4 py-2 rounded transition ${userId ? "bg-[#0B2D85] text-white hover:bg-[#0939AD]" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
                                                 onClick={handleSubmit}
-                                                disabled={!isLoggedIn}
+                                                disabled={!userId}
                                             >
                                                 작성 완료
                                             </button>
@@ -319,7 +303,6 @@ const PharmacyDetail = () => {
                                     </div>
                                 </div>
                             </div>
-
                             <div className="w-1/3">
                                 <img className="w-full h-auto object-cover" src="/img/medicine/review.png" alt="리뷰 작성 이미지" />
                             </div>
@@ -340,7 +323,6 @@ const PharmacyDetail = () => {
                                     <div className="px-6 py-4 text-center">리뷰가 없습니다.</div>
                                 ) : (
                                     <>
-                                        {console.log('Rendering reviews:', currentReviews)}
                                         {currentReviews.map((review) => (
                                             <React.Fragment key={review.no}>
                                                 <div className="px-6 py-4 flex items-center border-t border-gray-200">
@@ -355,7 +337,7 @@ const PharmacyDetail = () => {
                                                     <div className="w-32 text-center">
                                                         <button
                                                             className="px-4 py-2 bg-[#0B2D85] text-white rounded-full hover:bg-[#0939AD] transition"
-                                                            onClick={() => toggleReviewDetail(review.no)}
+                                                            onClick={() => setExpandedReviewId(expandedReviewId === review.no ? null : review.no)}
                                                         >
                                                             자세히 보기
                                                         </button>
@@ -366,7 +348,7 @@ const PharmacyDetail = () => {
                                                         <리뷰상세보기내용
                                                             review={review}
                                                             onClose={() => setExpandedReviewId(null)}
-                                                            onDelete={handleDeleteReview}
+                                                            onDelete={() => console.log('Delete function')}
                                                             handleOpenReportPopup={handleOpenReportPopup}
                                                         />
                                                     </div>
@@ -382,18 +364,19 @@ const PharmacyDetail = () => {
                                 {[...Array(totalPages).keys()].map((page) => (
                                     <button
                                         key={page}
-                                        onClick={() => handlePageChange(page + 1)}
+                                        onClick={() => setCurrentPage(page + 1)}
                                         className={`px-4 py-2 rounded-lg border border-[#0939AD] ${currentPage === page + 1 ? 'bg-[#0B2D85] text-white' : 'bg-white text-[#0B2D85] hover:bg-gray-200'
-                                        }`}
+                                            }`}
                                     >
                                         {page + 1}
                                     </button>
                                 ))}
                             </div>
+
                             {/* 신고하기 모달 */}
-                            <Modal 
-                                isOpen={isReportPopupOpen} 
-                                onRequestClose={handleCloseReportPopup} 
+                            <Modal
+                                isOpen={isReportPopupOpen}
+                                onRequestClose={handleCloseReportPopup}
                                 contentLabel="신고 팝업"
                                 className="fixed inset-0 flex items-center justify-center z-50"
                                 overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-40"
