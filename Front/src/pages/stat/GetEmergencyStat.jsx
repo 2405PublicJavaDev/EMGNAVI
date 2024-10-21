@@ -26,37 +26,37 @@ const GetEmergencyStat = () => {
     const categories = [
         { value: 'dutyAddr', label: '지역' },
         { value: 'dutyName', label: '병원' },
-      ];
+    ];
 
     // 검색어 자동완성 기능
     const fetchAutoCompleteOptions = (inputValue) => {
         if (inputValue.length < 2) {
-          setOptions([]);
-          return;
-        }
-        
-        fetch(`/api/hospital/autocomplete?query=${inputValue}&searchType=${searchType}`)
-          .then((response) => response.json())
-          .then((data) => {
-            console.log('Autocomplete data:', data);
-            const newOptions = data.map((item) => ({
-              value: item.hpid,
-              label: searchType === 'dutyName' ? item.DUTYNAME : item.DUTYADDR,
-            }));
-            setOptions(newOptions);
-            setShowAutoComplete(newOptions.length > 0);
-          })
-          .catch((error) => {
-            console.error('Error fetching autocomplete options:', error);
             setOptions([]);
-          });
-      };
+            return;
+        }
+
+        fetch(`/api/hospital/autocomplete?query=${inputValue}&searchType=${searchType}`)
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Autocomplete data:', data);
+                const newOptions = data.map((item) => ({
+                    value: item.hpid,
+                    label: searchType === 'dutyName' ? item.DUTYNAME : item.DUTYADDR,
+                }));
+                setOptions(newOptions);
+                setShowAutoComplete(newOptions.length > 0);
+            })
+            .catch((error) => {
+                console.error('Error fetching autocomplete options:', error);
+                setOptions([]);
+            });
+    };
 
     // 검색어 자동완성 클릭 이벤트 핸들러
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (autoCompleteRef.current && !autoCompleteRef.current.contains(event.target)) {
-            setShowAutoComplete(false);
+                setShowAutoComplete(false);
             }
         };
 
@@ -96,7 +96,7 @@ const GetEmergencyStat = () => {
         fetchAutoCompleteOptions(value);
         setFocusedOptionIndex(-1);
     };
-    
+
     // 검색창에 자동완성 데이터를 넣어주는 핸들러
     const handleInputBlur = () => {
         setTimeout(() => {
@@ -111,49 +111,51 @@ const GetEmergencyStat = () => {
     //////////////////////////////////////
 
     const handleSearch = () => {
-        
+
         // setIsLoading(true);
         // setError(null);
 
-        
-    
+
+
         const queryParams = new URLSearchParams({
-          [searchType]: searchQuery,
+            [searchType]: searchQuery,
         });
 
-        if(searchType === 'dutyName'){
+        if (searchType === 'dutyName') {
             const url = `/api/hospital/search?${queryParams}`;
             console.log(`Sending request to: ${url}`);
-        
+
             fetch(url)
-              .then((response) => {
-                if (!response.ok) {
-                  throw new Error('Network response was not ok');
-                }
-                return response.json();
-              })
-              .then((data) => {
-                console.log('Received data:', data);
-                setHospital(data.hospitals[0]);
-                setKeyValue(data.hospitals[0].hpid);
-                // setIsLoading(false);
-              })
-              .catch((error) => {
-                console.error('Error searching for hospital:', error);
-                setError('Failed to search hospitals');
-                // setIsLoading(false);
-              });
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    console.log('Received data:', data);
+                    setHospital(data.hospitals[0]);
+                    setKeyValue(data.hospitals[0].hpid);
+                    // setIsLoading(false);
+                })
+                .catch((error) => {
+                    console.error('Error searching for hospital:', error);
+                    setError('Failed to search hospitals');
+                    // setIsLoading(false);
+                });
         }
         else {
             setHospital(null);
             setKeyValue(searchQuery);
         }
 
+        console.log(searchType+'&&'+queryParams);
+
         // reloadChart 상태를 변경하여 차트가 다시 로드되도록 설정
         // setReloadChart(prev => !prev);
         setChartKey(prevKey => prevKey + 1);
-    
-      };
+
+    };
 
     // useEffect(() => {
     //     // 병원검색 시 활용 예정
@@ -172,162 +174,142 @@ const GetEmergencyStat = () => {
     // }
 
     return (
-        <>
-            <div className="flex flex-col min-h-screen">
-                <div className="flex-grow">
-                    <div className="container mx-auto px-4 py-64">
-
-                        {/* 통계 검색조건 섹션 */}
-
-                        <h1 className="text-[52px] font-bold text-center mb-8 leading-[48px] font-NotoSerifTamilSlanted">
-                            통계 검색조건을 입력해 주세요
+        <div className="flex flex-col min-h-screen bg-gray-50 font-sans">
+            <main className="flex-grow">
+                <div className="container mx-auto px-4 py-[180px]">
+                    <div className="mb-8">
+                        <h1 className="text-3xl font-bold text-center text-gray-800 leading-tight font-NotoSerifTamilSlanted">
+                            응급실 통계 검색
                         </h1>
-
-                        <div className="flex justify-center mb-8">
+                    </div>
+                    <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+                        <div className="flex justify-center mb-6">
                             <select
-                            value={searchType}
-                            onChange={(e) => {
-                                setSearchType(e.target.value);
-                                setSearchQuery('');
-                                setOptions([]);
-                            }}
-                            className="border p-2 rounded-l-md w-[87px] h-[36px] text-[14px] leading-[20px] text-[#00000080] border-[#00000033]"
+                                value={searchType}
+                                onChange={(e) => {
+                                    setSearchType(e.target.value);
+                                    setSearchQuery('');
+                                    setOptions([]);
+                                }}
+                                className="border rounded-l-md px-3 py-2 text-sm text-gray-700 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
-                            {categories.map((category) => (
-                                <option key={category.value} value={category.value}>
-                                {category.label}
-                                </option>
-                            ))}
+                                {categories.map((category) => (
+                                    <option key={category.value} value={category.value}>
+                                        {category.label}
+                                    </option>
+                                ))}
                             </select>
 
-                            <div className="relative" style={{ zIndex: 1000 }}>
-                            <input
-                                ref={inputRef}
-                                type="text"
-                                value={searchQuery}
-                                onChange={handleInputChange}
-                                onFocus={() => setShowAutoComplete(true)}
-                                onBlur={handleInputBlur}
-                                onKeyDown={handleKeyDown}
-                                placeholder={`통계대상 ${searchType === 'dutyName' ? '병원' : '지역'}을 검색해 주세요`}
-                                className="border p-2 w-[360px] h-[36px] text-base leading-[20px] border-[#0000001a] text-black bg-white"
-                                style={{ color: 'black', backgroundColor: 'white' }}
-                            />
-                            {showAutoComplete && (
-                                <ul
-                                ref={autoCompleteRef}
-                                className="absolute z-[9999] w-full bg-white border border-gray-300 mt-1 rounded-md shadow-lg max-h-60 overflow-y-auto"
-                                style={{
-                                    top: '100%',
-                                    left: 0,
-                                    backgroundColor: 'white',
-                                    color: 'black',
-                                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                                }}
-                                >
-                                {options.length > 0 ? (
-                                    options.map((option, index) => (
-                                    <li
-                                        key={option.value}
-                                        className={`p-2 hover:bg-gray-100 cursor-pointer text-black text-base font-normal ${
-                                        index === focusedOptionIndex ? 'bg-gray-100' : ''
-                                        }`}
-                                        style={{
-                                        color: 'black',
-                                        }}
-                                        onClick={() => {
-                                        setSearchQuery(option.label);
-                                        setSelectedOption(option);
-                                        setShowAutoComplete(false);
-                                        handleSearch(0);
-                                        }}
-                                        onMouseEnter={() => {
-                                        setFocusedOptionIndex(index);
-                                        setHoveredOption(option);
-                                        setSearchQuery(option.label);
-                                        }}
-                                        onMouseLeave={() => {
-                                        if (!selectedOption) {
-                                            setSearchQuery(inputRef.current.value);
-                                        }
-                                        }}
-                                    >
-                                        {option.label}
-                                    </li>
-                                    ))
-                                ) : (
-                                    <li className="p-2 text-gray-500 text-base font-normal">검색 결과가 없습니다</li>
+                            <div className="relative flex-grow">
+                                <input
+                                    ref={inputRef}
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={handleInputChange}
+                                    onFocus={() => setShowAutoComplete(true)}
+                                    onBlur={handleInputBlur}
+                                    onKeyDown={handleKeyDown}
+                                    placeholder={`통계대상 ${searchType === 'dutyName' ? '병원' : '지역'}을 검색해 주세요`}
+                                    className="border px-3 py-2 w-full text-sm border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                {showAutoComplete && (
+                                    <ul className="absolute z-10 w-full bg-white border border-gray-300 mt-1 rounded-md shadow-sm max-h-48 overflow-y-auto">
+                                        {options.length > 0 ? (
+                                            options.map((option, index) => (
+                                                <li
+                                                    key={option.value}
+                                                    className={`p-2 hover:bg-gray-100 cursor-pointer text-sm ${index === focusedOptionIndex ? 'bg-gray-100' : ''
+                                                        }`}
+                                                    onClick={() => {
+                                                        setSearchQuery(option.label);
+                                                        setSelectedOption(option);
+                                                        setShowAutoComplete(false);
+                                                        handleSearch(0);
+                                                    }}
+                                                >
+                                                    {option.label}
+                                                </li>
+                                            ))
+                                        ) : (
+                                            <li className="p-2 text-gray-500 text-sm">검색 결과가 없습니다</li>
+                                        )}
+                                    </ul>
                                 )}
-                                </ul>
-                            )}
                             </div>
 
                             <button
-                            onClick={() => handleSearch()}
-                            className="bg-[#0b2d85] text-white px-4 h-[36px] text-[17px] rounded-r-md"
+                                onClick={() => handleSearch()}
+                                className="bg-blue-600 text-white px-4 py-2 text-sm rounded-r-md hover:bg-blue-700 transition duration-300"
                             >
-                            검색
+                                검색
                             </button>
                         </div>
 
-                        {/* 현재의 검색 타입 및 검색대상 표시 섹션 */}
-                        <h1 className="text-[36px] font-bold text-center mb-8 leading-[48px] font-NotoSerifTamilSlanted">
-                            검색조건 : {searchType === 'dutyAddr' ? ('지역') : ('병원')} | 검색범위 : {searchQuery !== '' ? (searchQuery) : searchType === 'dutyAddr' ? ('전국') : ('없음')}
-                        </h1>
+                        <p className="text-center text-sm text-gray-600">
+                            검색조건: {searchType === 'dutyAddr' ? '지역' : '병원'} |
+                            검색범위: {searchQuery !== '' ? searchQuery : searchType === 'dutyAddr' ? '전국' : '없음'}
+                        </p>
+                    </div>
 
-                        {/* 병원 상세 정보 섹션 */}
-                        {hospital ? (
-                            <div className="mb-12">
-                                <h1 className="text-3xl font-bold mb-6">병원 상세 정보</h1>
-                                <div className="bg-white p-6 rounded-lg shadow-md">
-                                    <div className="flex mb-4">
-                                        <GetSketchMap  latitude={hospital.wgs84Lat} longitude={hospital.wgs84Lon} placeName={hospital.dutyName}/>
-                                        <div className='max-w-[700px] ml-[50px]'>
-                                            <h2 className="text-2xl font-semibold mb-2">{hospital.dutyName}</h2>
-                                            <p className="text-gray-600 mb-2">주소: {hospital.dutyAddr}</p>
-                                            <p className="font-bold mb-2">진료과목: {hospital.dgidIdName}</p>
-                                            <p className="mb-2">전화번호: {hospital.dutyTel1}</p>
-                                        </div>
-                                    </div>
+                    {hospital && (
+                        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+                            <h2 className="text-xl font-bold mb-4 text-gray-800">병원 상세 정보</h2>
+                            <div className="flex flex-wrap">
+                                <div className="w-full md:w-1/2 mb-4 md:mb-0">
+                                    <GetSketchMap latitude={hospital.wgs84Lat} longitude={hospital.wgs84Lon} placeName={hospital.dutyName} />
+                                </div>
+                                <div className="w-full md:w-1/2 md:pl-6">
+                                    <h3 className="text-lg font-semibold mb-2">{hospital.dutyName}</h3>
+                                    <p className="text-gray-600 mb-1">주소: {hospital.dutyAddr}</p>
+                                    <p className="font-bold mb-1">진료과목: {hospital.dgidIdName}</p>
+                                    <p className="mb-1">전화번호: {hospital.dutyTel1}</p>
                                 </div>
                             </div>
-                        ) : ('')}
+                        </div>
+                    )}
 
-                        {/* 통계 데이터 섹션 */}
-                        <div className="mt-36">
-                            <p className="mt-[100px] text-[30px] font-bold mb-8 leading-[48px] font-NotoSerifTamilSlanted">
-                                {searchType === 'dutyAddr' ? ('지역 ') : (searchQuery)} 잔여 응급병상 요일별 {searchType === 'dutyName' ? (" 평균") : (" 합계")}
-                            </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="bg-white rounded-lg shadow-md p-6">
+                            <h2 className="text-xl font-bold mb-4 text-gray-800">
+                                {searchType === 'dutyAddr' ? '지역 ' : searchQuery} 잔여 응급병상 요일별 {searchType === 'dutyName' ? '평균' : '합계'}
+                            </h2>
                             <Chart key={`DOW-${chartKey}`} searchType={searchType} statType="DOW" keyword={keyValue} />
-                            <p className="mt-[100px] text-[30px] font-bold mb-8 leading-[48px] font-NotoSerifTamilSlanted">
-                                {searchType === 'dutyAddr' ? ('지역 ') : (searchQuery)} 잔여 응급병상 요일 및 오전/오후 {searchType === 'dutyName' ? (" 평균") : (" 합계")}
-                            </p>
-                            <Chart key={`APDW-${chartKey}`} searchType={searchType} statType="APDW" keyword={keyValue} />
-                            <p className="mt-[100px] text-[30px] font-bold mb-8 leading-[48px] font-NotoSerifTamilSlanted">
-                                {searchType === 'dutyAddr' ? ('지역 ') : (searchQuery)} 잔여 응급병상 시간별 {searchType === 'dutyName' ? (" 평균") : (" 합계")}
-                            </p>
-                            <Chart key={`HOD-${chartKey}`} searchType={searchType} statType="HOD" keyword={keyValue} />
                         </div>
 
+                        <div className="bg-white rounded-lg shadow-md p-6">
+                            <h2 className="text-xl font-bold mb-4 text-gray-800">
+                                {searchType === 'dutyAddr' ? '지역 ' : searchQuery} 잔여 응급병상 시간별 {searchType === 'dutyName' ? '평균' : '합계'}
+                            </h2>
+                            <Chart key={`APDW-${chartKey}`} searchType={searchType} statType="HOD" keyword={keyValue} />
+                        </div>
+
+
                     </div>
+                    <div className="bg-white rounded-lg shadow-lg p-8 mt-10">
+                        <h2 className="text-xl font-bold mb-4 text-gray-800">
+                            {searchType === 'dutyAddr' ? '지역 ' : searchQuery} 잔여 응급병상 요일 및 오전/오후 {searchType === 'dutyName' ? '평균' : '합계'}
+                        </h2>
+                        <Chart key={`APDW2-${chartKey}`} searchType={searchType} statType="APDW" keyword={keyValue} />
+                    </div>
+                </div>
+            </main>
+
+            <div className="absolute left-0 top-[1900px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">
+                <div className="absolute left-[136px] top-[41px] w-[117px] h-[126px] flex">
+                    <div className="absolute left-[13px] top-[97px] text-[24px] font-['Advent_Pro'] font-black text-[#333] whitespace-nowrap">응급NAVI</div>
+                    <img className="absolute left-0 top-0" width="117" height="100" src="/img/footer/logo.png"></img>
+                </div>
+                <img className="absolute left-[1634px] top-[47px]" width="145" height="34" src="/img/footer/group.png"></img>
+                <div className="absolute left-[404px] top-[137px] w-[621px] h-[16px] text-[14px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">2024 응급NAVI.</div>
+                <div className="absolute left-[390px] top-[62px] w-[742px] h-[90px] flex">
+                    <div className="absolute left-0 top-[54px] w-[742px] h-[36px] flex">
+                        <div className="absolute left-0 top-0 w-[742px] h-[16px] text-[14px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원     |     대표자명 : 민봉식     |     대표전화 : 1544-997<br /></div>
+                        <img className="absolute left-[2px] top-[27px]" width="9" height="8" src="/img/footer/copyright.png"></img>
+                    </div>
+                    <div className="absolute left-0 top-0 w-[221px] h-[21px] text-[15px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">이용약관              개인정보처리방침</div>
                 </div>
             </div>
-            <footer className="w-full bg-black text-white py-8 mt-auto">
-                <div className="container mx-auto px-6 flex justify-between items-center">
-                    <div className="flex items-center">
-                        <img src="/img/footer/logo.png" alt="응급NAVI" width="117" height="100" />
-                        <div className="ml-4 text-xl font-bold">응급NAVI</div>
-                    </div>
-                    <div className="text-gray-400 text-sm">
-                        서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원 | 대표전화: 1544-9970
-                        <br />
-                        © 2024 응급NAVI. All Rights Reserved.
-                    </div>
-                    <img src="/img/footer/group.png" alt="Group" width="145" height="34" />
-                </div>
-            </footer>
-        </>
+        </div>
     );
-};
-
+}
 export default GetEmergencyStat;
