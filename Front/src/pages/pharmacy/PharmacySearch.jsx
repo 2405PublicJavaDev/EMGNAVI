@@ -45,18 +45,18 @@ const PharmacySearch = () => {
     const fetchFavorites = async () => {
         try {
             console.log("fetchFavorites 호출됨!"); // 함수 호출 여부 확인
-    
+
             const response = await fetch(`/api/pharmacy/favorites?userId=${userId}`);
             console.log("API 요청 전송 완료"); // API 요청 전송 로그
-    
+
             const data = await response.json();
             console.log("API 응답 데이터:", data); // 응답 데이터 로그
-    
+
             const favoritesMap = {};
             data.forEach(favorite => {
                 favoritesMap[favorite.REFNO] = true;  // Adjusted to use REFNO (or appropriate key)
             });
-    
+
             console.log("favoritesMap:", favoritesMap); // favoritesMap 로그
             setFavorites(favoritesMap);
         } catch (error) {
@@ -71,40 +71,40 @@ const PharmacySearch = () => {
         }
     }, [userId]);
 
-  const fetchPharmacies = (page = 0) => {
-    setIsLoading(true);
-    setError(null);
+    const fetchPharmacies = (page = 0) => {
+        setIsLoading(true);
+        setError(null);
 
-    fetch(`/api/pharmacy/list?page=${page}&size=${itemsPerPage}`)
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then((data) => {
-            console.log("약국 리스트:", data.pharmacies); // 약국 리스트 로그
-            console.log("favorites 상태:", favorites); // favorites 상태 로그
+        fetch(`/api/pharmacy/list?page=${page}&size=${itemsPerPage}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("약국 리스트:", data.pharmacies); // 약국 리스트 로그
+                console.log("favorites 상태:", favorites); // favorites 상태 로그
 
-            // 즐겨찾기된 항목과 그렇지 않은 항목으로 나눠 정렬
-            const updatedPharmacies = data.pharmacies
-                .map(pharmacy => ({
-                    ...pharmacy,
-                    favorite: favorites[pharmacy.hpid] || false  // 즐겨찾기 여부 반영
-                }))
-                .sort((a, b) => b.favorite - a.favorite); // 즐겨찾기된 항목을 상단에 배치
+                // 즐겨찾기된 항목과 그렇지 않은 항목으로 나눠 정렬
+                const updatedPharmacies = data.pharmacies
+                    .map(pharmacy => ({
+                        ...pharmacy,
+                        favorite: favorites[pharmacy.hpid] || false  // 즐겨찾기 여부 반영
+                    }))
+                    .sort((a, b) => b.favorite - a.favorite); // 즐겨찾기된 항목을 상단에 배치
 
-            setPharmacies(updatedPharmacies);
-            setTotalPages(data.totalPages || 1);
-            setCurrentPage(page);
-            setIsLoading(false);
-        })
-        .catch((error) => {
-            console.error('There was an error fetching the pharmacy list!', error);
-            setError('Failed to fetch pharmacies');
-            setIsLoading(false);
-        });
-};
+                setPharmacies(updatedPharmacies);
+                setTotalPages(data.totalPages || 1);
+                setCurrentPage(page);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error('There was an error fetching the pharmacy list!', error);
+                setError('Failed to fetch pharmacies');
+                setIsLoading(false);
+            });
+    };
 
 
     const fetchAutoCompleteOptions = (inputValue) => {
@@ -149,9 +149,9 @@ const PharmacySearch = () => {
                 ...prevFavorites,
                 [hpid]: !prevFavorites[hpid]
             }));
-            setPharmacies(prevPharmacies => 
-                prevPharmacies.map(pharmacy => 
-                    pharmacy.hpid === hpid 
+            setPharmacies(prevPharmacies =>
+                prevPharmacies.map(pharmacy =>
+                    pharmacy.hpid === hpid
                         ? { ...pharmacy, favorite: !pharmacy.favorite }
                         : pharmacy
                 )
@@ -225,13 +225,13 @@ const PharmacySearch = () => {
         const visiblePages = pageNumbers.slice(startPage, endPage + 1);
 
         return (
-            <div className="mr-[5px] flex justify-center mt-8 space-x-2">
-                {currentPage > 0 && (
+            <div className="flex justify-center mt-8">
+                {currentPage > 1 && (
                     <button
                         onClick={() => handlePageChange(currentPage - 1)}
-                        className="bg-[#0b2d85] text-white px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold"
+                        className="mx-1 w-8 h-8 border border-[#0b2d85] text-[#0b2d85] rounded transition duration-300 hover:bg-[#0b2d85] hover:text-white"
                     >
-                        {'<'}
+                        ◀
                     </button>
                 )}
 
@@ -239,11 +239,10 @@ const PharmacySearch = () => {
                     <button
                         key={page}
                         onClick={() => handlePageChange(page)}
-                        className={`${
-                            page === currentPage
-                                ? 'bg-white text-[#0b2d85] border-2 border-[#0b2d85]'
-                                : 'bg-[#0b2d85] text-white'
-                        } px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold`}
+                        className={`mx-1 w-8 h-8 rounded transition duration-300 ${currentPage === page
+                            ? "bg-[#0b2d85] text-white"
+                            : "border border-[#0b2d85] text-[#0b2d85]"
+                            }`}
                     >
                         {page + 1}
                     </button>
@@ -252,9 +251,9 @@ const PharmacySearch = () => {
                 {currentPage < totalPages - 1 && (
                     <button
                         onClick={() => handlePageChange(currentPage + 1)}
-                        className="bg-[#0b2d85] text-white px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold"
+                        className="mx-1 w-8 h-8 border border-[#0b2d85] text-[#0b2d85] rounded transition duration-300 hover:bg-[#0b2d85] hover:text-white"
                     >
-                        {'>'}
+                        ▶
                     </button>
                 )}
             </div>
@@ -316,13 +315,13 @@ const PharmacySearch = () => {
 
     return (
         <>
-            <div className="flex flex-col items-center justify-center min-h-[1100px] bg-white">
-                <div className="w-full max-w-7xl mx-auto p-4 bg-white relative top-[90px]">
-                    <h1 className="text-[52px] font-bold text-center mb-8 leading-[48px] font-NotoSerifTamilSlanted">
+            <div className="flex flex-col mt-[83px] items-center justify-center bg-white">
+                <div className="w-full max-w-7xl mx-auto p-4 bg-white relative top-[50px]">
+                    {/* <h1 className="text-[52px] font-bold text-center mb-8 leading-[48px] font-NotoSerifTamilSlanted">
                         원하시는 약국을 검색해 주세요
-                    </h1>
+                    </h1> */}
 
-                    <div className="flex justify-center mb-8">
+                    <div className="flex justify-end mb-8 mt-7">
                         <select
                             value={searchType}
                             onChange={(e) => {
@@ -330,7 +329,7 @@ const PharmacySearch = () => {
                                 setSearchQuery('');
                                 setOptions([]);
                             }}
-                            className="border p-2 rounded-l-md w-[87px] h-[36px] text-[14px] leading-[20px] text-[#00000080] border-[#00000033]"
+                            className="border p-2 rounded-l-md w-[87px] h-[36px] text-[14px] leading-[20px] text-[#00000080] border-[#00000033] outline-0"
                         >
                             {categories.map((category) => (
                                 <option key={category.value} value={category.value}>
@@ -349,7 +348,7 @@ const PharmacySearch = () => {
                                 onBlur={handleInputBlur}
                                 onKeyDown={handleKeyDown}
                                 placeholder={`원하시는 ${searchType === 'dutyName' ? '기관' : '주소'}의 이름을 검색해 주세요`}
-                                className="border p-2 w-[360px] h-[36px] text-base leading-[20px] border-[#0000001a] text-black bg-white"
+                                className="border p-2 w-[360px] h-[36px] text-sm leading-[20px] border-[#0000001a] text-black bg-white outline-0"
                                 style={{ color: 'black', backgroundColor: 'white' }}
                             />
                             {showAutoComplete && (
@@ -368,7 +367,7 @@ const PharmacySearch = () => {
                                         options.map((option, index) => (
                                             <li
                                                 key={option.value}
-                                                className={`p-2 hover:bg-gray-100 cursor-pointer text-black text-base font-normal ${index === focusedOptionIndex ? 'bg-gray-100' : ''
+                                                className={`p-2 hover:bg-gray-100 cursor-pointer text-black text-sm font-normal ${index === focusedOptionIndex ? 'bg-gray-100' : ''
                                                     }`}
                                                 style={{
                                                     color: 'black',
@@ -394,7 +393,7 @@ const PharmacySearch = () => {
                                             </li>
                                         ))
                                     ) : (
-                                        <li className="p-2 text-gray-500 text-base font-normal">검색 결과가 없습니다</li>
+                                        <li className="p-2 text-gray-500 text-sm font-normal">검색 결과가 없습니다</li>
                                     )}
                                 </ul>
                             )}
@@ -411,7 +410,7 @@ const PharmacySearch = () => {
                     <div className="overflow-auto w-full text-align-center">
                         {isLoading ? (
                             <div className="flex justify-center items-center h-[500px] text-[70px] font-roboto text-black">
-                                <p>약국 정보 불러오는 중...</p>
+                                {/* <p>약국 정보 불러오는 중...</p> */}
                             </div>
                         ) : error ? (
                             <div className="flex justify-center items-center h-[500px]">
@@ -422,73 +421,90 @@ const PharmacySearch = () => {
                                 <p className="text-4xl">검색 결과가 없습니다.</p>
                             </div>
                         ) : (
-                            <table className="table-auto w-full border-collapse text-center shadow-lg rounded-lg border-color">
-                                <thead className="bg-[#cccccc1a]">
-                                    <tr>
-                                        <th className="py-4">즐겨찾기</th>
-                                        <th className="py-4">기관명</th>
-                                        <th className="py-4">주소</th>
-                                        <th className="py-4">전화번호</th>
-                                        <th className="py-4">상세 정보</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white">
-                                    {pharmacies.map((pharmacy) => (
-                                        <tr key={pharmacy.hpid} className="border-b">
-                                            <td className="py-4 font-roboto text-base text-black">
-                                                <button onClick={() => toggleFavorite(pharmacy.hpid, pharmacy.dutyName, pharmacy.dutyAddr, pharmacy.dutyTel1)}>
-                                                    <img
-                                                        src={pharmacy.favorite
-                                                            ? '/img/medicine/goldonestar.png'
-                                                            : '/img/medicine/greyonestar.png'
-                                                        }
-                                                        alt="즐겨찾기"
-                                                        className="w-6 h-6 mx-auto"
-                                                    />
-                                                </button>
-                                            </td>
-                                            <td className="py-4 font-roboto text-base text-black">
-                                                {pharmacy.dutyName || '정보 없음'}
-                                            </td>
-                                            <td className="py-4 font-roboto text-base text-black">
-                                                {pharmacy.dutyAddr || '정보 없음'}
-                                            </td>
-                                            <td className="py-4 font-roboto text-base text-black">
-                                                {pharmacy.dutyTel1 || '정보 없음'}
-                                            </td>
-                                            <td className="py-4">
-                                                <button
+                            <div className="w-full bg-white shadow-2xl rounded-2xl overflow-hidden">
+                                <div className="overflow-x-auto">
+                                    <div className="w-full bg-white shadow-2xl rounded-2xl overflow-hidden">
+                                        <div className="overflow-x-auto">
+                                            <table className="w-full">
+                                                <thead className="bg-[#0b2d85] from-blue-600 to-blue-800">
+                                                    <tr>
+                                                        <th className="py-4 pl-[87px] text-left text-sm font-semibold text-white uppercase tracking-wider">기관명</th>
+                                                        <th className="py-4 pl-[365px] text-left text-sm font-semibold text-white uppercase tracking-wider">위치</th>
+                                                        <th className="py-4 pl-[40px] text-left text-sm font-semibold text-white uppercase tracking-wider">전화번호</th>
+                                                        <th className="py-4"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-gray-200">
+                                                    {pharmacies.map((pharmacy) => (
+                                                        <tr key={pharmacy.hpid}
+                                                            className="hover:bg-gray-50 transition-colors duration-200"
+                                                            onClick={() => nav(`/pharmacy/detail/${pharmacy.hpid}`)}
+                                                            style={{ cursor: 'pointer' }}>
+                                                            <td className="py-4 px-6">
+
+                                                                <div className="flex items-center space-x-3">
+                                                                    <button
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation(); // 이벤트 전파 방지
+                                                                            toggleFavorite(pharmacy.hpid, pharmacy.dutyName, pharmacy.dutyAddr, pharmacy.dutyTel1)
+                                                                        }}
+                                                                        className="flex-shrink-0 group"
+                                                                    >
+                                                                        <img
+                                                                            src={pharmacy.favorite
+                                                                                ? '/img/medicine/goldonestar.png'
+                                                                                : '/img/medicine/greyonestar.png'}
+                                                                            alt="즐겨찾기"
+                                                                            className="w-6 h-6 transition-transform duration-200 transform hover:scale-110"
+                                                                        />
+                                                                    </button>
+                                                                    <p className="text-sm font-medium text-gray-900 truncate">{pharmacy.dutyName || '정보 없음'}</p>
+                                                                </div>
+                                                            </td>
+                                                            <td className="py-5 px-6 text-center">
+                                                                <span className="text-sm text-gray-600 truncate max-w-xs">{pharmacy.dutyAddr || '정보 없음'}</span>
+                                                            </td>
+                                                            <td className="py-4 px-6">
+                                                                <span className="text-sm text-gray-600 truncate max-w-xs">{pharmacy.dutyTel1 || '정보 없음'}</span>
+                                                            </td>
+                                                            <td className="py-4">
+                                                                {/* <button
                                                     onClick={() => nav(`/pharmacy/detail/${pharmacy.hpid}`)}
                                                     className="bg-[#0b2d85] text-white px-4 py-1 rounded-lg text-[14px] font-bold"
                                                 >
                                                     상세 정보
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                                </button> */}
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         )}
                     </div>
 
                     {!isLoading && !error && pharmacies.length > 0 && renderPageButtons()}
                 </div>
-            </div>
+            </div >
 
-            <footer className="w-full bg-black text-white py-8 mt-10">
-                <div className="flex justify-between items-center container mx-auto px-6">
-                    <div className="flex items-center">
-                        <img src="/img/footer/logo.png" alt="응급NAVI" width="117" height="100" />
-                        <div className="ml-4 text-xl font-bold">응급NAVI</div>
-                    </div>
-                    <div className="text-gray-400 text-sm">
-                        서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원 | 대표전화: 1544-9970
-                        <br />
-                        © 2024 응급NAVI. All Rights Reserved.
-                    </div>
-                    <img src="/img/footer/group.png" alt="Group" width="145" height="34" />
+            <div className="absolute left-0 top-[1155px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">
+                <div className="absolute left-[136px] top-[41px] w-[117px] h-[126px] flex">
+                    <div className="absolute left-[13px] top-[97px] text-[24px] font-['Advent_Pro'] font-black text-[#333] whitespace-nowrap">응급NAVI</div>
+                    <img className="absolute left-0 top-0" width="117" height="100" src="/img/footer/logo.png"></img>
                 </div>
-            </footer>
+                <img className="absolute left-[1634px] top-[47px]" width="145" height="34" src="/img/footer/group.png"></img>
+                <div className="absolute left-[404px] top-[137px] w-[621px] h-[16px] text-[14px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">2024 응급NAVI.</div>
+                <div className="absolute left-[390px] top-[62px] w-[742px] h-[90px] flex">
+                    <div className="absolute left-0 top-[54px] w-[742px] h-[36px] flex">
+                        <div className="absolute left-0 top-0 w-[742px] h-[16px] text-[14px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원     |     대표자명 : 민봉식     |     대표전화 : 1544-997<br /></div>
+                        <img className="absolute left-[2px] top-[27px]" width="9" height="8" src="/img/footer/copyright.png"></img>
+                    </div>
+                    <div className="absolute left-0 top-0 w-[221px] h-[21px] text-[15px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">이용약관              개인정보처리방침</div>
+                </div>
+            </div>
         </>
     );
 };

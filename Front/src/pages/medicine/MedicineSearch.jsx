@@ -128,13 +128,13 @@ const MedicineSearch = () => {
     );
 
     return (
-      <div className="mr-[5px] flex justify-center mt-8 space-x-2">
-        {currentPage > 0 && (
+      <div className="flex justify-center mt-8">
+        {currentPage > 1 && (
           <button
             onClick={() => handlePageChange(currentPage - 1)}
-            className="bg-[#0b2d85] text-white px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold"
+            className="mx-1 w-8 h-8 border border-[#0b2d85] text-[#0b2d85] rounded transition duration-300 hover:bg-[#0b2d85] hover:text-white"
           >
-            {'<'}
+            ◀
           </button>
         )}
 
@@ -142,22 +142,21 @@ const MedicineSearch = () => {
           <button
             key={page}
             onClick={() => handlePageChange(page)}
-            className={`${
-              page === currentPage
-                ? 'bg-white text-[#0b2d85] border-2 border-[#0b2d85]'
-                : 'bg-[#0b2d85] text-white'
-            } px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold`}
+            className={`mx-1 w-8 h-8 rounded transition duration-300 ${currentPage === page
+              ? "bg-[#0b2d85] text-white"
+              : "border border-[#0b2d85] text-[#0b2d85]"
+              }`}
           >
-            {page + 1} 
+            {page + 1}
           </button>
         ))}
 
         {currentPage < totalPages - 1 && (
           <button
             onClick={() => handlePageChange(currentPage + 1)}
-            className="bg-[#0b2d85] text-white px-3 py-1 rounded-md text-[22px] leading-[31px] font-bold"
+            className="mx-1 w-8 h-8 border border-[#0b2d85] text-[#0b2d85] rounded transition duration-300 hover:bg-[#0b2d85] hover:text-white"
           >
-            {'>'}
+            ▶
           </button>
         )}
       </div>

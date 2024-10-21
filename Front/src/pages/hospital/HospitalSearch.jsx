@@ -395,7 +395,7 @@ const HospitalSearch = () => {
                       <table className="w-full">
                         <thead className="bg-[#0b2d85] from-blue-600 to-blue-800">
                           <tr>
-                            <th className="py-4 pl-[87px] text-left text-sm font-semibold text-white uppercase tracking-wider">병원</th>
+                            <th className="py-4 pl-[87px] text-left text-sm font-semibold text-white uppercase tracking-wider">기관명</th>
                             <th className="py-4 pl-[133px] text-left text-sm font-semibold text-white uppercase tracking-wider">위치</th>
                             <th className="py-4 px-6 text-center text-sm font-semibold text-white uppercase tracking-wider">응급실</th>
                             <th className="py-4 px-6 text-center text-sm font-semibold text-white uppercase tracking-wider"></th>
@@ -445,12 +445,6 @@ const HospitalSearch = () => {
                                 </div>
                               </td>
                               <td className="py-4 px-6 text-center">
-                                {/* <button
-                                  onClick={() => nav(`/hospital/detail/${hospital.hpid}`)}
-                                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
-                                >
-                                  상세정보
-                                </button> */}
                               </td>
                             </tr>
                           ))}
@@ -470,20 +464,20 @@ const HospitalSearch = () => {
       </div >
 
       <div className="absolute left-0 top-[1155px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">
-                <div className="absolute left-[136px] top-[41px] w-[117px] h-[126px] flex">
-                    <div className="absolute left-[13px] top-[97px] text-[24px] font-['Advent_Pro'] font-black text-[#333] whitespace-nowrap">응급NAVI</div>
-                    <img className="absolute left-0 top-0" width="117" height="100" src="/img/footer/logo.png"></img>
-                </div>
-                <img className="absolute left-[1634px] top-[47px]" width="145" height="34" src="/img/footer/group.png"></img>
-                <div className="absolute left-[404px] top-[137px] w-[621px] h-[16px] text-[14px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">2024 응급NAVI.</div>
-                <div className="absolute left-[390px] top-[62px] w-[742px] h-[90px] flex">
-                    <div className="absolute left-0 top-[54px] w-[742px] h-[36px] flex">
-                        <div className="absolute left-0 top-0 w-[742px] h-[16px] text-[14px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원     |     대표자명 : 민봉식     |     대표전화 : 1544-997<br /></div>
-                        <img className="absolute left-[2px] top-[27px]" width="9" height="8" src="/img/footer/copyright.png"></img>
-                    </div>
-                    <div className="absolute left-0 top-0 w-[221px] h-[21px] text-[15px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">이용약관              개인정보처리방침</div>
-                </div>
-            </div>
+        <div className="absolute left-[136px] top-[41px] w-[117px] h-[126px] flex">
+          <div className="absolute left-[13px] top-[97px] text-[24px] font-['Advent_Pro'] font-black text-[#333] whitespace-nowrap">응급NAVI</div>
+          <img className="absolute left-0 top-0" width="117" height="100" src="/img/footer/logo.png"></img>
+        </div>
+        <img className="absolute left-[1634px] top-[47px]" width="145" height="34" src="/img/footer/group.png"></img>
+        <div className="absolute left-[404px] top-[137px] w-[621px] h-[16px] text-[14px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">2024 응급NAVI.</div>
+        <div className="absolute left-[390px] top-[62px] w-[742px] h-[90px] flex">
+          <div className="absolute left-0 top-[54px] w-[742px] h-[36px] flex">
+            <div className="absolute left-0 top-0 w-[742px] h-[16px] text-[14px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원     |     대표자명 : 민봉식     |     대표전화 : 1544-997<br /></div>
+            <img className="absolute left-[2px] top-[27px]" width="9" height="8" src="/img/footer/copyright.png"></img>
+          </div>
+          <div className="absolute left-0 top-0 w-[221px] h-[21px] text-[15px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">이용약관              개인정보처리방침</div>
+        </div>
+      </div>
     </>
   );
 };
