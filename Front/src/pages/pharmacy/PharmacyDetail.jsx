@@ -36,7 +36,7 @@ const 리뷰상세보기내용 = ({ review, onClose, onDelete, handleOpenReportP
         <div className="w-full bg-white border border-gray-200 rounded-lg shadow-sm p-4">
             <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center">
-                    <StarRating rating={review.rating} onRatingChange={() => {}} isClickable={false} />
+                    <StarRating rating={review.rating} onRatingChange={() => { }} isClickable={false} />
                     <span className="ml-2 text-sm text-gray-600">{review.writerNickname}님 | {review.createdDateLong}</span>
                 </div>
                 <button className="flex items-center text-red-500 hover:text-red-600"
@@ -219,7 +219,7 @@ const PharmacyDetail = () => {
         setSelectedReview(review);
         setIsReportPopupOpen(true);
     };
-    
+
     const handleCloseReportPopup = () => {
         setIsReportPopupOpen(false);
         setSelectedReview(null);
@@ -260,6 +260,7 @@ const PharmacyDetail = () => {
                                         <p className="text-gray-600 mb-2">주소: {pharmacy.dutyAddr}</p>
                                         <p className="font-bold mb-2">전화번호: {pharmacy.dutyTel1}</p>
                                         <p className="mb-2">우편번호: {pharmacy.postCdn1}-{pharmacy.postCdn2}</p>
+                                        <p className="mb-2">약도: {pharmacy.dutyMapping}</p>
                                         <p className="mb-2">운영 정보: {pharmacy.dutyInf}</p>
                                         <p className="mb-2">위도: {pharmacy.wgs84Lat}</p>
                                         <p>경도: {pharmacy.wgs84Lon}</p>
@@ -322,7 +323,7 @@ const PharmacyDetail = () => {
                                     <div className="px-6 py-4 text-center">리뷰가 없습니다.</div>
                                 ) : (
                                     <>
-{currentReviews.map((review) => (
+                                        {currentReviews.map((review) => (
                                             <React.Fragment key={review.no}>
                                                 <div className="px-6 py-4 flex items-center border-t border-gray-200">
                                                     <div className="w-28 text-center ml-16">
@@ -365,7 +366,7 @@ const PharmacyDetail = () => {
                                         key={page}
                                         onClick={() => setCurrentPage(page + 1)}
                                         className={`px-4 py-2 rounded-lg border border-[#0939AD] ${currentPage === page + 1 ? 'bg-[#0B2D85] text-white' : 'bg-white text-[#0B2D85] hover:bg-gray-200'
-                                        }`}
+                                            }`}
                                     >
                                         {page + 1}
                                     </button>
@@ -373,9 +374,9 @@ const PharmacyDetail = () => {
                             </div>
 
                             {/* 신고하기 모달 */}
-                            <Modal 
-                                isOpen={isReportPopupOpen} 
-                                onRequestClose={handleCloseReportPopup} 
+                            <Modal
+                                isOpen={isReportPopupOpen}
+                                onRequestClose={handleCloseReportPopup}
                                 contentLabel="신고 팝업"
                                 className="fixed inset-0 flex items-center justify-center z-50"
                                 overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-40"
