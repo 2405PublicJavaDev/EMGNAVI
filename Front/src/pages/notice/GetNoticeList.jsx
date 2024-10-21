@@ -161,21 +161,20 @@ const GetNoticeList = () => {
             ◀
           </button>
         )}
-    
+
         {visiblePages.map((page) => (
           <button
             key={page}
             onClick={() => handlePageChange(page)}
-            className={`mx-1 w-8 h-8 rounded transition duration-300 ${
-              currentPage === page
-                ? "bg-[#0b2d85] text-white"
-                : "border border-[#0b2d85] text-[#0b2d85]"
-            }`}
+            className={`mx-1 w-8 h-8 rounded transition duration-300 ${currentPage === page
+              ? "bg-[#0b2d85] text-white"
+              : "border border-[#0b2d85] text-[#0b2d85]"
+              }`}
           >
             {page + 1}
           </button>
         ))}
-    
+
         {currentPage < totalPages - 1 && (
           <button
             onClick={() => handlePageChange(currentPage + 1)}
@@ -186,7 +185,7 @@ const GetNoticeList = () => {
         )}
       </div>
     );
-    
+
   };
 
   // 블록 요소 제거 함수
@@ -315,131 +314,138 @@ const GetNoticeList = () => {
               <div className="w-[100%] h-[194px] top-0 left-0 bg-[#0b2d85]">
                 <div className="w-[145px] h-[38px] top-[38px] left-[335px] [font-family:'Inter',Helvetica] font-bold text-white text-[32px] leading-[normal] whitespace-nowrap absolute tracking-[0]">
                   공지사항
-                  {userId == 'admin' ? (<button onClick={() => nav = '/notice/postNotice'} className="ml-[30px] w-[100px] h-[45px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">등록</button>) : ('')}
+                  {userId === 'admin' && (
+                    <button
+                      onClick={() => nav('/notice/postNotice')}
+                      className="ml-[30px] mt-[5px] w-[100px] h-[40px] bg-[#f3f5f9] border border-[#e3e9ef] rounded-md text-lg font-medium text-[#000] hover:bg-gray-200 transition-colors duration-200"
+                    >
+                      등록
+                    </button>
+                  )}
                 </div>
               </div>
               <div id='main' className="w-[100%] mt-[-75px]">
                 <div className="w-[1300px] ml-[310px]">
 
-                <div className="bg-white border-t border-solid border-[#e5e7eb] p-10 pt-3 rounded-t-lg min-h-[700px] shadow-lg">
-  {notices && notices.length > 0 ? (
-    <div>
-      {notices.map((notice) => (
-        <div id='div0' key={notice.noticeId} className="bg-white border-b border-gray-200 py-6 flex transition-all duration-300 hover:shadow-lg">
-          <div id='div1' className="flex-grow">
-            <h2 className="text-lg font-bold text-gray-800 hover:text-blue-600 cursor-pointer" onClick={() => nav(`/notice/getNoticeDetail?noticeId=${notice.noticeId}`)}>
-              {notice.noticeTitle}
-            </h2>
-            <div className="flex items-center space-x-2 text-sm text-gray-500 mt-1">
-              <span>{notice.writerId}</span>
-              <span>&nbsp;|&nbsp;</span>
-              <span>{formatDate(notice.noticeDate)}</span>
-            </div>
-            <div className="mt-2">
-              <Truncate lines={3} ellipsis={<span>... <span className="text-blue-600 hover:underline cursor-pointer" onClick={() => nav(`/notice/getNoticeDetail?noticeId=${notice.noticeId}`)}>[상세보기]</span></span>}>
-                {blockToInline(notice.noticeContents)}
-              </Truncate>
-            </div>
-          </div>
-          {userId === 'admin' ? (
-            <div className="flex space-x-4 my-auto">
-              <button onClick={() => nav(`/notice/putNotice?noticeId=${notice.noticeId}`)} className="w-[100px] h-[35px] bg-[#f3f5f9] border border-solid border-[#e3e9ef] rounded-md text-[14px] font-medium text-[#000] hover:bg-[#e1e7ec]">수정</button>
-              <button onClick={() => handleDeleteBtn(notice.noticeId)} className="w-[100px] h-[35px] bg-[#0b2d85] rounded-md text-[14px] font-medium text-[#fff] hover:bg-[#0a3b6b]">삭제</button>
-            </div>
-          ) : null}
-        </div>
-      ))}
-    </div>
-  ) : (
-    <div style={{ padding: '20px', textAlign: 'center', fontSize: '16px', color: '#999' }}>
-      조회된 결과가 없습니다.
-    </div>
-  )}
-  {/* 페이지네이션 */}
-  {renderPageButtons()}
+                  <div className="bg-white border-t border-solid border-[#e5e7eb] p-10 pt-3 rounded-t-lg min-h-[700px] shadow-lg">
+                    {notices && notices.length > 0 ? (
+                      <div>
+                        {notices.map((notice) => (
+                          <div id='div0' key={notice.noticeId} className="bg-white border-b border-gray-200 py-6 flex transition-all duration-300 hover:shadow-lg">
+                            <div id='div1' className="flex-grow">
+                              <h2 className="text-lg font-bold text-gray-800 hover:text-blue-600 cursor-pointer" onClick={() => nav(`/notice/getNoticeDetail?noticeId=${notice.noticeId}`)}>
+                                {notice.noticeTitle}
+                              </h2>
+                              <div className="flex items-center space-x-2 text-sm text-gray-500 mt-1">
+                                <span>{notice.writerId}</span>
+                                <span>&nbsp;|&nbsp;</span>
+                                <span>{formatDate(notice.noticeDate)}</span>
+                              </div>
+                              <div className="mt-2">
+                                <Truncate lines={3} ellipsis={<span>... <span className="text-blue-600 hover:underline cursor-pointer" onClick={() => nav(`/notice/getNoticeDetail?noticeId=${notice.noticeId}`)}>[상세보기]</span></span>}>
+                                  {blockToInline(notice.noticeContents)}
+                                </Truncate>
+                              </div>
+                            </div>
+                            {userId === 'admin' ? (
+                              <div className="flex space-x-4 my-auto">
+                                <button onClick={() => nav(`/notice/putNotice?noticeId=${notice.noticeId}`)} className="w-[100px] h-[35px] bg-[#f3f5f9] border border-solid border-[#e3e9ef] rounded-md text-[14px] font-medium text-[#000] hover:bg-[#e1e7ec]">수정</button>
+                                <button onClick={() => handleDeleteBtn(notice.noticeId)} className="w-[100px] h-[35px] bg-[#0b2d85] rounded-md text-[14px] font-medium text-[#fff] hover:bg-[#0a3b6b]">삭제</button>
+                              </div>
+                            ) : null}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div style={{ padding: '20px', textAlign: 'center', fontSize: '16px', color: '#999' }}>
+                        조회된 결과가 없습니다.
+                      </div>
+                    )}
+                    {/* 페이지네이션 */}
+                    {renderPageButtons()}
 
-  {/* 검색창 */}
-  <div className="mt-10 flex justify-center mb-8">
-    <select
-      value={searchType}
-      onChange={(e) => {
-        setSearchType(e.target.value);
-        setSearchQuery('');
-        setOptions([]);
-      }}
-      className="border p-2 rounded-l-md w-[90px] h-[36px] text-[14px] leading-[20px] text-[#00000080] border-[#00000033] focus:outline-none focus:ring focus:ring-blue-500"
-    >
-      {categories.map((category) => (
-        <option key={category.value} value={category.value}>
-          {category.label}
-        </option>
-      ))}
-    </select>
+                    {/* 검색창 */}
+                    <div className="mt-10 flex justify-center mb-8">
+                      <select
+                        value={searchType}
+                        onChange={(e) => {
+                          setSearchType(e.target.value);
+                          setSearchQuery('');
+                          setOptions([]);
+                        }}
+                        className="border p-2 rounded-l-md w-[90px] h-[36px] text-[14px] leading-[20px] text-[#00000080] border-[#00000033] focus:outline-none focus:ring focus:ring-blue-500"
+                      >
+                        {categories.map((category) => (
+                          <option key={category.value} value={category.value}>
+                            {category.label}
+                          </option>
+                        ))}
+                      </select>
 
-    <div className="relative" style={{ zIndex: 1000 }}>
-      <input
-        ref={inputRef}
-        type="text"
-        value={searchQuery}
-        onChange={handleInputChange}
-        onFocus={() => setShowAutoComplete(true)}
-        onBlur={handleInputBlur}
-        onKeyDown={handleKeyDown}
-        placeholder={`공지사항의 ${searchType === 'title' ? '제목' : '내용'}으로 검색`}
-        className="border p-2 w-[360px] h-[36px] text-base leading-[20px] border-[#0000001a] text-black bg-white focus:outline-none focus:ring focus:ring-blue-500"
-      />
-      {showAutoComplete && (
-        <ul
-          ref={autoCompleteRef}
-          className="absolute z-[9999] w-full bg-white border border-gray-300 mt-1 rounded-md shadow-lg max-h-60 overflow-y-auto"
-          style={{
-            top: '100%',
-            left: 0,
-            backgroundColor: 'white',
-            color: 'black',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-          }}
-        >
-          {options.length > 0 ? (
-            options.map((option, index) => (
-              <li
-                key={`option-${index}`}
-                className={`p-2 hover:bg-gray-100 cursor-pointer text-black text-base font-normal ${index === focusedOptionIndex ? 'bg-gray-100' : ''}`}
-                onClick={() => {
-                  setSearchQuery(option.label);
-                  setSelectedOption(option);
-                  setShowAutoComplete(false);
-                  handleSearch(0);
-                }}
-                onMouseEnter={() => {
-                  setFocusedOptionIndex(index);
-                  setHoveredOption(option);
-                  setSearchQuery(option.label);
-                }}
-                onMouseLeave={() => {
-                  if (!selectedOption) {
-                    setSearchQuery(inputRef.current.value);
-                  }
-                }}
-              >
-                {option.label}
-              </li>
-            ))
-          ) : (
-            <li className="p-2 text-gray-500 text-base font-normal">검색 결과가 없습니다</li>
-          )}
-        </ul>
-      )}
-    </div>
+                      <div className="relative" style={{ zIndex: 1000 }}>
+                        <input
+                          ref={inputRef}
+                          type="text"
+                          value={searchQuery}
+                          onChange={handleInputChange}
+                          onFocus={() => setShowAutoComplete(true)}
+                          onBlur={handleInputBlur}
+                          onKeyDown={handleKeyDown}
+                          placeholder={`공지사항의 ${searchType === 'title' ? '제목' : '내용'}으로 검색`}
+                          className="border p-2 w-[360px] h-[36px] text-base leading-[20px] border-[#0000001a] text-black bg-white focus:outline-none focus:ring focus:ring-blue-500"
+                        />
+                        {showAutoComplete && (
+                          <ul
+                            ref={autoCompleteRef}
+                            className="absolute z-[9999] w-full bg-white border border-gray-300 mt-1 rounded-md shadow-lg max-h-60 overflow-y-auto"
+                            style={{
+                              top: '100%',
+                              left: 0,
+                              backgroundColor: 'white',
+                              color: 'black',
+                              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                            }}
+                          >
+                            {options.length > 0 ? (
+                              options.map((option, index) => (
+                                <li
+                                  key={`option-${index}`}
+                                  className={`p-2 hover:bg-gray-100 cursor-pointer text-black text-base font-normal ${index === focusedOptionIndex ? 'bg-gray-100' : ''}`}
+                                  onClick={() => {
+                                    setSearchQuery(option.label);
+                                    setSelectedOption(option);
+                                    setShowAutoComplete(false);
+                                    handleSearch(0);
+                                  }}
+                                  onMouseEnter={() => {
+                                    setFocusedOptionIndex(index);
+                                    setHoveredOption(option);
+                                    setSearchQuery(option.label);
+                                  }}
+                                  onMouseLeave={() => {
+                                    if (!selectedOption) {
+                                      setSearchQuery(inputRef.current.value);
+                                    }
+                                  }}
+                                >
+                                  {option.label}
+                                </li>
+                              ))
+                            ) : (
+                              <li className="p-2 text-gray-500 text-base font-normal">검색 결과가 없습니다</li>
+                            )}
+                          </ul>
+                        )}
+                      </div>
 
-    <button
-      onClick={() => handleSearch(0)}
-      className="bg-[#0b2d85] text-white px-4 h-[36px] text-[17px] rounded-r-md hover:bg-[#0a3b6b]"
-    >
-      검색
-    </button>
-  </div>
-</div>
+                      <button
+                        onClick={() => handleSearch(0)}
+                        className="bg-[#0b2d85] text-white px-4 h-[36px] text-[17px] rounded-r-md hover:bg-[#0a3b6b]"
+                      >
+                        검색
+                      </button>
+                    </div>
+                  </div>
 
 
                 </div>

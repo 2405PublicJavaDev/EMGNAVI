@@ -138,11 +138,16 @@ const GetNoticeDetail = () => {
                                                     {/* <ChevronRight className="w-4 h-4 ml-1" /> */}
                                                 </button>
                                             </div>
-                                            {userId == 'admin' ? (
-                                                <div className="flex space-x-4">
-                                                    <button onClick={() => nav(`/notice/putNotice?noticeId=${notice.noticeId}`)} className="w-[100px] h-[35px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">수정</button>
-                                                    <button onClick={() => handleDeleteBtn(notice.noticeId)} className="w-[100px] h-[35px] bg-[#0b2d85] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#fff] text-center">삭제</button>
-                                                </div>) : ('')}
+                                            {userId === 'admin' && (
+                                                <div className="flex justify-end space-x-4 mt-4">
+                                                    <button onClick={() => nav(`/notice/putNotice?noticeId=${notice.noticeId}`)} className="w-[100px] h-[35px] bg-[#f3f5f9] border border-gray-300 rounded-md text-md font-medium text-[#000] hover:bg-gray-200 transition-colors duration-200">
+                                                        수정
+                                                    </button>
+                                                    <button onClick={() => handleDeleteBtn(notice.noticeId)} className="w-[100px] h-[35px] bg-[#0b2d85] rounded-md text-md font-medium text-white hover:bg-[#0a5a92] transition-colors duration-200">
+                                                        삭제
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
 
 
