@@ -90,17 +90,16 @@ const Header = () => {
                                 </div>
                             )}
                         </div>
-                        <div className="absolute left-[857px] top-0 w-[207px] h-[155px] flex">
+                        <button onClick={handlerGoMain} className="absolute left-[857px] top-0 w-[207px] h-[155px] flex">
                             <img className="absolute left-0 right-0 top-0 bottom-0" width="206" height="154" src="/img/header/background.png"></img>
                             <img className="absolute left-[2.21%] right-[2.8%] top-0 bottom-[2.63%]" width="196" height="150" src="/img/header/line.png"></img>
                             <div
-                                onClick={handlerGoMain}
                                 style={{ cursor: 'pointer' }}
                                 className="absolute left-[24px] top-[6px] w-[159px] h-[123px] flex">
                                 <div className="absolute left-0 top-[95px] w-[159px] h-[28px] text-[24px] font-['Advent_Pro'] font-black text-[#0b2d85] text-center">응급NAVI</div>
                                 <img className="absolute left-[24px] top-0" width="111" height="97" src="/img/header/logo.png"></img>
                             </div>
-                        </div>
+                        </button>
                     </div>
                     <div className="absolute left-[264px] top-[60px] w-[1393px] h-[23px] flex">
                         <button className="absolute left-0 top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap hover:border-b-2 hover:border-gray-600 hover:text-gray-700 hover:transition-all hover:duration-300" onClick={() => nav('/map/getEmergencyMap')}>내비게이션</button>
