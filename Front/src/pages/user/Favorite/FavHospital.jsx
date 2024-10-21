@@ -240,17 +240,17 @@ export const FavHospital = () => {
                                         </tr>
                                     ) : (
                                         hospitalList.map((item, index) => (
-                                            <tr key={index}>
-                                                <td className="w-[4%] p-3 border-b whitespace-nowrap overflow-hidden text-ellipsis">
+                                            <tr key={index} className="border-b">
+                                                <td className="w-[4%] p-3 whitespace-nowrap overflow-hidden text-ellipsis">
                                                     <div className="flex justify-center items-center h-full">
                                                         <input type="checkbox" className="form-checkbox h-4 w-4 text-[#0B2D85]"
                                                             onChange={(e) => singleSelect(e.target.checked, item.refNo)}
                                                             checked={checkItems.includes(item.refNo)} />
                                                     </div>
                                                 </td>
-                                                <td className="w-[25%] border-b p-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">{item.dutyName}</td>
-                                                <td className="w-[40%] border-b p-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">{item.dutyAddr}</td>
-                                                <td className="w-[15%] border-b p-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">{item.dutyTel1}</td>
+                                                <td className="w-[25%] p-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">{item.dutyName}</td>
+                                                <td className="w-[40%] p-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">{item.dutyAddr}</td>
+                                                <td className="w-[15%] p-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">{item.dutyTel1}</td>
                                                 <td className="w-[11%] p-3 items-center whitespace-nowrap overflow-hidden">
                                                     <button onClick={() => detailPage(item.refNo)} className="bg-[#0B2D85] text-white px-4 py-1 rounded">상세 정보 보기</button>
                                                 </td>
