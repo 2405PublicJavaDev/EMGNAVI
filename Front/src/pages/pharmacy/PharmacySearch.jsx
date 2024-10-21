@@ -106,7 +106,6 @@ const PharmacySearch = () => {
             });
     };
 
-
     const fetchAutoCompleteOptions = (inputValue) => {
         if (inputValue.length < 2) {
             setOptions([]);
@@ -171,7 +170,6 @@ const PharmacySearch = () => {
             alert('즐겨찾기 처리 중 오류가 발생했습니다.');
         }
     };
-    
 
     const handleSearch = (page = 0) => {
         if (!searchQuery) {
@@ -215,7 +213,7 @@ const PharmacySearch = () => {
     };
 
     const handlePageChange = (newPage) => {
-        const serverPage = newPage - 1;  // 서버는 0부터 시작하므로 -1 처리
+        const serverPage = newPage;  // 페이지 전달 시 그대로 전달
         if (searchQuery) {
             handleSearch(serverPage);  // 검색 시 페이지 전달
         } else {
@@ -224,45 +222,46 @@ const PharmacySearch = () => {
     };
 
     const renderPageButtons = () => {
-        const maxVisiblePages = 10;
-        const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
-
-        let startPage = Math.max(0, currentPage - Math.floor(maxVisiblePages / 2));
-        let endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 1);
-
-        if (endPage - startPage + 1 < maxVisiblePages) {
-            startPage = Math.max(0, endPage - maxVisiblePages + 1);
-        }
-
-        const visiblePages = pageNumbers.slice(startPage, endPage + 1);
-
+        const maxVisiblePages = 10; // 한 번에 표시할 페이지 버튼 수
+        const totalPageGroups = Math.ceil(totalPages / maxVisiblePages); // 페이지 그룹의 수
+        const currentPageGroup = Math.floor(currentPage / maxVisiblePages); // 현재 페이지가 속한 그룹
+    
+        const startPage = currentPageGroup * maxVisiblePages; // 현재 그룹의 첫 페이지 번호
+        const endPage = Math.min(startPage + maxVisiblePages, totalPages); // 현재 그룹의 마지막 페이지 번호
+    
+        const visiblePages = Array.from({ length: endPage - startPage }, (_, i) => startPage + i); // 현재 그룹의 페이지 번호 배열
+    
         return (
             <div className="flex justify-center mt-8">
-                {currentPage > 0 && (  // 0부터 시작이므로 0보다 클 때 이전 버튼
+                {/* 이전 페이지 그룹으로 이동 */}
+                {currentPageGroup > 0 && (
                     <button
-                        onClick={() => handlePageChange(currentPage)}
+                        onClick={() => handlePageChange(startPage - 1)}
                         className="mx-1 w-8 h-8 border border-[#0b2d85] text-[#0b2d85] rounded transition duration-300 hover:bg-[#0b2d85] hover:text-white"
                     >
                         ◀
                     </button>
                 )}
-        
+    
+                {/* 현재 그룹의 페이지 번호 표시 */}
                 {visiblePages.map((page) => (
                     <button
                         key={page}
-                        onClick={() => handlePageChange(page + 1)}  // 여기서 페이지 클릭 시 1을 더해 1-based 페이지 전송
-                        className={`mx-1 w-8 h-8 rounded transition duration-300 ${currentPage === page
-                            ? "bg-[#0b2d85] text-white"
-                            : "border border-[#0b2d85] text-[#0b2d85]"
-                            }`}
+                        onClick={() => handlePageChange(page)}
+                        className={`mx-1 w-8 h-8 rounded transition duration-300 ${
+                            currentPage === page
+                                ? "bg-[#0b2d85] text-white"
+                                : "border border-[#0b2d85] text-[#0b2d85]"
+                        }`}
                     >
-                        {page + 1}  
+                        {page + 1} {/* 화면에는 1부터 표시 */}
                     </button>
                 ))}
-        
-                {currentPage < totalPages - 1 && (
+    
+                {/* 다음 페이지 그룹으로 이동 */}
+                {currentPageGroup < totalPageGroups - 1 && (
                     <button
-                        onClick={() => handlePageChange(currentPage + 2)}  // 다음 페이지로 이동 시 1-based 페이지
+                        onClick={() => handlePageChange(endPage)}
                         className="mx-1 w-8 h-8 border border-[#0b2d85] text-[#0b2d85] rounded transition duration-300 hover:bg-[#0b2d85] hover:text-white"
                     >
                         ▶
@@ -270,7 +269,6 @@ const PharmacySearch = () => {
                 )}
             </div>
         );
-        
     };
 
     useEffect(() => {
@@ -330,10 +328,6 @@ const PharmacySearch = () => {
         <>
             <div className="flex flex-col mt-[83px] items-center justify-center bg-white">
                 <div className="w-full max-w-7xl mx-auto p-4 bg-white relative top-[50px]">
-                    {/* <h1 className="text-[52px] font-bold text-center mb-8 leading-[48px] font-NotoSerifTamilSlanted">
-                        원하시는 약국을 검색해 주세요
-                    </h1> */}
-
                     <div className="flex justify-end mb-8 mt-7">
                         <select
                             value={searchType}
@@ -422,9 +416,7 @@ const PharmacySearch = () => {
 
                     <div className="overflow-auto w-full text-align-center">
                         {isLoading ? (
-                            <div className="flex justify-center items-center h-[500px] text-[70px] font-roboto text-black">
-                                {/* <p>약국 정보 불러오는 중...</p> */}
-                            </div>
+                            <div className="flex justify-center items-center h-[500px] text-[70px] font-roboto text-black"></div>
                         ) : error ? (
                             <div className="flex justify-center items-center h-[500px]">
                                 <p className="text-4xl">에러 발생: {error}</p>
