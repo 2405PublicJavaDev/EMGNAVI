@@ -373,7 +373,7 @@ const GetNoticeList = () => {
                           setSearchQuery('');
                           setOptions([]);
                         }}
-                        className="border p-2 rounded-l-md w-[90px] h-[36px] text-[14px] leading-[20px] text-[#00000080] border-[#00000033] focus:outline-none focus:ring focus:ring-blue-500"
+                        className="border p-2 rounded-l-md w-[90px] h-[36px] text-[14px] leading-[20px] text-[#00000080] border-[#00000033] "
                       >
                         {categories.map((category) => (
                           <option key={category.value} value={category.value}>
@@ -392,7 +392,7 @@ const GetNoticeList = () => {
                           onBlur={handleInputBlur}
                           onKeyDown={handleKeyDown}
                           placeholder={`공지사항의 ${searchType === 'title' ? '제목' : '내용'}으로 검색`}
-                          className="border p-2 w-[360px] h-[36px] text-base leading-[20px] border-[#0000001a] text-black bg-white focus:outline-none focus:ring focus:ring-blue-500"
+                          className="border p-2 w-[360px] h-[36px] text-base leading-[20px] border-[#0000001a] text-black bg-white focus:outline-none"
                         />
                         {showAutoComplete && (
                           <ul
