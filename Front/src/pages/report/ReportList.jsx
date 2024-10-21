@@ -236,8 +236,8 @@ const handlePageChange = (newPage) => {
 };
 
   return (
-    <div className="w-full min-h-screen bg-white flex flex-col">
-      <main className="flex-grow bg-white py-10">
+    <div className="w-full min-h-screen bg-white flex flex-col relative">
+      <main className="flex-grow bg-white">
         <div className="relative mx-auto top-[70px] bg-white rounded-lg p-8">
           <div className="absolute top-0 left-0 right-0 w-[100%] h-[194px] bg-[#850B2D] rounded-t-lg"></div>
           <div className="flex justify-center">
@@ -300,16 +300,15 @@ const handlePageChange = (newPage) => {
                 </table>
             </div>
           </div>
-          <div className="flex justify-center">
-                <Pagination
-                  paginationInfo={paginationInfo}
-                  currentPage={currentPage}
-                  onPageChange={handlePageChange}
-                />
-          </div>
         </div>
       </main>
-
+      <div className="flex justify-center pb-[30px]">
+        <Pagination
+          paginationInfo={paginationInfo}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
+      </div>
       <footer className="bg-black text-white py-8">
         <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
           <div className="flex items-center mb-8 md:mb-0">
