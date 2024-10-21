@@ -134,21 +134,31 @@ const PharmacySearch = () => {
             alert("로그인 후 즐겨찾기 기능을 사용할 수 있습니다.");
             return;
         }
-
+    
         try {
-            if (favorites[hpid]) {
-                await fetch(`/api/pharmacy/favorite?userId=${userId}&refNo=${hpid}`, { method: 'DELETE' });
-            } else {
-                await fetch('/api/pharmacy/favorite', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: new URLSearchParams({ userId, refNo: hpid, dutyName, dutyAddr, dutyTel1 })
-                });
+            let method = favorites[hpid] ? 'DELETE' : 'POST';
+            let body = new URLSearchParams({ userId, refNo: hpid });
+    
+            if (method === 'POST') {
+                body.append('dutyName', dutyName);
+                body.append('dutyAddr', dutyAddr);
+                body.append('dutyTel1', dutyTel1);
             }
+    
+            // 즐겨찾기 업데이트 API 호출
+            await fetch(`/api/pharmacy/favorite`, {
+                method,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: body.toString(),
+            });
+    
+            // 즐겨찾기 상태 업데이트 (전체 페이지 리로드 없이)
             setFavorites(prevFavorites => ({
                 ...prevFavorites,
-                [hpid]: !prevFavorites[hpid]
+                [hpid]: !prevFavorites[hpid]  // 해당 약국의 즐겨찾기 상태 토글
             }));
+    
+            // 현재 페이지의 약국 리스트에서 즐겨찾기 상태만 변경
             setPharmacies(prevPharmacies =>
                 prevPharmacies.map(pharmacy =>
                     pharmacy.hpid === hpid
@@ -161,6 +171,7 @@ const PharmacySearch = () => {
             alert('즐겨찾기 처리 중 오류가 발생했습니다.');
         }
     };
+    
 
     const handleSearch = (page = 0) => {
         if (!searchQuery) {
@@ -204,10 +215,11 @@ const PharmacySearch = () => {
     };
 
     const handlePageChange = (newPage) => {
+        const serverPage = newPage - 1;  // 서버는 0부터 시작하므로 -1 처리
         if (searchQuery) {
-            handleSearch(newPage);
+            handleSearch(serverPage);  // 검색 시 페이지 전달
         } else {
-            fetchPharmacies(newPage);
+            fetchPharmacies(serverPage);  // 일반 약국 리스트 요청 시 페이지 전달
         }
     };
 
@@ -226,31 +238,31 @@ const PharmacySearch = () => {
 
         return (
             <div className="flex justify-center mt-8">
-                {currentPage > 0 && (
+                {currentPage > 0 && (  // 0부터 시작이므로 0보다 클 때 이전 버튼
                     <button
-                        onClick={() => handlePageChange(currentPage - 1)}
+                        onClick={() => handlePageChange(currentPage)}
                         className="mx-1 w-8 h-8 border border-[#0b2d85] text-[#0b2d85] rounded transition duration-300 hover:bg-[#0b2d85] hover:text-white"
                     >
                         ◀
                     </button>
                 )}
-
+        
                 {visiblePages.map((page) => (
                     <button
                         key={page}
-                        onClick={() => handlePageChange(page)}
+                        onClick={() => handlePageChange(page + 1)}  // 여기서 페이지 클릭 시 1을 더해 1-based 페이지 전송
                         className={`mx-1 w-8 h-8 rounded transition duration-300 ${currentPage === page
                             ? "bg-[#0b2d85] text-white"
                             : "border border-[#0b2d85] text-[#0b2d85]"
                             }`}
                     >
-                        {page + 1}
+                        {page + 1}  
                     </button>
                 ))}
-
+        
                 {currentPage < totalPages - 1 && (
                     <button
-                        onClick={() => handlePageChange(currentPage + 1)}
+                        onClick={() => handlePageChange(currentPage + 2)}  // 다음 페이지로 이동 시 1-based 페이지
                         className="mx-1 w-8 h-8 border border-[#0b2d85] text-[#0b2d85] rounded transition duration-300 hover:bg-[#0b2d85] hover:text-white"
                     >
                         ▶
@@ -258,6 +270,7 @@ const PharmacySearch = () => {
                 )}
             </div>
         );
+        
     };
 
     useEffect(() => {
