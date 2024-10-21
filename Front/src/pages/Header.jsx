@@ -57,7 +57,7 @@ const Header = () => {
                                                 <div
                                                     onClick={handlerGoAdminpage}
                                                     style={{ cursor: 'pointer' }}
-                                                    className="absolute left-[1662px] top-0 w-[111px] h-[27px] text-[16px] font-['Inter'] font-medium text-[#fff] text-center">관리자페이지</div>
+                                                    className="absolute left-[1662px] top-0 w-[111px] h-[27px] text-[16px] font-['Inter'] font-medium text-[#fff] text-center hover:border-b-2 hover:border-white hover:transition-all hover:duration-200">관리자페이지</div>
                                                 <div className="absolute left-0 top-0 w-[1662px] h-[27px] text-[16px] font-['Inter'] font-extralight text-[#7d8597] text-right">|</div>
                                             </>
                                         ) : (
@@ -71,7 +71,6 @@ const Header = () => {
                                         )}
                                     </div>
                                 </div>
-
                             ) : (
                                 <div className="absolute left-0 top-0 w-[100%] h-[31px] flex">
                                     <div className="absolute left-0 top-0 w-[100%] h-[31px] bg-[#0b2d85]"></div>
@@ -104,14 +103,21 @@ const Header = () => {
                         </div>
                     </div>
                     <div className="absolute left-[264px] top-[60px] w-[1393px] h-[23px] flex">
-                        <button className="absolute left-[401px] top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap" onClick={() => window.location.href = '/map/getPharmacyMap'}>주변약국</button>
-                        <button className="absolute left-[208px] top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap" onClick={() => window.location.href = '/map/getHospitalMap'}>주변병원</button>
-                        <button className="absolute left-[869px] top-0 w-[147px] text-[16px] font-['Jost'] font-bold text-[#000]" onClick={() => window.location.href = '/map/getAedMap'}>자동제세동기(AED)</button>
-                        <button className="absolute left-[1136px] top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap">이용안내</button>
-                        <button className="absolute left-[1329px] top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap" onClick={() => window.location.href = '/notice/getNoticeList'}> 공지사항</button>
-                        <button className="absolute left-0 top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap" onClick={() => window.location.href = '/map/getEmergencyMap'}>주변응급실</button>
+                        <button className="absolute left-[401px] top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap hover:border-b-2 hover:border-gray-600 hover:text-gray-700 hover:transition-all hover:duration-300" onClick={() => window.location.href = '/map/getPharmacyMap'}>주변약국</button>
+
+                        <button className="absolute left-[208px] top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap hover:border-b-2 hover:border-gray-600 hover:text-gray-700 hover:transition-all hover:duration-300" onClick={() => window.location.href = '/map/getHospitalMap'}>주변병원</button>
+
+                        <button className="absolute left-[869px] top-0 w-[147px] text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap hover:border-b-2 hover:border-gray-600 hover:text-gray-700 hover:transition-all hover:duration-300" onClick={() => window.location.href = '/map/getAedMap'}>자동제세동기(AED)</button>
+
+                        <button className="absolute left-[1136px] top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap hover:border-b-2 hover:border-gray-600 hover:text-gray-700 hover:transition-all hover:duration-300">이용안내</button>
+
+                        <button className="absolute left-[1329px] top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap hover:border-b-2 hover:border-gray-600 hover:text-gray-700 hover:transition-all hover:duration-300" onClick={() => window.location.href = '/notice/getNoticeList'}>공지사항</button>
+
+                        <button className="absolute left-0 top-0 text-[16px] font-['Jost'] font-bold text-[#000] whitespace-nowrap hover:border-b-2 hover:border-gray-600 hover:text-gray-700 hover:transition-all hover:duration-300" onClick={() => window.location.href = '/map/getEmergencyMap'}>주변응급실</button>
                     </div>
+
                 </div>
+
             }
         </>
     )
