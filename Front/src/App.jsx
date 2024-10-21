@@ -47,7 +47,7 @@ import HospitalDetail from './pages/hospital/HospitalDetail';
 import HospitalSearch from './pages/hospital/HospitalSearch';
 
 function App() {
-  const { reload, handleReload, handleUser, userId } = useContext(UserContext);
+  const { reload, handleReload, handleUser } = useContext(UserContext);
 
   useEffect(() => {
     const fetchSessionData = async () => {
@@ -57,9 +57,9 @@ function App() {
         handleUser(response.userId, response.userNickname);
       }
     };
-
     fetchSessionData();
-  }, [reload == true]);
+
+  }, [reload]);
 
   return (
     <>
