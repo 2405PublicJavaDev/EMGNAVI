@@ -235,16 +235,16 @@ export const ReportList = () => {
   };
 
   return (
-    <div className="w-full min-h-screen bg-white flex flex-col relative">
-      <main className="flex-grow bg-white">
-        <div className="relative mx-auto top-[70px] bg-white rounded-lg p-8">
-          <div className="absolute top-0 left-0 right-0 w-[100%] h-[194px] bg-[#850B2D] rounded-t-lg"></div>
+    <div className="w-full min-h-screen bg-white flex flex-col">
+      <main className="flex-grow bg-white py-10">
+        <div className="relative mx-auto top-[84px] rounded-lg p-8">
+          <div className="absolute top-0 left-0 right-0 w-[100%] h-[170px] bg-[#850B2D] rounded-t-lg"></div>
           <div className="flex justify-center">
             <div className="w-[1490px]">
-              <div className="relative w-full left-[30px] top-[50px] h-[80px] text-white text-3xl font-bold mb-8 flex">
+              <div className="relative w-full left-[30px] top-[25px] h-[80px] text-white text-3xl font-bold mb-8 flex">
                 회원 신고 리스트
               </div>
-              <table className="relative w-full p-3 top-[2px] bg-white rounded-tr-lg rounded-tl-lg overflow-hidden table-fixed">
+              <table className="relative w-full p-3 top-[-25px] bg-white rounded-tr-lg rounded-tl-lg overflow-hidden table-fixed">
                 <thead className="p-3">
                   <tr className="bg-[#FFF5F6]">
                     <th className="w-[5%]  py-3 font-bold"></th>
