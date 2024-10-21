@@ -28,10 +28,7 @@ const MypageModifyInf = () => {
     const { fetchData } = useAxios();
     const nav = useNavigate();
 
-    const [isMaleChecked, setIsMaleChecked] = useState(false);
-    const [isFemaleChecked, setIsFemaleChecked] = useState(false);
     const [isNicknameChecked, setIsNicknameChecked] = useState(true);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [userInfo, setUserInfo] = useState(null);
     const [currentPw, setCurrentPw] = useState('');
@@ -61,15 +58,11 @@ const MypageModifyInf = () => {
                     setCurrentPw(response.data.userPw);
                 } catch (err) {
                     setError(err);
-                } finally {
-                    setLoading(false);
                 }
             };
             fetchData();
-        } else {
-            setLoading(false);
         }
-    }, []); // 의존성 배열을 빈 배열로 설정
+    }, [userId]); // 의존성 배열을 빈 배열로 설정
 
     const handlePhoneChange = (newPhone) => {
         setUserPhone(newPhone); // 전화번호 업데이트
@@ -95,8 +88,6 @@ const MypageModifyInf = () => {
                 ...prevValues,
                 userGender: gender
             }));
-            setIsMaleChecked(gender === 'M');
-            setIsFemaleChecked(gender === 'F');
         }
     };
 
@@ -113,10 +104,6 @@ const MypageModifyInf = () => {
             marketingAgree: 'N'
         }));
     };
-
-    if (loading) {
-        return <div>데이터를 불러오는 중입니다...</div>;
-    }
 
     if (error) {
         return <div>오류가 발생했습니다: {error.message}</div>;
@@ -347,12 +334,11 @@ const MypageModifyInf = () => {
                     onClick={handlerDelete}
                     style={{ cursor: 'pointer' }}
                     className="font-['Inter'] font-semibold">회원탈퇴</span></div>
-            <div className="absolute left-[1372px] top-[1851px] text-[24px] font-['Inter'] font-semibold text-[#fff] whitespace-nowrap">내정보 변경</div>
             <div className="absolute left-[1113px] top-[1690px] w-[387px] h-[60px] flex">
-                <div className="absolute left-0 top-0 w-[184px] h-[60px] flex">
+                <button onClick={() => nav('/user/mypage')} className="absolute left-0 top-0 w-[184px] h-[60px] flex">
                     <div className="absolute left-0 top-0 w-[184px] h-[60px] bg-[#fff] border-[1px] border-solid border-[#0b2d85] rounded-[50px]"></div>
                     <div className="absolute left-0 top-0 w-[184px] h-[60px] text-[16px] font-['Inter'] text-[#0b2d85] text-center flex flex-col justify-center">취소</div>
-                </div>
+                </button>
                 <div className="absolute left-[203px] top-0 w-[184px] h-[60px] flex">
                     <button
                         type='submit'

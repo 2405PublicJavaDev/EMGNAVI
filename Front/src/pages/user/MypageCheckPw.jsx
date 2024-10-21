@@ -26,7 +26,7 @@ const MypageCheckPw = () => {
         if (userId) {
             setValues(prevValues => ({ ...prevValues, uEmail: userId }));
         }
-    }, []);
+    }, [userId]);
 
     const handlePasswordCheck = async (e) => {
         if (e === 'Enter' || e.type === 'click') {
