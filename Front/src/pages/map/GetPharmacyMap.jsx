@@ -162,6 +162,9 @@ function GetPharmacyMap() {
             pharmacys.forEach(pharmacy => {
                 console.log(pharmacy.dutyName, pharmacy.wgs84Lat, pharmacy.wgs84Lon);
 
+                // 약국 위치 설정
+                const markerPosition = new kakao.maps.LatLng(pharmacy.wgs84Lat, pharmacy.wgs84Lon);
+
                 // 마커 이미지의 이미지 크기 입니다
                 var imageSize = new kakao.maps.Size(24, 35);
 
@@ -171,16 +174,30 @@ function GetPharmacyMap() {
                 // 마커를 생성합니다
                 var marker = new kakao.maps.Marker({
                     map: map, // 마커를 표시할 지도
-                    position: new kakao.maps.LatLng(pharmacy.wgs84Lat, pharmacy.wgs84Lon), // 마커를 표시할 위치
-                    text: pharmacy.hvec,
+                    // position: new kakao.maps.LatLng(pharmacy.wgs84Lat, pharmacy.wgs84Lon), // 마커를 표시할 위치
+                    // text: pharmacy.hvec,
                     // title: hospital.dutyName, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
-                    image: markerImage, // 마커 이미지 
+                    image: markerImage, // 마커 이미지
+                    position: markerPosition 
                 });
                 addMarkerPosition(marker);
 
+                var content = 
+                    '<div style="background-color: white; padding: 12px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: none !important; margin: -1px;">' +
+                        `<h3 style="font-size: 15px; font-weight: bold; color: #0B2D85; margin-bottom: 5px;">${pharmacy.dutyName}</h3>` +
+                        `<p style="font-size: 14px; color: #4B5563; margin-bottom: 3px;">${pharmacy.dutyTel1}</p>` +
+                        `<p style="font-size: 12px; color: #6B7280;">${pharmacy.dutyAddr}</p>` +
+                    '</div>';
+
                 // 마커의 인포윈도우를 생성합니다
                 var infowindow = new kakao.maps.InfoWindow({
-                    content: pharmacy.dutyName
+                    content: content,
+                    position: markerPosition,
+                    backgroundColor: "transparent",
+                    borderColor: "transparent",
+                    borderWidth: 0,
+                    disableAutoPan: true, // 자동 패닝 비활성화
+                    zIndex: 1
                 });
                 addInfoWindow(infowindow);
 
@@ -262,9 +279,7 @@ function GetPharmacyMap() {
 
     return (
         <>
-
             <div className="flex">
-
                 <div className="flex w-[25%] h-[100vh] bg-white p-4">
                     <div className="flex flex-col w-[25%]">
                         <h1>
@@ -294,24 +309,24 @@ function GetPharmacyMap() {
                             </div>
                         </div>
                         {/* 반경 내 조회된 장소들 리스트 출력 */}
-                        <div className="h-[calc(100vh-200px)] border-t border-solid border-[#e5e7eb]">
+                        <div className="h-[100%] border-t border-solid border-[#e5e7eb]">
                             {pharmacys && pharmacys.length > 0 ? (
                                 <TableVirtuoso
                                     style={{ height: "100%", boxShadow: "none" }}
                                     data={pharmacys}
                                     components={TableComponents}
                                     itemContent={(index, pharmacy) => (
-                                        <>
+                                        <div className="aed-group" style={{borderBottom: '1px solid #e5e7eb'}}>
                                             <TableRow key={index} className="emergency-item">
                                                 <TableCell className="aed-name font-bold text-gray-800 cursor-pointer" style={{ border: 'none', padding: '5px 10px 0px 10px', fontWeight: '900', color: '#0B2D85', fontSize: '16px' }} onClick={() => nav(`/pharmacy/detail/${pharmacy.hpid}`)}>{pharmacy.dutyName}</TableCell>
                                             </TableRow>
                                             <TableRow key={`${index}-tel`}>
-                                                <TableCell className="aed-tel text-sm text-gray-600" style={{ border: 'none', padding: '5px 10px' }}>{pharmacy.dutyTel3}</TableCell>
+                                                <TableCell className="aed-tel text-sm text-gray-600" style={{ border: 'none', padding: '5px 10px' }}>{pharmacy.dutyTel1}</TableCell>
                                             </TableRow>
                                             <TableRow key={`${index}-address`}>
-                                                <TableCell className="aed-address text-sm text-gray-500" style={{ padding: '0 10px 5px 10px' }}>{pharmacy.dutyAddr}</TableCell>
+                                                <TableCell className="aed-address text-sm text-gray-500" style={{ border: 'none', padding: '0 10px 5px 10px' }}>{pharmacy.dutyAddr}</TableCell>
                                             </TableRow>
-                                        </>
+                                        </div>
                                     )}
                                 />
                             ) : (
@@ -326,7 +341,7 @@ function GetPharmacyMap() {
 
                 <div id="map" style={{
                     width: '75%',
-                    height: '950px',
+                    height: '100vh',
                     // zIndex: 1
                 }}></div>
 
