@@ -71,7 +71,7 @@ const Google = () => {
     }
 
     return (
-<>
+        <>
             <div className="absolute left-0 top-[245px] w-[1920px] h-[47px] text-[40px] font-['Inter'] font-bold text-[#000] text-center">소셜 회원가입</div>
             <div className="absolute left-0 top-[324px] w-[1920px] text-[15px] font-['Inter'] text-[#7d8597] text-center">소셜 로그인 시 리뷰 등록, 즐겨찾기에 사용할 닉네임을 설정해주세요.</div>
             <div className="absolute left-[210px] top-[425px] w-[1500px] h-[545px] bg-[#7d85971a]"></div>

@@ -10,8 +10,8 @@ Modal.setAppElement('#root');
 
 export const FavPharmacy = () => {
     const { userId } = useContext(UserContext);
-    const navigate = useNavigate();
-    
+    const nav = useNavigate();
+
     const [pharmacyList, setpharmacyList] = useState([]);
     const [openSingleModalId, setOpenSingleModalId] = useState(null); // 모달 열기 상태 관리
     const [openMultiModalId, setOpenMultiModalId] = useState(false); // 다중 삭제 모달 상태 관리
@@ -47,14 +47,14 @@ export const FavPharmacy = () => {
             setTotalPages(paginationInfo.totPageCnt || 1);
             setTotalCount(paginationInfo.totCnt || 0);
 
-            navigate(`?page=${page}`, { replace: true });
+            nav(`?page=${page}`, { replace: true });
 
             console.log("Fetched pharmacy list:", pharmacyList);
             console.log("Pagination info:", paginationInfo);
         } catch (err) {
             console.error("Pharmacy list fetch error:", err.response?.data || err.message);
             setpharmacyList([]);
-            setPaginationInfo({}); 
+            setPaginationInfo({});
         }
     };
 
@@ -69,11 +69,11 @@ export const FavPharmacy = () => {
     // 즐겨찾기 단일 삭제
     const deleteFavorite = async (refNo) => {
         try {
-            const response = await axios.delete(`/api/favorite/single`, { params: {refNo}});
+            const response = await axios.delete(`/api/favorite/single`, { params: { refNo } });
             if (response.status === 200) {
                 console.log('삭제 성공:', response.data);
                 // 병원 리스트에서 삭제된 항목 필터링 후 상태 업데이트
-                setpharmacyList(prevPharmacyList => 
+                setpharmacyList(prevPharmacyList =>
                     prevPharmacyList.filter(pharmacy => pharmacy.refNo !== refNo)
                 );
                 closedModal(); // 모달 닫기
@@ -88,8 +88,8 @@ export const FavPharmacy = () => {
     // 즐겨찾기 다중 삭제
     const deleteFavorites = async (refNos) => {
         try {
-            const response = await axios.post(`/api/favorite/multi`, {refNos: refNos});
-            if (response.status === 200){
+            const response = await axios.post(`/api/favorite/multi`, { refNos: refNos });
+            if (response.status === 200) {
                 console.log('삭제 성공:', response.data);
                 setpharmacyList(prevPharmacyList =>
                     prevPharmacyList.filter(pharmacy => !refNos.includes(pharmacy.refNo))
@@ -138,62 +138,61 @@ export const FavPharmacy = () => {
     const selectPharmacy = openSingleModalId !== null ? pharmacyList[openSingleModalId] : null;
 
     // 상세 페이지로 이동
-    const detailPage = (hpid) => { 
-        navigate(`/pharmacy/detail/${hpid}`);
+    const detailPage = (hpid) => {
+        nav(`/pharmacy/detail/${hpid}`);
     };
 
     // 페이지네이션
     const Pagination = ({ paginationInfo, currentPage, onPageChange }) => {
         if (!paginationInfo || typeof paginationInfo.totPageCnt === 'undefined') {
-          return null;
+            return null;
         }
-      
+
         const pageNumbers = [];
         for (let i = 1; i <= paginationInfo.totPageCnt; i++) {
-          pageNumbers.push(i);
+            pageNumbers.push(i);
         }
-      
+
         return (
-          <div className="flex justify-center mt-8">
-            {currentPage > 1 && (
-              <button
-                onClick={() => onPageChange(currentPage - 1)}
-                className="mx-1 w-8 h-8 border border-[#0B2D85] text-[#0B2D85] rounded"
-              >
-                ◀
-              </button>
-            )}
-      
-            {pageNumbers.map(number => (
-              <button
-                key={number}
-                onClick={() => onPageChange(number)}
-                className={`mx-1 w-8 h-8 ${
-                  currentPage === number
-                    ? "bg-[#0B2D85] text-white"
-                    : "border border-[#0B2D85] text-[#0B2D85]"
-                } rounded`}
-              >
-                {number}
-              </button>
-            ))}
-      
-            {currentPage < paginationInfo.totPageCnt && (
-              <button
-                onClick={() => onPageChange(currentPage + 1)}
-                className="mx-1 w-8 h-8 border border-[#0B2D85] text-[#0B2D85] rounded"
-              >
-                ▶
-              </button>
-            )}
-          </div>
+            <div className="flex justify-center mt-8">
+                {currentPage > 1 && (
+                    <button
+                        onClick={() => onPageChange(currentPage - 1)}
+                        className="mx-1 w-8 h-8 border border-[#0B2D85] text-[#0B2D85] rounded"
+                    >
+                        ◀
+                    </button>
+                )}
+
+                {pageNumbers.map(number => (
+                    <button
+                        key={number}
+                        onClick={() => onPageChange(number)}
+                        className={`mx-1 w-8 h-8 ${currentPage === number
+                            ? "bg-[#0B2D85] text-white"
+                            : "border border-[#0B2D85] text-[#0B2D85]"
+                            } rounded`}
+                    >
+                        {number}
+                    </button>
+                ))}
+
+                {currentPage < paginationInfo.totPageCnt && (
+                    <button
+                        onClick={() => onPageChange(currentPage + 1)}
+                        className="mx-1 w-8 h-8 border border-[#0B2D85] text-[#0B2D85] rounded"
+                    >
+                        ▶
+                    </button>
+                )}
+            </div>
         );
-      };
+    };
     const handlePageChange = (newPage) => {
         if (newPage !== currentPage) {
             setCurrentPage(newPage);
             fetchData(newPage);
-            navigate(`?page=${newPage}`, { replace: true });
+            nav(`?page=${newPage}`, { replace: true });
         }
     };
 
@@ -216,7 +215,7 @@ export const FavPharmacy = () => {
                                 <thead>
                                     <tr className="bg-gray-100">
                                         <th className="w-[4%] p-3">
-                                            <input type="checkbox" className="form-checkbox h-4 w-4 text-[#0B2D85]" 
+                                            <input type="checkbox" className="form-checkbox h-4 w-4 text-[#0B2D85]"
                                                 onChange={(e) => allSelect(e.target.checked)}
                                                 checked={checkItems.length === pharmacyList.length} />
                                         </th>
@@ -281,26 +280,26 @@ export const FavPharmacy = () => {
 
             <footer className="bg-black text-white py-8">
                 <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
-                <div className="flex items-center mb-8 md:mb-0">
-                    <img className="w-[117px] h-[100px]" src="/img/footer/logo.png" alt="Logo" />
-                    <div className="mt-2 text-2xl font-black text-[#333] font-['Advent_Pro']">응급NAVI</div>
-                </div>
-                <div className="flex flex-col max-w-[638px]">
-                    <div className="mb-4 text-sm font-bold text-[#686868] font-['Agdasima']">
-                        이용약관              개인정보처리방침
+                    <div className="flex items-center mb-8 md:mb-0">
+                        <img className="w-[117px] h-[100px]" src="/img/footer/logo.png" alt="Logo" />
+                        <div className="mt-2 text-2xl font-black text-[#333] font-['Advent_Pro']">응급NAVI</div>
                     </div>
-                    <div className="text-sm leading-relaxed font-bold text-[#686868] font-['Agdasima']">
-                        서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원     |     대표자명 : 민봉식     |     대표전화 : 1544-9970
-                        <br />
-                        <span className="flex items-center">
-                            <img className="w-2 h-2 mr-1" src="/img/footer/copyright.png" alt="Copyright" />
-                            2024 응급NAVI.
-                        </span>
+                    <div className="flex flex-col max-w-[638px]">
+                        <div className="mb-4 text-sm font-bold text-[#686868] font-['Agdasima']">
+                            이용약관              개인정보처리방침
+                        </div>
+                        <div className="text-sm leading-relaxed font-bold text-[#686868] font-['Agdasima']">
+                            서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원     |     대표자명 : 민봉식     |     대표전화 : 1544-9970
+                            <br />
+                            <span className="flex items-center">
+                                <img className="w-2 h-2 mr-1" src="/img/footer/copyright.png" alt="Copyright" />
+                                2024 응급NAVI.
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div className="mt-8 md:mt-0">
-                    <img className="w-[145px] h-[34px]" src="/img/footer/group.png" alt="Group" />
-                </div>
+                    <div className="mt-8 md:mt-0">
+                        <img className="w-[145px] h-[34px]" src="/img/footer/group.png" alt="Group" />
+                    </div>
                 </div>
             </footer>
 
@@ -337,11 +336,11 @@ export const FavPharmacy = () => {
                 <div className="bg-white w-[40rem] max-h-[30vh] py-6 px-8 rounded-lg shadow-lg flex flex-col overflow-auto">
                     <div className="pb-3">
                         <div className="font-bold">
-                        {
-                            checkItems.length > 0 ? 
-                            `${pharmacyList.find(pharmacy => pharmacy.refNo === checkItems[0])?.dutyName} 외 ${checkItems.length - 1}개의 항목을 삭제하시겠습니까?` 
-                            : '삭제할 항목이 없습니다.'
-                        }
+                            {
+                                checkItems.length > 0 ?
+                                    `${pharmacyList.find(pharmacy => pharmacy.refNo === checkItems[0])?.dutyName} 외 ${checkItems.length - 1}개의 항목을 삭제하시겠습니까?`
+                                    : '삭제할 항목이 없습니다.'
+                            }
                         </div>
                     </div>
                     <div className="flex justify-end gap-4">

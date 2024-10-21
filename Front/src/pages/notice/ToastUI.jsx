@@ -17,7 +17,7 @@ const ToastUI = ({ initialValue = "", notice = null }) => {
     const editorRef = useRef(null);
     const titleRef = useRef(null);
 
-    const navigate = useNavigate();
+    const nav = useNavigate();
 
     useEffect(() => {
         if (editorRef.current) {
@@ -73,7 +73,7 @@ const ToastUI = ({ initialValue = "", notice = null }) => {
                     //성공 처리
                     console.log('DB입력 성공');
                     alert('공지사항 등록 성공');
-                    window.location.href = '/notice/getNoticeList';
+                    nav = '/notice/getNoticeList';
                 } else {
                     console.log('DB입력 실패');
                     alert('공지사항 등록 실패');
@@ -86,7 +86,7 @@ const ToastUI = ({ initialValue = "", notice = null }) => {
 
     const handleCancelBtn = () => {
         if (window.confirm("작성을 취소하시겠습니까?")) {
-            navigate("/notice/getNoticeList");
+            nav("/notice/getNoticeList");
         }
     }
 

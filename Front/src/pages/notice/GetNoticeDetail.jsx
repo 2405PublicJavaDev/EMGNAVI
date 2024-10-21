@@ -32,7 +32,7 @@ const GetNoticeDetail = () => {
                 });
             fetch(`/api/notice/getBetweenId?noticeId=${noticeId}`)
                 .then((response) => {
-                    if(!response.ok) {
+                    if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
                     return response.json();
@@ -43,7 +43,7 @@ const GetNoticeDetail = () => {
                 })
                 .catch(error => {
                     console.error('Error fetching between notice id:', error);
-            });;
+                });;
         }
     }, []);
 
@@ -65,7 +65,7 @@ const GetNoticeDetail = () => {
                     //성공 처리
                     console.log('공지사항 삭제 성공');
                     alert('공지사항 삭제 성공');
-                    window.location.href = '/notice/getNoticeList';
+                    nav = '/notice/getNoticeList';
                 } else {
                     console.log('공지사항 삭제 실패');
                     alert('공지사항 삭제 실패');
@@ -121,23 +121,23 @@ const GetNoticeDetail = () => {
                                             )}
                                             <div className="flex items-center justify-between w-full max-w-2xl mx-auto border border-gray-200 rounded-lg">
                                                 <button className="flex items-center px-4 py-2 text-sm text-gray-500 hover:text-gray-700"
-                                                onClick={() => prevNotice ? window.location.href = 'getNoticeDetail?noticeId='+prevNotice : alert('현재 위치가 마지막 공지입니다!')}>
+                                                    onClick={() => prevNotice ? nav = `getNoticeDetail?noticeId=${prevNotice}` : alert('현재 위치가 마지막 공지입니다!')}>
                                                     {/* <ChevronLeft className="w-4 h-4 mr-1" /> */}
                                                     Prev Notice
                                                 </button>
                                                 <button className="px-4 py-2 text-sm text-gray-500 hover:text-gray-700"
-                                                onClick={() => window.location.href = 'getNoticeList'}>
+                                                    onClick={() => nav = 'getNoticeList'}>
                                                     All Notice
                                                 </button>
                                                 <button className="flex items-center px-4 py-2 text-sm text-gray-500 hover:text-gray-700"
-                                                onClick={() => nextNotice ? window.location.href = 'getNoticeDetail?noticeId='+nextNotice : alert('현재 위치가 최신 공지입니다!')}>
+                                                    onClick={() => nextNotice ? nav = `getNoticeDetail?noticeId=${nextNotice}` : alert('현재 위치가 최신 공지입니다!')}>
                                                     Next Notice
                                                     {/* <ChevronRight className="w-4 h-4 ml-1" /> */}
                                                 </button>
                                             </div>
                                             {userId == 'admin' ? (
                                                 <div className="flex space-x-4">
-                                                    <button onClick={() => window.location.href = 'putNotice?noticeId=' + notice.noticeId} className="w-[100px] h-[35px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">수정</button>
+                                                    <button onClick={() => nav = `putNotice?noticeId=${notice.noticeId}`} className="w-[100px] h-[35px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">수정</button>
                                                     <button onClick={() => handleDeleteBtn(notice.noticeId)} className="w-[100px] h-[35px] bg-[#0b2d85] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#fff] text-center">삭제</button>
                                                 </div>) : ('')}
                                         </div>

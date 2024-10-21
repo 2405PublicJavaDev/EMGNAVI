@@ -17,7 +17,7 @@ TableComponents.Scroller.displayName = 'TableScroller';
 TableComponents.Table.displayName = 'Table';
 TableComponents.TableBody.displayName = 'TableBody';
 TableComponents.TableRow.displayName = 'TableRow';
-  
+
 function GetAedMap() {
     // AED 정보 저장
     const [aeds, setAeds] = useState();
@@ -27,20 +27,20 @@ function GetAedMap() {
     const [map, setMap] = useState(null);
     const [circle, setCircle] = useState(null);
     const [zoomControl] = useState(new kakao.maps.ZoomControl());
-    const [searchRadius, setSearchRadius] = useState(100); 
+    const [searchRadius, setSearchRadius] = useState(100);
 
     const [markers, setMarkers] = useState([]);
     const [infoWindows, setInfoWindow] = useState([]);
     const addInfoWindow = (newInfoWindow) => {
         setInfoWindow(prev => [...prev, newInfoWindow]);
     };
-    
+
     // 이미지 표시 및 다운로드 Modal
     const [openModalId, setOpenModalId] = useState(null);
     const [modalImage, setModalImage] = useState(null);
     const [downloadFileName, setDownloadFileName] = useState("");
 
-    const openModal = (imagePath, fileName) => { 
+    const openModal = (imagePath, fileName) => {
         setModalImage(imagePath);
         setDownloadFileName(fileName);
         setOpenModalId(true);
@@ -51,7 +51,7 @@ function GetAedMap() {
         setModalImage(null);
         setDownloadFileName("");
     };
-    
+
     // 현재 위치 가져오기
     useEffect(() => {
         navigator.geolocation.getCurrentPosition((position) => {
@@ -60,35 +60,35 @@ function GetAedMap() {
             setlatitude(lat);
             setlongitude(lon);
         },
-        (error) => {
-            console.error("Error getting location:", error);
-            // 에러 코드에 따른 처리
-            switch(error.code) {
-            case error.PERMISSION_DENIED:
-                console.error("User denied the request for Geolocation.");
-                break;
-            case error.POSITION_UNAVAILABLE:
-                console.error("Location information is unavailable.");
-                break;
-            case error.TIMEOUT:
-                console.error("The request to get user location timed out.");
-                break;
-            case error.UNKNOWN_ERROR:
-                console.error("An unknown error occurred.");
-                break;
-            }
-        },
-        {
-            enableHighAccuracy: true, // 더 정확한 위치 요청
-            timeout: 5000,
-            maximumAge: 0 // 캐시된 위치 정보 사용하지 않음
-        });
+            (error) => {
+                console.error("Error getting location:", error);
+                // 에러 코드에 따른 처리
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        console.error("User denied the request for Geolocation.");
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        console.error("Location information is unavailable.");
+                        break;
+                    case error.TIMEOUT:
+                        console.error("The request to get user location timed out.");
+                        break;
+                    case error.UNKNOWN_ERROR:
+                        console.error("An unknown error occurred.");
+                        break;
+                }
+            },
+            {
+                enableHighAccuracy: true, // 더 정확한 위치 요청
+                timeout: 5000,
+                maximumAge: 0 // 캐시된 위치 정보 사용하지 않음
+            });
 
     }, [])
 
     // 마커 표시, 원 표시
     useEffect(() => {
-        if(latitude && longitude){
+        if (latitude && longitude) {
             // 카카오맵 초기화
             const locPosition = new kakao.maps.LatLng(latitude, longitude); // 현재 위치를 지도 좌표로
             const container = document.getElementById('map');
@@ -120,10 +120,10 @@ function GetAedMap() {
             // 설정한 원을 지도에 표시
             newCircle.setMap(map);
         }
-        
-        
+
+
     }, [searchRadius, latitude, longitude]);
-    
+
     // 로딩 상태 추가
     const [loading, setLoading] = useState(false);
 
@@ -131,15 +131,15 @@ function GetAedMap() {
     useEffect(() => {
         if (searchRadius && latitude && longitude) {
             setLoading(true); // 데이터 가져오기 전에 로딩 상태로 변경
-            
+
             // aed 데이터 가져오기
             fetch(`/api/map/getAroundAed?latitude=${latitude}&longitude=${longitude}&distance=${searchRadius}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                setAeds(data.data);
-            })
-            .catch(error => console.error("Error:", error));
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    setAeds(data.data);
+                })
+                .catch(error => console.error("Error:", error));
 
             // 기존에 그려진 원이 있으면 제거
             if (circle) {
@@ -158,7 +158,7 @@ function GetAedMap() {
             });
             // 설정한 원을 지도에 표시
             newCircle.setMap(map);
-            
+
             // circle 상태 업데이트
             setCircle(newCircle);
 
@@ -175,7 +175,7 @@ function GetAedMap() {
 
     // 마커 배열 추가. 저장
     useEffect(() => {
-        if (map && aeds && aeds.length > 0){
+        if (map && aeds && aeds.length > 0) {
             console.log(aeds);
 
             // 기존 마커 및 인포윈도우 제거
@@ -188,7 +188,7 @@ function GetAedMap() {
                 infoWindow.setMap(null);  // 기존 인포윈도우 삭제
             });
             setInfoWindow([]);  // 상태 초기화
-            
+
             const newMarkers = [];
             const imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
             aeds.forEach(aed => {
@@ -263,7 +263,7 @@ function GetAedMap() {
     // }, [searchRadius, latitude, longitude]);
 
     // 검색반경 확대 버튼을 누르면 호출되어 지도를 확대하는 함수
-    
+
     function increaseRadius() {
         const newRadius = searchRadius + 100;
 
@@ -295,16 +295,16 @@ function GetAedMap() {
         const dLat = deg2rad(latitude2 - latitude1);  // 위도 차이, radian으로 변환
         const dLon = deg2rad(longitude2 - longitude1);  // 경도 차이, radian으로 변환'
         // 두 좌표 사이의 구면 거리를 구하기 a
-        const a = 
-            Math.sin(dLat/2) * Math.sin(dLat/2) + // 위도 차이, 삼각 함수 계산
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) + // 위도 차이, 삼각 함수 계산
             Math.cos(deg2rad(latitude1)) * Math.cos(deg2rad(latitude2)) * // 두 지점의 위도에 대한 코사인 곱
-            Math.sin(dLon/2) * Math.sin(dLon/2); // 경도 차이에 대한 삼각 함수 계산
+            Math.sin(dLon / 2) * Math.sin(dLon / 2); // 경도 차이에 대한 삼각 함수 계산
         // 구면 위에서 두 점 사이의 중심각 구하기 c
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         const distance = R * c; // 두 좌표 사이의 거리 (km)
         return distance * 1000; // 미터로 변환
     }
-    
+
     // 각도 -> radian으로 변환하는 함수
     function deg2rad(deg) {
         return deg * (Math.PI / 180); // (pi/180)
@@ -315,20 +315,20 @@ function GetAedMap() {
             <div className="flex w-[25%] h-[100vh] bg-white p-4">
                 <div className="flex flex-col w-[25%]">
                     <h1>
-                        <img className="left-[24px] top-0 cursor-pointer" width="111" height="97" src="/img/header/logo.png" alt="Logo" onClick={() => window.location.href = '/'}></img>
+                        <img className="left-[24px] top-0 cursor-pointer" width="111" height="97" src="/img/header/logo.png" alt="Logo" onClick={() => nav = '/'}></img>
                     </h1>
-                    <div className="text-center font-bold py-3"><button onClick={() => window.location.href = 'getEmergencyMap'}>응급실</button></div>
-                    <div className="text-center font-bold py-3"><button onClick={() => window.location.href = 'getHospitalMap'}>병원</button></div>
-                    <div className="text-center font-bold py-3"><button onClick={() => window.location.href = 'getPharmacyMap'}>약국</button></div>
+                    <div className="text-center font-bold py-3"><button onClick={() => nav = '/map/getEmergencyMap'}>응급실</button></div>
+                    <div className="text-center font-bold py-3"><button onClick={() => nav = '/map/getHospitalMap'}>병원</button></div>
+                    <div className="text-center font-bold py-3"><button onClick={() => nav = '/map/getPharmacyMap'}>약국</button></div>
                     <div className="text-center font-bold bg-[#0B2D85] text-[#ffffff] py-3"><button>AED</button></div>
                 </div>
                 <div className="flex flex-col w-[75%]">
                     <div className="space-y-3 px-[10px]">
-                        <button onClick={() => openModal("/img/aed/자동심장충격기 사용방법.jpg", "자동심장충격기_사용방법.jpg")} 
+                        <button onClick={() => openModal("/img/aed/자동심장충격기 사용방법.jpg", "자동심장충격기_사용방법.jpg")}
                             className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 rounded-lg transition duration-300">
                             AED 사용 방법
                         </button>
-                        <button onClick={() => openModal("/img/aed/심폐소생술 방법.jpg", "심폐소생술_방법.jpg")} 
+                        <button onClick={() => openModal("/img/aed/심폐소생술 방법.jpg", "심폐소생술_방법.jpg")}
                             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded-lg transition duration-300">
                             심폐소생술 방법
                         </button>
@@ -351,20 +351,20 @@ function GetAedMap() {
                     <div className="h-[calc(100vh-200px)] border-t border-solid border-[#e5e7eb]">
                         {aeds && aeds.length > 0 ? (
                             <TableVirtuoso
-                                style={{ height: "100%", boxShadow: "none"}}
+                                style={{ height: "100%", boxShadow: "none" }}
                                 // searchRadius 보다 작은지
-                                data={aeds.filter(aed => getDistanceFromLatLonInKm(latitude, longitude, aed.wgs84Lat, aed.wgs84Lon) <= searchRadius) }
+                                data={aeds.filter(aed => getDistanceFromLatLonInKm(latitude, longitude, aed.wgs84Lat, aed.wgs84Lon) <= searchRadius)}
                                 components={TableComponents}
                                 itemContent={(index, aed) => (
                                     <>
                                         <TableRow key={index} className="aed-item">
-                                            <TableCell className="aed-name font-bold text-gray-800" style={{border: 'none', padding:'5px 10px 0px 10px', fontWeight: '900', color: '#0B2D85', fontSize: '16px'}}>{aed.org}</TableCell>
+                                            <TableCell className="aed-name font-bold text-gray-800" style={{ border: 'none', padding: '5px 10px 0px 10px', fontWeight: '900', color: '#0B2D85', fontSize: '16px' }}>{aed.org}</TableCell>
                                         </TableRow>
                                         <TableRow key={`${index}-tel`}>
-                                            <TableCell className="aed-tel text-sm text-gray-600" style={{border: 'none', padding:'5px 10px'}}>{aed.clerkTel}</TableCell>
+                                            <TableCell className="aed-tel text-sm text-gray-600" style={{ border: 'none', padding: '5px 10px' }}>{aed.clerkTel}</TableCell>
                                         </TableRow>
                                         <TableRow key={`${index}-address`}>
-                                            <TableCell className="aed-address text-sm text-gray-500" style={{padding: '0 10px 5px 10px'}}>{aed.buildAddress} {aed.buildPlace}</TableCell>
+                                            <TableCell className="aed-address text-sm text-gray-500" style={{ padding: '0 10px 5px 10px' }}>{aed.buildAddress} {aed.buildPlace}</TableCell>
                                         </TableRow>
                                     </>
                                 )}
@@ -372,34 +372,34 @@ function GetAedMap() {
                         ) : (
                             // 조회된 결과가 없을 때
                             <div style={{ padding: '20px', textAlign: 'center', fontSize: '16px', color: '#999' }}>
-                            조회된 결과가 없습니다.
-                        </div>
+                                조회된 결과가 없습니다.
+                            </div>
                         )}
                     </div>
                 </div>
             </div>
             <div id="map" style={{
-                    width: '75%',
-                    height: '950px',
-                    // zIndex: 1
+                width: '75%',
+                height: '950px',
+                // zIndex: 1
             }}></div>
             <Modal
                 isOpen={openModalId !== null}
                 onRequestClose={closeModal}
-                 className="fixed inset-0 flex items-center justify-center z-50"  // 모달이 부모 div에 종속되지 않도록 fixed로 설정하고 z-index를 50으로 설정하여 모달이 최상단에 나타나도록 수정
-                 overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-40"   // 오버레이의 z-index도 40으로 설정하여 전체 화면을 덮도록 수정
+                className="fixed inset-0 flex items-center justify-center z-50"  // 모달이 부모 div에 종속되지 않도록 fixed로 설정하고 z-index를 50으로 설정하여 모달이 최상단에 나타나도록 수정
+                overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-40"   // 오버레이의 z-index도 40으로 설정하여 전체 화면을 덮도록 수정
                 shouldCloseOnOverlayClick={true}
                 style={{
                     content: {
                         position: 'fixed',                // 모달을 페이지 상단에 고정시키기 위해 fixed로 설정
-                        top: '50%',                       
-                        left: '50%',                      
+                        top: '50%',
+                        left: '50%',
                         right: 'auto',
                         bottom: 'auto',
                         transform: 'translate(-50%, -50%)', // 화면 중앙으로 정확히 배치되도록 transform 설정
                         zIndex: 10000,                      // 모달의 z-index를 높게 설정하여 다른 요소 위에 표시되도록 수정
-                        },
-                        overlay: {
+                    },
+                    overlay: {
                         zIndex: 9999,                       // 오버레이의 z-index도 높게 설정하여 모달과 함께 화면을 덮도록 수정
                     }
                 }}
@@ -408,14 +408,14 @@ function GetAedMap() {
                     <div className="flex items-center justify-end px-4">
                         {/* <h2 className="text-1.5xl font-bold">{downloadFileName.includes("AED") ? "AED 사용 방법" : "심폐소생술 방법"}</h2> */}
                         <div className="flex justify-end mb-2">
-                            <a 
-                                href={modalImage} 
+                            <a
+                                href={modalImage}
                                 download={downloadFileName}
                                 className="rounded py-2 px-5 text-sm font-bold text-blue"
                             >
                                 다운로드
                             </a>
-                            <button 
+                            <button
                                 onClick={closeModal}
                                 className="text-black font-bold transition duration-300"
                             >

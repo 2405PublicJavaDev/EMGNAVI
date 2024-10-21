@@ -30,7 +30,7 @@ const PutNotice = () => {
 
     const { userId } = useContext(UserContext);
 
-    const navigate = useNavigate();
+    const nav = useNavigate();
 
     useEffect(() => {
         // userId가 ''이 아닐 때에만 동작
@@ -39,7 +39,7 @@ const PutNotice = () => {
             if (userId === null || userId !== 'admin') {
                 // 경고문구 출력 후 이전 페이지로 강제이동
                 alert('관리자 계정이 아닙니다!');
-                navigate(-1);
+                nav(-1);
             }
         }
     }, [userId]);
