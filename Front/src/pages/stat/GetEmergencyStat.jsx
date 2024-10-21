@@ -273,14 +273,14 @@ const GetEmergencyStat = () => {
                             <h2 className="text-xl font-bold mb-4 text-gray-800">
                                 {searchType === 'dutyAddr' ? '지역 ' : searchQuery} 잔여 응급병상 요일별 {searchType === 'dutyName' ? '평균' : '합계'}
                             </h2>
-                            <Chart key={`DOW-${chartKey}`} searchType={searchType} statType="DOW" keyword={searchQuery} />
+                            <Chart key={`DOW-${chartKey}`} searchType={searchType} statType="DOW" keyword={keyValue} />
                         </div>
 
                         <div className="bg-white rounded-lg shadow-md p-6">
                             <h2 className="text-xl font-bold mb-4 text-gray-800">
                                 {searchType === 'dutyAddr' ? '지역 ' : searchQuery} 잔여 응급병상 시간별 {searchType === 'dutyName' ? '평균' : '합계'}
                             </h2>
-                            <Chart key={`APDW-${chartKey}`} searchType={searchType} statType="HOD" keyword={searchQuery} />
+                            <Chart key={`APDW-${chartKey}`} searchType={searchType} statType="HOD" keyword={keyValue} />
                         </div>
 
 
@@ -289,7 +289,7 @@ const GetEmergencyStat = () => {
                         <h2 className="text-xl font-bold mb-4 text-gray-800">
                             {searchType === 'dutyAddr' ? '지역 ' : searchQuery} 잔여 응급병상 요일 및 오전/오후 {searchType === 'dutyName' ? '평균' : '합계'}
                         </h2>
-                        <Chart key={`APDW2-${chartKey}`} searchType={searchType} statType="APDW" keyword={searchQuery} />
+                        <Chart key={`APDW2-${chartKey}`} searchType={searchType} statType="APDW" keyword={keyValue} />
                     </div>
                 </div>
             </main>
