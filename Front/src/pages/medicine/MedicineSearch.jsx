@@ -262,7 +262,7 @@ const MedicineSearch = () => {
                 onBlur={handleInputBlur}
                 onKeyDown={handleKeyDown}
                 placeholder={`원하시는 ${searchType === 'itemName' ? '제품' : '업체'}의 이름을 검색해 주세요`}
-                className="border p-2 w-[360px] h-[36px] text-sm leading-[20px] border-[#0000001a] text-black bg-white"
+                className="border p-2 w-[360px] h-[36px] text-sm leading-[20px] border-[#0000001a] text-black bg-white outline-0"
                 style={{ color: 'black', backgroundColor: 'white' }}
               />
               {showAutoComplete && (
