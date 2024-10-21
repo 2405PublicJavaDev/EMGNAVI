@@ -199,19 +199,19 @@ export const FavPharmacy = () => {
     return (
         <div className="w-full min-h-screen bg-white flex flex-col">
             <main className="flex-grow bg-white py-10">
-                <div className="relative mx-auto top-[70px] bg-white rounded-lg p-8">
-                    <div className="absolute top-0 left-0 right-0 w-[100%] h-[194px] bg-[#0B2D85] rounded-t-lg"></div>
+                <div className="relative mx-auto top-[84px] rounded-lg p-8">
+                    <div className="absolute top-0 left-0 right-0 w-[100%] h-[170px] bg-[#0B2D85] rounded-t-lg"></div>
                     <div className="flex justify-center">
                         <div className="w-[1490px]">
-                            <div className="relative w-full left-[30px] top-[50px] h-[80px] text-white text-3xl font-bold mb-8 flex">
+                            <div className="relative w-full left-[30px] top-[25px] h-[80px] text-white text-3xl font-bold mb-8 flex">
                                 즐겨찾는 약국
                             </div>
-                            <div className="relative w-full px-3 pt-2 pb-1 flex justify-end items-center bg-white rounded-tl-lg rounded-tr-lg overflow-hidden">
+                            <div className="relative w-full px-3 pt-2 pb-1 flex justify-end items-center bg-white rounded-tl-lg rounded-tr-lg overflow-hidden top-[-25px]">
                                 <span className="px-3 font-bold">총 {totalCount}개</span>
                                 <button className="text-[#333] bg-white border border-[#0B2D85] rounded py-2 px-5 text-sm font-bold hover:bg-[#f5f5f5] font-bbold"
                                     onClick={() => totalCount > 0 && openMultiModal()}>즐겨찾기 삭제</button>
                             </div>
-                            <table className="relative w-full bg-white overflow-hidden table-fixed">
+                            <table className="relative w-full bg-white overflow-hidden table-fixed top-[-25px]">
                                 <thead>
                                     <tr className="bg-gray-100">
                                         <th className="w-[4%] p-3">
