@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const MedicineSearch = () => {
   const [medicines, setMedicines] = useState([]);
@@ -19,10 +19,23 @@ const MedicineSearch = () => {
   const autoCompleteRef = useRef(null);
   const inputRef = useRef(null);
 
+  const location = useLocation();
+
   const categories = [
     { value: 'itemName', label: '제품명' },
     { value: 'entpName', label: '업체명' },
   ];
+
+  useEffect(() => {
+    if (location.state) {
+      const { searchType: newSearchType, searchQuery: newSearchQuery } = location.state;
+      setSearchType(newSearchType);
+      setSearchQuery(newSearchQuery);
+      handleSearch(0, newSearchType, newSearchQuery);
+    } else {
+      fetchMedicines(0);
+    }
+  }, [location]);
 
   const fetchMedicines = (page = 0) => {
     setIsLoading(true);
@@ -71,8 +84,8 @@ const MedicineSearch = () => {
       });
   };
 
-  const handleSearch = (page = 0) => {
-    if (!searchQuery) {
+  const handleSearch = (page = 0, type = searchType, query = searchQuery) => {
+    if (!searchQuery && !query) {
       fetchMedicines(0);
       return;
     }
@@ -81,7 +94,7 @@ const MedicineSearch = () => {
     setError(null);
 
     const queryParams = new URLSearchParams({
-      [searchType]: searchQuery,
+      [type]: query,
       page: page.toString(),
       size: itemsPerPage.toString(),
     });
@@ -163,9 +176,9 @@ const MedicineSearch = () => {
     );
   };
 
-  useEffect(() => {
-    fetchMedicines(0);
-  }, []);
+  // useEffect(() => {
+  //   fetchMedicines(0);
+  // }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {

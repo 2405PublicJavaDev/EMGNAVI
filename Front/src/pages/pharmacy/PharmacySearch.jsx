@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../../UserContext";
 
 const PharmacySearch = () => {
@@ -21,6 +21,8 @@ const PharmacySearch = () => {
     const autoCompleteRef = useRef(null);
     const inputRef = useRef(null);
 
+    const location = useLocation();
+
     const { userId } = useContext(UserContext);
 
     const categories = [
@@ -35,10 +37,23 @@ const PharmacySearch = () => {
     }, [userId]);
 
     useEffect(() => {
-        if (userId || Object.keys(favorites).length > 0) {
-            fetchPharmacies(0); // 즐겨찾기 불러온 후 약국 데이터 불러오기
+        if (location.state) {
+          const { searchType: newSearchType, searchQuery: newSearchQuery } = location.state;
+          setSearchType(newSearchType);
+          setSearchQuery(newSearchQuery);
+          handleSearch(0, newSearchType, newSearchQuery);
         } else {
-            fetchPharmacies(0); // 로그인하지 않은 경우에도 약국 데이터를 불러옴
+          fetchPharmacies(0);
+        }
+      }, [location]);
+
+    useEffect(() => {
+        if(!location.state){
+            if (userId || Object.keys(favorites).length > 0) {
+                fetchPharmacies(0); // 즐겨찾기 불러온 후 약국 데이터 불러오기
+            } else {
+                fetchPharmacies(0); // 로그인하지 않은 경우에도 약국 데이터를 불러옴
+            }
         }
     }, [favorites]);
 
@@ -171,8 +186,8 @@ const PharmacySearch = () => {
         }
     };
 
-    const handleSearch = (page = 0) => {
-        if (!searchQuery) {
+    const handleSearch = (page = 0, type = searchType, query = searchQuery) => {
+        if (!searchQuery && !query) {
             fetchPharmacies(0);
             return;
         }
@@ -181,7 +196,7 @@ const PharmacySearch = () => {
         setError(null);
 
         const queryParams = new URLSearchParams({
-            [searchType]: searchQuery,
+            [type]: query,
             page: page.toString(),
             size: itemsPerPage.toString(),
         });

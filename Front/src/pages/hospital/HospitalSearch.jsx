@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { UserContext } from "../../UserContext";
 
 const HospitalSearch = () => {
@@ -21,6 +21,8 @@ const HospitalSearch = () => {
   const autoCompleteRef = useRef(null);
   const inputRef = useRef(null);
 
+  const location = useLocation();
+
   const { userId } = useContext(UserContext);
 
   const categories = [
@@ -28,15 +30,26 @@ const HospitalSearch = () => {
     { value: 'dutyAddr', label: '병원주소' },
   ];
 
-  useEffect(() => {
-    fetchHospitals(0);
-  }, []);
+  // useEffect(() => {
+  //   fetchHospitals(0);
+  // }, []);
 
   useEffect(() => {
     if (userId) {
       fetchFavorites();
     }
   }, [userId]);
+
+  useEffect(() => {
+    if (location.state) {
+      const { searchType: newSearchType, searchQuery: newSearchQuery } = location.state;
+      setSearchType(newSearchType);
+      setSearchQuery(newSearchQuery);
+      handleSearch(0, newSearchType, newSearchQuery);
+    } else {
+      fetchHospitals(0);
+    }
+  }, [location]);
 
   // 즐겨찾기 목록 불러오기
   const fetchFavorites = async () => {
@@ -129,8 +142,8 @@ const HospitalSearch = () => {
     }
   };
 
-  const handleSearch = (page = 0) => {
-    if (!searchQuery) {
+  const handleSearch = (page = 0, type = searchType, query = searchQuery) => {
+    if (!searchQuery && !query) {
       fetchHospitals(0);
       return;
     }
@@ -139,7 +152,7 @@ const HospitalSearch = () => {
     setError(null);
 
     const queryParams = new URLSearchParams({
-      [searchType]: searchQuery,
+      [type]: query,
       page: page.toString(),
       size: itemsPerPage.toString(),
     });
@@ -221,9 +234,9 @@ const HospitalSearch = () => {
     );
   };
 
-  useEffect(() => {
-    fetchHospitals(0);
-  }, []);
+  // useEffect(() => {
+  //   fetchHospitals(0);
+  // }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
