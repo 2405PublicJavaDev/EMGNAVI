@@ -156,8 +156,12 @@ const ToastUI = ({ initialValue = "", notice = null }) => {
             />
             <br />
             <div className="flex space-x-4">
-                <button onClick={handleCancelBtn} className="w-[200px] h-[45px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">취소</button>
-                <button onClick={handleRegisterBtn} className="w-[200px] h-[45px] bg-[#0b2d85] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#fff] text-center">등록</button>
+                <button onClick={handleCancelBtn} className="w-[100px] h-[40px] bg-[#f3f5f9] border border-[#e3e9ef] rounded-md text-lg font-medium text-[#000] hover:bg-gray-200 transition-colors duration-200">
+                    취소
+                </button>
+                <button onClick={handleRegisterBtn} className="w-[100px] h-[40px] bg-[#0b2d85] rounded-md text-lg font-medium text-[#fff] hover:bg-[#0a5caa] transition-colors duration-200">
+                    등록
+                </button>
             </div>
         </>
     );
