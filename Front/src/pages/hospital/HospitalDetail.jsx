@@ -251,7 +251,7 @@ const HospitalDetail = () => {
         <>
             <div className="flex flex-col min-h-screen">
                 <div className="flex-grow">
-                    <div className="container mx-auto px-4 py-64">
+                    <div className="container mx-auto px-4 py-[200px]">
                         {/* 제품 상세 정보 섹션 */}
                         <div className="mb-12">
                             <h1 className="text-3xl font-bold mb-6">병원 상세 정보</h1>
