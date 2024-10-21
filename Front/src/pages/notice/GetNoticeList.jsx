@@ -290,7 +290,7 @@ const GetNoticeList = () => {
           //성공 처리
           console.log('공지사항 삭제 성공');
           alert('공지사항 삭제 성공');
-          nav = '/notice/getNoticeList';
+          nav('/notice/getNoticeList');
         } else {
           console.log('공지사항 삭제 실패');
           alert('공지사항 삭제 실패');
@@ -313,7 +313,7 @@ const GetNoticeList = () => {
               <div className="w-[100%] h-[194px] top-0 left-0 bg-[#0b2d85]">
                 <div className="w-[145px] h-[38px] top-[38px] left-[335px] [font-family:'Inter',Helvetica] font-bold text-white text-[32px] leading-[normal] whitespace-nowrap absolute tracking-[0]">
                   공지사항
-                  {userId == 'admin' ? (<button onClick={() => nav = '/notice/postNotice'} className="ml-[30px] w-[100px] h-[45px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">등록</button>) : ('')}
+                  {userId == 'admin' ? (<button onClick={() => nav('/notice/postNotice')} className="ml-[30px] w-[100px] h-[45px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">등록</button>) : ('')}
                 </div>
               </div>
               <div id='main' className="w-[100%] mt-[-75px]">
@@ -334,20 +334,20 @@ const GetNoticeList = () => {
                                 <span>{formatDate(notice.noticeDate)}</span>
 
                               </div>
-                              <h2 className="text-xl font-bold mt-2 text-center" onClick={() => nav = `/notice/getNoticeDetail?noticeId=${notice.noticeId}`}>{notice.noticeTitle}</h2>
+                              <h2 className="text-xl font-bold mt-2 text-center" onClick={() => nav(`/notice/getNoticeDetail?noticeId=${notice.noticeId}`)}>{notice.noticeTitle}</h2>
 
 
 
                             </div>
                             <div id='div2' className='flex-grow min-w-0'>
-                              <Truncate lines={3} ellipsis={<span>... <span className="text-gray-400 hover:underline cursor-pointer" onClick={() => nav = `/notice/getNoticeDetail?noticeId=${notice.noticeId}`}>[상세보기]</span></span>}>
+                              <Truncate lines={3} ellipsis={<span>... <span className="text-gray-400 hover:underline cursor-pointer" onClick={() => nav(`/notice/getNoticeDetail?noticeId=${notice.noticeId}`)}>[상세보기]</span></span>}>
                                 {blockToInline(notice.noticeContents)}
                               </Truncate>
 
                             </div>
                             {userId == 'admin' ? (
                               <div className="flex space-x-4 my-[auto]">
-                                <button onClick={() => nav = `/notice/putNotice?noticeId=${notice.noticeId}`} className="w-[100px] h-[35px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">수정</button>
+                                <button onClick={() => nav(`/notice/putNotice?noticeId=${notice.noticeId}`)} className="w-[100px] h-[35px] bg-[#f3f5f9] border-[1px] border-solid border-[#e3e9ef] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#000]">수정</button>
                                 <button onClick={() => handleDeleteBtn(notice.noticeId)} className="w-[100px] h-[35px] bg-[#0b2d85] rounded-[5px] text-[24px] font-['Inter'] font-medium text-[#fff] text-center">삭제</button>
                               </div>) : ('')}
                           </div>

@@ -73,7 +73,7 @@ const ToastUI = ({ initialValue = "", notice = null }) => {
                     //성공 처리
                     console.log('DB입력 성공');
                     alert('공지사항 등록 성공');
-                    nav = '/notice/getNoticeList';
+                    nav('/notice/getNoticeList');
                 } else {
                     console.log('DB입력 실패');
                     alert('공지사항 등록 실패');
