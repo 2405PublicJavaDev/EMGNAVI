@@ -63,7 +63,6 @@ public class UserController {
         String storedCode = (String) session.getAttribute("verificationCode");
         String storedPhone = (String) session.getAttribute("verificationPhone");
         if (storedCode == null || storedPhone == null) {
-            System.out.println("인증 코드가 만료되었거나 전송되지 않았습니다."); // 오류 로그
             return ResponseEntity.badRequest().body("인증 코드가 만료되었거나 전송되지 않았습니다");
         }
 
@@ -71,10 +70,8 @@ public class UserController {
             // 인증 성공 후 세션에서 코드와 전화번호 제거
             session.removeAttribute("verificationCode");
             session.removeAttribute("verificationPhone");
-            System.out.println("인증 성공!"); // 성공 로그
             return ResponseEntity.ok("인증 성공");
         } else {
-            System.out.println("잘못된 인증 코드입니다."); // 오류 로그
             return ResponseEntity.ok("인증 실패");
         }
     }
@@ -100,10 +97,8 @@ public class UserController {
         int result = uService.checkNicknameDuplicate(request);
 
         if (result > 0) {
-//            System.out.println("사용중");
             return ResponseEntity.status(HttpStatus.CONFLICT).body("이미 사용중인 닉네임입니다.");
         } else {
-//            System.out.println("사용가능");
             return ResponseEntity.ok("사용 가능한 닉네임입니다.");
         }
     }
@@ -127,18 +122,15 @@ public class UserController {
         User user = uService.checkLogin(request);
         if (user != null && (user.getUnfreezeDate() == null || user.getUnfreezeDate().toInstant()
                 .atZone(ZoneId.systemDefault()).toLocalDate().isBefore(LocalDate.now()))) {
-            System.out.println("login success");
             // 세션에 사용자 아이디 저장
             session.setAttribute("userId", user.getUserId());
             session.setAttribute("userNickname", user.getUserNickname());
             return ResponseEntity.ok("로그인 성공");
         }
         else if (user != null) {
-            System.out.println("freeze");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("정지된 계정입니다.");
         }
         else {
-            System.out.println("fail");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("아이디 또는 비밀번호가 잘못되었습니다.");
         }
     }
@@ -161,12 +153,10 @@ public class UserController {
         String userName = (String) kakaoInfo.get("name");
         User user = uService.selectUserbyId(userId);
         if(user != null) {
-            System.out.println("이미 존재하는 회원");
             session.setAttribute("userId", user.getUserId());
             session.setAttribute("userNickname", user.getUserNickname());
             return user;
         } else {
-            System.out.println("회원가입 필요");
             User newUser = new User();
             newUser.setUserId(userId);
             newUser.setUserPhone(userPhone);
@@ -187,12 +177,10 @@ public class UserController {
         String userName = (String) naverInfo.get("name");
         User user = uService.selectUserbyId(userId);
         if (user != null) {
-            System.out.println("이미 존재하는 회원");
             session.setAttribute("userId", user.getUserId());
             session.setAttribute("userNickname", user.getUserNickname());
             return user;
         } else {
-            System.out.println("회원가입 필요");
             User newUser = new User();
             newUser.setUserId(userId);
             newUser.setUserPhone(userPhone);
@@ -210,12 +198,10 @@ public class UserController {
         String userName = (String) googleInfo.get("name");
         User user = uService.selectUserbyId(userId);
         if (user != null) {
-            System.out.println("이미 존재하는 회원");
             session.setAttribute("userId", user.getUserId());
             session.setAttribute("userNickname", user.getUserNickname());
             return user;
         } else {
-            System.out.println("회원가입 필요");
             User newUser = new User();
             newUser.setUserId(userId);
             newUser.setUserName(userName);
@@ -247,33 +233,26 @@ public class UserController {
     public void modifyUser(@RequestBody UserInfoRequest request) {
         int result = uService.modifyUser(request);
         if (result > 0) {
-            System.out.println("수정 성공");
         } else {
-            System.out.println("수정 실패");
         }
     }
 
-        @PostMapping("/changePw")
-        public ResponseEntity<?> changePw(@RequestBody LoginRequest request) {
-
-            int result = uService.changePw(request);
-            if (result > 0) {
-                System.out.println("비번 변경 성공");
-                return ResponseEntity.ok("성공");
-            } else {
-                System.out.println("비번 변경 실패");
-            }
+    @PostMapping("/changePw")
+    public ResponseEntity<?> changePw(@RequestBody LoginRequest request) {
+        int result = uService.changePw(request);
+        if (result > 0) {
+            return ResponseEntity.ok("성공");
+        } else {
             return ResponseEntity.badRequest().body("실패");
         }
+    }
 
     @PostMapping("/changePhone")
     public ResponseEntity<?> changePhone(@RequestBody ChangePhoneRequest request) {
         int result = uService.changePhone(request);
         if (result > 0) {
-            System.out.println("비번 변경 성공");
             return ResponseEntity.ok("성공");
         } else {
-            System.out.println("비번 변경 실패");
         }
         return ResponseEntity.badRequest().body("실패");
     }

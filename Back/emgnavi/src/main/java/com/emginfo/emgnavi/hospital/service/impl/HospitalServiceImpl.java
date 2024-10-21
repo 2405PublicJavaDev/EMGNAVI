@@ -39,10 +39,7 @@ public class HospitalServiceImpl implements HospitalService {
         int offset = page * size;
         RowBounds rowBounds = new RowBounds(offset, size);
 
-        System.out.println("ck02");
         List<Hospital> hospitalList = hospitalMapper.searchHospital(params, rowBounds);
-        System.out.println("listSize:"+hospitalList.size());
-
         return hospitalList;
     }
 
@@ -64,12 +61,6 @@ public class HospitalServiceImpl implements HospitalService {
         } else {
             return new ArrayList<>();
         }
-
-//        // 데이터 출력
-//        for (Map<String, Object> suggestion : suggestions) {
-//            System.out.println("Suggestion: " + suggestion);
-//        }
-
         return suggestions;
     }
 

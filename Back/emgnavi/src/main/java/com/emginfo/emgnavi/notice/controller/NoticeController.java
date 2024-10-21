@@ -24,21 +24,18 @@ public class NoticeController {
 
     @PostMapping("/post")
     public String postNotice(@RequestBody Notice notice) {
-        System.out.println(notice);
         int result = noticeService.postNotice(notice);
         return String.valueOf(result);
     }
 
     @PostMapping("/put")
     public String putNotice(@RequestBody Notice notice) {
-        System.out.println(notice);
         int result = noticeService.putNotice(notice);
         return String.valueOf(result);
     }
 
     @GetMapping("/delete")
     public String deleteNotice(int noticeId) {
-        System.out.println(noticeId);
         int result = noticeService.deleteNotice(noticeId);
         return String.valueOf(result);
     }
@@ -52,21 +49,13 @@ public class NoticeController {
             int offset = page * size;
             List<Notice> notices = noticeService.getNoticeList(offset, size);
 
-            System.out.println("notices 크기 : "+notices.size());
-
             int totalCount = noticeService.getListTotalCount();  // 총 데이터 개수 가져오기
-            System.out.println("전체 notice 갯수"+totalCount);
 
             Map<String, Object> response = new HashMap<>();
             response.put("notices", notices);
             response.put("totalPages", (int) Math.ceil((double) totalCount / size));
             response.put("currentPage", page);
             response.put("totalItems", totalCount);
-
-            System.out.println("totalCount"+totalCount);
-            System.out.println("totalPages:"+response.get("totalPages"));
-            System.out.println("currentPage:"+response.get("currentPage"));
-
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
@@ -79,9 +68,7 @@ public class NoticeController {
     public SuccessResponse getNoticeDetail(
             @RequestParam int noticeId
     ){
-        System.out.println("ck01");
         Notice notice = noticeService.getNoticeDetail(noticeId);
-        System.out.println("notice객체:"+notice.toString());
         return new SuccessResponse(SuccessCode.RESOURCE_FOUND, notice);
     }
 
@@ -93,22 +80,14 @@ public class NoticeController {
             @RequestParam(defaultValue = "10") int size
     ) {
         try {
-            System.out.println("ck01 dName:"+ title);
             List<Notice> results = noticeService.searchNotice(title, writer, page, size);
-            System.out.println("ck02 listSize:"+results.size());
             int totalCount = noticeService.getSearchResultCount(title, writer);
-            System.out.println("ck05");
 
             Map<String, Object> response = new HashMap<>();
             response.put("notices", results);
             response.put("totalPages", (int) Math.ceil((double) totalCount / size));
             response.put("currentPage", page);
             response.put("totalItems", totalCount);
-
-            System.out.println("totalCount"+totalCount);
-            System.out.println("totalPages:"+response.get("totalPages"));
-            System.out.println("currentPage:"+response.get("currentPage"));
-
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
@@ -135,18 +114,11 @@ public class NoticeController {
             @RequestParam String searchType
     ) {
         try {
-            System.out.println("query : "+query);
-            System.out.println("searchType : "+searchType);
             if (query.length() < 2) {
                 return ResponseEntity.ok(List.of());
             }
 
             List<Map<String, Object>> suggestions = noticeService.getAutocompleteSuggestions(query, searchType);
-
-            for (Map<String, Object> suggestion : suggestions) {
-                System.out.println("suggestion : "+suggestion.entrySet());
-//                suggestion.remove("NOTICE_DATE");
-            }
 
             if (suggestions.isEmpty()) {
                 Map<String, Object> noResult = new HashMap<>();

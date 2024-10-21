@@ -33,9 +33,7 @@ public class ReportServiceImpl implements ReportService {
         String reportId = reportListDTO.getReporterId(); // 신고자 아이디
         int refNo = reportListDTO.getRefNo(); // 리뷰 번호
         Reviews reviewInfo = reviewMapper.getReviewOneByNo(String.valueOf(refNo));
-        System.out.println("조회된 리뷰 정보: " + reviewInfo);
         if (reviewInfo == null) {
-            System.out.println("리뷰 정보를 찾을 수 없습니다. refNo: " + refNo);
             throw new CustomException(ErrorCode.RESOURCE_NOT_FOUND);
         }
 
@@ -51,7 +49,6 @@ public class ReportServiceImpl implements ReportService {
         if (report.getContent() == null || report.getContent().isEmpty()) {
             throw new IllegalArgumentException("신고 내용이 없습니다.");
         }
-        System.out.println("신고 내용: " + report.getContent());
         reportMapper.insertReport(report);
         return report;
     }

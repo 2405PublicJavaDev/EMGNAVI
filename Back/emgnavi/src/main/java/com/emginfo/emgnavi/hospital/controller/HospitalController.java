@@ -68,11 +68,8 @@ public class HospitalController {
             @RequestParam(defaultValue = "10") int size
     ) {
         try {
-            System.out.println("ck01 dName:"+dutyName);
             List<Hospital> results = hospitalService.searchHospital(dutyName, dutyAddr, page, size);
-            System.out.println("ck02");
             int totalCount = hospitalService.getSearchResultCount(dutyName, dutyAddr);
-            System.out.println("ck03");
 
             Map<String, Object> response = new HashMap<>();
             response.put("hospitals", results);

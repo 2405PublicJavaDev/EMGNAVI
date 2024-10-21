@@ -56,8 +56,6 @@ public class ReportController {
     // 회원 신고 조치
     @PostMapping("/reports/{no}")
     public SuccessResponse reportAction(@PathVariable int no, @RequestBody ReportActionDTO reportActionDTO) {
-        System.out.println("targetId: " + reportActionDTO.getTargetId());
-        System.out.println("unfreezeDate: " + reportActionDTO.getUnfreezeDate());
         reportService.processReportAction(no, reportActionDTO);
         return new SuccessResponse(SuccessCode.UPDATE_SUCCESS);
     }

@@ -136,7 +136,6 @@ public class FavoriteServiceImpl implements FavoriteService {
         Favorite favorite = new Favorite();
         favorite.setRefNo(refNo);
         favorite.setUserId(userId);
-        System.out.println(favorite);
         return favoriteMapper.deleteFavorite(favorite);
     }
     // 즐겨찾기 다중 삭제

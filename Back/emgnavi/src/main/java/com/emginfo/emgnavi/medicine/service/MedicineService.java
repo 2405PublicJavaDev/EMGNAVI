@@ -57,14 +57,6 @@ public class MedicineService {
         } else {
             return new ArrayList<>();
         }
-
-//        // 데이터 출력
-//        for (Map<String, Object> suggestion : suggestions) {
-//            System.out.println("Suggestion: " + suggestion);
-//        }
-
         return suggestions;
     }
-
-
 }

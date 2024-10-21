@@ -119,7 +119,6 @@ public class FavoriteController {
     @PostMapping("/favorite/multi")
     public SuccessResponse deleteFavorite(@RequestBody Map<String, List<String>> refNosMap, HttpSession session) {
         List<String> refNos = refNosMap.get("refNos");
-        System.out.println(refNos);
         String userId = (String) session.getAttribute("userId");
         if (userId == null) {
             throw new CustomException(ErrorCode.RESOURCE_NOT_FOUND);

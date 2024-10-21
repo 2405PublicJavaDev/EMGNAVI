@@ -59,11 +59,7 @@ public class noticeServiceImpl implements NoticeService {
         int offset = page * size;
         RowBounds rowBounds = new RowBounds(offset, size);
 
-        System.out.println("ck02");
         List<Notice> noticeList = noticeMapper.searchNotice(params, rowBounds);
-        System.out.println("ck03");
-        System.out.println("listSize:"+noticeList.size());
-
         return noticeList;
     }
 
@@ -81,10 +77,7 @@ public class noticeServiceImpl implements NoticeService {
         if (searchType.equals("title")) {
             suggestions = noticeMapper.searchTitle(query);
         } else if (searchType.equals("writer")) {
-            System.out.println("작성자검색 동작");
-            System.out.println("query:"+query+"searchType:"+searchType);
             suggestions = noticeMapper.searchWriter(query);
-            System.out.println("작성자검색 수행됨");
         } else {
             return new ArrayList<>();
         }

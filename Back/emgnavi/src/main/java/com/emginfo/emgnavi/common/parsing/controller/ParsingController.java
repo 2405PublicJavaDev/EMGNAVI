@@ -124,13 +124,9 @@ public class ParsingController {
                     hospital.setHpnicfuyn(getTagValue("hpnicfuyn", element));
                     hospital.setHpopyn(getTagValue("hpopyn", element));
 
-                    System.out.println(hospital);
-
                     parsingMapper.insertHospital(hospital);
                 }
             }
-
-            System.out.println("작업완료!!!");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -180,13 +176,9 @@ public class ParsingController {
                     medicine.setUpdateDe(getTagValue("updateDe", element));
                     medicine.setItemImage(getTagValue("itemImage", element));
 
-                    System.out.println(medicine);
-
                     parsingMapper.insertMedicine(medicine);
                 }
             }
-
-            System.out.println("작업완료!!!");
         } catch (Exception e) {
             e.printStackTrace();
         }

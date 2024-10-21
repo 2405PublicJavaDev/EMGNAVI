@@ -40,13 +40,9 @@ public class MapServiceImpl implements MapService {
         double maxLon = nowLongitude +(gpsInfo.getDistance()* mForLongitude);
         double minLon = nowLongitude -(gpsInfo.getDistance()* mForLongitude);
 
-        System.out.println("maxLat="+maxLat+" minLat="+minLat+" maxLon="+maxLon+" minLon="+minLon);
-
         //해당되는 좌표의 범위 안에 있는 응급실이 있는 병원
         List<Hospital>tempAroundHospitalList = mapMapper.getAroundEmgRoomList(maxLat, maxLon, minLat, minLon);
         List<Hospital>resultAroundHospitalList = new ArrayList<>();
-
-        System.out.println("listSize: "+tempAroundHospitalList.size());
 
         //정확한 거리 측정
         for(Hospital aroundHospital : tempAroundHospitalList) {
@@ -76,13 +72,9 @@ public class MapServiceImpl implements MapService {
         double maxLon = nowLongitude +(gpsInfo.getDistance()* mForLongitude);
         double minLon = nowLongitude -(gpsInfo.getDistance()* mForLongitude);
 
-        System.out.println("maxLat="+maxLat+" minLat="+minLat+" maxLon="+maxLon+" minLon="+minLon);
-
         //해당되는 좌표의 범위 안에 있는 AED
         List<Aed>tempAroundAedList = mapMapper.getAroundAedList(maxLat, maxLon, minLat, minLon);
         List<Aed>resultAroundAedList = new ArrayList<>();
-
-        System.out.println("listSize: "+tempAroundAedList.size());
 
         //정확한 거리 측정
         for(Aed aroundAed : tempAroundAedList) {
@@ -112,13 +104,9 @@ public class MapServiceImpl implements MapService {
         double maxLon = nowLongitude +(gpsInfo.getDistance()* mForLongitude);
         double minLon = nowLongitude -(gpsInfo.getDistance()* mForLongitude);
 
-        System.out.println("maxLat="+maxLat+" minLat="+minLat+" maxLon="+maxLon+" minLon="+minLon);
-
         //해당되는 좌표의 범위 안에 있는 약국
         List<Pharmacy>tempAroundPharmacyList = mapMapper.getAroundPharmacyList(maxLat, maxLon, minLat, minLon);
         List<Pharmacy>resultAroundPharmacyList = new ArrayList<>();
-
-        System.out.println("listSize: "+tempAroundPharmacyList.size());
 
         //정확한 거리 측정
         for(Pharmacy aroundPharmacy : tempAroundPharmacyList) {
@@ -148,13 +136,9 @@ public class MapServiceImpl implements MapService {
         double maxLon = nowLongitude +(gpsInfo.getDistance()* mForLongitude);
         double minLon = nowLongitude -(gpsInfo.getDistance()* mForLongitude);
 
-        System.out.println("maxLat="+maxLat+" minLat="+minLat+" maxLon="+maxLon+" minLon="+minLon);
-
         //해당되는 좌표의 범위 안에 있는 병원
         List<Hospital>tempAroundHospitalList = mapMapper.getAroundHospitalList(maxLat, maxLon, minLat, minLon);
         List<Hospital>resultAroundHospitalList = new ArrayList<>();
-
-        System.out.println("listSize: "+tempAroundHospitalList.size());
 
         //정확한 거리 측정
         for(Hospital aroundHospital : tempAroundHospitalList) {

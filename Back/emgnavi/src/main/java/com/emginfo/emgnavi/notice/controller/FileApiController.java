@@ -28,7 +28,6 @@ public class FileApiController {
      */
     @PostMapping("/image-upload")
     public String postEditorImage(@RequestParam final MultipartFile image) {
-        System.out.println("업로드 로직 시작");
         if (image.isEmpty()) {
             return "";
         }

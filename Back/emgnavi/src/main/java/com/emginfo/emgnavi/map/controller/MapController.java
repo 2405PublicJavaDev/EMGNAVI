@@ -134,16 +134,8 @@ public class MapController {
 
     @GetMapping("/map/getAroundPharmacy")
     public SuccessResponse getAroundPharmacyList(double latitude, double longitude, double distance) {
-        System.out.println("요청받음");
         GpsInfo gpsInfo = new GpsInfo(latitude, longitude, distance);
-        System.out.println("GPS정보 만들었음");
         List<Pharmacy> pharmacys = mapService.getAroundPharmacyList(gpsInfo);
-
-        for (Pharmacy pharmacy : pharmacys) {
-            System.out.println("조회결과:"+pharmacy.toString());
-        }
-
-
 
 //      ##Return값 작성 예시##
 //      SuccessResponse(
