@@ -16,6 +16,7 @@ const PharmacySearch = () => {
     const [selectedOption, setSelectedOption] = useState(null);
     const [hoveredOption, setHoveredOption] = useState(null);
     const [favorites, setFavorites] = useState({});
+    const [isSearchActive, setIsSearchActive] = useState(false);
     const itemsPerPage = 10;
     const nav = useNavigate();
     const autoCompleteRef = useRef(null);
@@ -32,63 +33,49 @@ const PharmacySearch = () => {
 
     useEffect(() => {
         if (userId) {
-            fetchFavorites();  // 로그인된 경우에만 즐겨찾기 데이터 불러오기
+            fetchFavorites();
         }
     }, [userId]);
 
     useEffect(() => {
         if (location.state) {
-          const { searchType: newSearchType, searchQuery: newSearchQuery } = location.state;
-          setSearchType(newSearchType);
-          setSearchQuery(newSearchQuery);
-          handleSearch(0, newSearchType, newSearchQuery);
+            const { searchType: newSearchType, searchQuery: newSearchQuery } = location.state;
+            setSearchType(newSearchType);
+            setSearchQuery(newSearchQuery);
+            handleSearch(0, newSearchType, newSearchQuery);
         } else {
-          fetchPharmacies(0);
+            fetchPharmacies(0);
         }
-      }, [location]);
+    }, [location]);
 
     useEffect(() => {
         if(!location.state){
             if (userId || Object.keys(favorites).length > 0) {
-                fetchPharmacies(0); // 즐겨찾기 불러온 후 약국 데이터 불러오기
+                fetchPharmacies(0);
             } else {
-                fetchPharmacies(0); // 로그인하지 않은 경우에도 약국 데이터를 불러옴
+                fetchPharmacies(0);
             }
         }
     }, [favorites]);
 
     const fetchFavorites = async () => {
         try {
-            console.log("fetchFavorites 호출됨!"); // 함수 호출 여부 확인
-
             const response = await fetch(`/api/pharmacy/favorites?userId=${userId}`);
-            console.log("API 요청 전송 완료"); // API 요청 전송 로그
-
             const data = await response.json();
-            console.log("API 응답 데이터:", data); // 응답 데이터 로그
-
             const favoritesMap = {};
             data.forEach(favorite => {
-                favoritesMap[favorite.REFNO] = true;  // Adjusted to use REFNO (or appropriate key)
+                favoritesMap[favorite.REFNO] = true;
             });
-
-            console.log("favoritesMap:", favoritesMap); // favoritesMap 로그
             setFavorites(favoritesMap);
         } catch (error) {
             console.error('Failed to fetch favorites:', error);
         }
     };
 
-    useEffect(() => {
-        if (userId) {
-            console.log("useEffect: userId 변경 감지됨", userId); // userId 변화 확인
-            fetchFavorites();  // 로그인된 경우에만 즐겨찾기 데이터 불러오기
-        }
-    }, [userId]);
-
     const fetchPharmacies = (page = 0) => {
         setIsLoading(true);
         setError(null);
+        setIsSearchActive(false);
 
         fetch(`/api/pharmacy/list?page=${page}&size=${itemsPerPage}`)
             .then((response) => {
@@ -98,16 +85,12 @@ const PharmacySearch = () => {
                 return response.json();
             })
             .then((data) => {
-                console.log("약국 리스트:", data.pharmacies); // 약국 리스트 로그
-                console.log("favorites 상태:", favorites); // favorites 상태 로그
-
-                // 즐겨찾기된 항목과 그렇지 않은 항목으로 나눠 정렬
                 const updatedPharmacies = data.pharmacies
                     .map(pharmacy => ({
                         ...pharmacy,
-                        favorite: favorites[pharmacy.hpid] || false  // 즐겨찾기 여부 반영
+                        favorite: favorites[pharmacy.hpid] || false
                     }))
-                    .sort((a, b) => b.favorite - a.favorite); // 즐겨찾기된 항목을 상단에 배치
+                    .sort((a, b) => b.favorite - a.favorite);
 
                 setPharmacies(updatedPharmacies);
                 setTotalPages(data.totalPages || 1);
@@ -143,7 +126,9 @@ const PharmacySearch = () => {
             });
     };
 
-    const toggleFavorite = async (hpid, dutyName, dutyAddr, dutyTel1) => {
+    const toggleFavorite = async (hpid, dutyName, dutyAddr, dutyTel1, e) => {
+        e.stopPropagation();
+        e.preventDefault();
         if (!userId) {
             alert("로그인 후 즐겨찾기 기능을 사용할 수 있습니다.");
             return;
@@ -159,20 +144,21 @@ const PharmacySearch = () => {
                 body.append('dutyTel1', dutyTel1);
             }
     
-            // 즐겨찾기 업데이트 API 호출
-            await fetch(`/api/pharmacy/favorite`, {
+            const response = await fetch(`/api/pharmacy/favorite`, {
                 method,
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: body.toString(),
             });
+
+            if (!response.ok) {
+                throw new Error('Failed to update favorite');
+            }
     
-            // 즐겨찾기 상태 업데이트 (전체 페이지 리로드 없이)
             setFavorites(prevFavorites => ({
                 ...prevFavorites,
-                [hpid]: !prevFavorites[hpid]  // 해당 약국의 즐겨찾기 상태 토글
+                [hpid]: !prevFavorites[hpid]
             }));
     
-            // 현재 페이지의 약국 리스트에서 즐겨찾기 상태만 변경
             setPharmacies(prevPharmacies =>
                 prevPharmacies.map(pharmacy =>
                     pharmacy.hpid === hpid
@@ -187,13 +173,14 @@ const PharmacySearch = () => {
     };
 
     const handleSearch = (page = 0, type = searchType, query = searchQuery) => {
-        if (!searchQuery && !query) {
+        if (!query) {
             fetchPharmacies(0);
             return;
         }
 
         setIsLoading(true);
         setError(null);
+        setIsSearchActive(true);
 
         const queryParams = new URLSearchParams({
             [type]: query,
@@ -213,7 +200,7 @@ const PharmacySearch = () => {
             .then((data) => {
                 const updatedPharmacies = data.pharmacies.map(pharmacy => ({
                     ...pharmacy,
-                    favorite: userId ? (favorites[pharmacy.hpid] || false) : false  // 로그인한 경우만 즐겨찾기 반영
+                    favorite: userId ? (favorites[pharmacy.hpid] || false) : false
                 }));
                 setPharmacies(updatedPharmacies);
                 setTotalPages(data.totalPages || 1);
@@ -228,27 +215,26 @@ const PharmacySearch = () => {
     };
 
     const handlePageChange = (newPage) => {
-        const serverPage = newPage;  // 페이지 전달 시 그대로 전달
-        if (searchQuery) {
-            handleSearch(serverPage);  // 검색 시 페이지 전달
+        const serverPage = newPage;
+        if (isSearchActive) {
+            handleSearch(serverPage, searchType, searchQuery);
         } else {
-            fetchPharmacies(serverPage);  // 일반 약국 리스트 요청 시 페이지 전달
+            fetchPharmacies(serverPage);
         }
     };
 
     const renderPageButtons = () => {
-        const maxVisiblePages = 10; // 한 번에 표시할 페이지 버튼 수
-        const totalPageGroups = Math.ceil(totalPages / maxVisiblePages); // 페이지 그룹의 수
-        const currentPageGroup = Math.floor(currentPage / maxVisiblePages); // 현재 페이지가 속한 그룹
+        const maxVisiblePages = 10;
+        const totalPageGroups = Math.ceil(totalPages / maxVisiblePages);
+        const currentPageGroup = Math.floor(currentPage / maxVisiblePages);
     
-        const startPage = currentPageGroup * maxVisiblePages; // 현재 그룹의 첫 페이지 번호
-        const endPage = Math.min(startPage + maxVisiblePages, totalPages); // 현재 그룹의 마지막 페이지 번호
+        const startPage = currentPageGroup * maxVisiblePages;
+        const endPage = Math.min(startPage + maxVisiblePages, totalPages);
     
-        const visiblePages = Array.from({ length: endPage - startPage }, (_, i) => startPage + i); // 현재 그룹의 페이지 번호 배열
+        const visiblePages = Array.from({ length: endPage - startPage }, (_, i) => startPage + i);
     
         return (
             <div className="flex justify-center mt-8">
-                {/* 이전 페이지 그룹으로 이동 */}
                 {currentPageGroup > 0 && (
                     <button
                         onClick={() => handlePageChange(startPage - 1)}
@@ -258,7 +244,6 @@ const PharmacySearch = () => {
                     </button>
                 )}
     
-                {/* 현재 그룹의 페이지 번호 표시 */}
                 {visiblePages.map((page) => (
                     <button
                         key={page}
@@ -269,11 +254,10 @@ const PharmacySearch = () => {
                                 : "border border-[#0b2d85] text-[#0b2d85]"
                         }`}
                     >
-                        {page + 1} {/* 화면에는 1부터 표시 */}
+                        {page + 1}
                     </button>
                 ))}
     
-                {/* 다음 페이지 그룹으로 이동 */}
                 {currentPageGroup < totalPageGroups - 1 && (
                     <button
                         onClick={() => handlePageChange(endPage)}
@@ -462,10 +446,7 @@ const PharmacySearch = () => {
                                                             <td className="py-4 px-6">
                                                                 <div className="flex items-center space-x-3">
                                                                     <button
-                                                                        onClick={(e) => {
-                                                                            e.stopPropagation(); // 이벤트 전파 방지
-                                                                            toggleFavorite(pharmacy.hpid, pharmacy.dutyName, pharmacy.dutyAddr, pharmacy.dutyTel1);
-                                                                        }}
+                                                                        onClick={(e) => toggleFavorite(pharmacy.hpid, pharmacy.dutyName, pharmacy.dutyAddr, pharmacy.dutyTel1, e)}
                                                                         className="flex-shrink-0 group"
                                                                     >
                                                                         <img
@@ -493,7 +474,6 @@ const PharmacySearch = () => {
                                                     ))}
                                                 </tbody>
                                             </table>
-
                                         </div>
                                     </div>
                                 </div>
@@ -503,19 +483,19 @@ const PharmacySearch = () => {
 
                     {!isLoading && !error && pharmacies.length > 0 && renderPageButtons()}
                 </div>
-            </div >
+            </div>
 
             <div className="absolute left-0 top-[1155px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">
                 <div className="absolute left-[136px] top-[41px] w-[117px] h-[126px] flex">
                     <div className="absolute left-[13px] top-[97px] text-[24px] font-['Advent_Pro'] font-black text-[#333] whitespace-nowrap">응급NAVI</div>
-                    <img className="absolute left-0 top-0" width="117" height="100" src="/img/footer/logo.png"></img>
+                    <img className="absolute left-0 top-0" width="117" height="100" src="/img/footer/logo.png" alt="Footer Logo"></img>
                 </div>
-                <img className="absolute left-[1634px] top-[47px]" width="145" height="34" src="/img/footer/group.png"></img>
+                <img className="absolute left-[1634px] top-[47px]" width="145" height="34" src="/img/footer/group.png" alt="Footer Group"></img>
                 <div className="absolute left-[404px] top-[137px] w-[621px] h-[16px] text-[14px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">2024 응급NAVI.</div>
                 <div className="absolute left-[390px] top-[62px] w-[742px] h-[90px] flex">
                     <div className="absolute left-0 top-[54px] w-[742px] h-[36px] flex">
                         <div className="absolute left-0 top-0 w-[742px] h-[16px] text-[14px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">서울 중구 남대문로 120 대일빌딩 2층, 3층 KH정보교육원 종로지원     |     대표자명 : 민봉식     |     대표전화 : 1544-997<br /></div>
-                        <img className="absolute left-[2px] top-[27px]" width="9" height="8" src="/img/footer/copyright.png"></img>
+                        <img className="absolute left-[2px] top-[27px]" width="9" height="8" src="/img/footer/copyright.png" alt="Copyright"></img>
                     </div>
                     <div className="absolute left-0 top-0 w-[221px] h-[21px] text-[15px] leading-[150%] font-['Agdasima'] font-bold text-[#686868]">이용약관              개인정보처리방침</div>
                 </div>
