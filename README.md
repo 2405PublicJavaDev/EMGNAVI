@@ -595,6 +595,49 @@
   ![image](https://github.com/user-attachments/assets/3cf7b37b-b69f-4dba-bcbb-7587e96b7322)<br><br><br><br>
   - 올바른 인증번호 입력 후 다음 페이지로 넘어가면 가입한 이메일의 두번째 세번째 글자가 마스킹 처리되어 출력됩니다.<br><br>
   ![image](https://github.com/user-attachments/assets/41efdfb2-3ee1-459b-a17a-70bb75636b1c)<br><br><br><br>
+  ### [비밀번호찾기]
+  - 회원가입 할 때 등록한 아이디로 비밀번호 재설정을 할 수 있습니다.<br><br>
+  ![image](https://github.com/user-attachments/assets/a77b341e-edd4-4a38-998c-244702c69b18)<br><br><br><br>
+  - 존재하지 않는 아이디 입력? -> 해당 아이디를 찾을 수 없다는 창
+  - 데이터베이스에 존재하는 아이디 입력? -> 비밀번호 재설정 링크가 해당 이메일로 전송<br><br>
+  ![image](https://github.com/user-attachments/assets/74dc78ad-b2de-4a34-954d-50055ef5163b)<br><br><br><br>
+  - 비밀번호 재설정 버튼을 통해 재설정 페이지로 이동 가능합니다.<br><br>
+  ![image](https://github.com/user-attachments/assets/2fa3c46c-6b73-4afc-851a-6c23aef436c8)<br><br><br><br>
+  - 회원가입과 동일한 비밀번호 유효성 체크 후 확인을 누르면 비밀번호가 변경됩니다. <br><br>
+  ![image](https://github.com/user-attachments/assets/e38fab4e-c049-449d-9e59-a1b8aba4f304)<br><br><br><br>
+  ### [소셜로그인]
+  - 네이버, 카카오, 구글 SNS 계정을 이용한 회원가입이 가능합니다.
+  ![image](https://github.com/user-attachments/assets/8e60a795-71ff-430b-a0bd-bc5329467a61)
+  ![image](https://github.com/user-attachments/assets/70bf77f4-2b11-4199-98e5-6dc7370acd23)
+  ![image](https://github.com/user-attachments/assets/89418b60-86b4-42f9-a714-4f3c4edc5d88)
+  ![image](https://github.com/user-attachments/assets/5be5c508-5c8c-4f22-aac8-ceb6020a1e12)
+  ![image](https://github.com/user-attachments/assets/84cffd0f-054c-4344-9fd8-1caad554183f)<br><br><br><br>
+  - 소셜을 통한 최초 로그인 시 닉네임 등록이 필수이며 이때도 중복확인이 필요합니다.
+  - 소셜계정을 통한 회원가입 완료 후 로그인을 하면 바로 로그인이 가능합니다.<br><br>
+  ![image](https://github.com/user-attachments/assets/8eef4f79-897b-4f21-9ec7-e83fd00d97d5)<br><br><br><br>
+  ### [마이페이지]
+  - 로그인 시 헤더가 로그인/회원가입 에서 마이페이지/로그아웃으로 변경됩니다. 마이페이지를 클릭하면 이동할 수 있습니다.<br><br>
+  ![image](https://github.com/user-attachments/assets/00d4188f-6ea0-442d-ad30-233caf9bc5e0)<br><br><br><br>
+  - 일반 회원이 회원정보 수정페이지를 클릭하면 비밀번호 확인을 해야합니다.
+  - 비밀번호 불일치? -> 비밀번호가 일치하지 않는다는 창
+  - 비밀번호 일치? -> 회원정보 수정페이지로 이동<br><br>
+  ![image](https://github.com/user-attachments/assets/b2403ad7-0b21-4b9c-9ddc-40683ef6c80d)<br><br><br><br>
+  - 회원은 비밀번호, 닉네임, 이름, 주소, 마케팅활용동의 여부를 수정할 수 있습니다.<br><br>
+  ![image](https://github.com/user-attachments/assets/57f653fc-d92f-4fd4-a777-7989b7f09384)<br><br><br><br>
+  - 비밀번호 변경버튼 클릭 시 현재 비밀번호, 새로운 비밀번호, 비밀번호 확인을 입력해야합니다.
+  - 회원가입과 동일하게 유효성에 따른 우측에 체크가 표시됩니다.
+  - 현재 비밀번호 틀릴 시? -> 현재 비밀번호가 일치하지 않는다는 창
+  - 유효성에 맞지 않은 비밀번호 입력 시? -> 비밀번호를 다시 한번 확인해달라는 창
+  - 비밀번호가 일치하지 않을 시 -> 비밀번호가 일치하지 않는다는 창<br><br>
+  ![image](https://github.com/user-attachments/assets/28178f58-70a1-4e1e-b20b-926184761cca)<br><br><br><br>
+  - 휴대폰 번호도 회원가입과 동일한 본인인증 절차를 거친 뒤 다음 버튼을 누르면 수정페이지에서 바로 휴대폰 번호가 변경된 것을 확인할 수 있습니다.<br><br>
+  ![image](https://github.com/user-attachments/assets/17f6a413-e988-41f1-83a7-2f0a76500ad6)<br><br><br><br>
+  - 소셜로그인 회원이 회원정보 수정페이지를 클릭하면 비밀번호 확인 절차 없이 바로 수정페이지로 이동하게 됩니다.
+  - 소셜로그인 회원은 해당 SNS계정에서 받아온 정보만이 화면에 표시됩니다.
+  - 비밀번호 변경하기가 없습니다.
+  - 카카오와 네이버는 이름, 휴대폰번호, 성별이 표시되지만 구글은 이름과 성별만 출력됩니다.
+  - 소셜 회원은 닉네임과 주소만 수정 가능합니다.<br><br>
+  ![image](https://github.com/user-attachments/assets/5761d6a3-dd80-458a-b09c-42e607f6cced)<br><br><br><br>
 
 
   
