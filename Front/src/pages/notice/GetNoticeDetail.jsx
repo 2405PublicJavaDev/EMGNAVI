@@ -77,7 +77,7 @@ const GetNoticeDetail = () => {
 
     return (
         <div className="bg-white flex flex-row justify-center w-full">
-            <div className="bg-white w-[100%] relative">
+            <div className="bg-white w-[100%]">
 
 
 
