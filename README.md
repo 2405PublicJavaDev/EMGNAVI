@@ -638,7 +638,10 @@
   - 카카오와 네이버는 이름, 휴대폰번호, 성별이 표시되지만 구글은 이름과 성별만 출력됩니다.
   - 소셜 회원은 닉네임과 주소만 수정 가능합니다.<br><br>
   ![image](https://github.com/user-attachments/assets/5761d6a3-dd80-458a-b09c-42e607f6cced)<br><br><br><br>
-
+  ### [최신의료뉴스]
+  - 네이버 검색 api를 이용하여 특정 키워드에 맞는 실시간 뉴스를 제공합니다.
+  - 자세히 보기 클릭 시 해당 기사의 원문 링크로 이동합니다.<br><br>
+  ![Honeycam 2024-10-22 19-15-26](https://github.com/user-attachments/assets/9cc44809-b88f-4705-882b-c940e2206baa)<br><br><br><br>
 
   
 
