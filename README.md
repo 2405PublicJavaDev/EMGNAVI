@@ -13,15 +13,22 @@
 - - -
 # 1. 개발환경<br>
 ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
-![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
-![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)<br>
+![Spring](https://img.shields.io/badge/spring_boot-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
+![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)
+![Intellij](https://img.shields.io/badge/IntelliJ-4A154B?style=for-the-badge&logo=intellijidea&logoColor=#000000)
+![AWS](https://img.shields.io/badge/AWS-4A154B?style=for-the-badge&logo=amazonwebservices&logoColor=#232F3E)
+<br>
 ![Trello](https://img.shields.io/badge/Trello-%23026AA7.svg?style=for-the-badge&logo=Trello&logoColor=white)
-![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)<br>
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![React](https://img.shields.io/badge/React-%23323330.svg?style=for-the-badge&logo=react&logoColor=%#61DAFB)
+![Oracle](https://img.shields.io/badge/Oracle-%23E34F26.svg?style=for-the-badge&logo=oracle&logoColor=%#61DAFB)
+![Chart.js](https://img.shields.io/badge/Chartjs-FF6384.svg?style=for-the-badge&logo=chartdotjs&logoColor=white)
+<br>
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
-![ChatGPT](https://img.shields.io/badge/chatGPT-74aa9c?style=for-the-badge&logo=openai&logoColor=white)
+![TAILWIND](https://img.shields.io/badge/tailwindcss-%231572B6.svg?style=for-the-badge&logo=tailwindcss&logoColor=#06B6D4)
 ![Kakao](https://img.shields.io/badge/Kakao-FFCD00?style=for-the-badge&logo=Kakao&logoColor=black)
-![Naver Maps](https://img.shields.io/badge/Naver%20Maps-03C75A?style=for-the-badge&logo=Naver&logoColor=white)
+![Naver](https://img.shields.io/badge/Naver-03C75A?style=for-the-badge&logo=Naver&logoColor=white)
+![Google](https://img.shields.io/badge/Google-4285F4?style=for-the-badge&logo=google&logoColor=white)
 
 
 
@@ -91,18 +98,18 @@
 # 7. 프로젝트 후기
 ## 김정욱
  ### 사전 학습의 필요성
- - 팀원의 의견 및 지원되는 강력한 기능 등으로 프론트엔트 기술로 교육과정에서 짧게 배우고 넘어갔던 React 채택
+ - 팀원의 의견 및 지원되는 강력한 기능 등으로 프론트엔드 기술로 교육 과정에서 짧게 배우고 넘어갔던 React 채택
  - 이전에 배웠던 언어나 라이브러리와 달리 비동기로 동작하기 때문에 개발하는데 시행착오를 많이 겪었음
- - 프로젝트 초반에 좀 더 시간을 내서 React를 공부 후 개발에 들어갔으면 훨씬 효율적이었을것 같다
+ - 프로젝트 초반에 좀 더 시간을 내서 React를 공부 후 개발에 들어갔으면 훨씬 효율적 이었을 것 같다
  ### 브랜치 전략 개선
- - 깃 브랜치 전략으로 팀원이 각자 개발한 내용을 Develop 브랜치에 커밋하고 기능 개발 완료 및 검증 후 Main에 병합하는 Github Flow 를 사용
- - Github Flow는 병합을 할일도 적은편이고 병합 충돌 처리도 간단한 편이라 세미때 사용했던 Git Flow 전략보다는 편했다
+ - 각자 개발한 내용을 Develop 브랜치에 커밋하고 기능 개발 완료 및 검증 후 Main에 병합하는 Github Flow 를 채택
+ - Github Flow는 병합 빈도가 적은편이고 병합 충돌 처리도 간단한 편이라 세미때 사용했던 Git Flow 전략보다는 편했다
  - 중간중간 Deveop 브랜치를 Main에 병합했어야 하는데 신경을 쓰지 않았더니 프로젝트 개발 완료 후에 병합하게 되어버렸다
  ### 팀원간 업무 스케줄 조정 필요
- - 각자 기능 개발하는데 있어서 먼저 구현해야 다른사람이 다음 작업을 할 수 있는것들이 있었는데 이에 대한 조정이 잘 되지 않았던것 같다
- - 팀원의 작업 상태를 확인하여 우선순위가 높은 업무를 먼저 할 수 있도록 조정해주는 노력이 필요했던것 같다
+ - 먼저 구현해야 다른 사람이 다음 작업을 할 수 있는 기능이 일부 있었는데 이에 대한 조정이 잘 되지 않았던 것 같다
+ - 팀원의 작업 상태를 확인하여 우선순위가 높은 업무를 먼저 할 수 있도록 조정해주는 노력이 필요했던 것 같다
  ### 코드 리팩토링의 필요성
- - 기간 내 맞춰 개발을 완료하느라 작성한 코드를 돌려쓰면서 반복된 부분들이 있는데 개발이 끝나고 나니 아쉽다
- - 좀 더 명확하게 설계를 수행하고 작성된 설계문서를 틈틈히 확인하면서 개발했으면 개선될 수 있지 않았나 생각이 든다
+ - 기간 내 맞춰 개발을 완료하느라 작성한 코드를 돌려 사용하면서 반복된 부분들이 있는데 개발이 끝나고 나니 아쉽다
+ - 좀 더 명확하게 설계를 수행하고 작성된 설계 문서를 자주 확인하면서 개발했으면 개선될 수 있지 않았나 생각이 든다
 
 ## 이름
