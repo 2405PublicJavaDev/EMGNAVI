@@ -119,6 +119,17 @@
   - 마케팅활용동의 여부를 체크할 수 있습니다.<br><br>
   ![Honeycam 2024-10-22 18-32-30](https://github.com/user-attachments/assets/64992258-fc6a-4ed1-a589-6589e7dba3f3) 
   ![image](https://github.com/user-attachments/assets/3e6ccb69-d292-4177-b9f9-a37060e39421) <br><br><br><br>
+  ### [아이디찾기]
+  - 회원가입 할 때 등록한 휴대폰 번호로 아이디를 찾을 수 있습니다.<br><br>
+  ![image](https://github.com/user-attachments/assets/172ebb5e-3a06-4b3d-bc44-19a867e39aef)<br><br><br><br>
+  - 위와 동일한 본인인증 로직을 거쳐 본인인증을 진행합니다.
+  - 존재하지 않는 휴대폰 번호 입력? -> 해당 휴대폰번호 등록된 아이디가 없다는 창<br><br>
+  ![image](https://github.com/user-attachments/assets/3cf7b37b-b69f-4dba-bcbb-7587e96b7322)<br><br><br><br>
+  - 올바른 인증번호 입력 후 다음 페이지로 넘어가면 가입한 이메일의 두번째 세번째 글자가 마스킹 처리되어 출력됩니다.<br><br>
+  ![image](https://github.com/user-attachments/assets/41efdfb2-3ee1-459b-a17a-70bb75636b1c)<br><br><br><br>
+
+
+  
 
 
 # 7. 프로젝트 후기
