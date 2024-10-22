@@ -30,7 +30,8 @@ public class UserServiceImpl implements UserService {
     private RestTemplate restTemplate;
 
     private static final String kakaoRestApiKey = "43916dfc99b7a10c04471fb22501a64e";
-    private static final String kakaoRedirectUri = "https://127.0.0.1:3000/kakao/callback";
+//    private static final String kakaoRedirectUri = "https://127.0.0.1:3000/kakao/callback";
+    private static final String kakaoRedirectUri = "https://192.168.60.245:3000/kakao/callback";
     private static final String kakaoTokenUri = "https://kauth.kakao.com/oauth/token";
 
     private static final String naverClientId = "HybacJJgFsuLnLngHigE";

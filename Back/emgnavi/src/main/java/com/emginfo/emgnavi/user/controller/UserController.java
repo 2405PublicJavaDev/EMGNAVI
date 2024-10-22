@@ -265,7 +265,9 @@ public class UserController {
         if (user != null) {
             String userId = user.getUserId();
             String tokenId = generateResetToken();
-            String resetLink = "https://127.0.0.1:3000/user/findPw/resetPw?token=" + tokenId;
+//            String resetLink = "https://127.0.0.1:3000/user/findPw/resetPw?token=" + tokenId;
+            String resetLink = "https://192.168.60.245:3000/user/findPw/resetPw?token=" + tokenId;
+
 
             uService.saveResetToken(userId, tokenId); // ID에 해당하는 토큰 저장
             emailService.sendResetPasswordEmail(userId, resetLink);
@@ -321,7 +323,7 @@ public class UserController {
 
         // Naver OpenAPI URL 설정
         String apiURL = "https://openapi.naver.com/v1/search/news.json?query="
-                + URLEncoder.encode("교통사고 사망 응급실이송", "UTF-8")
+                + URLEncoder.encode("부곡온천 입건", "UTF-8")
                 + "&display=4";
 
         // Http 요청 설정

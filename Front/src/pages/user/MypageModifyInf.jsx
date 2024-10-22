@@ -13,10 +13,11 @@ const MypageModifyInf = () => {
     const [userPhone, setUserPhone] = useState(''); // 전화번호 상태 추가
 
     const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-    const openPhoneModal = () => {
+    const openPhoneModal = (e) => {
+        e.preventDefault();
         setIsPhoneModalOpen(true);
     };
-    const closePhoneModal = () => {
+    const closePhoneModal = (e) => {
         setIsPhoneModalOpen(false);
     };
     const openPasswordModal = () => {
@@ -154,7 +155,7 @@ const MypageModifyInf = () => {
                     marketingAgree: values.marketingAgree
                 }
             },
-            (response) => {
+            (data) => {
                 alert('정보가 수정되었습니다.');
                 nav("/user/mypage");
             }
@@ -212,7 +213,7 @@ const MypageModifyInf = () => {
                 <div className="absolute left-[534px] top-[806px] w-[214px] h-[23px] text-[18px] font-['Inter'] font-semibold"><span className="text-[#000]">닉네임 </span><span className="text-[#c2a55d]">*</span></div>
                 <div className="absolute left-[748px] top-[790px] w-[506px] h-[55px] bg-[#fff] border-[1px] border-solid border-[#7d8597] rounded-[5px]"></div>
                 <input
-                    value={values.newNickname || userInfo.userNickname || ''}
+                    value={values.newNickname !== undefined ? values.newNickname : userInfo.userNickname || ''}
                     type='text'
                     id='nickname'
                     onChange={(e) => {

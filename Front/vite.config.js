@@ -8,8 +8,8 @@ export default defineConfig({
     sourcemap: false,
   },
   server: {
-    host: '127.0.0.1',
-    // host: '192.168.60.205',
+    // host: '127.0.0.1',
+    host: '192.168.60.245',
     port: 3000,
     proxy: {
       '/api': {

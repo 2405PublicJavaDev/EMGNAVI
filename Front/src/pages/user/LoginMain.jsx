@@ -62,7 +62,8 @@ const LoginMain = () => {
 
     const kakaoLogin = () => {
         const REST_API_KEY = "43916dfc99b7a10c04471fb22501a64e";
-        const REDIRECT_URI = "https://127.0.0.1:3000/kakao/callback";
+        // const REDIRECT_URI = "https://127.0.0.1:3000/kakao/callback";
+        const REDIRECT_URI = "https://192.168.60.245:3000/kakao/callback";
         const kakaoUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
         window.location.href = kakaoUrl;
@@ -70,7 +71,8 @@ const LoginMain = () => {
 
     const naverLogin = () => {
         const NAVER_CLIENT_ID = "HybacJJgFsuLnLngHigE"; // 발급 받은 Client ID 입력 
-        const NAVER_CALLBACK_URL = "https://127.0.0.1:3000/naver/callback"; // 작성했던 Callback URL 입력
+        // const NAVER_CALLBACK_URL = "https://127.0.0.1:3000/naver/callback"; // 작성했던 Callback URL 입력
+        const NAVER_CALLBACK_URL = "https://192.168.60.245:3000/naver/callback"; // 작성했던 Callback URL 입력
         const naverUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&redirect_uri=${NAVER_CALLBACK_URL}`;
 
         window.location.href = naverUrl;
