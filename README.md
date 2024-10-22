@@ -32,7 +32,7 @@
 ## Github Flow 방식
 - 브랜치를 Main과 Develop으로 만들고 각자 작업 내용은 Develop에 Push 수행
 - Deveop 브랜치에서 기능 구현이 완료되고 동작 검증이 되면 Main 브랜치에 Merge 수행
-  ![git_flow](https://github.com/2405PublicJavaDev/sulgilddara/blob/main/img/github_flow.png?raw=true)
+  ![github_flow](https://github.com/2405PublicJavaDev/EMGNAVI/blob/develop/img/github_flow.png?raw=true)
   
 # 3. 프로젝트 구조
 
@@ -53,7 +53,7 @@
   - 
 
 # 5. 개발 기간 및 작업 관리
-   ![Development_period](imgUrl)<br>
+   ![Development_period](https://github.com/2405PublicJavaDev/EMGNAVI/blob/develop/img/working_period.jpg?raw=true)<br>
 
 # 6. 페이지별 기능
 ## 1. 김정욱
@@ -64,13 +64,13 @@
    - 공공 OpenAPI로 실시간 응급실 현황 정보를 가져옵니다.
    - 받아온 병원, 응급실 정보는 지도위의 마커, 사이드바의 리스트 형태로 출력됩니다.
    - 사이드바 에는 통계 그래프 컴포넌트를 활용하여 통계 시각화 자료도 함께 제공합니다.
-   ![Emergency_Map](imageUrl)<br>
+   ![Emergency_Map](https://github.com/2405PublicJavaDev/EMGNAVI/blob/develop/img/emgMap.gif?raw=true)<br>
   ### [응급실 통계]
    - AWS EC2 서버에서 매 시간마다 실행되어 OpenAPI의 데이터를 DB에 저장하는 Java 프로젝트를 구현했습니다.
    - 검색 조건에 따라 그래프를 작성하는 컴포넌트를 구현했습니다.
    - 통계 페이지에서는 검색 조건을 입력받아 요일별, 요일 및 오전/오후, 시간별 그래프가 제공됩니다.
    - 병원 상세페이지 또는 응급실 지도 사이드바 에서는 입력값을 넣을 필요 없이 해당 병원의 요일별 통계 그래프가 출력됩니다.
-   ![Emergency_Map](imageUrl)<br>
+   ![Emergency_Stat](https://github.com/2405PublicJavaDev/EMGNAVI/blob/develop/img/stat.gif?raw=true)<br>
   ### [공지사항 관리]
    - 공지사항 작성은 ToastUI Editor를 이용하여 이미지 추가 및 간단한 디자인을 입혀서 작성할 수 있습니다.
    - 작성된 데이터는 화면에 표시하기 위한 HTML 데이터, 이후에 수정할 때 ToastUI Editor에서 사용할 Markdown 데이터 2가지로 DB에 저장됩니다.
@@ -78,7 +78,7 @@
    - 공지사항 수정은 Markdown 데이터를 불러와서 이전의 디자인을 그대로 가져와서 수정할 수 있게 구현했습니다.
    - 공지사항 목록에서는 제목, 작성자ID, 작성일, 3줄 이내로 줄여서 보여지는 공지 내용이 제공됩니다.
    - 공지사항 목록에서 제목, 작성자ID로 검색이 가능하며 검색 키워드 입력 시 입력창 하단에 자동완성 기능으로 기존에 작성된 공지 제목이나 작성자가 표시됩니다.
-   ![Emergency_Map](imageUrl)<br>
+   ![Notice](https://github.com/2405PublicJavaDev/EMGNAVI/blob/develop/img/notice.gif?raw=true)<br>
 
   ## 2. 
 
