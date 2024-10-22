@@ -14,9 +14,7 @@ const PhoneVerificationModal = ({ onClose }) => {
 
     const validatePhone = (e) => {
         e.preventDefault();
-        const userPhone = document.querySelector("#phone").value;
         if (userPhone.length === 11 && /^\d*$/.test(userPhone)) {
-            console.log(userPhone);
             fetchData({
                 method: 'POST',
                 url: `/api/verify/phone`,
@@ -24,7 +22,6 @@ const PhoneVerificationModal = ({ onClose }) => {
                     userPhone: userPhone
                 },
             });
-            setuserPhone(phone);  // 휴대폰 번호 설정
             alert("인증번호가 발송되었습니다");
             return userPhone;
         } else {
@@ -37,11 +34,6 @@ const PhoneVerificationModal = ({ onClose }) => {
     const validationCode = (e) => {
         e.preventDefault();
         const verifyCode = document.querySelector("#code").value;
-        const userPhone = document.querySelector("#phone").value;
-        setuserPhone(phone);  // 휴대폰 번호 설정
-
-        console.log("입력된 인증 코드:", verifyCode);
-        console.log("사용자 전화번호:", userPhone); // 현재 설정된 전화번호 로그
 
         if (!verifyCode) {
             alert("인증번호를 입력해주세요");
@@ -49,12 +41,6 @@ const PhoneVerificationModal = ({ onClose }) => {
         }
 
         if (verifyCode) {
-            console.log("인증 코드가 입력되었습니다:", verifyCode);
-            const requestData = {
-                userPhone: userPhone,
-                verifyCode: verifyCode
-            };
-            console.log("서버에 전송할 데이터:", requestData); // 전송할 데이터 로그
             fetchData(
                 {
                     method: 'POST',
@@ -65,17 +51,12 @@ const PhoneVerificationModal = ({ onClose }) => {
                     }
                 },
                 (data) => {
-                    console.log(data);
-                    // console.log(data.status);
                     if (data.includes('성공')) {
-                        console.log("다음 동작!")
                         alert("인증이 완료되었습니다!")
                         setIsNext(true);
                     } else if (data.includes('실패')) {
-                        console.log("인증실패", response.data); // 인증 실패 로그
                         alert('인증번호를 다시 한번 확인해주세요.'); // 사용자에게 보여줄 메시지
                     } else {
-                        console.log("오류", response.data); // 인증 실패 로그
                         alert('오류 발생'); // 사용자에게 보여줄 메시지
                     }
                 }
@@ -84,43 +65,40 @@ const PhoneVerificationModal = ({ onClose }) => {
     };
 
     const handlerGoNextPage = (e) => {
-        const userPhone = document.querySelector("#phone").value;
-
         e.preventDefault();
         if (isNext) {  // 인증이 완료된 상태인지 확인
-        console.log("폰 : " + userPhone);
-        if (userPhone) {
-            const currentPath = location.pathname;
-            const state = { userPhone }; // 상태 객체에 사용자 전화번호만 포함
-            if (currentPath.startsWith("/user/register")) {
-                nav("/user/register/page", { state });
-            } else if (currentPath.startsWith("/user/findEmail")) {
-                nav("/user/findEmail/complete", { state });
-            } else if (currentPath.startsWith("/user/mypage/modify")) {
-                fetchData(
-                    {
-                        method: 'POST',
-                        url: '/api/changePhone',
-                        data: {
-                            userId: userId,
-                            userPhone: userPhone
+            if (userPhone) {
+                const currentPath = location.pathname;
+                const state = { userPhone }; // 상태 객체에 사용자 전화번호만 포함
+                if (currentPath.startsWith("/user/register")) {
+                    nav("/user/register/page", { state });
+                } else if (currentPath.startsWith("/user/findEmail")) {
+                    nav("/user/findEmail/complete", { state });
+                } else if (currentPath.startsWith("/user/mypage/modify")) {
+                    fetchData(
+                        {
+                            method: 'POST',
+                            url: '/api/changePhone',
+                            data: {
+                                userId: userId,
+                                userPhone: userPhone
+                            },
                         },
-                    },
-                    (data) => {
-                        console.log(data);
-                        if (data.includes('성공')) {
-                            alert("휴대폰번호가 변경되었습니다");
-                            onClose();
-                            window.location.reload();
-                        } else {
-                            alert("휴대폰번호 변경 실패");
+                        (data) => {
+                            if (data.includes('성공')) {
+                                alert("휴대폰번호가 변경되었습니다");
+
+                                onClose();
+                                window.location.reload();
+                            } else {
+                                alert("휴대폰번호 변경 실패");
+                            }
                         }
-                    }
-                )
+                    )
+                }
+            } else {
+                alert("휴대폰 번호를 입력해주세요");
             }
-        } else {
-            alert("휴대폰 번호를 입력해주세요");
-        }
         } else {
             alert("본인인증을 먼저 진행해주세요"); // 인증이 완료되지 않은 경우
         }
@@ -128,7 +106,7 @@ const PhoneVerificationModal = ({ onClose }) => {
 
     return (
         <>
-            <form id='form' onSubmit={validatePhone} autoComplete='off' className="w-[1920px] h-[1243px] fixed top-0 left-0px right-0 bottom-0 flex items-center justify-center z-50">
+            <form id='form' autoComplete='off' className="w-[1920px] h-[1243px] fixed top-0 left-0px right-0 bottom-0 flex items-center justify-center z-50">
                 <div className="relative w-[600px] h-[935px] overflow-hidden">
                     <div className="absolute left-0 top-0 w-[600px] h-[670px] flex">
                         <div className="absolute left-0 top-0 w-[600px] h-[670px] bg-[#fff] rounded-[40px]"></div>
@@ -143,12 +121,13 @@ const PhoneVerificationModal = ({ onClose }) => {
                             id='phone'
                             type='text'
                             placeholder="01012345678"
+                            onChange={(e) => setuserPhone(e.target.value)}
                             className="absolute left-[197px] top-[305px] w-[248px] h-[40px] text-[15px] font-['Inter'] text-[#7d8597] flex flex-col justify-center pl-4 rounded-[5px] outline-0">
                         </input>
                         <button
                             type='submit'
                             form='form'
-                            // onClick={validatePhone}
+                            onClick={validatePhone}
                             className="absolute left-[466px] top-[304px] w-[71px] h-[42px] bg-[#7d8597] border-[1px] border-solid border-[#fff] rounded-[5px]">
                             <span className="text-[15px] font-['Inter'] text-[#fff] text-center flex flex-col justify-center">전송</span>
                         </button>
@@ -187,7 +166,7 @@ const PhoneVerificationModal = ({ onClose }) => {
                         </div>
                     </div>
                 </div>
-            </form>
+            </form >
         </>
     )
 }
