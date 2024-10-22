@@ -314,14 +314,14 @@ const Index = () => {
                         {/* <button className="bg-white text-[#0b2d85] font-bold py-2 px-6 rounded-full hover:bg-opacity-90 transition duration-300">
                                 지금 시작하기
                             </button> */}
-                        <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8 mt-8">
-                            <button className='font-bold' onClick={() => nav('/map/getEmergencyMap')}>응급실 지도</button>
-                            <div className='border-r text-white py-3'></div>
-                            <button className='font-bold' onClick={() => nav('/map/getHospitalMap')}>병원 지도</button>
-                            <div className='border-r text-white py-3'></div>
-                            <button className='font-bold' onClick={() => nav('/map/getPharmacyMap')}>약국 지도</button>
-                            <div className='border-r text-white py-3'></div>
-                            <button className='font-bold' onClick={() => nav('/map/getAedMap')}>AED 지도</button>
+                        <div className="flex flex-col md:flex-row items-center justify-center md:space-y-0 md:space-x-5 mt-4">
+                            <button className="font-bold text-white hover:text-[#0b2d85] hover:bg-white px-6 py-2 rounded-full transition-all duration-300 border-2 border-transparent hover:border-white flex items-center" onClick={() => nav('/map/getEmergencyMap')}>응급실 지도</button>
+                            <div className="hidden md:block w-[2px] h-8 bg-white/30 rounded"></div>
+                            <button className="font-bold text-white hover:text-[#0b2d85] hover:bg-white px-6 py-2 rounded-full transition-all duration-300 border-2 border-transparent hover:border-white flex items-center" onClick={() => nav('/map/getHospitalMap')}>병원 지도</button>
+                            <div className="hidden md:block w-[2px] h-8 bg-white/30 rounded"></div>
+                            <button className="font-bold text-white hover:text-[#0b2d85] hover:bg-white px-6 py-2 rounded-full transition-all duration-300 border-2 border-transparent hover:border-white flex items-center" onClick={() => nav('/map/getPharmacyMap')}>약국 지도</button>
+                            <div className="hidden md:block w-[2px] h-8 bg-white/30 rounded"></div>
+                            <button className="font-bold text-white hover:text-[#0b2d85] hover:bg-white px-6 py-2 rounded-full transition-all duration-300 border-2 border-transparent hover:border-white flex items-center" onClick={() => nav('/map/getAedMap')}>AED 지도</button>
                         </div>
                     </div>
                 </section>
