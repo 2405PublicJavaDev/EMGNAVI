@@ -64,12 +64,13 @@ const Index = () => {
         const url = (searchType === 'hospital' ? `/hospital/HospitalSearch` : searchType === 'pharmacy' ? `/pharmacy/PharmacySearch` : `/medicine/MedicineSearch`);
         console.log(searchType);
         console.log(url);
-        nav(url , 
-            { state: {
-                searchType : searchType === 'medicine' ? 'itemName' : 'dutyName', 
-                searchQuery : searchQuery
-            }
-        });
+        nav(url,
+            {
+                state: {
+                    searchType: searchType === 'medicine' ? 'itemName' : 'dutyName',
+                    searchQuery: searchQuery
+                }
+            });
     };
 
     useEffect(() => {
@@ -212,12 +213,18 @@ const Index = () => {
                 {/* 히어로 섹션 */}
                 <section className="bg-[#0b2d85] text-white pt-[300px] pb-[200px]">
                     <div className="container mx-auto px-4">
-                        <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center">응급 NAVI</h1>
-                        <p className="text-xl md:text-2xl text-center mb-8">당신의 건강을 위한 최적의 길을 안내합니다</p>
-                        <div className="flex justify-center">
-                            
-{/* ##################################################################################### */}
-                            <div className="flex justify-center mb-8">
+                        <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8 mb-8">
+                            <h1 className="text-4xl md:text-5xl font-bold text-center">응급 NAVI</h1>
+                            {/* <button className="bg-white text-[#0b2d85] font-bold py-2 px-6 rounded-full hover:bg-opacity-90 transition duration-300">
+                                지금 이용하기
+                            </button> */}
+                        </div>
+                        <p className="text-xl md:text-1xl text-center mb-2">당신의 건강을 위한 최적의 길을 안내합니다.</p>
+                        <p className="text-xl md:text-1xl text-center mb-8">응급 NAVI와 함께 안전하고 신속한 의료 서비스를 경험하세요.</p>
+                        
+                        {/* 검색 */}
+                        <div className="flex justify-center w-full max-w-3xl mx-auto">
+                            <div className="flex items-center w-full bg-white rounded-full overflow-hidden shadow-lg px-3">
                                 <select
                                     value={searchType}
                                     onChange={(e) => {
@@ -225,7 +232,7 @@ const Index = () => {
                                         setSearchQuery('');
                                         setOptions([]);
                                     }}
-                                    className="border p-2 rounded-l-md w-[87px] h-[36px] text-[14px] leading-[20px] text-[#00000080] border-[#00000033]"
+                                    className="bg-white text-gray-700 font-semibold py-3 px-5 text-[17px] focus:outline-none cursor-pointer text-[#0b2d85]"
                                 >
                                     {categories.map((category) => (
                                         <option key={category.value} value={category.value}>
@@ -233,8 +240,7 @@ const Index = () => {
                                         </option>
                                     ))}
                                 </select>
-
-                                <div className="relative" style={{ zIndex: 1000 }}>
+                                <div className="relative flex-grow" style={{ zIndex: 1000 }}>
                                     <input
                                         ref={inputRef}
                                         type="text"
@@ -243,14 +249,14 @@ const Index = () => {
                                         onFocus={() => setShowAutoComplete(true)}
                                         onBlur={handleInputBlur}
                                         onKeyDown={handleKeyDown}
-                                        placeholder={`원하시는 ${searchType === 'hospital' ? '병원' : searchType === 'pharmacy' ? '약국' : '의약품'}의 이름을 검색해 주세요`}
-                                        className="border p-2 w-[360px] h-[36px] text-base leading-[20px] border-[#0000001a] text-black bg-white"
+                                        placeholder={`${searchType === 'hospital' ? '병원' : searchType === 'pharmacy' ? '약국' : '의약품'} 이름을 검색해 주세요`}
+                                        className="w-full bg-white text-gray-800 py-4 px-4 focus:outline-none"
                                         style={{ color: 'black', backgroundColor: 'white' }}
                                     />
                                     {showAutoComplete && (
                                         <ul
                                             ref={autoCompleteRef}
-                                            className="absolute z-[9999] w-full bg-white border border-gray-300 mt-1 rounded-md shadow-lg max-h-60 overflow-y-auto"
+                                            className="absolute z-50 w-full bg-white mt-1 border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto"
                                             style={{
                                                 top: '100%',
                                                 left: 0,
@@ -289,30 +295,33 @@ const Index = () => {
                                                     </li>
                                                 ))
                                             ) : (
-                                                <li className="p-2 text-gray-500 text-base font-normal">검색 결과가 없습니다</li>
+                                                <li className="p-2 text-gray-500">검색 결과가 없습니다</li>
                                             )}
                                         </ul>
                                     )}
                                 </div>
-
-                        <button
-                            onClick={() => handleSearch(0)}
-                            className="bg-[#7D8597] text-white px-4 h-[36px] text-[17px] rounded-r-md"
-                        >
-                            검색
-                        </button>
-                    </div>
-{/* ##################################################################################### */}
-
-
-
-                            {/* <button className="bg-white text-[#0b2d85] font-bold py-2 px-6 rounded-full hover:bg-opacity-90 transition duration-300">
+                                <button
+                                    onClick={() => handleSearch(0)}
+                                    className="bg-white text-blue-700 p-3 focus:outline-none"
+                                    aria-label="검색"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        {/* <button className="bg-white text-[#0b2d85] font-bold py-2 px-6 rounded-full hover:bg-opacity-90 transition duration-300">
                                 지금 시작하기
                             </button> */}
-
-
-
-
+                        <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8 mt-8">
+                            <button className='font-bold' onClick={() => nav('/map/getEmergencyMap')}>응급실 지도</button>
+                            <div className='border-r text-white py-3'></div>
+                            <button className='font-bold' onClick={() => nav('/map/getHospitalMap')}>병원 지도</button>
+                            <div className='border-r text-white py-3'></div>
+                            <button className='font-bold' onClick={() => nav('/map/getPharmacyMap')}>약국 지도</button>
+                            <div className='border-r text-white py-3'></div>
+                            <button className='font-bold' onClick={() => nav('/map/getAedMap')}>AED 지도</button>
                         </div>
                     </div>
                 </section>
@@ -362,7 +371,7 @@ const Index = () => {
                     </div>
                 </section>
 
-                {/* CTA 섹션 */}
+                {/* CTA 섹션
                 <section className="bg-[#0b2d85] text-white py-16">
                     <div className="container mx-auto px-4 text-center">
                         <h2 className="text-3xl font-bold mb-4">응급 상황에 대비하세요</h2>
@@ -371,10 +380,11 @@ const Index = () => {
                             지금 이용하기
                         </button>
                     </div>
-                </section>
+                </section> */}
             </div>
 
-            <div className="absolute left-0 top-[2069px] w-[1920px] h-[232px] bg-[#000] overflow-hidden">
+
+            <div className="absolute left-0 w-[100%] h-[232px] bg-[#000] overflow-hidden">
                 <div className="absolute left-[136px] top-[41px] w-[117px] h-[126px] flex">
                     <div className="absolute left-[13px] top-[97px] text-[24px] font-['Advent_Pro'] font-black text-[#333] whitespace-nowrap">응급NAVI</div>
                     <img className="absolute left-0 top-0" width="117" height="100" src="/img/footer/logo.png"></img>
