@@ -92,7 +92,33 @@
    - 공지사항 목록에서 제목, 작성자ID로 검색이 가능하며 검색 키워드 입력 시 입력창 하단에 자동완성 기능으로 기존에 작성된 공지 제목이나 작성자가 표시됩니다.
    ![Notice](https://github.com/2405PublicJavaDev/EMGNAVI/blob/develop/img/notice.gif?raw=true)<br>
 
-  ## 2. 
+  ## 2. 엄은지
+  ### [회원가입]
+  - 일반계정으로 회원가입 할 수 있습니다.<br><br>
+  ![image](https://github.com/user-attachments/assets/a79ad365-f34d-4b25-bf78-6e5cb8771d4f) <br><br><br><br>
+  - 모든 약관에 동의해야 다음 페이지로 넘어갈 수 있습니다. <br><br>
+  ![image (5)](https://github.com/user-attachments/assets/01e09e15-6967-4387-97f6-865d6b7d2ea3) <br><br><br><br>
+  - 휴대폰 본인인증 절차를 거쳐야 회원가입을 할 수 있습니다.<br><br>
+  ![image](https://github.com/user-attachments/assets/7f749f22-41d9-403e-ba69-40f40cc05f5f) 
+  ![image](https://github.com/user-attachments/assets/cd349412-1baf-4936-a873-2db25294ef79)<br><br><br><br>
+  - 본인인증 유효성 체크
+  - 유효하지 않은 휴대폰 번호 입력? -> 휴대폰 번호를 다시 한번 확인해달라는 창
+  - 본인인증을 완료하지 않고 다음 버튼을 누르면? -> 본인인증을 완료해달라는 창
+  - 잘못된 인증번호 입력? -> 인증번호를 다시 한번 확인해달라는 창<br><br>
+  ![Honeycam 2024-10-22 18-25-09](https://github.com/user-attachments/assets/a551a3de-d856-4915-b2eb-54e46032c0f6) <br><br><br><br>
+  - 올바른 인증번호 입력 후 다음 페이지로 넘어가면 앞에서 입력한 휴대폰 번호가 입력되어 있습니다.<br><br>
+  ![Honeycam 2024-10-22 18-25-36](https://github.com/user-attachments/assets/83360d0e-06a4-4786-abb4-bbd1def6938c) <br><br><br><br>
+  - 아이디는 이메일 형식으로 입력했을 때 우측에 체크표시가 뜨며 중복확인 버튼이 활성화됩니다.
+  - 만약 중복된 아이디라면 원래 떠있던 체크표시가 사라지고 중복되지 않은 아이디라면 체크표시가 그대로 유지됩니다.<br><br>
+  ![Honeycam 2024-10-22 18-29-58](https://github.com/user-attachments/assets/f9a4c3db-f41a-4a02-b6a8-3cc0b07002a5) <br><br><br><br>
+  - 비밀번호는 영어, 숫자, 특수문자를 모두 포함한 8~16자리일 경우 우측에 체크표시가 뜨며 비밀번호 확인에서는 위에서 입력한 비밀번호와 일치하는 값일 때 체크표시가 활성화 됩니다.<br><br>
+  ![Honeycam 2024-10-22 18-30-37](https://github.com/user-attachments/assets/309c7362-88bb-4d38-bb09-195561bb6cb1) <br><br><br><br>
+  - 닉네임은 새로고침 버튼을 클릭 시 자동으로 랜덤생성되며 중복확인을 해야합니다.
+  - 성별을 입력할 수 있습니다.
+  - 주소를 다음주소검색 api를 활용하여 입력할 수 있습니다.
+  - 마케팅활용동의 여부를 체크할 수 있습니다.<br><br>
+  ![Honeycam 2024-10-22 18-32-30](https://github.com/user-attachments/assets/64992258-fc6a-4ed1-a589-6589e7dba3f3) 
+  ![image](https://github.com/user-attachments/assets/3e6ccb69-d292-4177-b9f9-a37060e39421) <br><br><br><br>
 
 
 # 7. 프로젝트 후기
