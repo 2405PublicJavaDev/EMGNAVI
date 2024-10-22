@@ -74,9 +74,11 @@ export const FavHospital = () => {
             if (response.status === 200) {
                 console.log('삭제 성공:', response.data);
                 // 병원 리스트에서 삭제된 항목 필터링 후 상태 업데이트
-                setHospitalList(prevHospitalList =>
-                    prevHospitalList.filter(hospital => hospital.refNo !== refNo)
-                );
+                setHospitalList(prevHospitalList => {
+                    const updatedList = prevHospitalList.filter(hospital => hospital.refNo !== refNo);
+                    setTotalCount(updatedList.length); // 총 개수 업데이트
+                    return updatedList;
+                });
                 closedModal(); // 모달 닫기
             } else {
                 console.error('삭제 실패:', response.statusText);
@@ -92,9 +94,11 @@ export const FavHospital = () => {
             const response = await axios.post(`/api/favorite/multi`, { refNos: refNos });
             if (response.status === 200) {
                 console.log('삭제 성공:', response.data);
-                setHospitalList(prevHospitalList =>
-                    prevHospitalList.filter(hospital => !refNos.includes(hospital.refNo))
-                );
+                setHospitalList(prevHospitalList => {
+                    const updatedList = prevHospitalList.filter(hospital => !refNos.includes(hospital.refNo));
+                    setTotalCount(updatedList.length); // 총 개수 업데이트
+                    return updatedList;
+                });
                 closedMultiModal();
             } else {
                 console.error('삭제 실패:', response.statusText);
