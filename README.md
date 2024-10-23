@@ -735,7 +735,7 @@
 <br><br><br>
 
 ## 5. 양희준
-- 아래의 이미지를 클릭하면 유튜브로 넘어가집니다.
+- 아래의 이미지를 클릭하면 유튜브로 넘어가집니다.<br>
 [![Video Label](http://img.youtube.com/vi/M-3MTPG_Q-4/0.jpg)](https://youtu.be/M-3MTPG_Q-4)
 
 # 7. 프로젝트 후기
