@@ -647,6 +647,7 @@
   - 네이버 검색 api를 이용하여 특정 키워드에 맞는 실시간 뉴스를 제공합니다.
   - 자세히 보기 클릭 시 해당 기사의 원문 링크로 이동합니다.<br><br>
   ![Honeycam 2024-10-22 19-15-26](https://github.com/user-attachments/assets/9cc44809-b88f-4705-882b-c940e2206baa)<br><br><br><br>
+  
 ## 3. 김덕영
 ### [AED 지도]
 - KakaoMap API를 사용해 지도를 구현하고, GeoLocation API를 통해 사용자의 현재 위치를 마커로 표시합니다.
@@ -669,6 +670,7 @@
 - 작성자가 정지된 경우, 정지 해제 날짜까지 로그인이 불가능하며 해당 리뷰는 숨김 처리됩니다.
 - 신고자가 정지된 경우, 정지 해제 날짜까지 로그인이 불가능합니다.
 - ![신고](https://github.com/user-attachments/assets/d7d65f06-f549-4875-aa07-4d08493b8045)
+
 ## 4. 김만규
 ### [의약품 조회 페이지]
 - 의약품 정보 검색 및 표시 기능 구현
@@ -727,6 +729,9 @@
   - 로그인 상태에 따른 기능 제한
   - 즐겨찾기 상태 실시간 반영
   ![약국 상세 페이지](https://github.com/user-attachments/assets/b8bb346f-dfc5-4772-8efa-45697254af3e)
+
+## 5. 양희준
+- https://youtu.be/M-3MTPG_Q-4
 
 # 7. 프로젝트 후기
 ## 김정욱
