@@ -731,7 +731,8 @@
   ![약국 상세 페이지](https://github.com/user-attachments/assets/b8bb346f-dfc5-4772-8efa-45697254af3e)
 
 ## 5. 양희준
-- [![Video Label](http://img.youtube.com/vi/M-3MTPG_Q-4/0.jpg)](https://youtu.be/M-3MTPG_Q-4)
+- 아래의 이미지를 클릭하면 유튜브로 넘어가집니다.
+[![Video Label](http://img.youtube.com/vi/M-3MTPG_Q-4/0.jpg)](https://youtu.be/M-3MTPG_Q-4)
 
 # 7. 프로젝트 후기
 ## 김정욱
