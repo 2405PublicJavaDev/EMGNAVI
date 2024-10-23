@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "https://127.0.0.1:3000")
+@CrossOrigin(origins = "https://192.168.60.245:3000")
 @RequestMapping("/api/notice")
 public class NoticeController {
 
